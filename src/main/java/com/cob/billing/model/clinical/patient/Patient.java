@@ -26,7 +26,11 @@ public class Patient {
 
     private Gender gender;
 
-    private List<Address> addresses;
+    private Address address;
 
     private List<PatientCase> cases;
+    private String phoneType;
+    private String phone;
+    private String email;
+    private String copay;
 }

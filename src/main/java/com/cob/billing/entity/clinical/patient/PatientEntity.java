@@ -39,9 +39,17 @@ public class PatientEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
+    @Column(name = "phone_type")
+    private String phoneType;
+    @Column(name = "phone")
+    private String phone;
+    @Column(name = "email")
+    private String email;
+    @Column(name = "copay")
+    private String copay;
     @Column(name = "patient_addresses", columnDefinition = "json")
     @Type(type = "json")
-    private List<Address> addresses;
+    private Address address;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "patient", cascade = CascadeType.ALL)
     private List<PatientCaseEntity> cases;
 
