@@ -37,4 +37,8 @@ public class ReferringProviderController {
                         HttpStatus.OK, null,
                         retrievingAllReferringProvidersUseCase.findAll(paging));
     }
+    @GetMapping("/find/all")
+    public ResponseEntity findAll(){
+        return new ResponseEntity(retrievingAllReferringProvidersUseCase.findAll(),HttpStatus.OK);
+    }
 }

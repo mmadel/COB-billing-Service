@@ -32,4 +32,12 @@ public class RetrievingAllReferringProvidersUseCase {
                 .records(records)
                 .build();
     }
+
+    public List<ReferringProvider> findAll(){
+        List<ReferringProvider> referringProviders = new ArrayList<>();
+        for (ReferringProviderEntity referringProvider : referringProviderRepository.findAll()) {
+            referringProviders.add(mapper.map(referringProvider, ReferringProvider.class));
+        }
+        return referringProviders;
+    }
 }
