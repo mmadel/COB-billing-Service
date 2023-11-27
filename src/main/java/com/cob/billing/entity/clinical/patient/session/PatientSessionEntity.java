@@ -3,7 +3,6 @@ package com.cob.billing.entity.clinical.patient.session;
 import com.cob.billing.model.clinical.patient.CaseDiagnosis;
 import com.cob.billing.model.clinical.patient.session.DoctorInfo;
 import com.cob.billing.model.clinical.patient.session.PatientInfo;
-import com.cob.billing.model.common.Address;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
