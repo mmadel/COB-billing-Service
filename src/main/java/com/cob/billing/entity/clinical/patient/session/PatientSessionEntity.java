@@ -45,6 +45,7 @@ public class PatientSessionEntity {
     @Type(type = "json")
     private List<CaseDiagnosis> caseDiagnosis;
 
-    @OneToMany(mappedBy="patientSession")
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "session_id")
     private List<ServiceLineEntity> serviceLines;
 }

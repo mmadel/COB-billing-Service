@@ -30,7 +30,4 @@ public class ServiceLineEntity {
     @Column(name = "cpt_code", columnDefinition = "json")
     @Type(type = "json")
     private CPTCode cptCode;
-    @ManyToOne
-    @JoinColumn(name="session_id", nullable=false)
-    private PatientSessionEntity patientSession;
 }
