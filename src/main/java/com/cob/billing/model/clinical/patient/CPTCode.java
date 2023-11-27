@@ -8,6 +8,6 @@ import lombok.Setter;
 public class CPTCode {
     private String serviceCode;
     private String modifier;
-    private String unit;
-    private String charge;
+    private Float unit;
+    private Integer charge;
 }
