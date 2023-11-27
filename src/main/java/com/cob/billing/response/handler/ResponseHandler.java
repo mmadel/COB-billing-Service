@@ -1,6 +1,7 @@
 package com.cob.billing.response.handler;
 
 import com.cob.billing.model.response.PatientResponse;
+import com.cob.billing.model.response.PatientSessionResponse;
 import com.cob.billing.model.response.ReferringProviderResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,14 @@ public abstract class ResponseHandler {
         map.put("records", response.getRecords());
         return new ResponseEntity<>(map, status);
     }
+    public static ResponseEntity<Object> generateResponse(String message, HttpStatus status,
+                                                          Object responseObj, PatientSessionResponse response) {
+        Map<String, Object> map = populateResponseMap(message, status,
+                response.getNumber_of_records(), response.getNumber_of_matching_records());
+        map.put("records", response.getRecords());
+        return new ResponseEntity<>(map, status);
+    }
+
     protected static  Map<String, Object> populateResponseMap(String message, HttpStatus status,
                                                            Integer numberOfRecords, Integer numberOfMatchingRecords) {
         Map<String, Object> map = new HashMap<>();
