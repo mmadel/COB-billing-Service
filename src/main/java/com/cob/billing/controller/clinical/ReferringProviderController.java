@@ -33,7 +33,7 @@ public class ReferringProviderController {
                                           @RequestParam(name = "limit") String limit) {
         Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
         return ResponseHandler
-                .generateResponse("Successfully Find All Patients!",
+                .generateResponse("Successfully Find All Referring Provider!",
                         HttpStatus.OK, null,
                         retrievingAllReferringProvidersUseCase.findAll(paging));
     }
