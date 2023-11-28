@@ -12,6 +12,7 @@ public class PatientSession {
     private Long id;
     private PatientInfo patientInfo;
     private DoctorInfo doctorInfo;
+    private ClinicInfo clinicInfo;
     private Long serviceDate;
     private Long serviceStartTime;
     private Long serviceEndTime;
@@ -19,6 +20,8 @@ public class PatientSession {
     private String authorization;
     private String placeOfCode;
     private List<CaseDiagnosis> caseDiagnosis;
+
+
 
     private List<ServiceLine> serviceLines;
 }

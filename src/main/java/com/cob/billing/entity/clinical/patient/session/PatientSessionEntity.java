@@ -1,6 +1,7 @@
 package com.cob.billing.entity.clinical.patient.session;
 
 import com.cob.billing.model.clinical.patient.CaseDiagnosis;
+import com.cob.billing.model.clinical.patient.session.ClinicInfo;
 import com.cob.billing.model.clinical.patient.session.DoctorInfo;
 import com.cob.billing.model.clinical.patient.session.PatientInfo;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
@@ -31,6 +32,10 @@ public class PatientSessionEntity {
     @Column(name = "doctor_info", columnDefinition = "json")
     @Type(type = "json")
     private DoctorInfo doctorInfo;
+
+    @Column(name = "clinic_info", columnDefinition = "json")
+    @Type(type = "json")
+    private ClinicInfo clinicInfo;
     @Column(name = "service_date")
     private Long serviceDate;
     @Column(name = "service_start_time")
