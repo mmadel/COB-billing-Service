@@ -50,7 +50,7 @@ public class PatientEntity {
     @Column(name = "patient_addresses", columnDefinition = "json")
     @Type(type = "json")
     private Address address;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "patient", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "patient")
     private List<PatientCaseEntity> cases;
 
 
