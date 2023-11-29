@@ -2,10 +2,12 @@ package com.cob.billing.usecases.clinical.patient;
 
 import com.cob.billing.entity.clinical.patient.PatientCaseEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
+import com.cob.billing.entity.clinical.referring.provider.ReferringProviderEntity;
 import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.model.clinical.patient.PatientCase;
 import com.cob.billing.repositories.clinical.PatientCaseRepository;
 import com.cob.billing.repositories.clinical.PatientRepository;
+import com.cob.billing.repositories.clinical.ReferringProviderRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,11 +23,17 @@ public class CreatePatientUseCase {
     PatientRepository repository;
     @Autowired
     PatientCaseRepository patientCaseRepository;
+    @Autowired
+    ReferringProviderRepository referringProviderRepository;
 
     public Long create(Patient patient) {
-        PatientEntity created = repository.save(mapper.map(patient, PatientEntity.class));
-        if (patient.getCases() != null || !patient.getCases().isEmpty())
+        PatientEntity toBeCreated = mapper.map(patient, PatientEntity.class);
+        toBeCreated.setReferringProvider(null);
+        PatientEntity created = repository.save(toBeCreated);
+        if (patient.getCases() != null && !patient.getCases().isEmpty())
             createPatientClinics(created, patient.getCases());
+        if (patient.getReferringProvider() != null)
+            assignReferringProvider(created, patient.getReferringProvider().getNpi());
         return created.getId();
     }
 
@@ -37,5 +45,11 @@ public class CreatePatientUseCase {
                     return toBeCreated;
                 }).collect(Collectors.toList());
         patientCaseRepository.saveAll(list);
+    }
+
+    public void assignReferringProvider(PatientEntity patient, String npi) {
+        ReferringProviderEntity referringProvider = referringProviderRepository.findByNpi(npi).orElseThrow(() -> new IllegalArgumentException("referring provider not found"));
+        patient.setReferringProvider(referringProvider);
+        repository.save(patient);
     }
 }

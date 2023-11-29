@@ -1,5 +1,6 @@
 package com.cob.billing.entity.clinical.patient;
 
+import com.cob.billing.entity.clinical.referring.provider.ReferringProviderEntity;
 import com.cob.billing.enums.Gender;
 import com.cob.billing.enums.MaritalStatus;
 import com.cob.billing.model.common.Address;
@@ -52,6 +53,12 @@ public class PatientEntity {
     private Address address;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "patient")
     private List<PatientCaseEntity> cases;
+
+    @ManyToOne
+    @JoinColumn(name="referring_provider_id")
+    private ReferringProviderEntity referringProvider;
+
+
 
 
 }

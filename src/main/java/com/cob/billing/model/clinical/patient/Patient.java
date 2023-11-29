@@ -2,6 +2,7 @@ package com.cob.billing.model.clinical.patient;
 
 import com.cob.billing.enums.Gender;
 import com.cob.billing.enums.MaritalStatus;
+import com.cob.billing.model.clinical.referring.provider.ReferringProvider;
 import com.cob.billing.model.common.Address;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +30,7 @@ public class Patient {
     private Address address;
 
     private List<PatientCase> cases;
+    private ReferringProvider referringProvider;
     private String phoneType;
     private String phone;
     private String email;
