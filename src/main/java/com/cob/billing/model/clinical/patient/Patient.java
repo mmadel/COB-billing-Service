@@ -37,4 +37,6 @@ public class Patient {
     private String phone;
     private String email;
     private String copay;
+    private String ssn;
+    private String externalId;
 }

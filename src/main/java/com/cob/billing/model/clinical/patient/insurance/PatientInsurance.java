@@ -7,6 +7,8 @@ import lombok.Setter;
 @Setter
 @Getter
 public class PatientInsurance {
+
+    private Long id;
     private String relation;
     private Address payerAddress;
     private PatientRelation patientRelation;

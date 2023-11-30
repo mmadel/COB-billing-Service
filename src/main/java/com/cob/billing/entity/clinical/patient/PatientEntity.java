@@ -62,5 +62,10 @@ public class PatientEntity {
     @OneToMany( mappedBy = "patient")
     private List<PatientInsuranceEntity> insurances;
 
+    @Column(name = "ssn")
+    private String ssn;
+    @Column(name = "external_id")
+    private String externalId;
+
 
 }
