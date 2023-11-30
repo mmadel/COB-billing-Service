@@ -11,11 +11,13 @@ import com.cob.billing.repositories.clinical.PatientCaseRepository;
 import com.cob.billing.repositories.clinical.PatientInsuranceRepository;
 import com.cob.billing.repositories.clinical.PatientRepository;
 import com.cob.billing.repositories.clinical.ReferringProviderRepository;
+import com.cob.billing.util.ListUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -32,6 +34,12 @@ public class CreatePatientUseCase {
     PatientInsuranceRepository patientInsuranceRepository;
 
     public Long create(Patient patient) {
+        if (patient.getId() != null) {
+            PatientEntity originalPatient = repository.findById(patient.getId()).get();
+            deleteCase(originalPatient, patient.getCases());
+            deleteInsurance(originalPatient, patient.getPatientInsurances());
+        }
+
         PatientEntity toBeCreated = mapper.map(patient, PatientEntity.class);
         toBeCreated.setReferringProvider(null);
         PatientEntity created = repository.save(toBeCreated);
@@ -52,6 +60,36 @@ public class CreatePatientUseCase {
                     return toBeCreated;
                 }).collect(Collectors.toList());
         patientCaseRepository.saveAll(list);
+    }
+
+    private void deleteCase(PatientEntity patient, List<PatientCase> cases) {
+        List<Long> originalIds = patient.getCases()
+                .stream()
+                .map(PatientCaseEntity::getId)
+                .collect(Collectors.toList());
+        List<Long> persistedSubmittedIds = cases
+                .stream()
+                .map(PatientCase::getId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        List<Long> toBeDeleted = ListUtils.returnDifference(originalIds, persistedSubmittedIds);
+        if (toBeDeleted.size() > 0)
+            patientCaseRepository.deleteAllById(toBeDeleted);
+    }
+
+    private void deleteInsurance(PatientEntity patient, List<PatientInsurance> insurances) {
+        List<Long> originalIds = patient.getInsurances()
+                .stream()
+                .map(PatientInsuranceEntity::getId)
+                .collect(Collectors.toList());
+        List<Long> persistedSubmittedIds = insurances
+                .stream()
+                .map(PatientInsurance::getId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        List<Long> toBeDeleted = ListUtils.returnDifference(originalIds, persistedSubmittedIds);
+        if (toBeDeleted.size() > 0)
+            patientInsuranceRepository.deleteAllById(toBeDeleted);
     }
 
     public void assignReferringProvider(PatientEntity patient, String npi) {
