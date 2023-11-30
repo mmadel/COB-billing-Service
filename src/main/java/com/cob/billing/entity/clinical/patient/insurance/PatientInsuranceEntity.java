@@ -43,4 +43,6 @@ public class PatientInsuranceEntity {
     @ManyToOne
     @JoinColumn(name="patient_id")
     private PatientEntity patient;
+    @Column(name = "is_archived")
+    private Boolean isArchived;
 }
