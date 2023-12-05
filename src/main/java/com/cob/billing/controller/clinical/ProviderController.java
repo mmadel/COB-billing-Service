@@ -37,4 +37,9 @@ public class ProviderController {
                         HttpStatus.OK, null,
                         findProvidersUseCase.findAll(paging));
     }
+
+    @GetMapping("/find/all")
+    public ResponseEntity findAll(){
+        return new ResponseEntity(findProvidersUseCase.findAll(),HttpStatus.OK);
+    }
 }

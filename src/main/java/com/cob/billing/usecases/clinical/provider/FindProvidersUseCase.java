@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,5 +32,12 @@ public class FindProvidersUseCase {
                 .number_of_matching_records((int) total)
                 .records(records)
                 .build();
+    }
+    public List<Provider> findAll(){
+        List<Provider> providers = new ArrayList<>();
+        for (ProviderEntity provider : providerRepository.findAll()) {
+            providers.add(mapper.map(provider, Provider.class));
+        }
+        return providers;
     }
 }
