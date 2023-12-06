@@ -4,6 +4,7 @@ import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.clinical.patient.session.CreatePatientSessionUseCase;
 import com.cob.billing.usecases.clinical.patient.session.FindSessionByPatientUseCase;
+import com.cob.billing.usecases.clinical.patient.session.UpdatePatientSessionUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,8 @@ public class SessionController {
     @Autowired
     CreatePatientSessionUseCase createPatientSessionUseCase;
     @Autowired
+    UpdatePatientSessionUseCase updatePatientSessionUseCase;
+    @Autowired
     FindSessionByPatientUseCase findSessionByPatientUseCase;
 
     @PostMapping("/create")
@@ -25,6 +28,13 @@ public class SessionController {
                 .generateResponse("Successfully added Patient Session",
                         HttpStatus.OK, createPatientSessionUseCase.create(patientSession));
     }
+    @PutMapping("/update")
+    public ResponseEntity<Object> update(@RequestBody PatientSession patientSession) {
+        return ResponseHandler
+                .generateResponse("Successfully updated Patient Session",
+                        HttpStatus.OK, updatePatientSessionUseCase.update(patientSession));
+    }
+
 
     @GetMapping("/find/patientId/{patientId}")
     public ResponseEntity<Object> find(@RequestParam(name = "offset") String offset,

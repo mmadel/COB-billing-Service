@@ -50,7 +50,11 @@ public class PatientSessionEntity {
     @Type(type = "json")
     private CaseDiagnosis caseDiagnosis;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "session_id")
     private List<ServiceLineEntity> serviceCodes;
+
+    public void addServiceCode(ServiceLineEntity entity){
+        this.serviceCodes.add(entity);
+    }
 }

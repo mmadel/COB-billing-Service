@@ -30,4 +30,6 @@ public class ServiceLineEntity {
     @Column(name = "cpt_code", columnDefinition = "json")
     @Type(type = "json")
     private CPTCode cptCode;
+    @Column(name="type")
+    private String type;
 }
