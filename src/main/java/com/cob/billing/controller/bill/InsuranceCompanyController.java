@@ -1,6 +1,7 @@
 package com.cob.billing.controller.bill;
 
 import com.cob.billing.model.bill.InsuranceCompanyMapper;
+import com.cob.billing.usecases.bill.FindInsuranceCompanyListUseCase;
 import com.cob.billing.usecases.bill.MapInsuranceCompanyToPayerUseCase;
 import com.cob.billing.usecases.bill.insurance.company.FindInsuranceCompaniesUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ public class InsuranceCompanyController {
     MapInsuranceCompanyToPayerUseCase mapInsuranceCompanyToPayerUseCase;
     @Autowired
     FindInsuranceCompaniesUseCase findInsuranceCompaniesUseCase;
+    @Autowired
+    FindInsuranceCompanyListUseCase findInsuranceCompanyListUseCase;
 
     @PutMapping("/map/all")
     public ResponseEntity mapAll(@RequestBody List<InsuranceCompanyMapper> models) {
@@ -34,5 +37,9 @@ public class InsuranceCompanyController {
     @GetMapping("/find")
     public ResponseEntity findAll() {
         return new ResponseEntity(findInsuranceCompaniesUseCase.find(), HttpStatus.OK);
+    }
+    @GetMapping("/container/find")
+    public ResponseEntity ddd(){
+        return new ResponseEntity(findInsuranceCompanyListUseCase.find(), HttpStatus.OK);
     }
 }
