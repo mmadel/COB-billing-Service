@@ -37,15 +37,14 @@ public class FindInsuranceCompanyListUseCase {
         payerRepository.findByListOfPayerIds(distinctPayerIds).stream()
                 .forEach(payerEntity -> {
                     InsuranceCompanyContainer insuranceCompanyContainer = new InsuranceCompanyContainer();
-                    insuranceCompanyContainer.setPayerName(payerEntity.getName());
-                    insuranceCompanyContainer.setPayerDisplayName(payerEntity.getDisplayName());
+                    insuranceCompanyContainer.setDisplayName(payerEntity.getName());
                     insuranceCompanyContainer.setPayerId(payerEntity.getPayerId());
                     insuranceCompanyContainerList.add(insuranceCompanyContainer);
                 });
         toAssigned.stream()
                 .forEach(insuranceCompanyEntity -> {
                     InsuranceCompanyContainer insuranceCompanyContainer = new InsuranceCompanyContainer();
-                    insuranceCompanyContainer.setInsuranceCompanyName(insuranceCompanyEntity.getName());
+                    insuranceCompanyContainer.setDisplayName(insuranceCompanyEntity.getName());
                     insuranceCompanyContainer.setInsuranceCompanyId(insuranceCompanyEntity.getId());
                     insuranceCompanyContainerList.add(insuranceCompanyContainer);
                 });

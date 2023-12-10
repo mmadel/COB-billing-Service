@@ -7,9 +7,8 @@ import lombok.Setter;
 @Getter
 public class InsuranceCompanyContainer {
 
-    private String payerName;
-    private String payerDisplayName;
-    private Long payerId;
-    private String insuranceCompanyName;
+
+    private String displayName;
     private Long insuranceCompanyId;
+    private Long payerId;
 }
