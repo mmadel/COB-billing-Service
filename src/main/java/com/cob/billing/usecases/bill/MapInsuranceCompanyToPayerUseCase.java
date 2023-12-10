@@ -14,7 +14,7 @@ public class MapInsuranceCompanyToPayerUseCase {
     @Autowired
     InsuranceCompanyRepository insuranceCompanyRepository;
 
-    public void map(List<InsuranceCompanyMapper> insuranceCompanyMappers) {
+    public void mapAll(List<InsuranceCompanyMapper> insuranceCompanyMappers) {
         List<Long> insuranceCompaniesIds = insuranceCompanyMappers.stream()
                 .map(InsuranceCompanyMapper::getInsuranceCompanyId).collect(Collectors.toList());
 
@@ -28,5 +28,12 @@ public class MapInsuranceCompanyToPayerUseCase {
                             .ifPresent(insuranceCompanyMapper -> insuranceCompanyEntity.setPayerId(insuranceCompanyMapper.getPayerId()));
                 });
         insuranceCompanyRepository.saveAll(entities);
+    }
+
+    public void map(InsuranceCompanyMapper insuranceCompanyMapper) {
+        InsuranceCompanyEntity entity = insuranceCompanyRepository.findById(insuranceCompanyMapper.getInsuranceCompanyId())
+                .get();
+        entity.setPayerId(insuranceCompanyMapper.getPayerId());
+        insuranceCompanyRepository.save(entity);
     }
 }
