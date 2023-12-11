@@ -21,6 +21,8 @@ public class FindInsuranceCompanyConfigurationUseCase {
     public InsuranceCompanyConfiguration find(Long identifier) {
         InsuranceCompanyConfigurationEntity configuration = insuranceCompanyConfigurationRepository.findByInsuranceCompanyIdentifier(identifier);
         Organization organization = null;
+        if (configuration == null)
+            return null;
         if (configuration.getBox33() != -1L) {
             organization = mapper.map(organizationRepository.findById(configuration.getBox33()).get(), Organization.class);
         }
