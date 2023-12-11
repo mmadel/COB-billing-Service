@@ -36,8 +36,10 @@ public class CreatePatientUseCase {
     public Long create(Patient patient) {
         if (patient.getId() != null) {
             PatientEntity originalPatient = repository.findById(patient.getId()).get();
-            deleteCase(originalPatient, patient.getCases());
-            deleteInsurance(originalPatient, patient.getPatientInsurances());
+            if (patient.getCases() != null)
+                deleteCase(originalPatient, patient.getCases());
+            if (patient.getCases() != null)
+                deleteInsurance(originalPatient, patient.getPatientInsurances());
         }
 
         PatientEntity toBeCreated = mapper.map(patient, PatientEntity.class);
