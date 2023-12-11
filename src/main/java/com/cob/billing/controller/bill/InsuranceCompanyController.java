@@ -1,6 +1,8 @@
 package com.cob.billing.controller.bill;
 
+import com.cob.billing.model.bill.InsuranceCompanyConfiguration;
 import com.cob.billing.model.bill.InsuranceCompanyMapper;
+import com.cob.billing.usecases.bill.CreateInsuranceCompanyConfigurationUseCase;
 import com.cob.billing.usecases.bill.FindInsuranceCompanyListUseCase;
 import com.cob.billing.usecases.bill.MapInsuranceCompanyToPayerUseCase;
 import com.cob.billing.usecases.bill.insurance.company.FindInsuranceCompaniesUseCase;
@@ -21,6 +23,8 @@ public class InsuranceCompanyController {
     FindInsuranceCompaniesUseCase findInsuranceCompaniesUseCase;
     @Autowired
     FindInsuranceCompanyListUseCase findInsuranceCompanyListUseCase;
+    @Autowired
+    CreateInsuranceCompanyConfigurationUseCase createInsuranceCompanyConfigurationUseCase;
 
     @PutMapping("/map/all")
     public ResponseEntity mapAll(@RequestBody List<InsuranceCompanyMapper> models) {
@@ -38,8 +42,15 @@ public class InsuranceCompanyController {
     public ResponseEntity findAll() {
         return new ResponseEntity(findInsuranceCompaniesUseCase.find(), HttpStatus.OK);
     }
+
     @GetMapping("/container/find")
-    public ResponseEntity ddd(){
+    public ResponseEntity findContainer() {
         return new ResponseEntity(findInsuranceCompanyListUseCase.find(), HttpStatus.OK);
+    }
+
+    @PostMapping("/configure")
+    public ResponseEntity configure(@RequestBody InsuranceCompanyConfiguration model) {
+        createInsuranceCompanyConfigurationUseCase.create(model);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
