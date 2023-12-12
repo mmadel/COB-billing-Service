@@ -6,7 +6,6 @@ import com.cob.billing.enums.PatientSessionStatus;
 import com.cob.billing.model.clinical.patient.CaseDiagnosis;
 import com.cob.billing.model.clinical.patient.session.ClinicInfo;
 import com.cob.billing.model.clinical.patient.session.DoctorInfo;
-import com.cob.billing.model.clinical.patient.session.PatientInfo;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
