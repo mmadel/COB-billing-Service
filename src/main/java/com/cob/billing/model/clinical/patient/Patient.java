@@ -1,8 +1,10 @@
 package com.cob.billing.model.clinical.patient;
 
+import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.enums.Gender;
 import com.cob.billing.enums.MaritalStatus;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsurance;
+import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.model.clinical.referring.provider.ReferringProvider;
 import com.cob.billing.model.common.Address;
 import lombok.Getter;
@@ -33,6 +35,7 @@ public class Patient {
     private List<PatientCase> cases;
     private ReferringProvider referringProvider;
     private List<PatientInsurance> patientInsurances;
+    private List<PatientSession> sessions;
     private String phoneType;
     private String phone;
     private String email;
