@@ -24,7 +24,7 @@ public class FindSessionByPatientUseCase {
     @Autowired
     ModelMapper mapper;
     public PatientSessionResponse find(Pageable paging, Long patientId){
-        Page<PatientSessionEntity> pages =patientSessionRepository.find(paging, patientId);
+        Page<PatientSessionEntity> pages =patientSessionRepository.findByPatient_Id(paging, patientId);
         long total = (pages).getTotalElements();
         List<PatientSession> records = pages.stream().map(patientSessionEntity -> mapper.map(patientSessionEntity, PatientSession.class))
                 .collect(Collectors.toList());

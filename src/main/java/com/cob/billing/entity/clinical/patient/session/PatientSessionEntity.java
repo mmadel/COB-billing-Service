@@ -1,5 +1,6 @@
 package com.cob.billing.entity.clinical.patient.session;
 
+import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.enums.Gender;
 import com.cob.billing.enums.PatientSessionStatus;
 import com.cob.billing.model.clinical.patient.CaseDiagnosis;
@@ -28,9 +29,9 @@ public class PatientSessionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "patient_info", columnDefinition = "json")
-    @Type(type = "json")
-    private PatientInfo patientInfo;
+    @ManyToOne
+    @JoinColumn(name="patient_id")
+    private PatientEntity patient;
     @Column(name = "doctor_info", columnDefinition = "json")
     @Type(type = "json")
     private DoctorInfo doctorInfo;
@@ -59,6 +60,7 @@ public class PatientSessionEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private PatientSessionStatus status;
+
 
     public void addServiceCode(ServiceLineEntity entity){
         this.serviceCodes.add(entity);

@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -36,10 +37,8 @@ public class CreatePatientUseCase {
     public Long create(Patient patient) {
         if (patient.getId() != null) {
             PatientEntity originalPatient = repository.findById(patient.getId()).get();
-            if (patient.getCases() != null)
-                deleteCase(originalPatient, patient.getCases());
-            if (patient.getCases() != null)
-                deleteInsurance(originalPatient, patient.getPatientInsurances());
+            deleteCase(originalPatient, patient.getCases());
+            deleteInsurance(originalPatient, patient.getPatientInsurances());
         }
 
         PatientEntity toBeCreated = mapper.map(patient, PatientEntity.class);
@@ -69,6 +68,8 @@ public class CreatePatientUseCase {
                 .stream()
                 .map(PatientCaseEntity::getId)
                 .collect(Collectors.toList());
+        if (cases == null)
+            cases = new ArrayList<>();
         List<Long> persistedSubmittedIds = cases
                 .stream()
                 .map(PatientCase::getId)
@@ -84,6 +85,8 @@ public class CreatePatientUseCase {
                 .stream()
                 .map(PatientInsuranceEntity::getId)
                 .collect(Collectors.toList());
+        if (insurances == null)
+            insurances = new ArrayList<>();
         List<Long> persistedSubmittedIds = insurances
                 .stream()
                 .map(PatientInsurance::getId)

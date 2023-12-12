@@ -9,11 +9,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface PatientSessionRepository extends PagingAndSortingRepository<PatientSessionEntity, Long> {
 
-    @Query(value = "select ps from PatientSessionEntity ps where " +
-            "JSON_EXTRACT(ps.patientInfo, '$.patientId')= :patientId ")
-    Page<PatientSessionEntity> find(Pageable paging, @Param("patientId") Long patientId);
+    Page<PatientSessionEntity>  findByPatient_Id(Pageable pageable, Long patientID);
 
     @Query(value = "select ps from PatientSessionEntity ps where " +
             "ps.status =:status ")

@@ -1,9 +1,12 @@
 package com.cob.billing.usecases.clinical.patient.session;
 
+import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.patient.session.ServiceLineEntity;
+import com.cob.billing.enums.PatientSessionStatus;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.model.clinical.patient.session.ServiceLine;
+import com.cob.billing.repositories.clinical.PatientRepository;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import com.cob.billing.repositories.clinical.session.ServiceLineRepository;
 import com.cob.billing.util.ListUtils;
@@ -23,10 +26,14 @@ public class UpdatePatientSessionUseCase {
     PatientSessionRepository patientSessionRepository;
     @Autowired
     ServiceLineRepository serviceLineRepository;
-
+    @Autowired
+    PatientRepository patientRepository;
     @Transactional
     public Long update(PatientSession model) {
+        PatientEntity patient = patientRepository.findById(model.getPatientId()).get();
         PatientSessionEntity toBeUpdated = mapper.map(model, PatientSessionEntity.class);
+        toBeUpdated.setPatient(patient);
+        toBeUpdated.setStatus(PatientSessionStatus.Prepare);
         removeServiceCodes(model.getId(), model.getServiceCodes());
         return patientSessionRepository.save(toBeUpdated).getId();
     }

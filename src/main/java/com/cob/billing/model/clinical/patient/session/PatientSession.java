@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 public class PatientSession {
     private Long id;
-    private PatientInfo patientInfo;
+    private Long  patientId;
     private DoctorInfo doctorInfo;
     private ClinicInfo clinicInfo;
     private Long serviceDate;

@@ -1,6 +1,7 @@
 package com.cob.billing.entity.clinical.patient;
 
 import com.cob.billing.entity.clinical.patient.insurance.PatientInsuranceEntity;
+import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.referring.provider.ReferringProviderEntity;
 import com.cob.billing.enums.Gender;
 import com.cob.billing.enums.MaritalStatus;
@@ -52,7 +53,7 @@ public class PatientEntity {
     @Column(name = "patient_addresses", columnDefinition = "json")
     @Type(type = "json")
     private Address address;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "patient")
+    @OneToMany(mappedBy = "patient")
     private List<PatientCaseEntity> cases;
 
     @ManyToOne
@@ -61,6 +62,9 @@ public class PatientEntity {
 
     @OneToMany( mappedBy = "patient")
     private List<PatientInsuranceEntity> insurances;
+
+    @OneToMany( mappedBy = "patient")
+    private List<PatientSessionEntity> sessions;
 
     @Column(name = "ssn")
     private String ssn;
