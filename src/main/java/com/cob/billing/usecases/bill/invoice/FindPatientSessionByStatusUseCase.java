@@ -1,12 +1,9 @@
 package com.cob.billing.usecases.bill.invoice;
 
 import com.cob.billing.entity.clinical.patient.PatientEntity;
-import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.enums.PatientSessionStatus;
 import com.cob.billing.model.clinical.patient.Patient;
-import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.model.response.PatientResponse;
-import com.cob.billing.model.response.PatientSessionResponse;
 import com.cob.billing.repositories.clinical.PatientRepository;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import org.modelmapper.ModelMapper;

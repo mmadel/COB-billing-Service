@@ -12,6 +12,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface PatientRepository extends PagingAndSortingRepository<PatientEntity, Long> {
-    @Query("SELECT pe FROM PatientEntity pe  JOIN pe.sessions session WHERE session.status = :status")
+    @Query("SELECT distinct pe FROM PatientEntity pe  JOIN pe.sessions session WHERE session.status = :status")
     Page<PatientEntity> findBySessionStatus(Pageable paging, @Param("status")PatientSessionStatus status);
 }
