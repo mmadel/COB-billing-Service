@@ -15,12 +15,12 @@ public class InvoiceController {
     @Autowired
     FindPatientSessionByStatusUseCase findPatientSessionByStatusUseCase;
 
-    @GetMapping("/find/prepare")
+    @GetMapping("/find/clients")
     public ResponseEntity<Object> find(@RequestParam(name = "offset") String offset,
                                        @RequestParam(name = "limit") String limit) {
         Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
         return ResponseHandler
-                .generateResponse("Successfully finding  Session with status prepared",
+                .generateResponse("Successfully finding  patients with session status prepared",
                         HttpStatus.OK, null, findPatientSessionByStatusUseCase.findPrepareSessions(paging));
     }
 }
