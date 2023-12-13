@@ -59,8 +59,8 @@ public class PatientSessionEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private PatientSessionStatus status;
-
-
+    @Column(name = "case_title")
+    private String caseTitle;
     public void addServiceCode(ServiceLineEntity entity){
         this.serviceCodes.add(entity);
     }

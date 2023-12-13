@@ -19,9 +19,8 @@ public class PatientSession {
 
     private String authorization;
     private String placeOfCode;
+    private String caseTitle;
     private CaseDiagnosis caseDiagnosis;
-
-
 
     private List<ServiceLine> serviceCodes;
 }
