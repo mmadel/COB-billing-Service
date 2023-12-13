@@ -34,4 +34,9 @@ public class FindPatientUseCase {
                 .records(records)
                 .build();
     }
+
+    public Patient findById(Long patientId) {
+        PatientEntity entity = patientRepository.findById(patientId).get();
+        return mapper.map(entity, Patient.class);
+    }
 }

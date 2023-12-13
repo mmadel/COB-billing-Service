@@ -36,4 +36,9 @@ public class PatientController {
                         HttpStatus.OK, null,
                         findPatientUseCase.findAll(paging));
     }
+
+    @GetMapping("find/patientId/{patientId}")
+    public ResponseEntity findById(@PathVariable Long patientId) {
+        return new ResponseEntity(findPatientUseCase.findById(patientId), HttpStatus.OK);
+    }
 }
