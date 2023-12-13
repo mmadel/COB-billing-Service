@@ -28,7 +28,7 @@ public class FindPatientSessionByStatusUseCase {
         Page<PatientEntity> pages = patientRepository.findBySessionStatus(paging, PatientSessionStatus.Prepare);
         long total = (pages).getTotalElements();
         List<Patient> records = pages.stream()
-                .map(patientSessionEntity -> mapper.map(patientSessionEntity, Patient.class))
+                .map(patientEntity -> mapper.map(patientEntity, Patient.class))
                 .collect(Collectors.toList());
 
         return PatientResponse.builder()

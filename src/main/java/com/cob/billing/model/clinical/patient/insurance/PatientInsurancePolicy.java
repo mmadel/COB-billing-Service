@@ -7,6 +7,8 @@ import lombok.Setter;
 @Getter
 public class PatientInsurancePolicy {
     private String insuranceCompnayName;
+    private String payerName;
+    private String payerId;
     private String responsability;
     private String planType;
     private String primaryId;
