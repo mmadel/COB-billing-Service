@@ -60,13 +60,14 @@ public class CreatePatientUseCase {
 
     private void createInsuranceCompany(Patient patient) {
         List<InsuranceCompanyEntity> toBeCreated = new ArrayList<>();
-        patient.getPatientInsurances().forEach(patientInsurance -> {
-            if (patientInsurance.getPatientInsurancePolicy().getPayerId() == null) {
-                InsuranceCompanyEntity entity = new InsuranceCompanyEntity();
-                entity.setName(patientInsurance.getPatientInsurancePolicy().getPayerName());
-                toBeCreated.add(entity);
-            }
-        });
+        if (patient.getPatientInsurances() != null)
+            patient.getPatientInsurances().forEach(patientInsurance -> {
+                if (patientInsurance.getPatientInsurancePolicy().getPayerId() == null) {
+                    InsuranceCompanyEntity entity = new InsuranceCompanyEntity();
+                    entity.setName(patientInsurance.getPatientInsurancePolicy().getPayerName());
+                    toBeCreated.add(entity);
+                }
+            });
         if (!toBeCreated.isEmpty()) {
             insuranceCompanyRepository.saveAll(toBeCreated);
         }
