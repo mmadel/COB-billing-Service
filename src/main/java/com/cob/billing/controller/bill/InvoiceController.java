@@ -25,7 +25,11 @@ public class InvoiceController {
         Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
         return ResponseHandler
                 .generateResponse("Successfully finding  patients with session status prepared",
-                        HttpStatus.OK, null, findPatientSessionByStatusUseCase.findPrepareSessions(paging));
+                        HttpStatus.OK, null, findPatientSessionByStatusUseCase.findNotSubmittedSession(paging));
+    }
+    @GetMapping("/find/clientId/{clientId}")
+    public ResponseEntity find(@PathVariable Long clientId) {
+        return new ResponseEntity<>(findPatientSessionByStatusUseCase.findNotSubmittedSessionByPatient(clientId), HttpStatus.OK);
     }
 
     @PostMapping("/create")

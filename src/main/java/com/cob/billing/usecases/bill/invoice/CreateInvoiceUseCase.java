@@ -11,7 +11,10 @@ public class CreateInvoiceUseCase {
 
     public void create(InvoiceRequestCreation invoiceRequestCreation) {
         generateCMSDocument();
-        changeSessionStatus(invoiceRequestCreation.getServiceCodeId());
+        invoiceRequestCreation.getServiceCodeIds().stream()
+                .forEach(serviceCodeId -> {
+                    changeSessionStatus(serviceCodeId);
+                });
     }
 
     /*TODO
