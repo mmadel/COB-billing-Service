@@ -1,6 +1,8 @@
 package com.cob.billing.controller.bill;
 
+import com.cob.billing.model.bill.invoice.InvoiceRequestCreation;
 import com.cob.billing.response.handler.ResponseHandler;
+import com.cob.billing.usecases.bill.invoice.CreateInvoiceUseCase;
 import com.cob.billing.usecases.bill.invoice.FindPatientSessionByStatusUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class InvoiceController {
     @Autowired
     FindPatientSessionByStatusUseCase findPatientSessionByStatusUseCase;
+    @Autowired
+    CreateInvoiceUseCase createInvoiceUseCase;
 
     @GetMapping("/find/clients")
     public ResponseEntity<Object> find(@RequestParam(name = "offset") String offset,
@@ -22,5 +26,16 @@ public class InvoiceController {
         return ResponseHandler
                 .generateResponse("Successfully finding  patients with session status prepared",
                         HttpStatus.OK, null, findPatientSessionByStatusUseCase.findPrepareSessions(paging));
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity create(@RequestBody InvoiceRequestCreation invoiceRequestCreation) {
+        createInvoiceUseCase.create(invoiceRequestCreation);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping("/create/electronic")
+    public ResponseEntity createElectronic() {
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

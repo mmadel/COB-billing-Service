@@ -13,5 +13,9 @@ import java.util.List;
 
 public interface PatientSessionRepository extends PagingAndSortingRepository<PatientSessionEntity, Long> {
 
-    Page<PatientSessionEntity>  findByPatient_Id(Pageable pageable, Long patientID);
+    Page<PatientSessionEntity> findByPatient_Id(Pageable pageable, Long patientID);
+
+    @Query("SELECT  ps FROM PatientSessionEntity ps  JOIN ps.serviceCodes serviceCode WHERE serviceCode.id =:serviceCodeId")
+    PatientSessionEntity findSessionByServiceCodeId(@Param("serviceCodeId") Long serviceCodeId);
+
 }
