@@ -46,9 +46,13 @@ public class FindPatientSessionByStatusUseCase {
     }
 
     public Patient findNotSubmittedSessionByPatient(Long patientId) {
-        Patient patient = mapper.map(patientRepository.findBySessionStatusByPatient(patientId), Patient.class);
-        removeNotIInitialServiceCode(patient.getSessions());
-        return patient;
+        PatientEntity patientEntity = patientRepository.findBySessionStatusByPatient(patientId);
+        if (patientEntity != null) {
+            Patient patient = mapper.map(patientEntity, Patient.class);
+            removeNotIInitialServiceCode(patient.getSessions());
+            return patient;
+        } else
+            return null;
     }
 
     private void removeNotIInitialServiceCode(List<PatientSession> sessions) {
