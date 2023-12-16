@@ -1,7 +1,6 @@
 package com.cob.billing.usecases.bill.invoice;
 
 import com.cob.billing.entity.clinical.patient.PatientEntity;
-import com.cob.billing.enums.PatientSessionStatus;
 import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.model.clinical.patient.session.ServiceLine;
@@ -19,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class FindPatientSessionByStatusUseCase {
+public class FindNotSubmittedPatientSessionUseCase {
     @Autowired
     PatientSessionRepository patientSessionRepository;
     @Autowired
@@ -28,7 +27,7 @@ public class FindPatientSessionByStatusUseCase {
     ModelMapper mapper;
 
     public PatientResponse findNotSubmittedSession(Pageable paging) {
-        Page<PatientEntity> pages = patientRepository.findBySessionStatus(paging);
+        Page<PatientEntity> pages = patientRepository.findBySessionNotSubmittedByPatient(paging);
         long total = (pages).getTotalElements();
         List<Patient> records = pages.stream()
                 .map(patientEntity -> {

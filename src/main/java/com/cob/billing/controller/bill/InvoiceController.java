@@ -3,7 +3,7 @@ package com.cob.billing.controller.bill;
 import com.cob.billing.model.bill.invoice.InvoiceRequestCreation;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.invoice.CreateInvoiceUseCase;
-import com.cob.billing.usecases.bill.invoice.FindPatientSessionByStatusUseCase;
+import com.cob.billing.usecases.bill.invoice.FindNotSubmittedPatientSessionUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/invoice")
 public class InvoiceController {
     @Autowired
-    FindPatientSessionByStatusUseCase findPatientSessionByStatusUseCase;
+    FindNotSubmittedPatientSessionUseCase findNotSubmittedPatientSessionUseCase;
     @Autowired
     CreateInvoiceUseCase createInvoiceUseCase;
 
@@ -25,11 +25,11 @@ public class InvoiceController {
         Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
         return ResponseHandler
                 .generateResponse("Successfully finding  patients with session status prepared",
-                        HttpStatus.OK, null, findPatientSessionByStatusUseCase.findNotSubmittedSession(paging));
+                        HttpStatus.OK, null, findNotSubmittedPatientSessionUseCase.findNotSubmittedSession(paging));
     }
     @GetMapping("/find/clientId/{clientId}")
     public ResponseEntity find(@PathVariable Long clientId) {
-        return new ResponseEntity<>(findPatientSessionByStatusUseCase.findNotSubmittedSessionByPatient(clientId), HttpStatus.OK);
+        return new ResponseEntity<>(findNotSubmittedPatientSessionUseCase.findNotSubmittedSessionByPatient(clientId), HttpStatus.OK);
     }
 
     @PostMapping("/create")

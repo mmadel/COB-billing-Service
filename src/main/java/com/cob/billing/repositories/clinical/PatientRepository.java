@@ -13,7 +13,10 @@ import java.util.List;
 
 public interface PatientRepository extends PagingAndSortingRepository<PatientEntity, Long> {
     @Query("SELECT distinct pe FROM PatientEntity pe  JOIN pe.sessions session WHERE (session.status = 'Prepare' OR session.status = 'Partial')")
-    Page<PatientEntity> findBySessionStatus(Pageable paging);
+    Page<PatientEntity> findBySessionNotSubmittedByPatient(Pageable paging);
+
+    @Query("SELECT distinct pe FROM PatientEntity pe  JOIN pe.sessions session WHERE session.status = 'Submit' AND pe.id =:patientId")
+    Page<PatientEntity> findBySessionSubmittedByPatient(Pageable paging, @Param("patientId") Long patientId);
 
     @Query("SELECT distinct pe FROM PatientEntity pe  JOIN pe.sessions session WHERE (session.status = 'Prepare' OR session.status = 'Partial') AND pe.id =:patientId")
     PatientEntity findBySessionStatusByPatient(@Param("patientId") Long patientId);
