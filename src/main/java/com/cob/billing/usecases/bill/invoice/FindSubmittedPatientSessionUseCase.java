@@ -28,22 +28,17 @@ public class FindSubmittedPatientSessionUseCase {
     @Autowired
     ModelMapper mapper;
 
-    public ClientPostingPaymentResponse findClient(Pageable paging, Long clientId) {
-        Page<Object> pages = patientRepository.findBySessionSubmittedByPatient(paging, clientId);
-        long total = (pages).getTotalElements();
+    public List<PaymentServiceLine> findClient(Long clientId) {
+        List<Object> objs = patientRepository.findBySessionSubmittedByPatient(clientId);
         List<PaymentServiceLine> records = new ArrayList<>();
-        pages.getContent().stream().forEach(o -> {
+        objs.stream().forEach(o -> {
             Object[] result = (Object[]) o;
             ServiceLineEntity serviceLine = (ServiceLineEntity) result[0];
             PatientSessionEntity session = (PatientSessionEntity) result[1];
             records.add(constructServiceLine(serviceLine, session));
         });
 
-        return ClientPostingPaymentResponse.builder()
-                .number_of_records(records.size())
-                .number_of_matching_records((int) total)
-                .records(records)
-                .build();
+        return records;
     }
 
     public void findInsuranceCompany(Long insuranceCompanyId) {
@@ -60,7 +55,7 @@ public class FindSubmittedPatientSessionUseCase {
                 .previousPayments(0.0)
                 .payment(0.0)
                 .adjust(0.0)
-                .balance(0.0)
+                .balance(serviceLine.getCptCode().getCharge())
                 .provider(session.getDoctorInfo().getDoctorLastName() + "," + session.getDoctorInfo().getDoctorFirstName())
                 .build();
     }

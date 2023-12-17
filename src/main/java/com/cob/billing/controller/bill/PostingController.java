@@ -16,13 +16,11 @@ public class PostingController {
     FindSubmittedPatientSessionUseCase findSubmittedPatientSessionUseCase;
 
     @GetMapping("/find/client/{clientId}")
-    public ResponseEntity<Object> findClient(@RequestParam(name = "offset") String offset,
-                                       @RequestParam(name = "limit") String limit,
-                                       @PathVariable Long clientId) {
-        Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
+    public ResponseEntity<Object> findClient(@PathVariable Long clientId) {
+        //Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
         return ResponseHandler
                 .generateResponse("Successfully finding  patients with session status prepared",
-                        HttpStatus.OK, null, findSubmittedPatientSessionUseCase.findClient(paging, clientId));
+                        HttpStatus.OK, findSubmittedPatientSessionUseCase.findClient(clientId));
     }
     @GetMapping("/find/insurance/company/{clientId}")
     public ResponseEntity<Object> findInsuranceCompany(@RequestParam(name = "offset") String offset,
