@@ -57,6 +57,10 @@ public class FindSubmittedPatientSessionUseCase {
                 .dateOfService(session.getServiceDate())
                 .cpt(serviceLine.getCptCode().getServiceCode() + "." + serviceLine.getCptCode().getModifier())
                 .billedValue(serviceLine.getCptCode().getCharge())
+                .previousPayments(0.0)
+                .payment(0.0)
+                .adjust(0.0)
+                .balance(0.0)
                 .provider(session.getDoctorInfo().getDoctorLastName() + "," + session.getDoctorInfo().getDoctorFirstName())
                 .build();
     }
