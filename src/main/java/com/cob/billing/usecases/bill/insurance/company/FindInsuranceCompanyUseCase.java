@@ -22,6 +22,7 @@ public class FindInsuranceCompanyUseCase {
         repository.findByName(name)
                 .forEach(entity -> {
                     InsuranceCompanySearchResult searchResult = new InsuranceCompanySearchResult();
+                    searchResult.setId(entity.getId());
                     searchResult.setPayerId(entity.getPayerId());
                     searchResult.setPayerName(entity.getName());
                     searchResult.setDisplayName(entity.getDisplayName());

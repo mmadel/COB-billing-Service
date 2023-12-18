@@ -6,6 +6,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class InsuranceCompanySearchResult {
+    private Long id;
     private Long payerId;
     private String payerName;
     private String displayName;
