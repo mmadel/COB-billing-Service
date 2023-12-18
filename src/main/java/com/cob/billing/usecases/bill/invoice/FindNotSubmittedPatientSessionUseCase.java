@@ -59,7 +59,7 @@ public class FindNotSubmittedPatientSessionUseCase {
                 .forEach(patientSession -> {
                     List<ServiceLine> toBeRemoved = new ArrayList<>();
                     for (ServiceLine serviceCode : patientSession.getServiceCodes()) {
-                        if (serviceCode.getType().equals("Invoice") || serviceCode.getType().equals("Payment_Adjustment")) {
+                        if (serviceCode.getType().equals("Invoice") || serviceCode.getType().equals("Close")) {
                             toBeRemoved.add(serviceCode);
                         }
                     }
