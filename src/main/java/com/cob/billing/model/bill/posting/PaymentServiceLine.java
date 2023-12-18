@@ -22,5 +22,6 @@ public class PaymentServiceLine {
     private double balance;
     private SessionAction sessionAction;
 
+    private PaymentBatch paymentBatch;
 
 }

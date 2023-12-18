@@ -2,13 +2,21 @@ package com.cob.billing.entity.bill.payment;
 
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.enums.SessionAction;
+import com.cob.billing.model.bill.posting.PaymentBatch;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "patient_payment_service_line")
+@TypeDefs({
+        @TypeDef(name = "json", typeClass = JsonStringType.class)
+})
 @Setter
 @Getter
 public class PatientPaymentServiceLineEntity {
@@ -39,6 +47,9 @@ public class PatientPaymentServiceLineEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "session_action")
     private SessionAction sessionAction;
+    @Column(name = "payment_batch", columnDefinition = "json")
+    @Type(type = "json")
+    private PaymentBatch paymentBatch;
     @ManyToOne
     @JoinColumn(name = "patient_id")
     private PatientEntity patient;
