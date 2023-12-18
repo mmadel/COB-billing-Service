@@ -1,5 +1,6 @@
 package com.cob.billing.model.bill.posting;
 
+import com.cob.billing.enums.SessionAction;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,7 @@ public class PaymentServiceLine {
     private double payment;
     private double adjust;
     private double balance;
-    private String sessionAction;
+    private SessionAction sessionAction;
 
 
 }
