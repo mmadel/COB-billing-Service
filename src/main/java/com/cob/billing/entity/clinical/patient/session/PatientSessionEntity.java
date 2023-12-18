@@ -1,7 +1,6 @@
 package com.cob.billing.entity.clinical.patient.session;
 
 import com.cob.billing.entity.clinical.patient.PatientEntity;
-import com.cob.billing.enums.Gender;
 import com.cob.billing.enums.PatientSessionStatus;
 import com.cob.billing.model.clinical.patient.CaseDiagnosis;
 import com.cob.billing.model.clinical.patient.session.ClinicInfo;
@@ -54,14 +53,14 @@ public class PatientSessionEntity {
 
     @OneToMany(fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "session_id")
-    private List<ServiceLineEntity> serviceCodes;
+    private List<PatientSessionServiceLineEntity> serviceCodes;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private PatientSessionStatus status;
     @Column(name = "case_title")
     private String caseTitle;
-    public void addServiceCode(ServiceLineEntity entity){
+    public void addServiceCode(PatientSessionServiceLineEntity entity){
         this.serviceCodes.add(entity);
     }
 }

@@ -1,25 +1,15 @@
 package com.cob.billing.usecases.bill.invoice;
 
-import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
-import com.cob.billing.entity.clinical.patient.session.ServiceLineEntity;
+import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.model.bill.posting.PaymentServiceLine;
-import com.cob.billing.model.clinical.patient.Patient;
-import com.cob.billing.model.clinical.patient.session.PatientSession;
-import com.cob.billing.model.clinical.patient.session.ServiceLine;
-import com.cob.billing.model.response.ClientPostingPaymentResponse;
 import com.cob.billing.repositories.clinical.PatientRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 @Component
 public class FindSubmittedPatientSessionUseCase {
@@ -33,7 +23,7 @@ public class FindSubmittedPatientSessionUseCase {
         List<PaymentServiceLine> records = new ArrayList<>();
         objs.stream().forEach(o -> {
             Object[] result = (Object[]) o;
-            ServiceLineEntity serviceLine = (ServiceLineEntity) result[0];
+            PatientSessionServiceLineEntity serviceLine = (PatientSessionServiceLineEntity) result[0];
             PatientSessionEntity session = (PatientSessionEntity) result[1];
             records.add(constructServiceLine(serviceLine, session));
         });
@@ -45,7 +35,7 @@ public class FindSubmittedPatientSessionUseCase {
 
     }
 
-    private PaymentServiceLine constructServiceLine(ServiceLineEntity serviceLine, PatientSessionEntity session) {
+    private PaymentServiceLine constructServiceLine(PatientSessionServiceLineEntity serviceLine, PatientSessionEntity session) {
         return PaymentServiceLine.builder()
                 .sessionId(session.getId())
                 .ServiceCodeId(serviceLine.getId())

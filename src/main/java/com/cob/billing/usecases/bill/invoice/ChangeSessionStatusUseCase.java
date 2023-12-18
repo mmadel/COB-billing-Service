@@ -1,7 +1,7 @@
 package com.cob.billing.usecases.bill.invoice;
 
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
-import com.cob.billing.entity.clinical.patient.session.ServiceLineEntity;
+import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.enums.PatientSessionStatus;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import com.cob.billing.repositories.clinical.session.ServiceLineRepository;
@@ -16,7 +16,7 @@ public class ChangeSessionStatusUseCase {
     PatientSessionRepository patientSessionRepository;
 
     public void change(Long serviceLineId) {
-        ServiceLineEntity serviceLine = serviceLineRepository.findById(serviceLineId).get();
+        PatientSessionServiceLineEntity serviceLine = serviceLineRepository.findById(serviceLineId).get();
         serviceLine.setType("Invoice");
         serviceLineRepository.save(serviceLine);
         PatientSessionEntity patientSessionEntity = patientSessionRepository.findSessionByServiceCodeId(serviceLine.getId());

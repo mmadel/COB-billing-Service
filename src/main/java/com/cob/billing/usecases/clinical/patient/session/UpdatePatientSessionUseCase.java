@@ -2,7 +2,7 @@ package com.cob.billing.usecases.clinical.patient.session;
 
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
-import com.cob.billing.entity.clinical.patient.session.ServiceLineEntity;
+import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.enums.PatientSessionStatus;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.model.clinical.patient.session.ServiceLine;
@@ -40,9 +40,9 @@ public class UpdatePatientSessionUseCase {
 
 
     private void addServiceCodes(PatientSessionEntity entity, List<ServiceLine> serviceCodes) {
-        List<ServiceLineEntity> newServiceLines = serviceCodes.stream()
+        List<PatientSessionServiceLineEntity> newServiceLines = serviceCodes.stream()
                 .filter(serviceLine -> serviceLine.getId() == null)
-                .map(serviceLine -> mapper.map(serviceLine, ServiceLineEntity.class))
+                .map(serviceLine -> mapper.map(serviceLine, PatientSessionServiceLineEntity.class))
                 .collect(Collectors.toList());
         newServiceLines.forEach(serviceLineEntity -> {
             entity.addServiceCode(serviceLineEntity);
@@ -53,7 +53,7 @@ public class UpdatePatientSessionUseCase {
         PatientSessionEntity originalEntity = patientSessionRepository.findById(entityId).get();
         List<Long> originalIds = originalEntity.getServiceCodes()
                 .stream()
-                .map(ServiceLineEntity::getId).collect(Collectors.toList());
+                .map(PatientSessionServiceLineEntity::getId).collect(Collectors.toList());
         List<Long> submittedIds = serviceLines
                 .stream()
                 .map(ServiceLine::getId).collect(Collectors.toList());

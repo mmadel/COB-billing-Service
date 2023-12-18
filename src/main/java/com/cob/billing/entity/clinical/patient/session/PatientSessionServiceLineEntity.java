@@ -13,13 +13,13 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "session_service_line")
+@Table(name = "patient_session_service_line")
 @TypeDefs({
         @TypeDef(name = "json", typeClass = JsonStringType.class)
 })
 @Getter
 @Setter
-public class ServiceLineEntity {
+public class PatientSessionServiceLineEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
