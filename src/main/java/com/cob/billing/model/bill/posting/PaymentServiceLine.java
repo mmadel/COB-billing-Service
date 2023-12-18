@@ -19,6 +19,7 @@ public class PaymentServiceLine {
     private double payment;
     private double adjust;
     private double balance;
+    private String sessionAction;
 
 
 }
