@@ -13,5 +13,7 @@ public class PaymentBatch {
 
     private Long checkNumber;
     private Long depositDate;
+    private PostingInsuranceCompany insuranceCompany;
+
 
 }
