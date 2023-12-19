@@ -9,6 +9,7 @@ import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.model.clinical.patient.PatientCase;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsurance;
 import com.cob.billing.repositories.bill.insurance.company.InsuranceCompanyRepository;
+import com.cob.billing.repositories.bill.payer.PayerRepository;
 import com.cob.billing.repositories.clinical.PatientCaseRepository;
 import com.cob.billing.repositories.clinical.PatientInsuranceRepository;
 import com.cob.billing.repositories.clinical.PatientRepository;
@@ -17,6 +18,7 @@ import com.cob.billing.util.ListUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +39,10 @@ public class CreatePatientUseCase {
     PatientInsuranceRepository patientInsuranceRepository;
     @Autowired
     InsuranceCompanyRepository insuranceCompanyRepository;
+    @Autowired
+    PayerRepository payerRepository;
 
+    @Transactional
     public Long create(Patient patient) {
         if (patient.getId() != null) {
             PatientEntity originalPatient = repository.findById(patient.getId()).get();
@@ -55,6 +60,7 @@ public class CreatePatientUseCase {
         if (patient.getPatientInsurances() != null && !patient.getPatientInsurances().isEmpty())
             createPatientInsurances(created, patient.getPatientInsurances());
         createInsuranceCompany(patient);
+        assignInsuranceCompanyToPatientInsurance(created.getInsurances());
         return created.getId();
     }
 
@@ -117,19 +123,37 @@ public class CreatePatientUseCase {
             patientInsuranceRepository.deleteAllById(toBeDeleted);
     }
 
-    public void assignReferringProvider(PatientEntity patient, String npi) {
+    private void assignReferringProvider(PatientEntity patient, String npi) {
         ReferringProviderEntity referringProvider = referringProviderRepository.findByNpi(npi).orElseThrow(() -> new IllegalArgumentException("referring provider not found"));
         patient.setReferringProvider(referringProvider);
         repository.save(patient);
     }
 
-    public void createPatientInsurances(PatientEntity patient, List<PatientInsurance> insurances) {
+    private void createPatientInsurances(PatientEntity patient, List<PatientInsurance> insurances) {
         List<PatientInsuranceEntity> list = insurances.stream()
                 .map(patientInsurance -> {
+                    patientInsurance.getPatientInsurancePolicy();
                     PatientInsuranceEntity toBeCreated = mapper.map(patientInsurance, PatientInsuranceEntity.class);
                     toBeCreated.setPatient(patient);
                     return toBeCreated;
                 }).collect(Collectors.toList());
-        patientInsuranceRepository.saveAll(list);
+        List<PatientInsuranceEntity> createdList = patientInsuranceRepository.saveAll(list);
+        patient.setInsurances(createdList);
+    }
+
+    private void assignInsuranceCompanyToPatientInsurance(List<PatientInsuranceEntity> list) {
+        list.stream()
+                .forEach(patientInsuranceEntity -> {
+                    String payerId = patientInsuranceEntity.getPatientInsurancePolicy().getPayerId();
+                    Long insuranceCompany;
+                    if (payerId != null) {
+                        insuranceCompany = Long.parseLong(patientInsuranceEntity.getPatientInsurancePolicy().getPayerId());
+                    } else {
+                        String payerName = patientInsuranceEntity.getPatientInsurancePolicy().getPayerName();
+                        insuranceCompany = insuranceCompanyRepository.findByInsuranceCompanyName(payerName).getId();
+                    }
+                    patientInsuranceEntity.setInsuranceCompany(insuranceCompany);
+                    patientInsuranceRepository.save(patientInsuranceEntity);
+                });
     }
 }

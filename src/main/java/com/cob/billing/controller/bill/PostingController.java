@@ -29,11 +29,9 @@ public class PostingController {
                         HttpStatus.OK, findSubmittedPatientSessionUseCase.findClient(clientId));
     }
 
-    @GetMapping("/find/insurance/company/{clientId}")
-    public ResponseEntity<Object> findInsuranceCompany(@RequestParam(name = "offset") String offset,
-                                                       @RequestParam(name = "limit") String limit,
-                                                       @PathVariable Long clientId) {
-        Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
+    @GetMapping("/find/insurance/company/{insuranceCompanyId}")
+    public ResponseEntity<Object> findInsuranceCompany(@PathVariable Long insuranceCompanyId) {
+        findSubmittedPatientSessionUseCase.findInsuranceCompany(insuranceCompanyId);
         return null;
     }
 

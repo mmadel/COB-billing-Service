@@ -3,6 +3,7 @@ package com.cob.billing.usecases.bill.invoice;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.model.bill.posting.PaymentServiceLine;
+import com.cob.billing.repositories.bill.payer.PayerRepository;
 import com.cob.billing.repositories.clinical.PatientRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import java.util.List;
 public class FindSubmittedPatientSessionUseCase {
     @Autowired
     PatientRepository patientRepository;
+    @Autowired
+    PayerRepository repository;
     @Autowired
     ModelMapper mapper;
 
@@ -32,7 +35,7 @@ public class FindSubmittedPatientSessionUseCase {
     }
 
     public void findInsuranceCompany(Long insuranceCompanyId) {
-
+        //List<Object> objs  = patientRepository.findBySessionSubmittedByInsuranceCompany("insuranceCompanyId");
     }
 
     private PaymentServiceLine constructServiceLine(PatientSessionServiceLineEntity serviceLine, PatientSessionEntity session) {

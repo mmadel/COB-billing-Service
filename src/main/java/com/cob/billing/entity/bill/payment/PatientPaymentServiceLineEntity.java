@@ -13,7 +13,7 @@ import org.hibernate.annotations.TypeDefs;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "patient_payment_service_line")
+@Table(name = "patient_payment")
 @TypeDefs({
         @TypeDef(name = "json", typeClass = JsonStringType.class)
 })

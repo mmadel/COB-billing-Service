@@ -1,5 +1,6 @@
 package com.cob.billing.entity.clinical.patient.insurance;
 
+import com.cob.billing.entity.bill.insurance.compnay.InsuranceCompanyEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsuranceAdvanced;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsurancePolicy;
@@ -45,4 +46,7 @@ public class PatientInsuranceEntity {
     private PatientEntity patient;
     @Column(name = "is_archived")
     private Boolean isArchived;
+    @Column(name="insurance_company")
+    private Long insuranceCompany;
+
 }

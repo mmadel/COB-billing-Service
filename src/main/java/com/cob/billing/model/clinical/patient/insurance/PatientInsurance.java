@@ -15,4 +15,5 @@ public class PatientInsurance {
     private PatientInsurancePolicy patientInsurancePolicy;
     private PatientInsuranceAdvanced patientInsuranceAdvanced;
     private Boolean isArchived;
+    private Long insuranceCompany;
 }

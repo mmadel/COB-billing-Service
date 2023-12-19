@@ -11,4 +11,6 @@ public class InvoiceRequestCreation {
     private List<Long> serviceCodeIds;
     private Boolean isOneDateServicePerClaim;
     private String delayedReason;
+    private Long patientId;
+    private Long insuranceCompanyId;
 }
