@@ -13,6 +13,6 @@ public interface InsuranceCompanyRepository extends JpaRepository<InsuranceCompa
     InsuranceCompanyEntity findByPayerId(Long payerId);
 
     @Query("SELECT ic FROM InsuranceCompanyEntity ic where " +
-            "ic.name LIKE %:name%")
+            "ic.name =:name")
     InsuranceCompanyEntity findByInsuranceCompanyName(@Param("name") String name);
 }
