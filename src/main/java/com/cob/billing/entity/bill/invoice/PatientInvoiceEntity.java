@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "patient_invoice")
@@ -30,6 +31,15 @@ public class PatientInvoiceEntity {
     private String delayedReason;
     @Column(name = "service_code_id")
     private Long serviceCodeId;
+
+    @Column(name="created_at")
+    private Long createdAt;
+
+    @PrePersist
+    private void setCreatedDate(){
+        createdAt = new Date().getTime();
+    }
+
 
 
 }
