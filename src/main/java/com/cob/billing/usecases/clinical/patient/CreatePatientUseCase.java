@@ -1,5 +1,6 @@
 package com.cob.billing.usecases.clinical.patient;
 
+import com.cob.billing.entity.bill.insurance.compnay.InsuranceCompanyConfigurationEntity;
 import com.cob.billing.entity.bill.insurance.compnay.InsuranceCompanyEntity;
 import com.cob.billing.entity.clinical.patient.PatientCaseEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
@@ -8,6 +9,7 @@ import com.cob.billing.entity.clinical.referring.provider.ReferringProviderEntit
 import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.model.clinical.patient.PatientCase;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsurance;
+import com.cob.billing.repositories.bill.InsuranceCompanyConfigurationRepository;
 import com.cob.billing.repositories.bill.insurance.company.InsuranceCompanyRepository;
 import com.cob.billing.repositories.bill.payer.PayerRepository;
 import com.cob.billing.repositories.clinical.PatientCaseRepository;
@@ -41,6 +43,8 @@ public class CreatePatientUseCase {
     InsuranceCompanyRepository insuranceCompanyRepository;
     @Autowired
     PayerRepository payerRepository;
+    @Autowired
+    InsuranceCompanyConfigurationRepository insuranceCompanyConfigurationRepository;
 
     @Transactional
     public Long create(Patient patient) {
@@ -59,25 +63,9 @@ public class CreatePatientUseCase {
             assignReferringProvider(created, patient.getReferringProvider().getNpi());
         if (patient.getPatientInsurances() != null && !patient.getPatientInsurances().isEmpty())
             createPatientInsurances(created, patient.getPatientInsurances());
-        createInsuranceCompany(patient);
-        assignInsuranceCompanyToPatientInsurance(created.getInsurances());
         return created.getId();
     }
 
-    private void createInsuranceCompany(Patient patient) {
-        List<InsuranceCompanyEntity> toBeCreated = new ArrayList<>();
-        if (patient.getPatientInsurances() != null)
-            patient.getPatientInsurances().forEach(patientInsurance -> {
-                if (patientInsurance.getPatientInsurancePolicy().getPayerId() == null) {
-                    InsuranceCompanyEntity entity = new InsuranceCompanyEntity();
-                    entity.setName(patientInsurance.getPatientInsurancePolicy().getPayerName());
-                    toBeCreated.add(entity);
-                }
-            });
-        if (!toBeCreated.isEmpty()) {
-            insuranceCompanyRepository.saveAll(toBeCreated);
-        }
-    }
 
     private void createPatientClinics(PatientEntity patient, List<PatientCase> cases) {
         List<PatientCaseEntity> list = cases.stream()
@@ -134,6 +122,11 @@ public class CreatePatientUseCase {
                 .map(patientInsurance -> {
                     patientInsurance.getPatientInsurancePolicy();
                     PatientInsuranceEntity toBeCreated = mapper.map(patientInsurance, PatientInsuranceEntity.class);
+                    if (toBeCreated.getPatientInsurancePolicy().getPayerId() != null && toBeCreated.getPatientInsurancePolicy().getPayerId() != "")
+                        toBeCreated.setInsuranceCompany(Long.parseLong(toBeCreated.getPatientInsurancePolicy().getPayerId()));
+                    else {
+                        createInsuranceCompany(toBeCreated.getPatientInsurancePolicy().getPayerName());
+                    }
                     toBeCreated.setPatient(patient);
                     return toBeCreated;
                 }).collect(Collectors.toList());
@@ -141,19 +134,20 @@ public class CreatePatientUseCase {
         patient.setInsurances(createdList);
     }
 
-    private void assignInsuranceCompanyToPatientInsurance(List<PatientInsuranceEntity> list) {
-        list.stream()
-                .forEach(patientInsuranceEntity -> {
-                    String payerId = patientInsuranceEntity.getPatientInsurancePolicy().getPayerId();
-                    Long insuranceCompany;
-                    if (payerId != null) {
-                        insuranceCompany = Long.parseLong(patientInsuranceEntity.getPatientInsurancePolicy().getPayerId());
-                    } else {
-                        String payerName = patientInsuranceEntity.getPatientInsurancePolicy().getPayerName();
-                        insuranceCompany = insuranceCompanyRepository.findByInsuranceCompanyName(payerName).getId();
-                    }
-                    patientInsuranceEntity.setInsuranceCompany(insuranceCompany);
-                    patientInsuranceRepository.save(patientInsuranceEntity);
-                });
+    private void createInsuranceCompany(String name) {
+        InsuranceCompanyEntity entity = new InsuranceCompanyEntity();
+        entity.setName(name);
+        InsuranceCompanyEntity created = insuranceCompanyRepository.save(entity);
+        createInsuranceCompanyConfiguration(created.getId());
+    }
+
+    private void createInsuranceCompanyConfiguration(Long insuranceCompanyId) {
+        InsuranceCompanyConfigurationEntity insuranceCompanyConfiguration = new InsuranceCompanyConfigurationEntity();
+        insuranceCompanyConfiguration.setBox32(false);
+        insuranceCompanyConfiguration.setBox26("insured_primary_id");
+        insuranceCompanyConfiguration.setInsuranceCompanyIdentifier(insuranceCompanyId);
+        insuranceCompanyConfiguration.setBox33(-1L);
+        insuranceCompanyConfiguration.setIsAssignedToPayer(false);
+        insuranceCompanyConfigurationRepository.save(insuranceCompanyConfiguration);
     }
 }
