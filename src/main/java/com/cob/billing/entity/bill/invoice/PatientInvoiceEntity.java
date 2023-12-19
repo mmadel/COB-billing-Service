@@ -1,6 +1,8 @@
 package com.cob.billing.entity.bill.invoice;
 
 import com.cob.billing.entity.clinical.patient.PatientEntity;
+import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
+import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,8 +31,14 @@ public class PatientInvoiceEntity {
 
     @Column(name = "delayed_reason")
     private String delayedReason;
-    @Column(name = "service_code_id")
-    private Long serviceCodeId;
+
+    @OneToOne
+    @JoinColumn(name = "service_line_id")
+    private PatientSessionServiceLineEntity serviceLine;
+
+    @ManyToOne
+    @JoinColumn(name = "patient_session_id")
+    private PatientSessionEntity patientSession;
 
     @Column(name="created_at")
     private Long createdAt;

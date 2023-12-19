@@ -8,7 +8,7 @@ import java.util.List;
 @Setter
 @Getter
 public class InvoiceRequestCreation {
-    private List<Long> serviceCodeIds;
+    private List<SelectedSessionServiceLine> selectedSessionServiceLines;
     private Boolean isOneDateServicePerClaim;
     private String delayedReason;
     private Long patientId;

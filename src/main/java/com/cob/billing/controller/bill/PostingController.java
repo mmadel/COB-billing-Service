@@ -23,7 +23,6 @@ public class PostingController {
 
     @GetMapping("/find/client/{clientId}")
     public ResponseEntity<Object> findClient(@PathVariable Long clientId) {
-        //Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
         return ResponseHandler
                 .generateResponse("Successfully finding  patients with session status prepared",
                         HttpStatus.OK, findSubmittedPatientSessionUseCase.findClient(clientId));
@@ -31,8 +30,9 @@ public class PostingController {
 
     @GetMapping("/find/insurance/company/{insuranceCompanyId}")
     public ResponseEntity<Object> findInsuranceCompany(@PathVariable Long insuranceCompanyId) {
-        findSubmittedPatientSessionUseCase.findInsuranceCompany(insuranceCompanyId);
-        return null;
+        return ResponseHandler
+                .generateResponse("Successfully finding  patients by insurance company with session status prepared",
+                        HttpStatus.OK, findSubmittedPatientSessionUseCase.findInsuranceCompany(insuranceCompanyId));
     }
 
     @PostMapping("/create/payments/clientId/{clientId}")

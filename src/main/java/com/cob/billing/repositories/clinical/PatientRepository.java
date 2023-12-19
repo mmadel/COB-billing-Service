@@ -19,6 +19,7 @@ public interface PatientRepository extends PagingAndSortingRepository<PatientEnt
             "AND pe.id =:patientId")
     List<Object> findBySessionSubmittedByPatient(@Param("patientId") Long patientId);
 
+
     @Query("SELECT distinct pe FROM PatientEntity pe  JOIN pe.sessions session WHERE (session.status = 'Prepare' OR session.status = 'Partial') AND pe.id =:patientId")
     PatientEntity findBySessionStatusByPatient(@Param("patientId") Long patientId);
 
