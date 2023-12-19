@@ -23,7 +23,7 @@ public interface PatientRepository extends PagingAndSortingRepository<PatientEnt
     PatientEntity findBySessionStatusByPatient(@Param("patientId") Long patientId);
 
     @Query("SELECT pe FROM PatientEntity pe where " +
-            "pe.firstName LIKE %:name% OR pe.middleName LIKE %:name% OR pe.middleName LIKE %:name%")
+            "pe.firstName LIKE CONCAT('%',:name,'%') OR pe.middleName LIKE CONCAT('%',:name,'%')  OR pe.lastName LIKE CONCAT('%',:name,'%')")
     List<PatientEntity> findByName(@Param("name") String name);
 
 }
