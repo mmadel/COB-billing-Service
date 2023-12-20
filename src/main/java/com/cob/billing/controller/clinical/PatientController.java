@@ -49,4 +49,9 @@ public class PatientController {
     public ResponseEntity findByName(@PathVariable String name) {
         return new ResponseEntity(findPatientByNamUseCase.find(name), HttpStatus.OK);
     }
+
+    @GetMapping("find/first/{first}/last/{last}")
+    public ResponseEntity findByFirstNameAndLastName(@PathVariable String first, @PathVariable String last) {
+        return new ResponseEntity(findPatientByNamUseCase.findByFirstAndLastName(first, last), HttpStatus.OK);
+    }
 }

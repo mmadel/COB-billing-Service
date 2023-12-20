@@ -27,4 +27,6 @@ public interface PatientRepository extends PagingAndSortingRepository<PatientEnt
             "pe.firstName LIKE CONCAT('%',:name,'%') OR pe.middleName LIKE CONCAT('%',:name,'%')  OR pe.lastName LIKE CONCAT('%',:name,'%')")
     List<PatientEntity> findByName(@Param("name") String name);
 
+    PatientEntity findByFirstNameAndLastName(String firstName , String lastName);
+
 }

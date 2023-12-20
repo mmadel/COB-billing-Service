@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class FindPatientByNamUseCase {
@@ -28,6 +27,8 @@ public class FindPatientByNamUseCase {
                     results.add(searchResult);
                 });
         return results;
-
+    }
+    public Patient findByFirstAndLastName(String firstName , String lastName){
+        return mapper.map(patientRepository.findByFirstNameAndLastName(firstName, lastName) , Patient.class);
     }
 }
