@@ -43,13 +43,15 @@ public class FindSubmittedPatientSessionUseCase {
         Map<String, List<PaymentServiceLine>> paymentServiceLinePatientMap = new HashMap<>();
         patientInvoiceRepository.findBySessionSubmittedByInsuranceCompany(insuranceCompanyId).stream()
                 .forEach(patientInvoice -> {
-                    String patientName = patientInvoice.getPatient().getLastName() + "," + patientInvoice.getPatient().getFirstName();
-                    if (paymentServiceLinePatientMap.get(patientName) == null) {
+                    String patient = patientInvoice.getPatient().getLastName() + ","
+                            + patientInvoice.getPatient().getFirstName() + ","
+                            + patientInvoice.getPatient().getId();
+                    if (paymentServiceLinePatientMap.get(patient) == null) {
                         List<PaymentServiceLine> records = new ArrayList<>();
                         records.add(constructServiceLine(patientInvoice.getServiceLine(), patientInvoice.getPatientSession()));
-                        paymentServiceLinePatientMap.put(patientName, records);
+                        paymentServiceLinePatientMap.put(patient, records);
                     } else {
-                        List<PaymentServiceLine> records = paymentServiceLinePatientMap.get(patientName);
+                        List<PaymentServiceLine> records = paymentServiceLinePatientMap.get(patient);
                         records.add(constructServiceLine(patientInvoice.getServiceLine(), patientInvoice.getPatientSession()));
                     }
                 });
@@ -65,8 +67,6 @@ public class FindSubmittedPatientSessionUseCase {
                 .cpt(serviceLine.getCptCode().getServiceCode() + "." + serviceLine.getCptCode().getModifier())
                 .billedValue(serviceLine.getCptCode().getCharge())
                 .previousPayments(0.0)
-                .payment(0.0)
-                .adjust(0.0)
                 .balance(serviceLine.getCptCode().getCharge())
                 .provider(session.getDoctorInfo().getDoctorLastName() + "," + session.getDoctorInfo().getDoctorFirstName())
                 .build();

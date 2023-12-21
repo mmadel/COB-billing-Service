@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/posting")
@@ -39,6 +40,12 @@ public class PostingController {
     public ResponseEntity create(@RequestBody List<PaymentServiceLine> payments
             , @PathVariable Long clientId) {
         createServiceLinesPaymentUseCase.create(payments, clientId);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping("/create/payments/insurance/company/{insuranceCompany}")
+    public ResponseEntity create(@RequestBody Map<Long, List<PaymentServiceLine>> payments
+            , @PathVariable Long insuranceCompany) {
         return new ResponseEntity(HttpStatus.OK);
     }
 }

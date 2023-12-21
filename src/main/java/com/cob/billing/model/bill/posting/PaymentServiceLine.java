@@ -17,8 +17,8 @@ public class PaymentServiceLine {
     private String provider;
     private double billedValue;
     private double previousPayments;
-    private double payment;
-    private double adjust;
+    private Double payment;
+    private Double adjust;
     private double balance;
     private SessionAction sessionAction;
 
