@@ -43,9 +43,9 @@ public class PostingController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PostMapping("/create/payments/insurance/company/{insuranceCompany}")
-    public ResponseEntity create(@RequestBody Map<Long, List<PaymentServiceLine>> payments
-            , @PathVariable Long insuranceCompany) {
+    @PostMapping("/create/payments/insurance/company")
+    public ResponseEntity create(@RequestBody Map<Long, List<PaymentServiceLine>> payments) {
+        createServiceLinesPaymentUseCase.create(payments);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

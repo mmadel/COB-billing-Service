@@ -14,7 +14,7 @@ public interface PatientRepository extends PagingAndSortingRepository<PatientEnt
     Page<PatientEntity> findBySessionNotSubmittedByPatient(Pageable paging);
 
     @Query("SELECT serviceCode  , session FROM PatientEntity pe  JOIN pe.sessions session JOIN session.serviceCodes serviceCode " +
-            "WHERE session.status = 'Submit' " +
+            "WHERE (session.status = 'Submit' OR session.status = 'Partial') " +
             "AND serviceCode.type ='Invoice' " +
             "AND pe.id =:patientId")
     List<Object> findBySessionSubmittedByPatient(@Param("patientId") Long patientId);
