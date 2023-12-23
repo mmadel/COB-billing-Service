@@ -125,7 +125,8 @@ public class CreatePatientUseCase {
                     if (toBeCreated.getPatientInsurancePolicy().getPayerId() != null && toBeCreated.getPatientInsurancePolicy().getPayerId() != "")
                         toBeCreated.setInsuranceCompany(Long.parseLong(toBeCreated.getPatientInsurancePolicy().getPayerId()));
                     else {
-                        createInsuranceCompany(toBeCreated.getPatientInsurancePolicy().getPayerName());
+                        Long createdInsuranceCompanyId = createInsuranceCompany(toBeCreated.getPatientInsurancePolicy().getPayerName());
+                        toBeCreated.setInsuranceCompany(createdInsuranceCompanyId);
                     }
                     toBeCreated.setPatient(patient);
                     return toBeCreated;
@@ -134,11 +135,12 @@ public class CreatePatientUseCase {
         patient.setInsurances(createdList);
     }
 
-    private void createInsuranceCompany(String name) {
+    private Long createInsuranceCompany(String name) {
         InsuranceCompanyEntity entity = new InsuranceCompanyEntity();
         entity.setName(name);
         InsuranceCompanyEntity created = insuranceCompanyRepository.save(entity);
         createInsuranceCompanyConfiguration(created.getId());
+        return created.getId();
     }
 
     private void createInsuranceCompanyConfiguration(Long insuranceCompanyId) {
