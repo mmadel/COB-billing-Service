@@ -7,11 +7,11 @@ import lombok.Setter;
 @Setter
 @Getter
 public class PatientRelation {
-    private String firstName;
-    private String middleName;
-    private String lastName;
-    private long birthDate;
-    private String gender;
-    private Address address;
-    private String phone;
+    private String r_firstName;
+    private String r_middleName;
+    private String r_lastName;
+    private long r_birthDate;
+    private String r_gender;
+    private Address r_address;
+    private String r_phone;
 }
