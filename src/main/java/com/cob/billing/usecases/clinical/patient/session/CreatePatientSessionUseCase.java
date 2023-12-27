@@ -38,9 +38,7 @@ public class CreatePatientSessionUseCase {
     private void createPatientCase(PatientEntity patient, PatientSessionEntity patientSession) {
         PatientCaseEntity patientCaseEntity = new PatientCaseEntity();
         patientCaseEntity.setPatient(patient);
-        List caseDiagnosis = new ArrayList<>();
-        caseDiagnosis.add(patientSession.getCaseDiagnosis());
-        patientCaseEntity.setCaseDiagnosis(caseDiagnosis);
+        patientCaseEntity.setCaseDiagnosis(patientSession.getCaseDiagnosis());
         patientCaseEntity.setTitle(patientSession.getCaseTitle());
         patientCaseRepository.save(patientCaseEntity);
     }
