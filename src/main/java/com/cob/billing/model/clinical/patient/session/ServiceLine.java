@@ -13,4 +13,5 @@ public class ServiceLine {
     private Long id;
     private CPTCode cptCode;
     private String type;
+    private List<String> diagnoses;
 }

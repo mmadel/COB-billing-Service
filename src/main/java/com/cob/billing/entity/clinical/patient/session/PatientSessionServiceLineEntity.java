@@ -29,4 +29,7 @@ public class PatientSessionServiceLineEntity {
     private CPTCode cptCode;
     @Column(name="type")
     private String type;
+    @Column(name = "diagnoses", columnDefinition = "json")
+    @Type(type = "json")
+    private List<String> diagnoses;
 }
