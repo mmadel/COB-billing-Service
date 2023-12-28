@@ -31,7 +31,8 @@ public class CreatePatientSessionUseCase {
         PatientSessionEntity toBeCreated = mapper.map(model, PatientSessionEntity.class);
         toBeCreated.setPatient(patient);
         toBeCreated.setStatus(PatientSessionStatus.Prepare);
-        createPatientCase(patient, toBeCreated);
+        if(!model.getIsCasesAttached())
+            createPatientCase(patient, toBeCreated);
         return patientSessionRepository.save(toBeCreated).getId();
     }
 

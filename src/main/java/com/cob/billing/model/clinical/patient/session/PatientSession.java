@@ -23,4 +23,5 @@ public class PatientSession {
     private List<CaseDiagnosis> caseDiagnosis;
 
     private List<ServiceLine> serviceCodes;
+    private Boolean isCasesAttached;
 }
