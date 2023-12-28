@@ -1,5 +1,6 @@
 package com.cob.billing.repositories.clinical;
 
+import com.cob.billing.entity.clinical.patient.PatientCaseEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,5 +29,8 @@ public interface PatientRepository extends PagingAndSortingRepository<PatientEnt
     List<PatientEntity> findByName(@Param("name") String name);
 
     PatientEntity findByFirstNameAndLastName(String firstName , String lastName);
+
+    @Query("SELECT pe.cases FROM PatientEntity  pe where pe.id =:patientId")
+    List<PatientCaseEntity> findPatientCases(@Param("patientId") Long patientId);
 
 }

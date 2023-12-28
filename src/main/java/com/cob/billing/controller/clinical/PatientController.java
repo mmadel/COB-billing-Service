@@ -4,6 +4,7 @@ import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.clinical.patient.CreatePatientUseCase;
 import com.cob.billing.usecases.clinical.patient.FindPatientByNamUseCase;
+import com.cob.billing.usecases.clinical.patient.FindPatientCasesUseCase;
 import com.cob.billing.usecases.clinical.patient.FindPatientUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,8 @@ public class PatientController {
     FindPatientUseCase findPatientUseCase;
     @Autowired
     FindPatientByNamUseCase findPatientByNamUseCase;
+    @Autowired
+    FindPatientCasesUseCase findPatientCasesUseCase;
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody Patient model) {
@@ -54,4 +57,10 @@ public class PatientController {
     public ResponseEntity findByFirstNameAndLastName(@PathVariable String first, @PathVariable String last) {
         return new ResponseEntity(findPatientByNamUseCase.findByFirstAndLastName(first, last), HttpStatus.OK);
     }
+
+    @GetMapping("find/patientId/{patientId}")
+    public ResponseEntity findPatientCases(@PathVariable Long patientId) {
+        return new ResponseEntity(findPatientCasesUseCase.find(patientId), HttpStatus.OK);
+    }
+
 }
