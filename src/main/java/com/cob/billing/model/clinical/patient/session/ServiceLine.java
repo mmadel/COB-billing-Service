@@ -11,7 +11,6 @@ import java.util.List;
 @Getter
 public class ServiceLine {
     private Long id;
-    private List<CaseDiagnosis> caseDiagnosis;
     private CPTCode cptCode;
     private String type;
 }

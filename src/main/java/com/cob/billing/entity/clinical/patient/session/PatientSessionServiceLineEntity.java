@@ -24,9 +24,6 @@ public class PatientSessionServiceLineEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "case_diagnosis", columnDefinition = "json")
-    @Type(type = "json")
-    private List<CaseDiagnosis> caseDiagnosis;
     @Column(name = "cpt_code", columnDefinition = "json")
     @Type(type = "json")
     private CPTCode cptCode;
