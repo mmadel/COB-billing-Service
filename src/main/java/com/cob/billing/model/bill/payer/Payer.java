@@ -1,5 +1,6 @@
 package com.cob.billing.model.bill.payer;
 
+import com.cob.billing.model.common.BasicAddress;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,4 +11,5 @@ public class Payer {
     private String name;
     private String displayName;
     private Long payerId;
+    private BasicAddress address;
 }

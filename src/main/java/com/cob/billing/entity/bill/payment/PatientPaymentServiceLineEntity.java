@@ -11,9 +11,10 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
-@Table(name = "patient_payment_service_line")
+@Table(name = "patient_payment")
 @TypeDefs({
         @TypeDef(name = "json", typeClass = JsonStringType.class)
 })
@@ -53,4 +54,12 @@ public class PatientPaymentServiceLineEntity {
     @ManyToOne
     @JoinColumn(name = "patient_id")
     private PatientEntity patient;
+
+    @Column(name = "created_at")
+    private Long createdAt;
+
+    @PrePersist
+    private void setCreatedDate() {
+        createdAt = new Date().getTime();
+    }
 }

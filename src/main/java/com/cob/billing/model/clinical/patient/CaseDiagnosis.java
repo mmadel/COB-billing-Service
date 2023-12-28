@@ -8,4 +8,5 @@ import lombok.Setter;
 public class CaseDiagnosis {
     private String diagnosisCode;
     private String diagnosisDescription;
+    private boolean isPrimary;
 }

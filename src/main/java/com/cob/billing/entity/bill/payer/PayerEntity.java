@@ -1,12 +1,22 @@
 package com.cob.billing.entity.bill.payer;
 
+import com.cob.billing.model.admin.clinic.ClinicData;
+import com.cob.billing.model.common.Address;
+import com.cob.billing.model.common.BasicAddress;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "payer")
+@TypeDefs({
+        @TypeDef(name = "json", typeClass = JsonStringType.class)
+})
 @Getter
 @Setter
 public class PayerEntity {
@@ -20,4 +30,7 @@ public class PayerEntity {
     private String displayName;
     @Column(name = "payer_id")
     private Long payerId;
+    @Column(name = "address", columnDefinition = "json")
+    @Type(type = "json")
+    private BasicAddress address;
 }

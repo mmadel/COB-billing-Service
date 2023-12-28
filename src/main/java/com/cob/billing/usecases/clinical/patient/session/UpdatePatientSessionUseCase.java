@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Component
@@ -28,12 +29,13 @@ public class UpdatePatientSessionUseCase {
     ServiceLineRepository serviceLineRepository;
     @Autowired
     PatientRepository patientRepository;
+
     @Transactional
     public Long update(PatientSession model) {
         PatientEntity patient = patientRepository.findById(model.getPatientId()).get();
         PatientSessionEntity toBeUpdated = mapper.map(model, PatientSessionEntity.class);
         toBeUpdated.setPatient(patient);
-        toBeUpdated.setStatus(PatientSessionStatus.Prepare);
+        toBeUpdated.setStatus(changeSessionStatus(model.getId(), model.getServiceCodes()));
         removeServiceCodes(model.getId(), model.getServiceCodes());
         return patientSessionRepository.save(toBeUpdated).getId();
     }
@@ -60,7 +62,35 @@ public class UpdatePatientSessionUseCase {
         List<Long> idsToBeRemoved = ListUtils.returnDifference(originalIds, submittedIds);
         if (idsToBeRemoved.size() > 0)
             serviceLineRepository.deleteAllById(idsToBeRemoved);
+    }
 
+    private PatientSessionStatus changeSessionStatus(Long sessionId, List<ServiceLine> serviceCodes) {
+        PatientSessionStatus patientSessionStatus = PatientSessionStatus.Prepare;
+        PatientSessionEntity patientSessionEntity = patientSessionRepository.findById(sessionId).get();
+        if (patientSessionEntity != null) {
+            boolean isSessionHAseNewServiceLine = checkSessionHasNewServiceLine(serviceCodes);
+            for (int i = 0; i < patientSessionEntity.getServiceCodes().size(); i++) {
+                PatientSessionServiceLineEntity serviceLine = patientSessionEntity.getServiceCodes().get(i);
+                if (isSessionHAseNewServiceLine
+                        && (serviceLine.getType().equals("Invoice") || serviceLine.getType().equals("Close"))) {
+                    patientSessionStatus = PatientSessionStatus.Partial;
+                    break;
+                }
+            }
+        }
+        return patientSessionStatus;
+    }
+
+    private Boolean checkSessionHasNewServiceLine(List<ServiceLine> serviceCodes) {
+        AtomicReference<Boolean> hasNewServiceLine = new AtomicReference<>(false);
+        for (int i = 0; i < serviceCodes.size(); i++) {
+            ServiceLine serviceLine = serviceCodes.get(i);
+            if (serviceLine.getId() == null && serviceLine.getType().equals("Initial")) {
+                hasNewServiceLine.set(true);
+                break;
+            }
+        }
+        return hasNewServiceLine.get();
     }
 
 }

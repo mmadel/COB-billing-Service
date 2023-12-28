@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/posting")
@@ -23,24 +24,28 @@ public class PostingController {
 
     @GetMapping("/find/client/{clientId}")
     public ResponseEntity<Object> findClient(@PathVariable Long clientId) {
-        //Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
         return ResponseHandler
                 .generateResponse("Successfully finding  patients with session status prepared",
                         HttpStatus.OK, findSubmittedPatientSessionUseCase.findClient(clientId));
     }
 
-    @GetMapping("/find/insurance/company/{clientId}")
-    public ResponseEntity<Object> findInsuranceCompany(@RequestParam(name = "offset") String offset,
-                                                       @RequestParam(name = "limit") String limit,
-                                                       @PathVariable Long clientId) {
-        Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
-        return null;
+    @GetMapping("/find/insurance/company/{insuranceCompanyId}")
+    public ResponseEntity<Object> findInsuranceCompany(@PathVariable Long insuranceCompanyId) {
+        return ResponseHandler
+                .generateResponse("Successfully finding  patients by insurance company with session status prepared",
+                        HttpStatus.OK, findSubmittedPatientSessionUseCase.findInsuranceCompany(insuranceCompanyId));
     }
 
     @PostMapping("/create/payments/clientId/{clientId}")
     public ResponseEntity create(@RequestBody List<PaymentServiceLine> payments
             , @PathVariable Long clientId) {
         createServiceLinesPaymentUseCase.create(payments, clientId);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping("/create/payments/insurance/company")
+    public ResponseEntity create(@RequestBody Map<Long, List<PaymentServiceLine>> payments) {
+        createServiceLinesPaymentUseCase.create(payments);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

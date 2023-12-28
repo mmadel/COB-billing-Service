@@ -34,7 +34,14 @@ public class FindInsuranceCompanyListUseCase {
                     else if (currentElement.getPayerId() != null)
                         distinctPayerIds.add(currentElement.getPayerId());
                 });
-        payerRepository.findByListOfPayerIds(distinctPayerIds).stream()
+        payerRepository.findByListAssignedPayers(distinctPayerIds).stream()
+                .forEach(payerEntity -> {
+                    InsuranceCompanyContainer insuranceCompanyContainer = new InsuranceCompanyContainer();
+                    insuranceCompanyContainer.setDisplayName(payerEntity.getName());
+                    insuranceCompanyContainer.setPayerId(payerEntity.getPayerId());
+                    insuranceCompanyContainerList.add(insuranceCompanyContainer);
+                });
+        payerRepository.findByListNotAssignedPayers(distinctPayerIds).stream()
                 .forEach(payerEntity -> {
                     InsuranceCompanyContainer insuranceCompanyContainer = new InsuranceCompanyContainer();
                     insuranceCompanyContainer.setDisplayName(payerEntity.getName());

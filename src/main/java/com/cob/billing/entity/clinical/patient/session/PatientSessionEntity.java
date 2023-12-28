@@ -49,7 +49,7 @@ public class PatientSessionEntity {
     private String placeOfCode;
     @Column(name = "case_diagnosis", columnDefinition = "json")
     @Type(type = "json")
-    private CaseDiagnosis caseDiagnosis;
+    private List<CaseDiagnosis> caseDiagnosis;
 
     @OneToMany(fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "session_id")

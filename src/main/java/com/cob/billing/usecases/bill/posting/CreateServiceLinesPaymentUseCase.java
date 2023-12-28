@@ -51,6 +51,12 @@ public class CreateServiceLinesPaymentUseCase {
         updateSessionAndServiceLineStatus(payments);
     }
 
+    public void  create(Map<Long, List<PaymentServiceLine>> payments){
+        payments.forEach((patientId, paymentsServiceLines) -> {
+            create(paymentsServiceLines,patientId);
+        });
+    }
+
     private void updateSessionAndServiceLineStatus(List<PaymentServiceLine> payments) {
         Map<Long, List<PaymentServiceLine>> groupedSessions = payments.stream()
                 .collect(Collectors.groupingBy(PaymentServiceLine::getSessionId));
