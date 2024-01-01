@@ -6,6 +6,7 @@ import com.cob.billing.model.clinical.patient.insurance.PatientInsuranceAdvanced
 import com.cob.billing.model.clinical.patient.insurance.PatientInsurancePolicy;
 import com.cob.billing.model.clinical.patient.insurance.PatientRelation;
 import com.cob.billing.model.common.Address;
+import com.cob.billing.model.common.BasicAddress;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +32,7 @@ public class PatientInsuranceEntity {
 
     @Column(name = "payer_address", columnDefinition = "json")
     @Type(type = "json")
-    private Address payerAddress;
+    private BasicAddress payerAddress;
     @Column(name = "Patient_relation", columnDefinition = "json")
     @Type(type = "json")
     private PatientRelation patientRelation;
