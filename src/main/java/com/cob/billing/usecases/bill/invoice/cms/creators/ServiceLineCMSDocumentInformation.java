@@ -15,9 +15,11 @@ public class ServiceLineCMSDocumentInformation extends CMSDocument {
     @Override
     public void create() {
         serviceLines = new ArrayList<>();
+        String[] mod = new String[4];
         patientInvoices.stream()
                 .forEach(patientInvoice -> {
                     String[] dateOfService = DateConstructor.construct(patientInvoice.getPatientSession().getServiceDate());
+                    mod[0] = patientInvoice.getServiceLine().getCptCode().getServiceCode().split("\\.")[0];
                     serviceLines.add(ServiceLineModel.builder()
                             .sv_mm_from(dateOfService[0])
                             .sv_dd_from(dateOfService[1])
@@ -26,9 +28,12 @@ public class ServiceLineCMSDocumentInformation extends CMSDocument {
                             .sv_mm_end(dateOfService[0])
                             .sv_dd_end(dateOfService[1])
                             .sv_yy_end(dateOfService[2])
+                            .cpt(patientInvoice.getServiceLine().getCptCode().getServiceCode().split("\\.")[1])
                             .ch(patientInvoice.getServiceLine().getCptCode().getCharge().toString())
                             .day(patientInvoice.getServiceLine().getCptCode().getUnit().toString())
                             .place(patientInvoice.getPatientSession().getPlaceOfCode())
+                            .local(patientInvoice.getPatientSession().getDoctorInfo().getDoctorNPI())
+                            .mod(mod)
                             .build());
                 });
     }

@@ -3,6 +3,7 @@ package com.cob.billing.usecases.bill.invoice.cms;
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.usecases.bill.invoice.cms.models.CMSDocumentModel;
+import com.cob.billing.usecases.bill.invoice.cms.models.ServiceLineModel;
 import com.itextpdf.forms.PdfAcroForm;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
@@ -33,7 +34,7 @@ public class CreateCMS1500DocumentUseCase {
             Resource resource = resourceLoader.getResource("classpath:form-cms1500.pdf");
             PdfReader reader = new PdfReader(resource.getFilename());
 
-            PdfWriter dd= new PdfWriter(response.getOutputStream());
+            PdfWriter dd = new PdfWriter(response.getOutputStream());
             PdfDocument existingPdf = new PdfDocument(reader, dd);
             cmsForm = PdfAcroForm.getAcroForm(existingPdf, true);
             fillCarrierCMSDocumentInformation();
@@ -84,7 +85,7 @@ public class CreateCMS1500DocumentUseCase {
 
     private void fillInsuredInformation() {
         cmsForm.getField("ins_name").setValue(cmsDocumentModel.getInsuredInformationModel().getIns_name());
-        cmsForm.getField("rel_to_ins").setValue(cmsDocumentModel.getInsuredInformationModel().getRel_to_ins());
+        cmsForm.getField("rel_to_ins").setValue(cmsDocumentModel.getInsuredInformationModel().getRel_to_ins(), false);
         cmsForm.getField("ins_street").setValue(cmsDocumentModel.getInsuredInformationModel().getIns_street());
         cmsForm.getField("ins_city").setValue(cmsDocumentModel.getInsuredInformationModel().getIns_city());
         cmsForm.getField("ins_state").setValue(cmsDocumentModel.getInsuredInformationModel().getIns_state());
@@ -100,23 +101,29 @@ public class CreateCMS1500DocumentUseCase {
     }
 
     private void fillServiceLines() {
-        AtomicInteger counter = new AtomicInteger(1);
-        cmsDocumentModel.getServiceLines().stream()
-                .forEach(serviceLineModel -> {
-                    cmsForm.getField("sv" + counter + "_mm_from").setValue(serviceLineModel.getSv_mm_from());
-                    cmsForm.getField("sv" + counter + "_dd_from").setValue(serviceLineModel.getSv_dd_from());
-                    cmsForm.getField("sv" + counter + "_yy_from").setValue(serviceLineModel.getSv_yy_from());
+        int counter = 1;
+        float totalCharge = 0.0f;
 
-                    cmsForm.getField("sv" + counter + "_mm_end").setValue(serviceLineModel.getSv_mm_end());
-                    cmsForm.getField("sv" + counter + "_dd_end").setValue(serviceLineModel.getSv_dd_end());
-                    cmsForm.getField("sv" + counter + "_yy_end").setValue(serviceLineModel.getSv_dd_end());
+        for (ServiceLineModel serviceLineModel : cmsDocumentModel.getServiceLines()) {
+            cmsForm.getField("sv" + counter + "_mm_from").setValue(serviceLineModel.getSv_mm_from());
+            cmsForm.getField("sv" + counter + "_dd_from").setValue(serviceLineModel.getSv_dd_from());
+            cmsForm.getField("sv" + counter + "_yy_from").setValue(serviceLineModel.getSv_yy_from());
 
-                    cmsForm.getField("ch" + counter).setValue(serviceLineModel.getCh());
-                    cmsForm.getField("day" + counter).setValue(serviceLineModel.getDay());
+            cmsForm.getField("sv" + counter + "_mm_end").setValue(serviceLineModel.getSv_mm_end());
+            cmsForm.getField("sv" + counter + "_dd_end").setValue(serviceLineModel.getSv_dd_end());
+            cmsForm.getField("sv" + counter + "_yy_end").setValue(serviceLineModel.getSv_dd_end());
 
-                    cmsForm.getField("place" + counter).setValue(serviceLineModel.getPlace());
-                    counter.set(counter.get() + 1);
-                });
+            cmsForm.getField("ch" + counter).setValue(serviceLineModel.getCh());
+            cmsForm.getField("day" + counter).setValue(serviceLineModel.getDay());
 
+            cmsForm.getField("place" + counter).setValue(serviceLineModel.getPlace().split("_")[1]);
+            cmsForm.getField("cpt" + counter).setValue(serviceLineModel.getCpt());
+            cmsForm.getField("mod" + counter).setValue(serviceLineModel.getMod()[0]);
+            cmsForm.getField("local" + counter).setValue(serviceLineModel.getLocal());
+            counter = counter + 1;
+            totalCharge = totalCharge + Float.parseFloat(serviceLineModel.getCh());
+            ;
+        }
+        cmsForm.getField("t_charge").setValue(String.valueOf(totalCharge));
     }
 }

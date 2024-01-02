@@ -25,6 +25,7 @@ public class ServiceLineModel {
 
     private String[] mod;
 
+    private String cpt;
     //mapping cpt to icd10
     private String diag;
 
