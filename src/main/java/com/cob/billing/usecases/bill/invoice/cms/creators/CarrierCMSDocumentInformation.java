@@ -12,7 +12,8 @@ public class CarrierCMSDocumentInformation extends CMSDocument{
                 .insurance_name(insuranceCompany.getPatientInsurancePolicy().getPayerName())
                 .insurance_address(insuranceCompany.getPayerAddress().getAddress())
                 .insurance_address2("")
-                .insurance_type("")//Ask??
+                .insurance_type("Group")//Ask??
+                .insurance_id(insuranceCompany.getPatientInsurancePolicy().getPrimaryId())
                 .insurance_city_state_zip(insuranceCompany.getPayerAddress().getCity()
                         + "," +insuranceCompany.getPayerAddress().getState() +" " + insuranceCompany.getPayerAddress().getZipCode())
                 .build();

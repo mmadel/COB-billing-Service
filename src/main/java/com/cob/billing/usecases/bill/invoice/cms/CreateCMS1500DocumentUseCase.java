@@ -76,7 +76,12 @@ public class CreateCMS1500DocumentUseCase {
         cmsForm.getField("pt_city").setValue(cmsDocumentModel.getPatientInformationModel().getPt_city());
         cmsForm.getField("pt_state").setValue(cmsDocumentModel.getPatientInformationModel().getPt_state());
         cmsForm.getField("pt_zip").setValue(cmsDocumentModel.getPatientInformationModel().getPt_zip());
-        cmsForm.getField("pt_phone").setValue(cmsDocumentModel.getPatientInformationModel().getPt_phone());
+        cmsForm.getField("pt_AreaCode").setValue(cmsDocumentModel.getPatientInformationModel().getPt_phone().substring(1, 4));
+        cmsForm.getField("pt_phone").setValue(cmsDocumentModel.getPatientInformationModel().getPt_phone()
+                .substring(5, cmsDocumentModel.getPatientInformationModel().getPt_phone().length())
+                .replace("(", "")
+                .replace(")", "")
+                .replace("-", ""));
         cmsForm.getField("employment").setValue(cmsDocumentModel.getPatientInformationModel().getEmployment(), false);
         cmsForm.getField("pt_auto_accident").setValue(cmsDocumentModel.getPatientInformationModel().getPt_auto_accident(), false);
         cmsForm.getField("other_accident").setValue(cmsDocumentModel.getPatientInformationModel().getOther_accident(), false);
@@ -90,7 +95,12 @@ public class CreateCMS1500DocumentUseCase {
         cmsForm.getField("ins_city").setValue(cmsDocumentModel.getInsuredInformationModel().getIns_city());
         cmsForm.getField("ins_state").setValue(cmsDocumentModel.getInsuredInformationModel().getIns_state());
         cmsForm.getField("ins_zip").setValue(cmsDocumentModel.getInsuredInformationModel().getIns_zip());
-        cmsForm.getField("ins_phone").setValue(cmsDocumentModel.getInsuredInformationModel().getIns_phone());
+        cmsForm.getField("ins_phone area").setValue(cmsDocumentModel.getInsuredInformationModel().getIns_phone().substring(1, 4));
+        cmsForm.getField("ins_phone").setValue(cmsDocumentModel.getInsuredInformationModel().getIns_phone()
+                .substring(5, cmsDocumentModel.getInsuredInformationModel().getIns_phone().length())
+                .replace("(", "")
+                .replace(")", "")
+                .replace("-", ""));
         cmsForm.getField("ins_policy").setValue(cmsDocumentModel.getInsuredInformationModel().getIns_policy());
         cmsForm.getField("ins_sex").setValue(cmsDocumentModel.getInsuredInformationModel().getIns_sex(), false);
         cmsForm.getField("ins_dob_dd").setValue(cmsDocumentModel.getInsuredInformationModel().getIns_dob_dd());
@@ -119,6 +129,9 @@ public class CreateCMS1500DocumentUseCase {
             cmsForm.getField("place" + counter).setValue(serviceLineModel.getPlace().split("_")[1]);
             cmsForm.getField("cpt" + counter).setValue(serviceLineModel.getCpt());
             cmsForm.getField("mod" + counter).setValue(serviceLineModel.getMod()[0]);
+            cmsForm.getField("mod" + counter + "a").setValue(serviceLineModel.getMod()[1]);
+            cmsForm.getField("mod" + counter + "b").setValue(serviceLineModel.getMod()[2]);
+            cmsForm.getField("mod" + counter + "c").setValue(serviceLineModel.getMod()[3]);
             cmsForm.getField("local" + counter).setValue(serviceLineModel.getLocal());
             counter = counter + 1;
             totalCharge = totalCharge + Float.parseFloat(serviceLineModel.getCh());
