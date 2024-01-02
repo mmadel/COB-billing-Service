@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RestController
@@ -29,15 +30,18 @@ public class InvoiceController {
                 .generateResponse("Successfully finding  patients with session status prepared",
                         HttpStatus.OK, null, findNotSubmittedPatientSessionUseCase.findNotSubmittedSession(paging));
     }
+
     @GetMapping("/find/clientId/{clientId}")
     public ResponseEntity find(@PathVariable Long clientId) {
         return new ResponseEntity<>(findNotSubmittedPatientSessionUseCase.findNotSubmittedSessionByPatient(clientId), HttpStatus.OK);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity create(@RequestBody InvoiceRequestCreation invoiceRequestCreation) throws  IOException {
-        createInvoiceUseCase.create(invoiceRequestCreation);
-        return new ResponseEntity(HttpStatus.OK);
+    @PostMapping(value="/create",consumes = "application/json")
+    public void create(@RequestBody InvoiceRequestCreation invoiceRequestCreation,
+                                 HttpServletResponse response) throws IOException {
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "inline");
+        createInvoiceUseCase.create(invoiceRequestCreation,response);
     }
 
     @PostMapping("/create/electronic")

@@ -12,6 +12,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,32 +27,33 @@ public class CreateCMS1500DocumentUseCase {
     CMSDocumentModel cmsDocumentModel;
     PdfAcroForm cmsForm;
 
-    public void create(List<PatientInvoiceEntity> patientInvoices) throws IOException {
-        PatientEntity patient = patientInvoices.get(0).getPatient();
-        Long insuranceCompanyId = patientInvoices.get(0).getInsuranceCompany();
-        cmsDocumentModel = generateCMSModelUseCase.generate(patient, insuranceCompanyId, patientInvoices);
-        fillCMS();
-    }
-
-    private void fillCMS() throws IOException {
+    private void fillCMS(HttpServletResponse response) throws IOException {
         try {
 
             Resource resource = resourceLoader.getResource("classpath:form-cms1500.pdf");
             PdfReader reader = new PdfReader(resource.getFilename());
 
-
-            PdfDocument existingPdf = new PdfDocument(reader, new PdfWriter("filled-form.pdf"));
+            PdfWriter dd= new PdfWriter(response.getOutputStream());
+            PdfDocument existingPdf = new PdfDocument(reader, dd);
             cmsForm = PdfAcroForm.getAcroForm(existingPdf, true);
             fillCarrierCMSDocumentInformation();
             fillPatientInformation();
             fillInsuredInformation();
             fillServiceLines();
             cmsForm.flattenFields();
+
             existingPdf.close();
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void create(List<PatientInvoiceEntity> patientInvoices, HttpServletResponse response) throws IOException {
+        PatientEntity patient = patientInvoices.get(0).getPatient();
+        Long insuranceCompanyId = patientInvoices.get(0).getInsuranceCompany();
+        cmsDocumentModel = generateCMSModelUseCase.generate(patient, insuranceCompanyId, patientInvoices);
+        fillCMS(response);
     }
 
     private void fillCarrierCMSDocumentInformation() {

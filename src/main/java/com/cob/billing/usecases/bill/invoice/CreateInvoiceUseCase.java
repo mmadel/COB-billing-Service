@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class CreateInvoiceUseCase {
     ModelMapper mapper;
 
     @Transactional
-    public void create(InvoiceRequestCreation invoiceRequestCreation) throws IOException {
+    public void create(InvoiceRequestCreation invoiceRequestCreation, HttpServletResponse response) throws IOException {
         List<PatientInvoiceEntity> toBeCreated = new ArrayList<>();
         PatientEntity patient = patientRepository.findById(invoiceRequestCreation.getPatientId()).get();
         invoiceRequestCreation.getSelectedSessionServiceLines().stream()
@@ -54,15 +55,15 @@ public class CreateInvoiceUseCase {
                     toBeCreated.add(patientInvoice);
                 });
         patientInvoiceRepository.saveAll(toBeCreated);
-        generateCMSDocument(toBeCreated);
+        generateCMSDocument(toBeCreated,response);
         changeSessionStatus(invoiceRequestCreation.getSelectedSessionServiceLines());
     }
 
     /*TODO
         generate CMS-1500 document , may be using lib or generate it from scratch
      */
-    private void generateCMSDocument(List<PatientInvoiceEntity>patientInvoices) throws IOException {
-        createCMS1500DocumentUseCase.create(patientInvoices);
+    private void generateCMSDocument(List<PatientInvoiceEntity>patientInvoices,HttpServletResponse response) throws IOException {
+        createCMS1500DocumentUseCase.create(patientInvoices,response);
     }
 
     private void changeSessionStatus(List<SelectedSessionServiceLine> selectedSessionServiceLines) {
