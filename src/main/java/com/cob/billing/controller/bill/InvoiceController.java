@@ -4,7 +4,6 @@ import com.cob.billing.model.bill.invoice.InvoiceRequestCreation;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.invoice.CreateInvoiceUseCase;
 import com.cob.billing.usecases.bill.invoice.FindNotSubmittedPatientSessionUseCase;
-import com.itextpdf.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +35,7 @@ public class InvoiceController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity create(@RequestBody InvoiceRequestCreation invoiceRequestCreation) throws DocumentException, IOException {
+    public ResponseEntity create(@RequestBody InvoiceRequestCreation invoiceRequestCreation) throws  IOException {
         createInvoiceUseCase.create(invoiceRequestCreation);
         return new ResponseEntity(HttpStatus.OK);
     }

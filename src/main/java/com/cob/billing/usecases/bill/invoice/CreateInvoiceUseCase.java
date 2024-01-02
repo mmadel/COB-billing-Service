@@ -10,7 +10,6 @@ import com.cob.billing.repositories.clinical.PatientRepository;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import com.cob.billing.repositories.clinical.session.ServiceLineRepository;
 import com.cob.billing.usecases.bill.invoice.cms.CreateCMS1500DocumentUseCase;
-import com.itextpdf.text.DocumentException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,7 +39,7 @@ public class CreateInvoiceUseCase {
     ModelMapper mapper;
 
     @Transactional
-    public void create(InvoiceRequestCreation invoiceRequestCreation) throws DocumentException, IOException {
+    public void create(InvoiceRequestCreation invoiceRequestCreation) throws IOException {
         List<PatientInvoiceEntity> toBeCreated = new ArrayList<>();
         PatientEntity patient = patientRepository.findById(invoiceRequestCreation.getPatientId()).get();
         invoiceRequestCreation.getSelectedSessionServiceLines().stream()
@@ -62,7 +61,7 @@ public class CreateInvoiceUseCase {
     /*TODO
         generate CMS-1500 document , may be using lib or generate it from scratch
      */
-    private void generateCMSDocument(List<PatientInvoiceEntity>patientInvoices) throws DocumentException, IOException {
+    private void generateCMSDocument(List<PatientInvoiceEntity>patientInvoices) throws IOException {
         createCMS1500DocumentUseCase.create(patientInvoices);
     }
 
