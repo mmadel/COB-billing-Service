@@ -1,24 +1,26 @@
 package com.cob.billing.usecases.bill.invoice.cms;
 
+import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.insurance.PatientInsuranceEntity;
 import com.cob.billing.usecases.bill.invoice.cms.creators.CarrierCMSDocumentInformation;
 import com.cob.billing.usecases.bill.invoice.cms.creators.InsuredCMSDocumentInformation;
 import com.cob.billing.usecases.bill.invoice.cms.creators.PatientCMSDocumentInformation;
-import com.cob.billing.usecases.bill.invoice.cms.models.CMSDocumentModel;
-import com.cob.billing.usecases.bill.invoice.cms.models.CarrierInformationModel;
-import com.cob.billing.usecases.bill.invoice.cms.models.InsuredInformationModel;
-import com.cob.billing.usecases.bill.invoice.cms.models.PatientInformationModel;
+import com.cob.billing.usecases.bill.invoice.cms.creators.ServiceLineCMSDocumentInformation;
+import com.cob.billing.usecases.bill.invoice.cms.models.*;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class GenerateCMSModelUseCase {
-    public CMSDocumentModel generate(PatientEntity patient, Long insuranceCompanyId) {
+    public CMSDocumentModel generate(PatientEntity patient, Long insuranceCompanyId, List<PatientInvoiceEntity> patientInvoices) {
 
         return CMSDocumentModel.builder()
                 .carrierInformationModel(generateCarrierCMSDocumentInformation(patient, insuranceCompanyId))
                 .patientInformationModel(generatePatientInformation(patient))
                 .insuredInformationModel(generateInsuredInformation(patient, insuranceCompanyId))
+                .serviceLines(generateServiceLines(patientInvoices))
                 .build();
     }
 
@@ -50,5 +52,13 @@ public class GenerateCMSModelUseCase {
         insuredCMSDocumentInformation.setInsured(insuranceCompany);
         insuredCMSDocumentInformation.create();
         return insuredCMSDocumentInformation.getModel();
+    }
+
+    private List<ServiceLineModel> generateServiceLines(List<PatientInvoiceEntity> patientInvoices) {
+        ServiceLineCMSDocumentInformation serviceLineCMSDocumentInformation = new ServiceLineCMSDocumentInformation();
+        serviceLineCMSDocumentInformation.setPatientInvoices(patientInvoices);
+        serviceLineCMSDocumentInformation.create();
+        return serviceLineCMSDocumentInformation.getModel();
+
     }
 }

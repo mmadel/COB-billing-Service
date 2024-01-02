@@ -20,9 +20,8 @@ public class Main {
         PdfDocument existingPdf = new PdfDocument(reader, new PdfWriter("filled-form.pdf"));
 
         PdfAcroForm cmsForm = PdfAcroForm.getAcroForm(existingPdf, true);
-        cmsForm.getField("employment").setValue("YES",false);
         for (Map.Entry<String, PdfFormField> entry : cmsForm.getAllFormFields().entrySet()) {
-            System.out.println(entry.getKey() + " " + entry.getValue().getFormType());
+            System.out.println(entry.getKey() + " " + entry.getValue().getValueAsString());
         }
         cmsForm.flattenFields();
         existingPdf.close();
