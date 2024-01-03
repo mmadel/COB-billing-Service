@@ -55,6 +55,8 @@ public class CreateCMSDocumentUseCase {
     ProviderCMSDocumentCreator providerCMSDocumentCreator;
     @Autowired
     LocationCMSDocumentCreator locationCMSDocumentCreator;
+    @Autowired
+    PhysicianCMSDocumentCreator physicianCMSDocumentCreator;
 
     public void create(List<PatientInvoiceEntity> patientInvoices, HttpServletResponse response) throws IOException {
         this.patientInvoices = patientInvoices;
@@ -84,6 +86,7 @@ public class CreateCMSDocumentUseCase {
         fillPatientPart();
         fillInsuredPart();
         fillServiceLinesPart();
+        fillPhysicianPart();
         fillBasedOnInsuranceCompanyConfiguration();
         cmsForm.removeField("Clear Form");
         cmsForm.flattenFields();
@@ -113,6 +116,13 @@ public class CreateCMSDocumentUseCase {
     private void fillServiceLinesPart() {
         serviceLineCMSDocumentCreator.cmsForm = cmsForm;
         serviceLineCMSDocumentCreator.create(patientInvoices);
+    }
+
+    private void fillPhysicianPart() {
+        physicianCMSDocumentCreator.cmsForm = cmsForm;
+        String doctorName = patientInvoices.get(0).getPatientSession().getDoctorInfo().getDoctorLastName()
+                + ", " + patientInvoices.get(0).getPatientSession().getDoctorInfo().getDoctorFirstName();
+        physicianCMSDocumentCreator.create(doctorName);
     }
 
     private void fillBasedOnInsuranceCompanyConfiguration() {
