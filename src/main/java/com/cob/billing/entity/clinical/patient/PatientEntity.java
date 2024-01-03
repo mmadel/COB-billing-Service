@@ -5,6 +5,7 @@ import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.referring.provider.ReferringProviderEntity;
 import com.cob.billing.enums.Gender;
 import com.cob.billing.enums.MaritalStatus;
+import com.cob.billing.model.clinical.patient.advanced.PatientAdvancedInformation;
 import com.cob.billing.model.common.Address;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
@@ -53,6 +54,10 @@ public class PatientEntity {
     @Column(name = "patient_addresses", columnDefinition = "json")
     @Type(type = "json")
     private Address address;
+
+    @Column(name = "patient_advanced_information", columnDefinition = "json")
+    @Type(type = "json")
+    private PatientAdvancedInformation patientAdvancedInformation;
     @OneToMany(mappedBy = "patient")
     private List<PatientCaseEntity> cases;
 
