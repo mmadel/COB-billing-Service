@@ -9,7 +9,7 @@ import com.cob.billing.repositories.bill.invoice.PatientInvoiceRepository;
 import com.cob.billing.repositories.clinical.PatientRepository;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import com.cob.billing.repositories.clinical.session.ServiceLineRepository;
-import com.cob.billing.usecases.bill.invoice.cms.CreateCMS1500DocumentUseCase;
+import com.cob.billing.usecases.bill.invoice.cms.CreateCMSDocumentUseCase;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,7 +35,7 @@ public class CreateInvoiceUseCase {
     @Autowired
     ServiceLineRepository serviceLineRepository;
     @Autowired
-    CreateCMS1500DocumentUseCase createCMS1500DocumentUseCase;
+    CreateCMSDocumentUseCase createCMSDocumentUseCase;
     @Autowired
     ModelMapper mapper;
 
@@ -55,15 +55,12 @@ public class CreateInvoiceUseCase {
                     toBeCreated.add(patientInvoice);
                 });
         patientInvoiceRepository.saveAll(toBeCreated);
-        generateCMSDocument(toBeCreated,response);
+        generateCMSDocument(toBeCreated, response);
         changeSessionStatus(invoiceRequestCreation.getSelectedSessionServiceLines());
     }
 
-    /*TODO
-        generate CMS-1500 document , may be using lib or generate it from scratch
-     */
-    private void generateCMSDocument(List<PatientInvoiceEntity>patientInvoices,HttpServletResponse response) throws IOException {
-        createCMS1500DocumentUseCase.create(patientInvoices,response);
+    private void generateCMSDocument(List<PatientInvoiceEntity> patientInvoices, HttpServletResponse response) throws IOException {
+        createCMSDocumentUseCase.create(patientInvoices, response);
     }
 
     private void changeSessionStatus(List<SelectedSessionServiceLine> selectedSessionServiceLines) {
