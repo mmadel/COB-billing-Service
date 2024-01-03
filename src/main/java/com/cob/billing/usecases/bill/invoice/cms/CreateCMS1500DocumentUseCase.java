@@ -86,6 +86,22 @@ public class CreateCMS1500DocumentUseCase {
         cmsForm.getField("pt_auto_accident").setValue(cmsDocumentModel.getPatientInformationModel().getPt_auto_accident(), false);
         cmsForm.getField("other_accident").setValue(cmsDocumentModel.getPatientInformationModel().getOther_accident(), false);
         cmsForm.getField("accident_place").setValue(cmsDocumentModel.getPatientInformationModel().getAccident_place());
+
+        cmsForm.getField("work_mm_from").setValue(cmsDocumentModel.getPatientInformationModel().getWork_mm_from());
+        cmsForm.getField("work_dd_from").setValue(cmsDocumentModel.getPatientInformationModel().getWork_dd_from());
+        cmsForm.getField("work_yy_from").setValue(cmsDocumentModel.getPatientInformationModel().getWork_yy_from());
+
+        cmsForm.getField("work_mm_end").setValue(cmsDocumentModel.getPatientInformationModel().getWork_mm_end());
+        cmsForm.getField("work_dd_end").setValue(cmsDocumentModel.getPatientInformationModel().getWork_dd_end());
+        cmsForm.getField("work_yy_end").setValue(cmsDocumentModel.getPatientInformationModel().getWork_yy_end());
+
+        cmsForm.getField("hosp_mm_from").setValue(cmsDocumentModel.getPatientInformationModel().getHosp_mm_from());
+        cmsForm.getField("hosp_dd_from").setValue(cmsDocumentModel.getPatientInformationModel().getHosp_dd_from());
+        cmsForm.getField("hosp_yy_from").setValue(cmsDocumentModel.getPatientInformationModel().getHosp_yy_from());
+
+        cmsForm.getField("hosp_mm_end").setValue(cmsDocumentModel.getPatientInformationModel().getHosp_mm_end());
+        cmsForm.getField("hosp_dd_end").setValue(cmsDocumentModel.getPatientInformationModel().getHosp_dd_end());
+        cmsForm.getField("hosp_yy_end").setValue(cmsDocumentModel.getPatientInformationModel().getHosp_yy_end());
     }
 
     private void fillInsuredInformation() {

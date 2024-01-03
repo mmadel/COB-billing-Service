@@ -25,6 +25,22 @@ public class PatientInformationModel {
     private String _40;
     private String accident_place;
 
+    private String work_mm_from;
+    private String work_dd_from;
+    private String work_yy_from;
+
+    private String work_mm_end;
+    private String work_dd_end;
+    private String work_yy_end;
+
+    private String hosp_mm_from;
+    private String hosp_dd_from;
+    private String hosp_yy_from;
+
+    private String hosp_mm_end;
+    private String hosp_dd_end;
+    private String hosp_yy_end;
+
 
 
 

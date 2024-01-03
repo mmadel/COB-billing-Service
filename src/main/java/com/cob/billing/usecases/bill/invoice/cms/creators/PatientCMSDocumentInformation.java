@@ -11,6 +11,11 @@ public class PatientCMSDocumentInformation extends CMSDocument {
     @Override
     public void create() {
         String[] patientDOB = DateConstructor.construct(patient.getBirthDate());
+        String[] unableToWorkDateStartDate = DateConstructor.construct(patient.getPatientAdvancedInformation().getUnableToWorkStartDate());
+        String[] unableToWorkDateEndDate = DateConstructor.construct(patient.getPatientAdvancedInformation().getUnableToWorkEndDate());
+
+        String[] hospitalizedStartDate = DateConstructor.construct(patient.getPatientAdvancedInformation().getHospitalizedStartDate());
+        String[] hospitalizedEndDate = DateConstructor.construct(patient.getPatientAdvancedInformation().getHospitalizedEndDate());
         patientInformationModel = PatientInformationModel
                 .builder()
                 .pt_name(patient.getLastName() + "," + patient.getFirstName())
@@ -23,9 +28,21 @@ public class PatientCMSDocumentInformation extends CMSDocument {
                 .pt_state(patient.getAddress().getState())
                 .pt_zip(patient.getAddress().getZipCode())
                 .pt_phone(patient.getPhone())
-                .employment("NO")
-                .pt_auto_accident("NO") //?
-                .other_accident("NO") //?
+                .work_mm_from(unableToWorkDateStartDate[0])
+                .work_dd_from(unableToWorkDateStartDate[1])
+                .work_yy_from(unableToWorkDateStartDate[2])
+                .work_mm_end(unableToWorkDateEndDate[0])
+                .work_dd_end(unableToWorkDateEndDate[1])
+                .work_yy_end(unableToWorkDateEndDate[2])
+                .hosp_mm_from(hospitalizedStartDate[0])
+                .hosp_dd_from(hospitalizedStartDate[1])
+                .hosp_yy_from(hospitalizedStartDate[2])
+                .hosp_mm_end(hospitalizedEndDate[0])
+                .hosp_dd_end(hospitalizedEndDate[1])
+                .hosp_yy_end(hospitalizedEndDate[2])
+                .employment(patient.getPatientAdvancedInformation().getPateintAdvancedCondtion().isEmployment()?"YES":"NO")
+                .pt_auto_accident(patient.getPatientAdvancedInformation().getPateintAdvancedCondtion().isAutoAccident()?"YES":"NO")
+                .other_accident(patient.getPatientAdvancedInformation().getPateintAdvancedCondtion().isOtherAccident()?"YES":"NO") //?
                 .accident_place("") //?
                 .build();
     }

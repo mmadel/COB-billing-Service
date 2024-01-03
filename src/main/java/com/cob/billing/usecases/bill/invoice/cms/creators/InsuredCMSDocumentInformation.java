@@ -13,7 +13,7 @@ public class InsuredCMSDocumentInformation extends CMSDocument {
         String[] insuredDOB = DateConstructor.construct(insuranceCompany.getPatientRelation().getR_birthDate());
         insuredInformationModel = InsuredInformationModel.builder()
                 .ins_name(insuranceCompany.getPatientRelation().getR_lastName() + "," + insuranceCompany.getPatientRelation().getR_firstName())
-                .rel_to_ins(insuranceCompany.getRelation())
+                .rel_to_ins(insuranceCompany.getRelation().substring(0,1))
                 .ins_street(insuranceCompany.getPatientRelation().getR_address().getFirst())
                 .ins_city(insuranceCompany.getPatientRelation().getR_address().getCity())
                 .ins_state(insuranceCompany.getPatientRelation().getR_address().getState())
