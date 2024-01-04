@@ -32,10 +32,12 @@ public class ServiceLineCMSDocumentCreator {
 
             cmsForm.getField("place" + counter).setValue(patientInvoice.getPatientSession().getPlaceOfCode().split("_")[1]);
             cmsForm.getField("cpt" + counter).setValue(patientInvoice.getServiceLine().getCptCode().getServiceCode());
-            cmsForm.getField("mod" + counter).setValue(patientInvoice.getServiceLine().getCptCode().getModifier().split("\\.")[0]);
-            cmsForm.getField("mod" + counter + "a").setValue(patientInvoice.getServiceLine().getCptCode().getModifier().split("\\.")[1]);
-            cmsForm.getField("mod" + counter + "b").setValue(patientInvoice.getServiceLine().getCptCode().getModifier().split("\\.")[2]);
-            cmsForm.getField("mod" + counter + "c").setValue(patientInvoice.getServiceLine().getCptCode().getModifier().split("\\.")[3]);
+            if (patientInvoice.getServiceLine().getCptCode().getModifier().length() > 0) {
+                cmsForm.getField("mod" + counter).setValue(patientInvoice.getServiceLine().getCptCode().getModifier().split("\\.")[0]);
+                cmsForm.getField("mod" + counter + "a").setValue(patientInvoice.getServiceLine().getCptCode().getModifier().split("\\.")[1]);
+                cmsForm.getField("mod" + counter + "b").setValue(patientInvoice.getServiceLine().getCptCode().getModifier().split("\\.")[2]);
+                cmsForm.getField("mod" + counter + "c").setValue(patientInvoice.getServiceLine().getCptCode().getModifier().split("\\.")[3]);
+            }
             cmsForm.getField("local" + counter).setValue(patientInvoice.getPatientSession().getDoctorInfo().getDoctorNPI());
             counter = counter + 1;
             totalCharge = totalCharge + patientInvoice.getServiceLine().getCptCode().getCharge();
@@ -48,11 +50,11 @@ public class ServiceLineCMSDocumentCreator {
     private void getSessionDiagnosis(List<PatientInvoiceEntity> patientInvoices) {
         List<PatientSessionEntity> sessions = new ArrayList<>();
         for (PatientInvoiceEntity patientInvoice : patientInvoices) {
-            if (!containsSession(sessions, patientInvoice.getId()))
+            if (!containsSession(sessions, patientInvoice.getPatientSession().getId()))
                 sessions.add(patientInvoice.getPatientSession());
         }
         List<String> sessionDiagnosis = new ArrayList<>();
-        for(PatientSessionEntity patientSession : sessions){
+        for (PatientSessionEntity patientSession : sessions) {
             patientSession.getCaseDiagnosis().stream()
                     .forEach(caseDiagnosis -> sessionDiagnosis.add(caseDiagnosis.getDiagnosisCode()));
         }
@@ -72,10 +74,12 @@ public class ServiceLineCMSDocumentCreator {
         int counter = 1;
         for (PatientInvoiceEntity patientInvoice : patientInvoices) {
             List<String> indexes = new ArrayList<>();
-            for (String serviceLineDiagnosis : patientInvoice.getServiceLine().getDiagnoses()) {
-                int index = sessionDiagnosis.indexOf(serviceLineDiagnosis);
-                if (index != -1)
-                    indexes.add(getCharForNumber(index + 1));
+            if(patientInvoice.getServiceLine().getDiagnoses() !=null){
+                for (String serviceLineDiagnosis : patientInvoice.getServiceLine().getDiagnoses()) {
+                    int index = sessionDiagnosis.indexOf(serviceLineDiagnosis);
+                    if (index != -1)
+                        indexes.add(getCharForNumber(index + 1));
+                }
             }
             cmsForm.getField("diag" + counter).setValue(String.join("", indexes));
             counter = counter + 1;
