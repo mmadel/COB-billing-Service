@@ -13,7 +13,8 @@ public class PatientCMSDocumentCreator {
     public void create(PatientEntity patient) {
         this.patient = patient;
         fillBasicInfo();
-        fillAdvancedInfo();
+        if (patient.getPatientAdvancedInformation() != null)
+            fillAdvancedInfo();
     }
 
     private void fillBasicInfo() {
@@ -36,34 +37,36 @@ public class PatientCMSDocumentCreator {
     }
 
     private void fillAdvancedInfo() {
-        String[] unableToWorkDateStartDate = DateConstructor.construct(patient.getPatientAdvancedInformation().getUnableToWorkStartDate());
-        String[] unableToWorkDateEndDate = DateConstructor.construct(patient.getPatientAdvancedInformation().getUnableToWorkEndDate());
+        if (patient.getPatientAdvancedInformation().getUnableToWorkStartDate() != null && patient.getPatientAdvancedInformation().getUnableToWorkEndDate() != null) {
+            String[] unableToWorkDateStartDate = DateConstructor.construct(patient.getPatientAdvancedInformation().getUnableToWorkStartDate());
+            String[] unableToWorkDateEndDate = DateConstructor.construct(patient.getPatientAdvancedInformation().getUnableToWorkEndDate());
+            cmsForm.getField("work_mm_from").setValue(unableToWorkDateStartDate[0]);
+            cmsForm.getField("work_dd_from").setValue(unableToWorkDateStartDate[1]);
+            cmsForm.getField("work_yy_from").setValue(unableToWorkDateStartDate[2]);
 
-        String[] hospitalizedStartDate = DateConstructor.construct(patient.getPatientAdvancedInformation().getHospitalizedStartDate());
-        String[] hospitalizedEndDate = DateConstructor.construct(patient.getPatientAdvancedInformation().getHospitalizedEndDate());
+            cmsForm.getField("work_mm_end").setValue(unableToWorkDateEndDate[0]);
+            cmsForm.getField("work_dd_end").setValue(unableToWorkDateEndDate[1]);
+            cmsForm.getField("work_yy_end").setValue(unableToWorkDateEndDate[2]);
+        }
 
+        if (patient.getPatientAdvancedInformation().getHospitalizedStartDate() != null && patient.getPatientAdvancedInformation().getHospitalizedEndDate() != null) {
+            String[] hospitalizedStartDate = DateConstructor.construct(patient.getPatientAdvancedInformation().getHospitalizedStartDate());
+            String[] hospitalizedEndDate = DateConstructor.construct(patient.getPatientAdvancedInformation().getHospitalizedEndDate());
+            cmsForm.getField("hosp_mm_from").setValue(hospitalizedStartDate[0]);
+            cmsForm.getField("hosp_dd_from").setValue(hospitalizedStartDate[1]);
+            cmsForm.getField("hosp_yy_from").setValue(hospitalizedStartDate[2]);
+
+            cmsForm.getField("hosp_mm_end").setValue(hospitalizedEndDate[0]);
+            cmsForm.getField("hosp_dd_end").setValue(hospitalizedEndDate[1]);
+            cmsForm.getField("hosp_yy_end").setValue(hospitalizedEndDate[2]);
+        }
         cmsForm.getField("employment").setValue(patient.getPatientAdvancedInformation().getPateintAdvancedCondtion().isEmployment() ? "YES" : "NO", false);
         cmsForm.getField("pt_auto_accident").setValue(patient.getPatientAdvancedInformation().getPateintAdvancedCondtion().isAutoAccident() ? "YES" : "NO", false);
         cmsForm.getField("other_accident").setValue(patient.getPatientAdvancedInformation().getPateintAdvancedCondtion().isOtherAccident() ? "YES" : "NO", false);
         cmsForm.getField("accident_place").setValue("");
-
-        cmsForm.getField("work_mm_from").setValue(unableToWorkDateStartDate[0]);
-        cmsForm.getField("work_dd_from").setValue(unableToWorkDateStartDate[1]);
-        cmsForm.getField("work_yy_from").setValue(unableToWorkDateStartDate[2]);
-
-        cmsForm.getField("work_mm_end").setValue(unableToWorkDateEndDate[0]);
-        cmsForm.getField("work_dd_end").setValue(unableToWorkDateEndDate[1]);
-        cmsForm.getField("work_yy_end").setValue(unableToWorkDateEndDate[2]);
-
-        cmsForm.getField("hosp_mm_from").setValue(hospitalizedStartDate[0]);
-        cmsForm.getField("hosp_dd_from").setValue(hospitalizedStartDate[1]);
-        cmsForm.getField("hosp_yy_from").setValue(hospitalizedStartDate[2]);
-
-        cmsForm.getField("hosp_mm_end").setValue(hospitalizedEndDate[0]);
-        cmsForm.getField("hosp_dd_end").setValue(hospitalizedEndDate[1]);
-        cmsForm.getField("hosp_yy_end").setValue(hospitalizedEndDate[2]);
     }
-    private void fillPatientAccount(){
+
+    private void fillPatientAccount() {
         cmsForm.getField("").setValue("");
     }
 }

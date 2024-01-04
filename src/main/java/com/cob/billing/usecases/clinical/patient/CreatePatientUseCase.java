@@ -125,8 +125,10 @@ public class CreatePatientUseCase {
                     if (toBeCreated.getPatientInsurancePolicy().getPayerId() != null && toBeCreated.getPatientInsurancePolicy().getPayerId() != "")
                         toBeCreated.setInsuranceCompany(Long.parseLong(toBeCreated.getPatientInsurancePolicy().getPayerId()));
                     else {
-                        Long createdInsuranceCompanyId = createInsuranceCompany(toBeCreated.getPatientInsurancePolicy().getPayerName());
-                        toBeCreated.setInsuranceCompany(createdInsuranceCompanyId);
+                        if(toBeCreated.getInsuranceCompany()==null){
+                            Long createdInsuranceCompanyId = createInsuranceCompany(toBeCreated.getPatientInsurancePolicy().getPayerName());
+                            toBeCreated.setInsuranceCompany(createdInsuranceCompanyId);
+                        }
                     }
                     toBeCreated.setPatient(patient);
                     return toBeCreated;
