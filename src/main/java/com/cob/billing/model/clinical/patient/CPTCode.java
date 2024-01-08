@@ -9,5 +9,5 @@ public class CPTCode {
     private String serviceCode;
     private String modifier;
     private Integer unit;
-    private Float charge;
+    private double charge;
 }

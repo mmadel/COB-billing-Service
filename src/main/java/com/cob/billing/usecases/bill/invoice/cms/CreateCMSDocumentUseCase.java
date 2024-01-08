@@ -175,7 +175,7 @@ public class CreateCMSDocumentUseCase {
                 .findFirst()
                 .get();
         Optional<InsuranceCompanyEntity> insuranceCompany = insuranceCompanyRepository.findById(this.patientInsuranceCompany.getInsuranceCompany());
-        if (insuranceCompany.isPresent()) {
+        if (insuranceCompany.isPresent() && insuranceCompany.get().getPayerId() !=null) {
             PayerEntity payer = payerRepository.findByPayerId(insuranceCompany.get().getPayerId()).get();
             this.patientInsuranceCompany.setPayerAddress(payer.getAddress());
             this.patientInsuranceCompany.getPatientInsurancePolicy().setPayerId(payer.getPayerId().toString());

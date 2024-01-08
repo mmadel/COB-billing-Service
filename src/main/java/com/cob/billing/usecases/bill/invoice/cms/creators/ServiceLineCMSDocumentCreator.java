@@ -6,6 +6,7 @@ import com.cob.billing.util.DateConstructor;
 import com.itextpdf.forms.PdfAcroForm;
 import org.springframework.stereotype.Component;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +16,8 @@ public class ServiceLineCMSDocumentCreator {
 
     public void create(List<PatientInvoiceEntity> patientInvoices) {
         int counter = 1;
-        float totalCharge = 0.0f;
-
+        double totalCharge = 0.0;
+        DecimalFormat df = new DecimalFormat("#.00");
         for (PatientInvoiceEntity patientInvoice : patientInvoices) {
             String[] dateOfService = DateConstructor.construct(patientInvoice.getPatientSession().getServiceDate());
             cmsForm.getField("sv" + counter + "_mm_from").setValue(dateOfService[0]);
@@ -26,8 +27,8 @@ public class ServiceLineCMSDocumentCreator {
             cmsForm.getField("sv" + counter + "_mm_end").setValue(dateOfService[0]);
             cmsForm.getField("sv" + counter + "_dd_end").setValue(dateOfService[1]);
             cmsForm.getField("sv" + counter + "_yy_end").setValue(dateOfService[2]);
-
-            cmsForm.getField("ch" + counter).setValue(patientInvoice.getServiceLine().getCptCode().getCharge().toString());
+            cmsForm.getField("ch" + counter).setValue(String.valueOf(patientInvoice.getServiceLine().getCptCode().getCharge())
+            ,df.format(patientInvoice.getServiceLine().getCptCode().getCharge()).replace("."," "));
             cmsForm.getField("day" + counter).setValue(patientInvoice.getServiceLine().getCptCode().getUnit().toString());
 
             cmsForm.getField("place" + counter).setValue(patientInvoice.getPatientSession().getPlaceOfCode().split("_")[1]);
@@ -42,8 +43,9 @@ public class ServiceLineCMSDocumentCreator {
             counter = counter + 1;
             totalCharge = totalCharge + patientInvoice.getServiceLine().getCptCode().getCharge();
         }
-        getSessionDiagnosis(patientInvoices);
-        cmsForm.getField("t_charge").setValue(String.valueOf(totalCharge));
+
+        df.format(totalCharge);
+        cmsForm.getField("t_charge").setValue(String.valueOf(totalCharge),df.format(totalCharge).replace("."," "));
     }
 
 

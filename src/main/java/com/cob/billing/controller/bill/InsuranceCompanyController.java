@@ -46,6 +46,7 @@ public class InsuranceCompanyController {
 
     @GetMapping("/find")
     public ResponseEntity findAll() {
+
         return new ResponseEntity(findInsuranceCompaniesUseCase.find(), HttpStatus.OK);
     }
 
