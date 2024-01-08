@@ -20,6 +20,7 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
@@ -96,7 +97,7 @@ public class CreateCMSDocumentUseCase {
         fillInsuredPart();
         fillServiceLinesPart();
         fillPhysicianPart();
-        fillBasedOnInsuranceCompanyConfiguration();
+        //fillBasedOnInsuranceCompanyConfiguration();
         cmsForm.removeField("Clear Form");
         cmsForm.flattenFields();
     }
@@ -109,7 +110,7 @@ public class CreateCMSDocumentUseCase {
 
     private void fillCarrierCMSPart() {
         carrierCMSDocumentCreator.cmsForm = cmsForm;
-        carrierCMSDocumentCreator.create(this.patientInsuranceCompany);
+       // carrierCMSDocumentCreator.create(this.patientInsuranceCompany);
     }
 
     private void fillPatientPart() {
@@ -119,7 +120,7 @@ public class CreateCMSDocumentUseCase {
 
     private void fillInsuredPart() {
         insuredCMSDocumentCreator.cmsForm = cmsForm;
-        insuredCMSDocumentCreator.create(patientInsuranceCompany);
+       // insuredCMSDocumentCreator.create(patientInsuranceCompany);
     }
 
     private void fillServiceLinesPart() {
