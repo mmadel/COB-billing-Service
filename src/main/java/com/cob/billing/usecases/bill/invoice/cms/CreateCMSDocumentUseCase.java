@@ -20,7 +20,6 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
@@ -110,7 +109,7 @@ public class CreateCMSDocumentUseCase {
 
     private void fillCarrierCMSPart() {
         carrierCMSDocumentCreator.cmsForm = cmsForm;
-        carrierCMSDocumentCreator.create(this.patientInsuranceCompany);
+        carrierCMSDocumentCreator.create(patientInsuranceCompany);
     }
 
     private void fillPatientPart() {
@@ -171,16 +170,16 @@ public class CreateCMSDocumentUseCase {
     }
 
     private void catchPatientInsuranceCompany() {
-        this.patientInsuranceCompany = patient.getInsurances().stream()
+        patientInsuranceCompany = patient.getInsurances().stream()
                 .filter(patientInsuranceEntity -> patientInsuranceEntity.getInsuranceCompany().equals(patientInvoices.get(0).getInsuranceCompany()))
                 .findFirst()
                 .get();
-        Optional<InsuranceCompanyEntity> insuranceCompany = insuranceCompanyRepository.findById(this.patientInsuranceCompany.getInsuranceCompany());
+        Optional<InsuranceCompanyEntity> insuranceCompany = insuranceCompanyRepository.findById(patientInsuranceCompany.getInsuranceCompany());
         if (insuranceCompany.isPresent() && insuranceCompany.get().getPayerId() !=null) {
             PayerEntity payer = payerRepository.findByPayerId(insuranceCompany.get().getPayerId()).get();
-            this.patientInsuranceCompany.setPayerAddress(payer.getAddress());
-            this.patientInsuranceCompany.getPatientInsurancePolicy().setPayerId(payer.getPayerId().toString());
-            this.patientInsuranceCompany.getPatientInsurancePolicy().setPayerName(payer.getName());
+            patientInsuranceCompany.setPayerAddress(payer.getAddress());
+            patientInsuranceCompany.getPatientInsurancePolicy().setPayerId(payer.getPayerId().toString());
+            patientInsuranceCompany.getPatientInsurancePolicy().setPayerName(payer.getName());
         }
     }
 }
