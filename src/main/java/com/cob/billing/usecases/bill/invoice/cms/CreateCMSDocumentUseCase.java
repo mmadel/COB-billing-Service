@@ -97,7 +97,7 @@ public class CreateCMSDocumentUseCase {
         fillInsuredPart();
         fillServiceLinesPart();
         fillPhysicianPart();
-        //fillBasedOnInsuranceCompanyConfiguration();
+        fillBasedOnInsuranceCompanyConfiguration();
         cmsForm.removeField("Clear Form");
         cmsForm.flattenFields();
     }
@@ -110,7 +110,7 @@ public class CreateCMSDocumentUseCase {
 
     private void fillCarrierCMSPart() {
         carrierCMSDocumentCreator.cmsForm = cmsForm;
-       // carrierCMSDocumentCreator.create(this.patientInsuranceCompany);
+        carrierCMSDocumentCreator.create(this.patientInsuranceCompany);
     }
 
     private void fillPatientPart() {
@@ -120,7 +120,7 @@ public class CreateCMSDocumentUseCase {
 
     private void fillInsuredPart() {
         insuredCMSDocumentCreator.cmsForm = cmsForm;
-       // insuredCMSDocumentCreator.create(patientInsuranceCompany);
+        insuredCMSDocumentCreator.create(patientInsuranceCompany);
     }
 
     private void fillServiceLinesPart() {
