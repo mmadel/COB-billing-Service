@@ -28,24 +28,29 @@ public class ServiceLineCMSDocumentCreator {
             cmsForm.getField("sv" + counter + "_dd_end").setValue(dateOfService[1]);
             cmsForm.getField("sv" + counter + "_yy_end").setValue(dateOfService[2]);
             cmsForm.getField("ch" + counter).setValue(String.valueOf(patientInvoice.getServiceLine().getCptCode().getCharge())
-            ,df.format(patientInvoice.getServiceLine().getCptCode().getCharge()).replace("."," "));
+                    , df.format(patientInvoice.getServiceLine().getCptCode().getCharge()).replace(".", " "));
             cmsForm.getField("day" + counter).setValue(patientInvoice.getServiceLine().getCptCode().getUnit().toString());
 
             cmsForm.getField("place" + counter).setValue(patientInvoice.getPatientSession().getPlaceOfCode().split("_")[1]);
             cmsForm.getField("cpt" + counter).setValue(patientInvoice.getServiceLine().getCptCode().getServiceCode());
             if (patientInvoice.getServiceLine().getCptCode().getModifier().length() > 0) {
-                cmsForm.getField("mod" + counter).setValue(patientInvoice.getServiceLine().getCptCode().getModifier().split("\\.")[0]);
-                cmsForm.getField("mod" + counter + "a").setValue(patientInvoice.getServiceLine().getCptCode().getModifier().split("\\.")[1]);
-                cmsForm.getField("mod" + counter + "b").setValue(patientInvoice.getServiceLine().getCptCode().getModifier().split("\\.")[2]);
-                cmsForm.getField("mod" + counter + "c").setValue(patientInvoice.getServiceLine().getCptCode().getModifier().split("\\.")[3]);
+                String[] modList = patientInvoice.getServiceLine().getCptCode().getModifier().split("\\.");
+                try {
+                    cmsForm.getField("mod" + counter).setValue(modList[0]);
+                    cmsForm.getField("mod" + counter + "a").setValue(modList[1]);
+                    cmsForm.getField("mod" + counter + "b").setValue(modList[2]);
+                    cmsForm.getField("mod" + counter + "c").setValue(modList[3]);
+                } catch (ArrayIndexOutOfBoundsException ex) {
+
+                }
             }
             cmsForm.getField("local" + counter).setValue(patientInvoice.getPatientSession().getDoctorInfo().getDoctorNPI());
             counter = counter + 1;
             totalCharge = totalCharge + patientInvoice.getServiceLine().getCptCode().getCharge();
         }
-
         df.format(totalCharge);
-        cmsForm.getField("t_charge").setValue(String.valueOf(totalCharge),df.format(totalCharge).replace("."," "));
+        getSessionDiagnosis(patientInvoices);
+        cmsForm.getField("t_charge").setValue(String.valueOf(totalCharge), df.format(totalCharge).replace(".", " "));
     }
 
 
@@ -76,7 +81,7 @@ public class ServiceLineCMSDocumentCreator {
         int counter = 1;
         for (PatientInvoiceEntity patientInvoice : patientInvoices) {
             List<String> indexes = new ArrayList<>();
-            if(patientInvoice.getServiceLine().getDiagnoses() !=null){
+            if (patientInvoice.getServiceLine().getDiagnoses() != null) {
                 for (String serviceLineDiagnosis : patientInvoice.getServiceLine().getDiagnoses()) {
                     int index = sessionDiagnosis.indexOf(serviceLineDiagnosis);
                     if (index != -1)
