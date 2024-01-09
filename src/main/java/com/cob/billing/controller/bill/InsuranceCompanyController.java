@@ -4,10 +4,8 @@ import com.cob.billing.model.bill.InsuranceCompanyConfiguration;
 import com.cob.billing.model.bill.InsuranceCompanyMapper;
 import com.cob.billing.usecases.FindInsuranceCompanyConfigurationUseCase;
 import com.cob.billing.usecases.bill.CreateInsuranceCompanyConfigurationUseCase;
-import com.cob.billing.usecases.bill.FindInsuranceCompanyListUseCase;
+import com.cob.billing.usecases.bill.FindInsuranceCompaniesUseCase;
 import com.cob.billing.usecases.bill.MapInsuranceCompanyToPayerUseCase;
-import com.cob.billing.usecases.bill.insurance.company.FindInsuranceCompaniesUseCase;
-import com.cob.billing.usecases.bill.insurance.company.FindInsuranceCompanyUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,16 +19,14 @@ public class InsuranceCompanyController {
 
     @Autowired
     MapInsuranceCompanyToPayerUseCase mapInsuranceCompanyToPayerUseCase;
+
     @Autowired
     FindInsuranceCompaniesUseCase findInsuranceCompaniesUseCase;
-    @Autowired
-    FindInsuranceCompanyListUseCase findInsuranceCompanyListUseCase;
     @Autowired
     CreateInsuranceCompanyConfigurationUseCase createInsuranceCompanyConfigurationUseCase;
     @Autowired
     FindInsuranceCompanyConfigurationUseCase findInsuranceCompanyConfigurationUseCase;
-    @Autowired
-    FindInsuranceCompanyUseCase findInsuranceCompanyUseCase;
+
 
     @PutMapping("/map/all")
     public ResponseEntity mapAll(@RequestBody List<InsuranceCompanyMapper> models) {
@@ -46,13 +42,14 @@ public class InsuranceCompanyController {
 
     @GetMapping("/find")
     public ResponseEntity findAll() {
-
-        return new ResponseEntity(findInsuranceCompaniesUseCase.find(), HttpStatus.OK);
+        //findInsuranceCompaniesUseCase.find()
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/container/find")
     public ResponseEntity findContainer() {
-        return new ResponseEntity(findInsuranceCompanyListUseCase.find(), HttpStatus.OK);
+        //findInsuranceCompaniesUseCase.find(),
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/configure")
@@ -66,9 +63,10 @@ public class InsuranceCompanyController {
         return new ResponseEntity(findInsuranceCompanyConfigurationUseCase.find(identifier),
                 HttpStatus.OK);
     }
+
     @GetMapping("/find/name/{name}")
     public ResponseEntity findByName(@PathVariable String name) {
-        return new ResponseEntity(findInsuranceCompanyUseCase.find(name),
-                HttpStatus.OK);
+        //findInsuranceCompanyUseCase.find(name),
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

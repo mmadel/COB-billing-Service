@@ -127,6 +127,9 @@ public class CreatePatientUseCase {
                         InsuranceCompanyEntity created = createInsuranceCompany(toBeCreated.getPayer());
                         toBeCreated.setInsuranceCompany(created);
                         toBeCreated.setPayer(null);
+                        createInsuranceCompanyConfiguration(created.getId());
+                    } else {
+                        createInsuranceCompanyConfiguration(toBeCreated.getPayer().getPayerId());
                     }
                     toBeCreated.setPatient(patient);
                     return toBeCreated;
@@ -140,7 +143,6 @@ public class CreatePatientUseCase {
         entity.setName(payer.getName());
         entity.setAddress(payer.getAddress());
         InsuranceCompanyEntity created = insuranceCompanyRepository.save(entity);
-        createInsuranceCompanyConfiguration(created.getId());
         return created;
     }
 
