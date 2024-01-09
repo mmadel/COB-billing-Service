@@ -41,6 +41,7 @@ public class CreateCMSDocumentUseCase {
     List<PatientInvoiceEntity> patientInvoices;
     PatientEntity patient;
     PatientInsuranceEntity patientInsuranceCompany;
+    PayerEntity payer;
 
     @Autowired
     InsuranceCompanyConfigurationRepository insuranceCompanyConfigurationRepository;
@@ -109,7 +110,7 @@ public class CreateCMSDocumentUseCase {
 
     private void fillCarrierCMSPart() {
         carrierCMSDocumentCreator.cmsForm = cmsForm;
-        carrierCMSDocumentCreator.create(patientInsuranceCompany);
+        carrierCMSDocumentCreator.create(payer,patientInsuranceCompany.getPatientInsurancePolicy().getPrimaryId());
     }
 
     private void fillPatientPart() {
@@ -175,11 +176,12 @@ public class CreateCMSDocumentUseCase {
                 .findFirst()
                 .get();
         Optional<InsuranceCompanyEntity> insuranceCompany = insuranceCompanyRepository.findById(patientInsuranceCompany.getInsuranceCompany());
-        if (insuranceCompany.isPresent() && insuranceCompany.get().getPayerId() !=null) {
-            PayerEntity payer = payerRepository.findByPayerId(insuranceCompany.get().getPayerId()).get();
-            patientInsuranceCompany.setPayerAddress(payer.getAddress());
-            patientInsuranceCompany.getPatientInsurancePolicy().setPayerId(payer.getPayerId().toString());
-            patientInsuranceCompany.getPatientInsurancePolicy().setPayerName(payer.getName());
+        if (insuranceCompany.isPresent() && insuranceCompany.get().getPayerId() != null) {
+            payer = payerRepository.findByPayerId(insuranceCompany.get().getPayerId()).get();
+
+        } else {
+            payer.setName(patientInsuranceCompany.getPatientInsurancePolicy().getPayerName());
+            payer.setAddress(patientInsuranceCompany.getPayerAddress());
         }
     }
 }
