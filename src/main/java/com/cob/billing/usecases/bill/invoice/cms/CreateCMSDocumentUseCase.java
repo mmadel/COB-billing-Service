@@ -171,6 +171,7 @@ public class CreateCMSDocumentUseCase {
     }
 
     private void catchPatientInsuranceCompany() {
+        payer = new PayerEntity();
         patientInsuranceCompany = patient.getInsurances().stream()
                 .filter(patientInsuranceEntity -> patientInsuranceEntity.getInsuranceCompany().equals(patientInvoices.get(0).getInsuranceCompany()))
                 .findFirst()
