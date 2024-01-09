@@ -35,7 +35,7 @@ public class MapInsuranceCompanyToPayerUseCase {
                             .filter(insuranceCompanyMapper -> insuranceCompanyMapper.getInsuranceCompanyId() == id)
                             .findFirst()
                             .ifPresent(insuranceCompanyMapper -> {
-                                insuranceCompanyEntity.setPayerId(insuranceCompanyMapper.getPayerId());
+                                //insuranceCompanyEntity.setPayerId(insuranceCompanyMapper.getPayerId());
                                 changePatientInsurancePayer(insuranceCompanyEntity.getId(), insuranceCompanyMapper.getPayerId());
                             });
                 });
@@ -45,16 +45,16 @@ public class MapInsuranceCompanyToPayerUseCase {
     public void map(InsuranceCompanyMapper insuranceCompanyMapper) {
         InsuranceCompanyEntity entity = insuranceCompanyRepository.findById(insuranceCompanyMapper.getInsuranceCompanyId())
                 .get();
-        entity.setPayerId(insuranceCompanyMapper.getPayerId());
+        //entity.setPayerId(insuranceCompanyMapper.getPayerId());
         changePatientInsurancePayer(entity.getId(), insuranceCompanyMapper.getPayerId());
         insuranceCompanyRepository.save(entity);
     }
 
     private void changePatientInsurancePayer(Long insuranceCompanyId, Long payerId) {
-        PatientInsuranceEntity patientInsurance = patientInsuranceRepository.findByInsuranceCompany(insuranceCompanyId).get();
+        PatientInsuranceEntity patientInsurance = null;
         PayerEntity payer = payerRepository.findByPayerId(payerId).get();
-        patientInsurance.getPatientInsurancePolicy().setPayerId(payer.getPayerId().toString());
-        patientInsurance.getPatientInsurancePolicy().setPayerName(payer.getName());
+        //patientInsurance.getPatientInsurancePolicy().setPayerId(payer.getPayerId().toString());
+        //patientInsurance.getPatientInsurancePolicy().setPayerName(payer.getName());
         patientInsuranceRepository.save(patientInsurance);
     }
 }

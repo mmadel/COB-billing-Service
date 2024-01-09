@@ -2,6 +2,7 @@ package com.cob.billing.entity.clinical.patient.insurance;
 
 import com.cob.billing.entity.bill.insurance.compnay.InsuranceCompanyEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
+import com.cob.billing.model.bill.payer.Payer;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsuranceAdvanced;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsurancePolicy;
 import com.cob.billing.model.clinical.patient.insurance.PatientRelation;
@@ -30,24 +31,31 @@ public class PatientInsuranceEntity {
     private Long id;
     private String relation;
 
-    @Column(name = "payer_address", columnDefinition = "json")
-    @Type(type = "json")
-    private BasicAddress payerAddress;
     @Column(name = "Patient_relation", columnDefinition = "json")
     @Type(type = "json")
     private PatientRelation patientRelation;
+
     @Column(name = "patient_insurance_policy", columnDefinition = "json")
     @Type(type = "json")
     private PatientInsurancePolicy patientInsurancePolicy;
+
     @Column(name = "patient_insurance_advanced", columnDefinition = "json")
     @Type(type = "json")
     private PatientInsuranceAdvanced patientInsuranceAdvanced;
+
     @ManyToOne
     @JoinColumn(name="patient_id")
     private PatientEntity patient;
+
+    @OneToOne
+    @JoinColumn(name = "insurance_company_id")
+    private InsuranceCompanyEntity insuranceCompany;
+
     @Column(name = "is_archived")
     private Boolean isArchived;
-    @Column(name="insurance_company")
-    private Long insuranceCompany;
+
+    @Column(name = "payer", columnDefinition = "json")
+    @Type(type = "json")
+    private Payer payer;
 
 }

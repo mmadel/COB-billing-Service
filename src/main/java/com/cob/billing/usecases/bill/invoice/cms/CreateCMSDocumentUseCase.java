@@ -137,8 +137,7 @@ public class CreateCMSDocumentUseCase {
 
     private void fillBasedOnInsuranceCompanyConfiguration() {
         OrganizationEntity organization = null;
-        InsuranceCompanyConfigurationEntity insuranceCompanyConfiguration =
-                insuranceCompanyConfigurationRepository.findByInsuranceCompanyIdentifier(patientInsuranceCompany.getInsuranceCompany());
+        InsuranceCompanyConfigurationEntity insuranceCompanyConfiguration =null;
 
         if (insuranceCompanyConfiguration.getBox33() == -1L)
             organization = organizationRepository.findByType(OrganizationType.Default).get();
@@ -172,17 +171,14 @@ public class CreateCMSDocumentUseCase {
 
     private void catchPatientInsuranceCompany() {
         payer = new PayerEntity();
-        patientInsuranceCompany = patient.getInsurances().stream()
-                .filter(patientInsuranceEntity -> patientInsuranceEntity.getInsuranceCompany().equals(patientInvoices.get(0).getInsuranceCompany()))
-                .findFirst()
-                .get();
-        Optional<InsuranceCompanyEntity> insuranceCompany = insuranceCompanyRepository.findById(patientInsuranceCompany.getInsuranceCompany());
-        if (insuranceCompany.isPresent() && insuranceCompany.get().getPayerId() != null) {
-            payer = payerRepository.findByPayerId(insuranceCompany.get().getPayerId()).get();
-
-        } else {
-            payer.setName(patientInsuranceCompany.getPatientInsurancePolicy().getPayerName());
-            payer.setAddress(patientInsuranceCompany.getPayerAddress());
-        }
+        patientInsuranceCompany = null;
+        Optional<InsuranceCompanyEntity> insuranceCompany = null;
+//        if (insuranceCompany.isPresent() && insuranceCompany.get().getPayerId() != null) {
+//            payer = payerRepository.findByPayerId(insuranceCompany.get().getPayerId()).get();
+//
+//        } else {
+//            payer.setName(patientInsuranceCompany.getPatientInsurancePolicy().getPayerName());
+//            payer.setAddress(patientInsuranceCompany.getPayerAddress());
+//        }
     }
 }

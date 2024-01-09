@@ -25,14 +25,14 @@ public class FindInsuranceCompanyListUseCase {
         List<InsuranceCompanyEntity> toAssigned = new ArrayList<>();
         IntStream.range(1, entities.size())
                 .forEach(i -> {
-                    InsuranceCompanyEntity currentElement = entities.get(i);
-                    InsuranceCompanyEntity previousElement = entities.get(i - 1);
-                    if (currentElement.getPayerId() == null)
-                        toAssigned.add(currentElement);
-                    else if (currentElement.getPayerId().equals(previousElement.getPayerId()))
-                        distinctPayerIds.add(currentElement.getPayerId());
-                    else if (currentElement.getPayerId() != null)
-                        distinctPayerIds.add(currentElement.getPayerId());
+//                    InsuranceCompanyEntity currentElement = entities.get(i);
+//                    InsuranceCompanyEntity previousElement = entities.get(i - 1);
+//                    if (currentElement.getPayerId() == null)
+//                        toAssigned.add(currentElement);
+//                    else if (currentElement.getPayerId().equals(previousElement.getPayerId()))
+//                        distinctPayerIds.add(currentElement.getPayerId());
+//                    else if (currentElement.getPayerId() != null)
+//                        distinctPayerIds.add(currentElement.getPayerId());
                 });
         payerRepository.findByListAssignedPayers(distinctPayerIds).stream()
                 .forEach(payerEntity -> {

@@ -1,5 +1,6 @@
 package com.cob.billing.entity.bill.insurance.compnay;
 
+import com.cob.billing.model.bill.payer.Payer;
 import com.cob.billing.model.common.BasicAddress;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
@@ -22,11 +23,17 @@ public class InsuranceCompanyEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
     @Column(name = "name")
     private String name;
+
     @Column(name = "addresses", columnDefinition = "json")
     @Type(type = "json")
     private BasicAddress address;
-    @Column(name = "payer_id")
-    private Long payerId;
+
+    @Column(name = "payer", columnDefinition = "json")
+    @Type(type = "json")
+    private Payer payer;
+
+
 }

@@ -8,9 +8,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface InsuranceCompanyRepository extends JpaRepository<InsuranceCompanyEntity,Long> {
-    @Query("SELECT DISTINCT ice.payerId FROM InsuranceCompanyEntity ice")
-    List<Long> findAllDistinctFieldPayerId();
-    InsuranceCompanyEntity findByPayerId(Long payerId);
+////    @Query("SELECT DISTINCT ice.payerId FROM InsuranceCompanyEntity ice")
+////    List<Long> findAllDistinctFieldPayerId();
+//    InsuranceCompanyEntity findByPayerId(Long payerId);
 
     @Query("SELECT ic FROM InsuranceCompanyEntity ic where " +
             "ic.name =:name")

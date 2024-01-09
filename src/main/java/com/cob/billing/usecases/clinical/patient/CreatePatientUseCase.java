@@ -6,6 +6,7 @@ import com.cob.billing.entity.clinical.patient.PatientCaseEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.insurance.PatientInsuranceEntity;
 import com.cob.billing.entity.clinical.referring.provider.ReferringProviderEntity;
+import com.cob.billing.model.bill.payer.Payer;
 import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.model.clinical.patient.PatientCase;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsurance;
@@ -122,13 +123,10 @@ public class CreatePatientUseCase {
                 .map(patientInsurance -> {
                     patientInsurance.getPatientInsurancePolicy();
                     PatientInsuranceEntity toBeCreated = mapper.map(patientInsurance, PatientInsuranceEntity.class);
-                    if (toBeCreated.getPatientInsurancePolicy().getPayerId() != null && toBeCreated.getPatientInsurancePolicy().getPayerId() != "")
-                        toBeCreated.setInsuranceCompany(Long.parseLong(toBeCreated.getPatientInsurancePolicy().getPayerId()));
-                    else {
-                        if(toBeCreated.getInsuranceCompany()==null){
-                            Long createdInsuranceCompanyId = createInsuranceCompany(toBeCreated.getPatientInsurancePolicy().getPayerName());
-                            toBeCreated.setInsuranceCompany(createdInsuranceCompanyId);
-                        }
+                    if (toBeCreated.getPayer() != null && toBeCreated.getPayer().getPayerId() == null) {
+                        InsuranceCompanyEntity created = createInsuranceCompany(toBeCreated.getPayer());
+                        toBeCreated.setInsuranceCompany(created);
+                        toBeCreated.setPayer(null);
                     }
                     toBeCreated.setPatient(patient);
                     return toBeCreated;
@@ -137,12 +135,13 @@ public class CreatePatientUseCase {
         patient.setInsurances(createdList);
     }
 
-    private Long createInsuranceCompany(String name) {
+    private InsuranceCompanyEntity createInsuranceCompany(Payer payer) {
         InsuranceCompanyEntity entity = new InsuranceCompanyEntity();
-        entity.setName(name);
+        entity.setName(payer.getName());
+        entity.setAddress(payer.getAddress());
         InsuranceCompanyEntity created = insuranceCompanyRepository.save(entity);
         createInsuranceCompanyConfiguration(created.getId());
-        return created.getId();
+        return created;
     }
 
     private void createInsuranceCompanyConfiguration(Long insuranceCompanyId) {
