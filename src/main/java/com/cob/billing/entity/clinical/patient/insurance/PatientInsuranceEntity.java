@@ -1,6 +1,8 @@
 package com.cob.billing.entity.clinical.patient.insurance;
 
 import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyEntity;
+import com.cob.billing.entity.clinical.insurance.compnay.PatientInsuranceExternalCompanyEntity;
+import com.cob.billing.entity.clinical.insurance.compnay.PatientInsuranceInternalCompanyEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.model.bill.payer.Payer;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsuranceAdvanced;
@@ -49,4 +51,9 @@ public class PatientInsuranceEntity {
     @Column(name = "is_archived")
     private Boolean isArchived;
 
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "patientInsurance")
+    private PatientInsuranceInternalCompanyEntity patientInsuranceInternalCompany;
+
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "externalPatientInsurance")
+    private PatientInsuranceExternalCompanyEntity patientInsuranceExternalCompany;
 }

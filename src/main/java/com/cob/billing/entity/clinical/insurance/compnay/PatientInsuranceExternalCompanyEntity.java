@@ -17,7 +17,7 @@ public class PatientInsuranceExternalCompanyEntity {
     private Long id;
     @OneToOne
     @JoinColumn(name = "patient_Insurance_id", referencedColumnName = "id")
-    PatientInsuranceEntity patientInsurance;
+    PatientInsuranceEntity externalPatientInsurance;
 
     @OneToOne
     @JoinColumn(name = "external_insurance_company_id", referencedColumnName = "id")

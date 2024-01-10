@@ -1,11 +1,14 @@
 package com.cob.billing.controller.clinical;
 
+import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibility;
 import com.cob.billing.model.clinical.patient.Patient;
+import com.cob.billing.model.clinical.patient.insurance.PatientInsurance;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.clinical.patient.CreatePatientUseCase;
 import com.cob.billing.usecases.clinical.patient.FindPatientByNamUseCase;
 import com.cob.billing.usecases.clinical.patient.FindPatientCasesUseCase;
 import com.cob.billing.usecases.clinical.patient.FindPatientUseCase;
+import com.cob.billing.usecases.clinical.patient.insurance.company.DeletePatientInsuranceCompanyUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +27,8 @@ public class PatientController {
     FindPatientByNamUseCase findPatientByNamUseCase;
     @Autowired
     FindPatientCasesUseCase findPatientCasesUseCase;
+    @Autowired
+    DeletePatientInsuranceCompanyUseCase deletePatientInsuranceCompanyUseCase;
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody Patient model) {

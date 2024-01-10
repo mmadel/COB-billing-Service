@@ -1,4 +1,4 @@
-package com.cob.billing.model.bill.insurance.company;
+package com.cob.billing.model.clinical.insurance.company;
 
 import com.cob.billing.model.bill.InsuranceCompanyConfiguration;
 import com.cob.billing.model.common.BasicAddress;
@@ -15,7 +15,7 @@ public class InsuranceCompany {
 
     //internal it will be insurance companies that created from billing or consumed from EMR
     //External consumed from Availity
-    private InsuranceCompanyType type;
+    private InsuranceCompanyVisibility type;
     // [0] payer_id
     // [1] payer_name
     private String[] assigner;

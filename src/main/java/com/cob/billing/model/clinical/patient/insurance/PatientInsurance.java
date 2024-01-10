@@ -1,6 +1,7 @@
 package com.cob.billing.model.clinical.patient.insurance;
 
-import com.cob.billing.model.bill.payer.Payer;
+import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibility;
+import com.cob.billing.model.common.BasicAddress;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,5 +15,11 @@ public class PatientInsurance {
     private PatientInsurancePolicy patientInsurancePolicy;
     private PatientInsuranceAdvanced patientInsuranceAdvanced;
     private Boolean isArchived;
-    private Payer payer;
+    private InsuranceCompanyVisibility visibility;
+    /*
+            [0] name
+            [1] payer id
+     */
+    private String[] insuranceCompany;
+    private BasicAddress insuranceCompanyAddress;
 }

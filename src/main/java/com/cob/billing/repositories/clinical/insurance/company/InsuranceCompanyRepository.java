@@ -5,12 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface InsuranceCompanyRepository extends JpaRepository<InsuranceCompanyEntity,Long> {
-////    @Query("SELECT DISTINCT ice.payerId FROM InsuranceCompanyEntity ice")
-////    List<Long> findAllDistinctFieldPayerId();
-//    InsuranceCompanyEntity findByPayerId(Long payerId);
+import java.util.Optional;
 
+public interface InsuranceCompanyRepository extends JpaRepository<InsuranceCompanyEntity,Long> {
     @Query("SELECT ic FROM InsuranceCompanyEntity ic where " +
             "ic.name =:name")
-    InsuranceCompanyEntity findByInsuranceCompanyName(@Param("name") String name);
+    Optional<InsuranceCompanyEntity> findByInsuranceCompanyName(@Param("name") String name);
 }
