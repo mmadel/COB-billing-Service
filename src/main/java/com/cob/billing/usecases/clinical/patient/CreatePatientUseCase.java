@@ -152,7 +152,6 @@ public class CreatePatientUseCase {
         insuranceCompanyConfiguration.setBox26("insured_primary_id");
         insuranceCompanyConfiguration.setInsuranceCompanyIdentifier(insuranceCompanyId);
         insuranceCompanyConfiguration.setBox33(-1L);
-        insuranceCompanyConfiguration.setIsAssignedToPayer(false);
         insuranceCompanyConfigurationRepository.save(insuranceCompanyConfiguration);
     }
 }

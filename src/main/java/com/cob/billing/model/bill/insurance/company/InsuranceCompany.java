@@ -12,6 +12,7 @@ public class InsuranceCompany {
     private String name;
     private BasicAddress address;
     private InsuranceCompanyConfiguration configuration;
+
     //internal it will be insurance companies that created from billing or consumed from EMR
     //External consumed from Availity
     private InsuranceCompanyType type;

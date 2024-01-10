@@ -22,6 +22,5 @@ public class InsuranceCompanyConfigurationEntity {
     private Long box33;
     @Column(name = "insurance_company_identifier")
     private Long insuranceCompanyIdentifier;
-    @Column(name = "is_assigned_to_payer")
-    private Boolean isAssignedToPayer;
+
 }
