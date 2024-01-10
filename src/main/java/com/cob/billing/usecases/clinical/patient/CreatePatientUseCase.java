@@ -1,7 +1,7 @@
 package com.cob.billing.usecases.clinical.patient;
 
-import com.cob.billing.entity.bill.insurance.compnay.InsuranceCompanyConfigurationEntity;
-import com.cob.billing.entity.bill.insurance.compnay.InsuranceCompanyEntity;
+import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyConfigurationEntity;
+import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyEntity;
 import com.cob.billing.entity.clinical.patient.PatientCaseEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.insurance.PatientInsuranceEntity;
@@ -123,14 +123,14 @@ public class CreatePatientUseCase {
                 .map(patientInsurance -> {
                     patientInsurance.getPatientInsurancePolicy();
                     PatientInsuranceEntity toBeCreated = mapper.map(patientInsurance, PatientInsuranceEntity.class);
-                    if (toBeCreated.getPayer() != null && toBeCreated.getPayer().getPayerId() == null) {
-                        InsuranceCompanyEntity created = createInsuranceCompany(toBeCreated.getPayer());
-                        toBeCreated.setInsuranceCompany(created);
-                        toBeCreated.setPayer(null);
-                        createInsuranceCompanyConfiguration(created.getId());
-                    } else {
-                        createInsuranceCompanyConfiguration(toBeCreated.getPayer().getPayerId());
-                    }
+//                    if (toBeCreated.getPayer() != null && toBeCreated.getPayer().getPayerId() == null) {
+//                        InsuranceCompanyEntity created = createInsuranceCompany(toBeCreated.getPayer());
+//                        toBeCreated.setInsuranceCompany(created);
+//                        toBeCreated.setPayer(null);
+//                        createInsuranceCompanyConfiguration(created.getId());
+//                    } else {
+//                        createInsuranceCompanyConfiguration(toBeCreated.getPayer().getPayerId());
+//                    }
                     toBeCreated.setPatient(patient);
                     return toBeCreated;
                 }).collect(Collectors.toList());
@@ -150,7 +150,7 @@ public class CreatePatientUseCase {
         InsuranceCompanyConfigurationEntity insuranceCompanyConfiguration = new InsuranceCompanyConfigurationEntity();
         insuranceCompanyConfiguration.setBox32(false);
         insuranceCompanyConfiguration.setBox26("insured_primary_id");
-        insuranceCompanyConfiguration.setInsuranceCompanyIdentifier(insuranceCompanyId);
+       // insuranceCompanyConfiguration.setInsuranceCompanyIdentifier(insuranceCompanyId);
         insuranceCompanyConfiguration.setBox33(-1L);
         insuranceCompanyConfigurationRepository.save(insuranceCompanyConfiguration);
     }

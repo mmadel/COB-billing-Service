@@ -1,6 +1,6 @@
 package com.cob.billing.usecases.bill;
 
-import com.cob.billing.entity.bill.insurance.compnay.InsuranceCompanyEntity;
+import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyEntity;
 import com.cob.billing.repositories.bill.InsuranceCompanyConfigurationRepository;
 import com.cob.billing.repositories.bill.insurance.company.InsuranceCompanyRepository;
 import com.cob.billing.repositories.bill.payer.PayerRepository;

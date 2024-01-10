@@ -1,6 +1,6 @@
 package com.cob.billing.usecases;
 
-import com.cob.billing.entity.bill.insurance.compnay.InsuranceCompanyConfigurationEntity;
+import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyConfigurationEntity;
 import com.cob.billing.model.admin.Organization;
 import com.cob.billing.model.bill.InsuranceCompanyConfiguration;
 import com.cob.billing.repositories.admin.OrganizationRepository;
@@ -19,7 +19,7 @@ public class FindInsuranceCompanyConfigurationUseCase {
     ModelMapper mapper;
 
     public InsuranceCompanyConfiguration find(Long identifier) {
-        InsuranceCompanyConfigurationEntity configuration = insuranceCompanyConfigurationRepository.findByInsuranceCompanyIdentifier(identifier);
+        InsuranceCompanyConfigurationEntity configuration = null;
         Organization organization = null;
         if (configuration == null)
             return null;

@@ -20,8 +20,8 @@ public class InsuranceCompanyController {
     @Autowired
     MapInsuranceCompanyToPayerUseCase mapInsuranceCompanyToPayerUseCase;
 
-    @Autowired
-    FindInsuranceCompaniesUseCase findInsuranceCompaniesUseCase;
+//    @Autowired
+//    FindInsuranceCompaniesUseCase findInsuranceCompaniesUseCase;
     @Autowired
     CreateInsuranceCompanyConfigurationUseCase createInsuranceCompanyConfigurationUseCase;
     @Autowired

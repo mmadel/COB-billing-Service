@@ -1,4 +1,4 @@
-package com.cob.billing.entity.bill.insurance.compnay;
+package com.cob.billing.entity.clinical.insurance.compnay;
 
 import com.cob.billing.model.bill.payer.Payer;
 import com.cob.billing.model.common.BasicAddress;
@@ -31,9 +31,6 @@ public class InsuranceCompanyEntity {
     @Type(type = "json")
     private BasicAddress address;
 
-    @Column(name = "payer", columnDefinition = "json")
-    @Type(type = "json")
-    private Payer payer;
-
-
+    @Column(name = "uuid")
+    private String uuid;
 }

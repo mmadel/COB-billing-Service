@@ -1,13 +1,11 @@
 package com.cob.billing.entity.clinical.patient.insurance;
 
-import com.cob.billing.entity.bill.insurance.compnay.InsuranceCompanyEntity;
+import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.model.bill.payer.Payer;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsuranceAdvanced;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsurancePolicy;
 import com.cob.billing.model.clinical.patient.insurance.PatientRelation;
-import com.cob.billing.model.common.Address;
-import com.cob.billing.model.common.BasicAddress;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +27,7 @@ public class PatientInsuranceEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Column(name ="relation")
     private String relation;
 
     @Column(name = "Patient_relation", columnDefinition = "json")
@@ -44,18 +43,10 @@ public class PatientInsuranceEntity {
     private PatientInsuranceAdvanced patientInsuranceAdvanced;
 
     @ManyToOne
-    @JoinColumn(name="patient_id")
+    @JoinColumn(name = "patient_id")
     private PatientEntity patient;
-
-    @OneToOne
-    @JoinColumn(name = "insurance_company_id")
-    private InsuranceCompanyEntity insuranceCompany;
 
     @Column(name = "is_archived")
     private Boolean isArchived;
-
-    @Column(name = "payer", columnDefinition = "json")
-    @Type(type = "json")
-    private Payer payer;
 
 }

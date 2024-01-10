@@ -1,4 +1,4 @@
-package com.cob.billing.entity.bill.insurance.compnay;
+package com.cob.billing.entity.clinical.insurance.compnay;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +20,13 @@ public class InsuranceCompanyConfigurationEntity {
     private String box26;
     @Column(name = "box_33")
     private Long box33;
-    @Column(name = "insurance_company_identifier")
-    private Long insuranceCompanyIdentifier;
+
+    @OneToOne
+    @JoinColumn(name = "internal_insurance_company_id", referencedColumnName = "id")
+    InsuranceCompanyEntity internalInsuranceCompany;
+
+    @OneToOne
+    @JoinColumn(name = "external_insurance_company_id", referencedColumnName = "id")
+    InsuranceCompanyExternalEntity externalInsuranceCompany;
 
 }
