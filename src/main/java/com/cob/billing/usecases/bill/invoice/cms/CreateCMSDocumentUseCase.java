@@ -12,7 +12,7 @@ import com.cob.billing.enums.OrganizationType;
 import com.cob.billing.repositories.admin.ClinicRepository;
 import com.cob.billing.repositories.admin.OrganizationRepository;
 import com.cob.billing.repositories.bill.InsuranceCompanyConfigurationRepository;
-import com.cob.billing.repositories.bill.insurance.company.InsuranceCompanyRepository;
+import com.cob.billing.repositories.clinical.insurance.company.InsuranceCompanyRepository;
 import com.cob.billing.repositories.bill.payer.PayerRepository;
 import com.cob.billing.usecases.bill.invoice.cms.creators.*;
 import com.itextpdf.forms.PdfAcroForm;

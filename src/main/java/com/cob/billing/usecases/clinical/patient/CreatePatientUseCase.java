@@ -11,7 +11,7 @@ import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.model.clinical.patient.PatientCase;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsurance;
 import com.cob.billing.repositories.bill.InsuranceCompanyConfigurationRepository;
-import com.cob.billing.repositories.bill.insurance.company.InsuranceCompanyRepository;
+import com.cob.billing.repositories.clinical.insurance.company.InsuranceCompanyRepository;
 import com.cob.billing.repositories.bill.payer.PayerRepository;
 import com.cob.billing.repositories.clinical.PatientCaseRepository;
 import com.cob.billing.repositories.clinical.PatientInsuranceRepository;

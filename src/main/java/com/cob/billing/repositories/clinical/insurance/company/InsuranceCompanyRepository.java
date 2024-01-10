@@ -1,4 +1,4 @@
-package com.cob.billing.repositories.bill.insurance.company;
+package com.cob.billing.repositories.clinical.insurance.company;
 
 import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

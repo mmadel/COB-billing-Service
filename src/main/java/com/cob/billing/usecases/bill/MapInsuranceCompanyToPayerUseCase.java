@@ -4,7 +4,7 @@ import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyEntity;
 import com.cob.billing.entity.bill.payer.PayerEntity;
 import com.cob.billing.entity.clinical.patient.insurance.PatientInsuranceEntity;
 import com.cob.billing.model.bill.InsuranceCompanyMapper;
-import com.cob.billing.repositories.bill.insurance.company.InsuranceCompanyRepository;
+import com.cob.billing.repositories.clinical.insurance.company.InsuranceCompanyRepository;
 import com.cob.billing.repositories.bill.payer.PayerRepository;
 import com.cob.billing.repositories.clinical.PatientInsuranceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
