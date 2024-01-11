@@ -2,10 +2,8 @@ package com.cob.billing.usecases.bill.invoice.cms;
 
 import com.cob.billing.entity.admin.ClinicEntity;
 import com.cob.billing.entity.admin.OrganizationEntity;
-import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyConfigurationEntity;
-import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyEntity;
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
-import com.cob.billing.entity.bill.payer.PayerEntity;
+import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyConfigurationEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.insurance.PatientInsuranceEntity;
 import com.cob.billing.enums.OrganizationType;
@@ -13,8 +11,8 @@ import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibili
 import com.cob.billing.repositories.admin.ClinicRepository;
 import com.cob.billing.repositories.admin.OrganizationRepository;
 import com.cob.billing.repositories.bill.InsuranceCompanyConfigurationRepository;
-import com.cob.billing.repositories.clinical.insurance.company.InsuranceCompanyRepository;
 import com.cob.billing.repositories.bill.payer.PayerRepository;
+import com.cob.billing.repositories.clinical.insurance.company.InsuranceCompanyRepository;
 import com.cob.billing.usecases.bill.invoice.cms.creators.*;
 import com.itextpdf.forms.PdfAcroForm;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -28,7 +26,6 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class CreateCMSDocumentUseCase {
