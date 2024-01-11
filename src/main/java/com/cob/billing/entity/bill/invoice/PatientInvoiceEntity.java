@@ -26,9 +26,6 @@ public class PatientInvoiceEntity {
     @JoinColumn(name = "patient_id", referencedColumnName = "id")
     private PatientEntity patient;
 
-    @Column(name = "insurance_company")
-    private Long insuranceCompany;
-
     @Column(name = "is_one_date_service_per_claim")
     private Boolean isOneDateServicePerClaim;
 

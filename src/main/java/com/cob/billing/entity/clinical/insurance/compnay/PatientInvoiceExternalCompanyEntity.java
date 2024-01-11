@@ -1,7 +1,6 @@
 package com.cob.billing.entity.clinical.insurance.compnay;
 
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
-import com.cob.billing.entity.clinical.patient.insurance.PatientInsuranceEntity;
 import lombok.Getter;
 import lombok.Setter;
 

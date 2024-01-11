@@ -1,5 +1,6 @@
 package com.cob.billing.model.bill.invoice;
 
+import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibility;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,5 +13,10 @@ public class InvoiceRequestCreation {
     private Boolean isOneDateServicePerClaim;
     private String delayedReason;
     private Long patientId;
-    private Long insuranceCompanyId;
+    private InsuranceCompanyVisibility visibility;
+    /*
+            [0] name
+            [1] payer id
+     */
+    private String[] insuranceCompany;
 }

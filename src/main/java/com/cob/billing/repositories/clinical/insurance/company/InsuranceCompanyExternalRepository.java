@@ -1,6 +1,5 @@
 package com.cob.billing.repositories.clinical.insurance.company;
 
-import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyEntity;
 import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyExternalEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
