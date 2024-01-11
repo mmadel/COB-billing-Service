@@ -28,13 +28,14 @@ import java.util.stream.Collectors;
 public class FindPatientUseCase {
     @Autowired
     PatientRepository patientRepository;
+
     @Autowired
-    ModelMapper mapper;
+    MapPatientUseCase mapPatientUseCase;
 
     public PatientResponse findAll(Pageable paging) {
         Page<PatientEntity> pages = patientRepository.findAll(paging);
         long total = (pages).getTotalElements();
-        List<Patient> records = pages.stream().map(patient -> map(patient))
+        List<Patient> records = pages.stream().map(patient -> mapPatientUseCase.map(patient))
                 .collect(Collectors.toList());
         return PatientResponse.builder()
                 .number_of_records(records.size())
@@ -45,39 +46,6 @@ public class FindPatientUseCase {
 
     public Patient findById(Long patientId) {
         PatientEntity entity = patientRepository.findById(patientId).get();
-        return map(entity);
-    }
-
-    public Patient map(PatientEntity entity) {
-        this.mapper = new ModelMapper();
-        mapper.addMappings(new PropertyMap<PatientEntity, Patient>() {
-            @Override
-            protected void configure() {
-                skip(destination.getPatientInsurances());
-            }
-        });
-        Patient patient = mapper.map(entity, Patient.class);
-        List<PatientInsurance> patientInsurances = new ArrayList<>();
-        entity.getInsurances().stream()
-                .forEach(patientInsuranceEntity -> {
-                    PatientInsurance patientInsurance = new PatientInsurance();
-                    mapPatientInsurance(patientInsuranceEntity, patientInsurance);
-                    if (patientInsuranceEntity.getPatientInsuranceExternalCompany() != null)
-                        patientInsurance.setVisibility(InsuranceCompanyVisibility.External);
-                    if (patientInsuranceEntity.getPatientInsuranceInternalCompany() != null)
-                        patientInsurance.setVisibility(InsuranceCompanyVisibility.Internal);
-                    patientInsurances.add(patientInsurance);
-                });
-        patient.setPatientInsurances(patientInsurances);
-        return patient;
-    }
-
-    public void mapPatientInsurance(PatientInsuranceEntity source, PatientInsurance destination) {
-        destination.setId(source.getId());
-        destination.setRelation(source.getRelation());
-        destination.setPatientRelation(source.getPatientRelation());
-        destination.setPatientInsurancePolicy(source.getPatientInsurancePolicy());
-        destination.setPatientInsuranceAdvanced(source.getPatientInsuranceAdvanced());
-        destination.setIsArchived(source.getIsArchived());
+        return mapPatientUseCase.map(entity);
     }
 }

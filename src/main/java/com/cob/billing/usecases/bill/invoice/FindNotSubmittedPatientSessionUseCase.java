@@ -1,13 +1,18 @@
 package com.cob.billing.usecases.bill.invoice;
 
 import com.cob.billing.entity.clinical.patient.PatientEntity;
+import com.cob.billing.entity.clinical.patient.insurance.PatientInsuranceEntity;
+import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibility;
 import com.cob.billing.model.clinical.patient.Patient;
+import com.cob.billing.model.clinical.patient.insurance.PatientInsurance;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.model.response.PatientResponse;
 import com.cob.billing.repositories.clinical.PatientRepository;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
+import com.cob.billing.usecases.clinical.patient.MapPatientUseCase;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,15 +28,16 @@ public class FindNotSubmittedPatientSessionUseCase {
     PatientSessionRepository patientSessionRepository;
     @Autowired
     PatientRepository patientRepository;
+
     @Autowired
-    ModelMapper mapper;
+    MapPatientUseCase mapPatientUseCase;
 
     public PatientResponse findNotSubmittedSession(Pageable paging) {
         Page<PatientEntity> pages = patientRepository.findBySessionNotSubmittedByPatient(paging);
         long total = (pages).getTotalElements();
         List<Patient> records = pages.stream()
                 .map(patientEntity -> {
-                    Patient patient = mapper.map(patientEntity, Patient.class);
+                    Patient patient = mapPatientUseCase.map(patientEntity);
                     removeNotIInitialServiceCode(patient.getSessions());
                     return patient;
                 })
@@ -47,7 +53,7 @@ public class FindNotSubmittedPatientSessionUseCase {
     public Patient findNotSubmittedSessionByPatient(Long patientId) {
         PatientEntity patientEntity = patientRepository.findBySessionStatusByPatient(patientId);
         if (patientEntity != null) {
-            Patient patient = mapper.map(patientEntity, Patient.class);
+            Patient patient = mapPatientUseCase.map(patientEntity);
             removeNotIInitialServiceCode(patient.getSessions());
             return patient;
         } else
@@ -66,4 +72,5 @@ public class FindNotSubmittedPatientSessionUseCase {
                     patientSession.getServiceCodes().removeAll(toBeRemoved);
                 });
     }
+
 }
