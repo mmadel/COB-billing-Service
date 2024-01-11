@@ -82,7 +82,7 @@ public class CreateInvoiceUseCase {
                 .collect(Collectors.toList());
         mapPatientInvoiceToInsuranceCompany(invoiceRequestCreation.getVisibility(), invoiceRequestCreation.getInsuranceCompany()[0], created);
         //generateCMSDocument(toBeCreated, response);
-        //changeSessionStatus(invoiceRequestCreation.getSelectedSessionServiceLines());
+        changeSessionStatus(invoiceRequestCreation.getSelectedSessionServiceLines());
     }
 
     private void generateCMSDocument(List<PatientInvoiceEntity> patientInvoices, HttpServletResponse response) throws IOException {
