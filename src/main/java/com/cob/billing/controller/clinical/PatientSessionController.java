@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/session")
-public class SessionController {
+public class PatientSessionController {
     @Autowired
     CreatePatientSessionUseCase createPatientSessionUseCase;
     @Autowired
