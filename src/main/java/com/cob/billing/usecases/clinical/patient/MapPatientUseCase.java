@@ -32,10 +32,20 @@ public class MapPatientUseCase {
                 .forEach(patientInsuranceEntity -> {
                     PatientInsurance patientInsurance = new PatientInsurance();
                     mapPatientInsurance(patientInsuranceEntity, patientInsurance);
-                    if (patientInsuranceEntity.getPatientInsuranceExternalCompany() != null)
+                    if (patientInsuranceEntity.getPatientInsuranceExternalCompany() != null){
                         patientInsurance.setVisibility(InsuranceCompanyVisibility.External);
-                    if (patientInsuranceEntity.getPatientInsuranceInternalCompany() != null)
+                        String[] insuranceCompany={patientInsuranceEntity.getPatientInsuranceExternalCompany().getInsuranceCompany().getName(),
+                                patientInsuranceEntity.getPatientInsuranceExternalCompany().getInsuranceCompany().getPayerId().toString()};
+                        patientInsurance.setInsuranceCompany(insuranceCompany);
+                        patientInsurance.setInsuranceCompanyAddress(patientInsuranceEntity.getPatientInsuranceExternalCompany().getInsuranceCompany().getAddress());
+                    }
+                    if (patientInsuranceEntity.getPatientInsuranceInternalCompany() != null){
                         patientInsurance.setVisibility(InsuranceCompanyVisibility.Internal);
+                        String[] insuranceCompany={patientInsuranceEntity.getPatientInsuranceExternalCompany().getInsuranceCompany().getName()};
+                        patientInsurance.setInsuranceCompany(insuranceCompany);
+                        patientInsurance.setInsuranceCompanyAddress(patientInsuranceEntity.getPatientInsuranceExternalCompany().getInsuranceCompany().getAddress());
+                    }
+
                     patientInsurances.add(patientInsurance);
                 });
         patient.setPatientInsurances(patientInsurances);
