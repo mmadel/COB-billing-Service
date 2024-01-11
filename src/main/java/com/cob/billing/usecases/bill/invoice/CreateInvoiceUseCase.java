@@ -69,24 +69,17 @@ public class CreateInvoiceUseCase {
                     patientInvoice.setPatient(patient);
                     patientInvoice.setDelayedReason(invoiceRequestCreation.getDelayedReason());
                     patientInvoice.setIsOneDateServicePerClaim(invoiceRequestCreation.getIsOneDateServicePerClaim());
-                    PatientSessionServiceLineEntity sessionServiceLine = new PatientSessionServiceLineEntity();
-                    sessionServiceLine.setId(serviceLine.getServiceLine());
-                    patientInvoice.setServiceLine(sessionServiceLine);
-                    PatientSessionEntity patientSession = new PatientSessionEntity();
-                    patientSession.setId(serviceLine.getSessionId());
-                    patientInvoice.setPatientSession(patientSession);
+                    patientInvoice.setServiceLine(serviceLineRepository.findById(serviceLine.getServiceLine()).get());
+                    patientInvoice.setPatientSession(patientSessionRepository.findById(serviceLine.getSessionId()).get());
                     toBeCreated.add(patientInvoice);
                 });
 
         List<PatientInvoiceEntity> created = StreamSupport.stream(patientInvoiceRepository.saveAll(toBeCreated).spliterator(), false)
                 .collect(Collectors.toList());
         mapPatientInvoiceToInsuranceCompany(invoiceRequestCreation.getVisibility(), invoiceRequestCreation.getInsuranceCompany()[0], created);
-        //generateCMSDocument(toBeCreated, response);
+        Object[] insuranceCompany = {invoiceRequestCreation.getInsuranceCompany()[0], invoiceRequestCreation.getVisibility()};
+        createCMSDocumentUseCase.create(created, patient,insuranceCompany, response);
         changeSessionStatus(invoiceRequestCreation.getSelectedSessionServiceLines());
-    }
-
-    private void generateCMSDocument(List<PatientInvoiceEntity> patientInvoices, HttpServletResponse response) throws IOException {
-        createCMSDocumentUseCase.create(patientInvoices, response);
     }
 
     private void changeSessionStatus(List<SelectedSessionServiceLine> selectedSessionServiceLines) {

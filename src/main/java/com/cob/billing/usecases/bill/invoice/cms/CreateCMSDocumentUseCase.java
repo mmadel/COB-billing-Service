@@ -9,6 +9,7 @@ import com.cob.billing.entity.bill.payer.PayerEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.insurance.PatientInsuranceEntity;
 import com.cob.billing.enums.OrganizationType;
+import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibility;
 import com.cob.billing.repositories.admin.ClinicRepository;
 import com.cob.billing.repositories.admin.OrganizationRepository;
 import com.cob.billing.repositories.bill.InsuranceCompanyConfigurationRepository;
@@ -40,8 +41,9 @@ public class CreateCMSDocumentUseCase {
 
     List<PatientInvoiceEntity> patientInvoices;
     PatientEntity patient;
+    Object[] invoicedInsuranceCompany;
     PatientInsuranceEntity patientInsuranceCompany;
-    PayerEntity payer;
+    InsuranceCompanyConfigurationEntity insuranceCompanyConfiguration;
 
     @Autowired
     InsuranceCompanyConfigurationRepository insuranceCompanyConfigurationRepository;
@@ -68,9 +70,10 @@ public class CreateCMSDocumentUseCase {
     @Autowired
     PhysicianCMSDocumentCreator physicianCMSDocumentCreator;
 
-    public void create(List<PatientInvoiceEntity> patientInvoices, HttpServletResponse response) throws IOException {
+    public void create(List<PatientInvoiceEntity> patientInvoices, PatientEntity patient, Object[] invoicedInsuranceCompany, HttpServletResponse response) throws IOException {
         this.patientInvoices = patientInvoices;
-        catchPatient();
+        this.patient = patient;
+        this.invoicedInsuranceCompany = invoicedInsuranceCompany;
         catchPatientInsuranceCompany();
         readCMSTemplate();
         createCMSFile(response);
@@ -110,7 +113,7 @@ public class CreateCMSDocumentUseCase {
 
     private void fillCarrierCMSPart() {
         carrierCMSDocumentCreator.cmsForm = cmsForm;
-        carrierCMSDocumentCreator.create(payer,patientInsuranceCompany.getPatientInsurancePolicy().getPrimaryId());
+        carrierCMSDocumentCreator.create(patientInsuranceCompany);
     }
 
     private void fillPatientPart() {
@@ -137,7 +140,6 @@ public class CreateCMSDocumentUseCase {
 
     private void fillBasedOnInsuranceCompanyConfiguration() {
         OrganizationEntity organization = null;
-        InsuranceCompanyConfigurationEntity insuranceCompanyConfiguration =null;
 
         if (insuranceCompanyConfiguration.getBox33() == -1L)
             organization = organizationRepository.findByType(OrganizationType.Default).get();
@@ -164,21 +166,33 @@ public class CreateCMSDocumentUseCase {
 
     }
 
-    private void catchPatient() {
-        this.patient = patientInvoices.get(0).getPatient();
-
-    }
-
     private void catchPatientInsuranceCompany() {
-        payer = new PayerEntity();
+        String name = (String) invoicedInsuranceCompany[0];
+        InsuranceCompanyVisibility visibility = (InsuranceCompanyVisibility) invoicedInsuranceCompany[1];
         patientInsuranceCompany = null;
-        Optional<InsuranceCompanyEntity> insuranceCompany = null;
-//        if (insuranceCompany.isPresent() && insuranceCompany.get().getPayerId() != null) {
-//            payer = payerRepository.findByPayerId(insuranceCompany.get().getPayerId()).get();
-//
-//        } else {
-//            payer.setName(patientInsuranceCompany.getPatientInsurancePolicy().getPayerName());
-//            payer.setAddress(patientInsuranceCompany.getPayerAddress());
-//        }
+        patient.getInsurances().stream()
+                .forEach(patientInsurance -> {
+                    if (patientInsuranceCompany == null)
+                        switch (visibility) {
+                            case Internal:
+                                if (patientInsurance.getPatientInsuranceInternalCompany() != null
+                                        && patientInsurance.getPatientInsuranceInternalCompany().getInsuranceCompany().getName().equals(name)) {
+                                    patientInsuranceCompany = patientInsurance;
+                                    insuranceCompanyConfiguration = insuranceCompanyConfigurationRepository
+                                            .findByInternalInsuranceCompany_Id(patientInsurance.getPatientInsuranceInternalCompany()
+                                                    .getInsuranceCompany().getId()).get();
+                                }
+                                break;
+                            case External:
+                                if (patientInsurance.getPatientInsuranceExternalCompany() != null
+                                        && patientInsurance.getPatientInsuranceExternalCompany().getInsuranceCompany().getName().equals(name)) {
+                                    patientInsuranceCompany = patientInsurance;
+                                    insuranceCompanyConfiguration = insuranceCompanyConfigurationRepository
+                                            .findByExternalInsuranceCompany_Id(patientInsurance.getPatientInsuranceExternalCompany()
+                                                    .getInsuranceCompany().getId()).get();
+                                }
+                                break;
+                        }
+                });
     }
 }
