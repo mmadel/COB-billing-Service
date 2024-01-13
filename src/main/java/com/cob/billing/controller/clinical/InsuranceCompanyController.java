@@ -6,7 +6,7 @@ import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibili
 import com.cob.billing.usecases.FindInsuranceCompanyConfigurationUseCase;
 import com.cob.billing.usecases.bill.CreateInsuranceCompanyConfigurationUseCase;
 import com.cob.billing.usecases.bill.FindInsuranceCompaniesUseCase;
-import com.cob.billing.usecases.bill.MapInsuranceCompanyToPayerUseCase;
+import com.cob.billing.usecases.clinical.patient.insurance.company.MapInsuranceCompanyToPayerUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +18,6 @@ import java.util.List;
 @RequestMapping(value = "/insurance/company")
 public class InsuranceCompanyController {
 
-    @Autowired
-    MapInsuranceCompanyToPayerUseCase mapInsuranceCompanyToPayerUseCase;
 
     @Autowired
     FindInsuranceCompaniesUseCase findInsuranceCompaniesUseCase;
@@ -27,23 +25,24 @@ public class InsuranceCompanyController {
     CreateInsuranceCompanyConfigurationUseCase createInsuranceCompanyConfigurationUseCase;
     @Autowired
     FindInsuranceCompanyConfigurationUseCase findInsuranceCompanyConfigurationUseCase;
+    @Autowired
+    MapInsuranceCompanyToPayerUseCase mapInsuranceCompanyToPayerUseCase;
 
 
-    @PutMapping("/map/all")
-    public ResponseEntity mapAll(@RequestBody List<InsuranceCompanyMapper> models) {
-        mapInsuranceCompanyToPayerUseCase.mapAll(models);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @PutMapping("/map")
+    @PostMapping("/map")
     public ResponseEntity map(@RequestBody InsuranceCompanyMapper model) {
         mapInsuranceCompanyToPayerUseCase.map(model);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/find")
-    public ResponseEntity findContainer() {
+    public ResponseEntity findAll() {
         return new ResponseEntity(findInsuranceCompaniesUseCase.find(), HttpStatus.OK);
+    }
+
+    @GetMapping("/find/internal")
+    public ResponseEntity findInternal() {
+        return new ResponseEntity(findInsuranceCompaniesUseCase.findInternal(), HttpStatus.OK);
     }
 
     @PostMapping("/configure")

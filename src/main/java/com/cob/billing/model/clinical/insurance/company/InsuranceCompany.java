@@ -10,9 +10,6 @@ public class InsuranceCompany {
     private Long id;
     private String name;
     private BasicAddress address;
-    //internal it will be insurance companies that created from billing or consumed from EMR
-    //External consumed from Availity
-    private InsuranceCompanyVisibility type;
     // [0] payer_id
     // [1] payer_name
     private String[] assigner;

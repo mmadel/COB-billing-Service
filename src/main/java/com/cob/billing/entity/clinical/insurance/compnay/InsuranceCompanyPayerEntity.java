@@ -1,8 +1,7 @@
 package com.cob.billing.entity.clinical.insurance.compnay;
 
 import com.cob.billing.model.bill.payer.Payer;
-import com.cob.billing.model.clinical.patient.CaseDiagnosis;
-import com.cob.billing.model.common.BasicAddress;
+import com.cob.billing.model.common.Address;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,32 +10,27 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
-@Table(name = "insurance_company_external")
+@Table(name = "insurance_company_payer")
 @TypeDefs({
         @TypeDef(name = "json", typeClass = JsonStringType.class)
 })
-@Getter
 @Setter
-public class InsuranceCompanyExternalEntity {
+@Getter
+public class InsuranceCompanyPayerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "display_name")
-    private String displayName;
-
-    @Column(name = "addresses", columnDefinition = "json")
-    @Type(type = "json")
-    private BasicAddress address;
+    @OneToOne
+    @JoinColumn(name = "internal_insurance_company_id", referencedColumnName = "id")
+    InsuranceCompanyEntity internalInsuranceCompany;
 
     @Column(name = "payer_id")
     private Long payerId;
+    @Column(name = "payer_data", columnDefinition = "json")
+    @Type(type = "json")
+    private Payer payer;
 
 }

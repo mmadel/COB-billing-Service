@@ -33,4 +33,5 @@ public class InsuranceCompanyEntity {
 
     @Column(name = "uuid")
     private String uuid;
+
 }
