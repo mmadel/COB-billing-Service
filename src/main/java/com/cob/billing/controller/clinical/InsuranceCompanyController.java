@@ -1,4 +1,4 @@
-package com.cob.billing.controller.bill;
+package com.cob.billing.controller.clinical;
 
 import com.cob.billing.model.bill.InsuranceCompanyConfiguration;
 import com.cob.billing.model.bill.InsuranceCompanyMapper;
