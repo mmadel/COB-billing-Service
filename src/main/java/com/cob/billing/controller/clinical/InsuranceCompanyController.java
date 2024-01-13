@@ -2,6 +2,7 @@ package com.cob.billing.controller.clinical;
 
 import com.cob.billing.model.bill.InsuranceCompanyConfiguration;
 import com.cob.billing.model.bill.InsuranceCompanyMapper;
+import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibility;
 import com.cob.billing.usecases.FindInsuranceCompanyConfigurationUseCase;
 import com.cob.billing.usecases.bill.CreateInsuranceCompanyConfigurationUseCase;
 import com.cob.billing.usecases.bill.FindInsuranceCompaniesUseCase;
@@ -20,8 +21,8 @@ public class InsuranceCompanyController {
     @Autowired
     MapInsuranceCompanyToPayerUseCase mapInsuranceCompanyToPayerUseCase;
 
-//    @Autowired
-//    FindInsuranceCompaniesUseCase findInsuranceCompaniesUseCase;
+    @Autowired
+    FindInsuranceCompaniesUseCase findInsuranceCompaniesUseCase;
     @Autowired
     CreateInsuranceCompanyConfigurationUseCase createInsuranceCompanyConfigurationUseCase;
     @Autowired
@@ -41,15 +42,8 @@ public class InsuranceCompanyController {
     }
 
     @GetMapping("/find")
-    public ResponseEntity findAll() {
-        //findInsuranceCompaniesUseCase.find()
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @GetMapping("/container/find")
     public ResponseEntity findContainer() {
-        //findInsuranceCompaniesUseCase.find(),
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(findInsuranceCompaniesUseCase.find(), HttpStatus.OK);
     }
 
     @PostMapping("/configure")
@@ -58,9 +52,9 @@ public class InsuranceCompanyController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/find/configuration/identifier/{identifier}")
-    public ResponseEntity findConfiguration(@PathVariable Long identifier) {
-        return new ResponseEntity(findInsuranceCompanyConfigurationUseCase.find(identifier),
+    @GetMapping("/find/configuration/id/{id}/visibility/{visibility}")
+    public ResponseEntity findConfiguration(@PathVariable Long id, @PathVariable String visibility) {
+        return new ResponseEntity(findInsuranceCompanyConfigurationUseCase.find(id, InsuranceCompanyVisibility.valueOf(visibility)),
                 HttpStatus.OK);
     }
 

@@ -2,6 +2,8 @@ package com.cob.billing.usecases.bill;
 
 import com.cob.billing.entity.admin.OrganizationEntity;
 import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyConfigurationEntity;
+import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyEntity;
+import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyExternalEntity;
 import com.cob.billing.model.bill.InsuranceCompanyConfiguration;
 import com.cob.billing.repositories.admin.OrganizationRepository;
 import com.cob.billing.repositories.bill.InsuranceCompanyConfigurationRepository;
@@ -31,6 +33,19 @@ public class CreateInsuranceCompanyConfigurationUseCase {
             toBeCreated.setBox33(createdOtherOrganizationId);
         } else
             toBeCreated.setBox33(DEFAULT_ORGANIZATION);
+        switch (model.getVisibility()) {
+            case Internal:
+                InsuranceCompanyEntity insuranceCompany = new InsuranceCompanyEntity();
+                insuranceCompany.setId(model.getInsuranceCompanyId());
+                toBeCreated.setInternalInsuranceCompany(insuranceCompany);
+                break;
+            case External:
+                InsuranceCompanyExternalEntity externalInsuranceCompany = new InsuranceCompanyExternalEntity();
+                externalInsuranceCompany.setId(model.getId());
+                toBeCreated.setExternalInsuranceCompany(externalInsuranceCompany);
+                System.out.println();
+                break;
+        }
         insuranceCompanyConfigurationRepository.save(toBeCreated);
     }
 }

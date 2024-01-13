@@ -1,6 +1,7 @@
 package com.cob.billing.model.bill;
 
 import com.cob.billing.model.admin.Organization;
+import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibility;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ public class InsuranceCompanyConfiguration {
     private Boolean box32;
     private String box26;
     private Organization billingProvider;
-    private Long insuranceCompanyIdentifier;
+    private Long insuranceCompanyId;
+    private InsuranceCompanyVisibility visibility;
     private Boolean isAssignedToPayer;
 }
