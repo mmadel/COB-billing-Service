@@ -48,7 +48,7 @@ public class CreateCMSDocumentUseCase {
         createCMSFile(response);
         findInsuranceCompanyData();
         fillCMSDocument();
-
+        cmsFile.addPage(cmsFile.getFirstPage());
         closeCMSDocument();
     }
 
