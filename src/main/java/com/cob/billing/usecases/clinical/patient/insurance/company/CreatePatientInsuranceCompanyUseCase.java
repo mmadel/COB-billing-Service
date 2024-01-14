@@ -8,10 +8,7 @@ import com.cob.billing.model.common.BasicAddress;
 import com.cob.billing.repositories.bill.InsuranceCompanyConfigurationRepository;
 import com.cob.billing.repositories.clinical.PatientInsuranceRepository;
 import com.cob.billing.repositories.clinical.PatientRepository;
-import com.cob.billing.repositories.clinical.insurance.company.InsuranceCompanyExternalRepository;
-import com.cob.billing.repositories.clinical.insurance.company.InsuranceCompanyRepository;
-import com.cob.billing.repositories.clinical.insurance.company.PatientInsuranceExternalCompanyRepository;
-import com.cob.billing.repositories.clinical.insurance.company.PatientInsuranceInternalCompanyRepository;
+import com.cob.billing.repositories.clinical.insurance.company.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,15 +34,20 @@ public class CreatePatientInsuranceCompanyUseCase {
     InsuranceCompanyConfigurationRepository insuranceCompanyConfigurationRepository;
     @Autowired
     PatientInsuranceRepository patientInsuranceRepository;
+    @Autowired
+    InsuranceCompanyPayerRepository insuranceCompanyPayerRepository;
 
-    public boolean create(PatientInsurance patientInsurance, Long patientId) {
+    public PatientInsurance create(PatientInsurance patientInsurance, Long patientId) {
         PatientInsuranceEntity toBeCreated = mapper.map(patientInsurance, PatientInsuranceEntity.class);
         PatientEntity patient = repository.findById(patientId).orElseThrow(() -> new IllegalArgumentException());
         toBeCreated.setPatient(patient);
         PatientInsuranceEntity created = patientInsuranceRepository.save(toBeCreated);
+        PatientInsurance result = new PatientInsurance();
+        result.setId(created.getId());
         switch (patientInsurance.getVisibility()) {
             case Internal:
                 InsuranceCompanyEntity insuranceCompany = createInsuranceCompany(patientInsurance.getInsuranceCompany(), patientInsurance.getInsuranceCompanyAddress());
+                result.setAssigner(getAssigner(insuranceCompany.getId()));
                 mapPatientInsuranceToInsuranceCompany(created, insuranceCompany);
                 break;
             case External:
@@ -53,7 +55,16 @@ public class CreatePatientInsuranceCompanyUseCase {
                 mapPatientInsuranceToExternalInsuranceCompany(created, insuranceCompanyExternal);
                 break;
         }
-        return true;
+        return result;
+    }
+
+    private String[] getAssigner(Long insuranceCompanyId) {
+        Optional<InsuranceCompanyPayerEntity> insuranceCompanyPayer = insuranceCompanyPayerRepository
+                .findByInternalInsuranceCompany_Id(insuranceCompanyId);
+        if (insuranceCompanyPayer.isPresent()) {
+            return new String[]{insuranceCompanyPayer.get().getPayerId().toString(), insuranceCompanyPayer.get().getPayer().getDisplayName()};
+        }
+        return null;
     }
 
     private InsuranceCompanyEntity createInsuranceCompany(String[] insuranceCompany, BasicAddress insuranceCompanyNameAddress) {

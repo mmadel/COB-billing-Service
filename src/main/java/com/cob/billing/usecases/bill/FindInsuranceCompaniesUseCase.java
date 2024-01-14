@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -73,5 +74,14 @@ public class FindInsuranceCompaniesUseCase {
                             });
                 });
         return insuranceCompanies;
+    }
+
+    public String[] findInternalPayer(Long id) {
+        Optional<InsuranceCompanyPayerEntity> insuranceCompanyPayer = insuranceCompanyPayerRepository
+                .findByInternalInsuranceCompany_Id(id);
+        if (insuranceCompanyPayer.isPresent()) {
+            return new String[]{insuranceCompanyPayer.get().getPayerId().toString(), insuranceCompanyPayer.get().getPayer().getDisplayName()};
+        }
+        return null;
     }
 }
