@@ -80,7 +80,14 @@ public class FindInsuranceCompaniesUseCase {
         Optional<InsuranceCompanyPayerEntity> insuranceCompanyPayer = insuranceCompanyPayerRepository
                 .findByInternalInsuranceCompany_Id(id);
         if (insuranceCompanyPayer.isPresent()) {
-            return new String[]{insuranceCompanyPayer.get().getPayerId().toString(), insuranceCompanyPayer.get().getPayer().getDisplayName()};
+            /*
+                    0 payer id , 1 payer name , 2 payer address , 3 payer (city,state,zipcode)
+             */
+            return new String[]{insuranceCompanyPayer.get().getPayerId().toString()
+                    , insuranceCompanyPayer.get().getPayer().getDisplayName()
+                    , insuranceCompanyPayer.get().getPayer().getAddress().getAddress()
+                    , insuranceCompanyPayer.get().getPayer().getAddress().getCity()
+                    + "," + insuranceCompanyPayer.get().getPayer().getAddress().getState() + " " + insuranceCompanyPayer.get().getPayer().getAddress().getZipCode()};
         }
         return null;
     }

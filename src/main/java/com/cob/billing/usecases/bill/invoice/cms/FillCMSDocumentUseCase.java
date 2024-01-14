@@ -24,10 +24,6 @@ public class FillCMSDocumentUseCase {
     @Autowired
     private ServiceLineCMSDocumentCreator serviceLineCMSDocumentCreator;
     @Autowired
-    private ProviderCMSDocumentCreator providerCMSDocumentCreator;
-    @Autowired
-    private LocationCMSDocumentCreator locationCMSDocumentCreator;
-    @Autowired
     private PhysicianCMSDocumentCreator physicianCMSDocumentCreator;
     @Autowired
     private ConfigurableCMSDocument configurableCMSDocument;
@@ -36,7 +32,6 @@ public class FillCMSDocumentUseCase {
             , List<PatientInvoiceEntity> patientInvoices
             , PatientEntity patient
             , InsuranceCompanyConfigurationEntity insuranceCompanyConfiguration) {
-        this.cmsForm = cmsForm;
         fillCarrierCMSPart(patientInsuranceCompany);
         fillPatientPart(patient);
         fillInsuredPart(patientInsuranceCompany);

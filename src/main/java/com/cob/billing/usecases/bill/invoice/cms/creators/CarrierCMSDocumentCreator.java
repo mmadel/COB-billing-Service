@@ -1,16 +1,18 @@
 package com.cob.billing.usecases.bill.invoice.cms.creators;
 
-import com.cob.billing.entity.bill.payer.PayerEntity;
 import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyEntity;
 import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyExternalEntity;
 import com.cob.billing.entity.clinical.patient.insurance.PatientInsuranceEntity;
 import com.cob.billing.model.bill.cms.CMSFields;
-import com.cob.billing.repositories.clinical.insurance.company.InsuranceCompanyExternalRepository;
+import com.cob.billing.usecases.bill.FindInsuranceCompaniesUseCase;
 import com.itextpdf.forms.PdfAcroForm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CarrierCMSDocumentCreator {
+    @Autowired
+    FindInsuranceCompaniesUseCase findInsuranceCompaniesUseCase;
     public PdfAcroForm cmsForm;
     private String[] data = new String[3];
 
@@ -29,10 +31,17 @@ public class CarrierCMSDocumentCreator {
     private String[] getInsuranceCompanyData(PatientInsuranceEntity patientInsuranceCompany) {
         if (patientInsuranceCompany.getPatientInsuranceInternalCompany() != null) {
             InsuranceCompanyEntity insuranceCompany = patientInsuranceCompany.getPatientInsuranceInternalCompany().getInsuranceCompany();
-            data[0] = insuranceCompany.getName();
-            data[1] = insuranceCompany.getAddress().getAddress();
-            data[2] = insuranceCompany.getAddress().getCity()
-                    + "," + insuranceCompany.getAddress().getState() + " " + insuranceCompany.getAddress().getZipCode();
+            String[] payer = findInsuranceCompaniesUseCase.findInternalPayer(insuranceCompany.getId());
+            if (payer == null) {
+                data[0] = insuranceCompany.getName();
+                data[1] = insuranceCompany.getAddress().getAddress();
+                data[2] = insuranceCompany.getAddress().getCity()
+                        + "," + insuranceCompany.getAddress().getState() + " " + insuranceCompany.getAddress().getZipCode();
+            } else {
+                data[0] = payer[1];
+                data[1] = payer[2];
+                data[2] = payer[3];
+            }
         }
 
         if (patientInsuranceCompany.getPatientInsuranceExternalCompany() != null) {
