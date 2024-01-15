@@ -52,7 +52,11 @@ public class MapPatientUseCase {
                                 .findByInternalInsuranceCompany_Id(patientInsuranceEntity.getPatientInsuranceInternalCompany()
                                         .getInsuranceCompany().getId());
                         if (insuranceCompanyPayer.isPresent()) {
-                            String[] assigner = {insuranceCompanyPayer.get().getPayerId().toString(), insuranceCompanyPayer.get().getPayer().getDisplayName()};
+                            String[] assigner = {insuranceCompanyPayer.get().getPayerId().toString()
+                                    , insuranceCompanyPayer.get().getPayer().getDisplayName()
+                                    , insuranceCompanyPayer.get().getPayer().getAddress().getAddress()
+                                    , insuranceCompanyPayer.get().getPayer().getAddress().getCity()
+                                    + "," + insuranceCompanyPayer.get().getPayer().getAddress().getState() + " " + insuranceCompanyPayer.get().getPayer().getAddress().getZipCode()};
                             patientInsurance.setAssigner(assigner);
                         }
                         patientInsurance.setInsuranceCompany(insuranceCompany);
