@@ -6,6 +6,7 @@ import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibili
 import com.cob.billing.usecases.FindInsuranceCompanyConfigurationUseCase;
 import com.cob.billing.usecases.bill.CreateInsuranceCompanyConfigurationUseCase;
 import com.cob.billing.usecases.bill.FindInsuranceCompaniesUseCase;
+import com.cob.billing.usecases.clinical.patient.insurance.company.FindInsuranceCompanyConfigurationTmpUseCase;
 import com.cob.billing.usecases.clinical.patient.insurance.company.MapInsuranceCompanyToPayerUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class InsuranceCompanyController {
     @Autowired
     CreateInsuranceCompanyConfigurationUseCase createInsuranceCompanyConfigurationUseCase;
     @Autowired
-    FindInsuranceCompanyConfigurationUseCase findInsuranceCompanyConfigurationUseCase;
+    FindInsuranceCompanyConfigurationTmpUseCase findInsuranceCompanyConfigurationUseCase;
     @Autowired
     MapInsuranceCompanyToPayerUseCase mapInsuranceCompanyToPayerUseCase;
 
