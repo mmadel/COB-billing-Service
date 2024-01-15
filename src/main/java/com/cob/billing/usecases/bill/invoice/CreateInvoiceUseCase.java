@@ -10,6 +10,7 @@ import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.model.bill.invoice.InvoiceRequestCreation;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
+import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibility;
 import com.cob.billing.repositories.clinical.insurance.company.InsuranceCompanyExternalRepository;
 import com.cob.billing.repositories.clinical.insurance.company.InsuranceCompanyRepository;
@@ -58,28 +59,21 @@ public class CreateInvoiceUseCase {
     @Autowired
     InsuranceCompanyRepository insuranceCompanyRepository;
 
+    @Autowired
+    CreateInvoiceRecordUseCase createInvoiceRecordUseCase;
+    @Autowired
+    MapInvoiceRecordUseCase mapInvoiceRecordUseCase;
 
     @Transactional
-    public void create(InvoiceRequestCreation invoiceRequestCreation, HttpServletResponse response) throws IOException {
-        List<PatientInvoiceEntity> toBeCreated = new ArrayList<>();
-        PatientEntity patient = patientRepository.findById(invoiceRequestCreation.getPatientId()).get();
-        invoiceRequestCreation.getSelectedSessionServiceLines().stream()
-                .forEach(serviceLine -> {
-                    PatientInvoiceEntity patientInvoice = new PatientInvoiceEntity();
-                    patientInvoice.setPatient(patient);
-                    patientInvoice.setDelayedReason(invoiceRequestCreation.getDelayedReason());
-                    patientInvoice.setIsOneDateServicePerClaim(invoiceRequestCreation.getIsOneDateServicePerClaim());
-                    patientInvoice.setServiceLine(serviceLineRepository.findById(serviceLine.getServiceLine()).get());
-                    patientInvoice.setPatientSession(patientSessionRepository.findById(serviceLine.getSessionId()).get());
-                    toBeCreated.add(patientInvoice);
-                });
+    public void create(InvoiceRequest invoiceRequest, HttpServletResponse response) throws IOException {
+        createInvoiceRecordUseCase.createRecord(invoiceRequest.getSelectedSessionServiceLine()
+                , invoiceRequest.getInvoiceRequestConfiguration(), invoiceRequest.getPatientInformation().getId());
 
-        List<PatientInvoiceEntity> created = StreamSupport.stream(patientInvoiceRepository.saveAll(toBeCreated).spliterator(), false)
-                .collect(Collectors.toList());
-        mapPatientInvoiceToInsuranceCompany(invoiceRequestCreation.getVisibility(), invoiceRequestCreation.getInsuranceCompany()[0], created);
-        Object[] insuranceCompany = {invoiceRequestCreation.getInsuranceCompany()[0], invoiceRequestCreation.getVisibility()};
-        createCMSDocumentUseCase.create(created, patient,insuranceCompany, response);
-        changeSessionStatus(invoiceRequestCreation.getSelectedSessionServiceLines());
+        mapInvoiceRecordUseCase.mapRecord(invoiceRequest.getInvoiceInsuranceCompanyInformation().getVisibility()
+                , invoiceRequest.getInvoiceInsuranceCompanyInformation().getName()
+                , createInvoiceRecordUseCase.patientInvoiceRecords);
+        changeSessionStatus(invoiceRequest.getSelectedSessionServiceLine());
+        createCMSDocumentUseCase.create(invoiceRequest,response);
     }
 
     private void changeSessionStatus(List<SelectedSessionServiceLine> selectedSessionServiceLines) {
@@ -87,37 +81,5 @@ public class CreateInvoiceUseCase {
                 .forEach(serviceLine -> {
                     changeSessionStatusUseCase.change(serviceLine.getServiceLine());
                 });
-    }
-
-    private void mapPatientInvoiceToInsuranceCompany(InsuranceCompanyVisibility visibility, String insuranceCompanyName, List<PatientInvoiceEntity> patientInvoiceEntities) {
-        switch (visibility) {
-            case External:
-                InsuranceCompanyExternalEntity insuranceCompanyExternal = insuranceCompanyExternalRepository.findByInsuranceCompanyName(insuranceCompanyName)
-                        .orElseThrow(() -> new IllegalArgumentException());
-                List<PatientInvoiceExternalCompanyEntity> patientInvoiceExternalCompanyEntities = new ArrayList<>();
-                patientInvoiceEntities.stream()
-                        .forEach(patientInvoice -> {
-                            PatientInvoiceExternalCompanyEntity patientInvoiceExternalCompany = new PatientInvoiceExternalCompanyEntity();
-                            patientInvoiceExternalCompany.setExternalPatientInvoice(patientInvoice);
-                            patientInvoiceExternalCompany.setExternalInsuranceCompany(insuranceCompanyExternal);
-                            patientInvoiceExternalCompanyEntities.add(patientInvoiceExternalCompany);
-                        });
-                patientInvoiceExternalCompanyRepository.saveAll(patientInvoiceExternalCompanyEntities);
-                break;
-            case Internal:
-                InsuranceCompanyEntity insuranceCompany = insuranceCompanyRepository.findByInsuranceCompanyName(insuranceCompanyName)
-                        .orElseThrow(() -> new IllegalArgumentException());
-                List<PatientInvoiceInternalCompanyEntity> patientInvoiceInternalCompanyEntities = new ArrayList<>();
-                patientInvoiceEntities.stream()
-                        .forEach(patientInvoice -> {
-                            PatientInvoiceInternalCompanyEntity patientInvoiceInternalCompany = new PatientInvoiceInternalCompanyEntity();
-                            patientInvoiceInternalCompany.setInternalPatientInvoice(patientInvoice);
-                            patientInvoiceInternalCompany.setInternalInsuranceCompany(insuranceCompany);
-                            patientInvoiceInternalCompanyEntities.add(patientInvoiceInternalCompany);
-                        });
-                patientInvoiceInternalCompanyRepository.saveAll(patientInvoiceInternalCompanyEntities);
-                break;
-        }
-
     }
 }

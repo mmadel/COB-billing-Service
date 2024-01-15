@@ -1,10 +1,7 @@
 package com.cob.billing.usecases.bill.invoice.cms;
 
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
-import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyConfigurationEntity;
-import com.cob.billing.entity.clinical.patient.PatientEntity;
-import com.cob.billing.entity.clinical.patient.insurance.PatientInsuranceEntity;
-import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibility;
+import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.itextpdf.forms.PdfAcroForm;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
@@ -23,31 +20,18 @@ public class CreateCMSDocumentUseCase {
     @Autowired
     ResourceLoader resourceLoader;
     @Autowired
-    FindPatientInsuranceByInsuranceCompanyUseCase findPatientInsuranceByInsuranceCompanyUseCase;
-    @Autowired
     FillCMSDocumentUseCase fillCMSDocumentUseCase;
-
     PdfReader cmsTemplate;
     PdfAcroForm cmsForm;
     PdfDocument cmsFile;
 
-    List<PatientInvoiceEntity> patientInvoices;
-    PatientEntity patient;
-    Object[] invoicedInsuranceCompany;
-    PatientInsuranceEntity patientInsuranceCompany;
-    InsuranceCompanyConfigurationEntity insuranceCompanyConfiguration;
 
-    public void create(List<PatientInvoiceEntity> patientInvoices
-            , PatientEntity patient
-            , Object[] invoicedInsuranceCompany
+
+    public void create(InvoiceRequest invoiceRequest
             , HttpServletResponse response) throws IOException {
-        this.patientInvoices = patientInvoices;
-        this.patient = patient;
-        this.invoicedInsuranceCompany = invoicedInsuranceCompany;
         readCMSTemplate();
         createCMSFile(response);
-        findInsuranceCompanyData();
-        fillCMSDocument();
+        fillCMSDocument(invoiceRequest);
         cmsFile.addPage(cmsFile.getFirstPage());
         closeCMSDocument();
     }
@@ -65,18 +49,8 @@ public class CreateCMSDocumentUseCase {
         cmsForm = PdfAcroForm.getAcroForm(cmsFile, true);
     }
 
-    private void findInsuranceCompanyData() {
-        List<Object> result = findPatientInsuranceByInsuranceCompanyUseCase.find(patient.getInsurances()
-                , (String) invoicedInsuranceCompany[0]
-                , (InsuranceCompanyVisibility) invoicedInsuranceCompany[1]);
-
-        insuranceCompanyConfiguration = (InsuranceCompanyConfigurationEntity) result.get(1);
-        patientInsuranceCompany = (PatientInsuranceEntity) result.get(0);
-    }
-
-    private void fillCMSDocument() {
-        fillCMSDocumentUseCase.cmsForm = cmsForm;
-        fillCMSDocumentUseCase.fill(patientInsuranceCompany, patientInvoices, patient, insuranceCompanyConfiguration);
+    private void fillCMSDocument(InvoiceRequest invoiceRequest) {
+        fillCMSDocumentUseCase.fill(invoiceRequest,cmsForm);
         customizeTemplate();
     }
 

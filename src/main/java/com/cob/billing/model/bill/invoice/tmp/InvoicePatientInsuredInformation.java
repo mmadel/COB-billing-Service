@@ -1,7 +1,7 @@
 package com.cob.billing.model.bill.invoice.tmp;
 
 import com.cob.billing.enums.Gender;
-import com.cob.billing.model.common.BasicAddress;
+import com.cob.billing.model.common.Address;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +14,6 @@ public class InvoicePatientInsuredInformation {
     private String lastName;
     private Long dateOfBirth;
     private Gender gender;
-    private BasicAddress address;
+    private Address address;
     private String phone;
 }

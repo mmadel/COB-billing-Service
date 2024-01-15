@@ -1,6 +1,7 @@
 package com.cob.billing.controller.bill;
 
 import com.cob.billing.model.bill.invoice.InvoiceRequestCreation;
+import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.invoice.CreateInvoiceUseCase;
 import com.cob.billing.usecases.bill.invoice.FindNotSubmittedPatientSessionUseCase;
@@ -36,12 +37,12 @@ public class InvoiceController {
         return new ResponseEntity<>(findNotSubmittedPatientSessionUseCase.findNotSubmittedSessionByPatient(clientId), HttpStatus.OK);
     }
 
-    @PostMapping(value="/create",consumes = "application/json")
-    public void create(@RequestBody InvoiceRequestCreation invoiceRequestCreation,
-                                 HttpServletResponse response) throws IOException {
+    @PostMapping(value = "/create", consumes = "application/json")
+    public void create(@RequestBody InvoiceRequest invoiceRequest,
+                       HttpServletResponse response) throws IOException {
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "inline");
-        createInvoiceUseCase.create(invoiceRequestCreation,response);
+        createInvoiceUseCase.create(invoiceRequest, response);
     }
 
     @PostMapping("/create/electronic")

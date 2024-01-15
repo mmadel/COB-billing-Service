@@ -8,7 +8,8 @@ import lombok.Setter;
 @Getter
 public class InvoiceBillingProviderInformation {
     private String businessName;
-    private BasicAddress address;
+    private String address;
+    private String city_state_zip;
     private String phone;
     private String ssn;
     private String taxId;
