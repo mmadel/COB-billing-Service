@@ -1,4 +1,4 @@
-package com.cob.billing.usecases.bill.invoice;
+package com.cob.billing.usecases.bill.invoice.record;
 
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
@@ -27,7 +27,7 @@ public class CreateInvoiceRecordUseCase {
     @Autowired
     private PatientInvoiceRepository patientInvoiceRepository;
 
-    List<PatientInvoiceEntity> patientInvoiceRecords;
+    public List<PatientInvoiceEntity> patientInvoiceRecords;
 
     public void createRecord(List<SelectedSessionServiceLine> selectedSessionServiceLines
             , InvoiceRequestConfiguration invoiceRequestConfiguration

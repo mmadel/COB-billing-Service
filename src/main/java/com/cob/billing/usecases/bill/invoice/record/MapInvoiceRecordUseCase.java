@@ -1,4 +1,4 @@
-package com.cob.billing.usecases.bill.invoice;
+package com.cob.billing.usecases.bill.invoice.record;
 
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyEntity;

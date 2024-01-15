@@ -1,17 +1,7 @@
 package com.cob.billing.usecases.bill.invoice;
 
-import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
-import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyEntity;
-import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyExternalEntity;
-import com.cob.billing.entity.clinical.insurance.compnay.PatientInvoiceExternalCompanyEntity;
-import com.cob.billing.entity.clinical.insurance.compnay.PatientInvoiceInternalCompanyEntity;
-import com.cob.billing.entity.clinical.patient.PatientEntity;
-import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
-import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
-import com.cob.billing.model.bill.invoice.InvoiceRequestCreation;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
-import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibility;
 import com.cob.billing.repositories.clinical.insurance.company.InsuranceCompanyExternalRepository;
 import com.cob.billing.repositories.clinical.insurance.company.InsuranceCompanyRepository;
 import com.cob.billing.repositories.bill.invoice.PatientInvoiceRepository;
@@ -21,6 +11,8 @@ import com.cob.billing.repositories.clinical.insurance.company.PatientInvoiceInt
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import com.cob.billing.repositories.clinical.session.ServiceLineRepository;
 import com.cob.billing.usecases.bill.invoice.cms.CreateCMSDocumentUseCase;
+import com.cob.billing.usecases.bill.invoice.record.CreateInvoiceRecordUseCase;
+import com.cob.billing.usecases.bill.invoice.record.MapInvoiceRecordUseCase;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,10 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Component
 public class CreateInvoiceUseCase {
