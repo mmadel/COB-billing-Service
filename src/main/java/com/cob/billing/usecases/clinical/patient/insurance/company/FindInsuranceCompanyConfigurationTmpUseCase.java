@@ -11,6 +11,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class FindInsuranceCompanyConfigurationTmpUseCase {
+    private final static int BILLING_PROVIDER_NAME = 0;
+    private final static int BILLING_PROVIDER_ADDRESS = 1;
+    private final static int BILLING_PROVIDER_CITY_STATE_ZIPCODE = 2;
+    private final static int BILLING_PROVIDER_PHONE = 3;
+    private final static int BILLING_PROVIDER_TAX_ID = 4;
+    private final static int PATIENT_ACCOUNT = 5;
     @Autowired
     InsuranceCompanyConfigurationRepository insuranceCompanyConfigurationRepository;
     @Autowired
@@ -19,7 +25,7 @@ public class FindInsuranceCompanyConfigurationTmpUseCase {
     public String[] find(Long id, InsuranceCompanyVisibility visibility) {
         InsuranceCompanyConfigurationEntity insuranceCompanyConfiguration = null;
         OrganizationEntity organization = null;
-        String[] result = new String[5];
+        String[] result = new String[6];
         switch (visibility) {
             case Internal:
                 insuranceCompanyConfiguration = insuranceCompanyConfigurationRepository.findByInternalInsuranceCompany_Id(id).get();
@@ -34,19 +40,20 @@ public class FindInsuranceCompanyConfigurationTmpUseCase {
         else
             organization = organizationRepository.findById(insuranceCompanyConfiguration.getBox33()).get();
 
-        if(organization != null){
-            result[0] = organization.getBusinessName();
-            result[1] = organization.getOrganizationData().getAddress();
-            result[2] = organization.getOrganizationData().getCity()
+        if (organization != null) {
+            result[BILLING_PROVIDER_NAME] = organization.getBusinessName();
+            result[BILLING_PROVIDER_ADDRESS] = organization.getOrganizationData().getAddress();
+            result[BILLING_PROVIDER_CITY_STATE_ZIPCODE] = organization.getOrganizationData().getCity()
                     + "," + organization.getOrganizationData().getState() + " " + organization.getOrganizationData().getZipcode();
-            result[3] = organization.getOrganizationData().getPhone();
+            result[BILLING_PROVIDER_PHONE] = organization.getOrganizationData().getPhone();
+            result[BILLING_PROVIDER_TAX_ID] = organization.getOrganizationData().getTaxId();
         }
         if (insuranceCompanyConfiguration.getBox26().equals("insured_primary_id"))
-            result[4] = "primaryId";
+            result[PATIENT_ACCOUNT] = "primaryId";
         if (insuranceCompanyConfiguration.getBox26().equals("pateint_ssn"))
-            result[4] = "ssn";
+            result[PATIENT_ACCOUNT] = "ssn";
         if (insuranceCompanyConfiguration.getBox26().equals("pateint_external_id"))
-            result[4] = "externalId";
+            result[PATIENT_ACCOUNT] = "externalId";
         return result;
     }
 }
