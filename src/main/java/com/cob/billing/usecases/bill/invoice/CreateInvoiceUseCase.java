@@ -11,14 +11,23 @@ import com.cob.billing.repositories.clinical.insurance.company.PatientInvoiceInt
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import com.cob.billing.repositories.clinical.session.ServiceLineRepository;
 import com.cob.billing.usecases.bill.invoice.cms.CreateCMSDocumentUseCase;
+import com.cob.billing.usecases.bill.invoice.cms.TestUseCase;
 import com.cob.billing.usecases.bill.invoice.record.CreateInvoiceRecordUseCase;
 import com.cob.billing.usecases.bill.invoice.record.MapInvoiceRecordUseCase;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfReader;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.utils.PdfMerger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -27,31 +36,15 @@ public class CreateInvoiceUseCase {
     @Autowired
     ChangeSessionStatusUseCase changeSessionStatusUseCase;
     @Autowired
-    PatientRepository patientRepository;
-
-    @Autowired
-    PatientInvoiceRepository patientInvoiceRepository;
-    @Autowired
-    PatientSessionRepository patientSessionRepository;
-    @Autowired
-    ServiceLineRepository serviceLineRepository;
-    @Autowired
     CreateCMSDocumentUseCase createCMSDocumentUseCase;
-    @Autowired
-    ModelMapper mapper;
-    @Autowired
-    PatientInvoiceExternalCompanyRepository patientInvoiceExternalCompanyRepository;
-    @Autowired
-    PatientInvoiceInternalCompanyRepository patientInvoiceInternalCompanyRepository;
-    @Autowired
-    InsuranceCompanyExternalRepository insuranceCompanyExternalRepository;
-    @Autowired
-    InsuranceCompanyRepository insuranceCompanyRepository;
-
     @Autowired
     CreateInvoiceRecordUseCase createInvoiceRecordUseCase;
     @Autowired
     MapInvoiceRecordUseCase mapInvoiceRecordUseCase;
+    @Autowired
+    TestUseCase testUseCase;
+    @Autowired
+    ResourceLoader resourceLoader;
 
     @Transactional
     public void create(InvoiceRequest invoiceRequest, HttpServletResponse response) throws IOException {
@@ -61,8 +54,9 @@ public class CreateInvoiceUseCase {
         mapInvoiceRecordUseCase.mapRecord(invoiceRequest.getInvoiceInsuranceCompanyInformation().getVisibility()
                 , invoiceRequest.getInvoiceInsuranceCompanyInformation().getName()
                 , createInvoiceRecordUseCase.patientInvoiceRecords);
+        List<String> files = testUseCase.test(invoiceRequest, createInvoiceRecordUseCase.patientInvoiceRecords);
         changeSessionStatus(invoiceRequest.getSelectedSessionServiceLine());
-        createCMSDocumentUseCase.create(invoiceRequest,response);
+        writeCMSDocumentToHttpResponse(response, files);
     }
 
     private void changeSessionStatus(List<SelectedSessionServiceLine> selectedSessionServiceLines) {
@@ -70,5 +64,19 @@ public class CreateInvoiceUseCase {
                 .forEach(serviceLine -> {
                     changeSessionStatusUseCase.change(serviceLine.getServiceLine());
                 });
+    }
+
+    private void writeCMSDocumentToHttpResponse(HttpServletResponse response, List<String> files) throws IOException {
+        PdfWriter writer = new PdfWriter(response.getOutputStream());
+        PdfDocument pdf = new PdfDocument(writer);
+        PdfMerger merger = new PdfMerger(pdf);
+        for(int i = 0 ; i < files.size() ; i ++){
+            File dd = new File(files.get(i));
+            PdfReader source = new PdfReader(dd);
+            PdfDocument sourceDoc = new PdfDocument(source);
+            merger.merge(sourceDoc, 1, sourceDoc.getNumberOfPages());
+            sourceDoc.close();
+        }
+        merger.close();
     }
 }

@@ -12,9 +12,7 @@ public class FillCMSDocumentUseCase {
     FillNonRepeatablePart fillNonRepeatablePart;
 
     public void fill(InvoiceRequest invoiceRequest, PdfAcroForm cmsForm) {
-        this.cmsForm = cmsForm;
-        fillNonRepeatablePart.cmsForm = cmsForm;
-        fillNonRepeatablePart.fill(invoiceRequest);
+        fillNonRepeatablePart.fill(invoiceRequest,cmsForm);
         customizeTemplate();
     }
 

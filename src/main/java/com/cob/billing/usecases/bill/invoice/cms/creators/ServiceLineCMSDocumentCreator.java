@@ -14,7 +14,8 @@ import java.util.List;
 public class ServiceLineCMSDocumentCreator {
     public PdfAcroForm cmsForm;
 
-    public void create(List<PatientInvoiceEntity> patientInvoices) {
+    public void create(List<PatientInvoiceEntity> patientInvoices,PdfAcroForm cmsForm) {
+        this.cmsForm = cmsForm;
         int counter = 1;
         double totalCharge = 0.0;
         DecimalFormat df = new DecimalFormat("#.00");

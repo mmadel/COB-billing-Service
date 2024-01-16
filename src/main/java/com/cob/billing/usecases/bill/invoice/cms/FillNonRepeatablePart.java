@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class FillNonRepeatablePart {
-    public PdfAcroForm cmsForm;
+    private PdfAcroForm cmsForm;
 
-    public void fill(InvoiceRequest invoiceRequest) {
+    public void fill(InvoiceRequest invoiceRequest ,PdfAcroForm cmsForm) {
+        this.cmsForm = cmsForm;
         cmsForm.getField(CMSFields.INSURANCE_ID).setValue(invoiceRequest.getInvoicePatientInsuredInformation().getPrimaryId());
         fillCarrier(invoiceRequest.getInvoiceInsuranceCompanyInformation());
         fillPatient(invoiceRequest.getPatientInformation());
