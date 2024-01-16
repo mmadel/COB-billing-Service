@@ -34,6 +34,11 @@ public class TestUseCase {
                 patientInvoiceRecords.stream()
                         .collect(Collectors.groupingBy(patientInvoice -> patientInvoice.getPatientSession().getDoctorInfo()));
 
+        Map<String, List<PatientInvoiceEntity>> casesGroup =
+                patientInvoiceRecords.stream()
+                        .collect(Collectors.groupingBy(patientInvoice -> patientInvoice.getPatientSession().getCaseTitle()));
+
+
         if (providersGroup.size() > 1) {
             for (Map.Entry<DoctorInfo, List<PatientInvoiceEntity>> entry : providersGroup.entrySet()) {
                 String fileName = "provider_" + entry.getKey().getDoctorNPI();
@@ -45,7 +50,24 @@ public class TestUseCase {
                 createCMSPdfDocumentResourceUseCase.closeResource();
                 fileNames.add(fileName);
             }
-        } else {
+        }
+        if (casesGroup.size() > 1) {
+            for (Map.Entry<String, List<PatientInvoiceEntity>> entry : casesGroup.entrySet()) {
+                String fileName = "case_" + entry.getKey();
+                createCMSPdfDocumentResourceUseCase.createResource(fileName);
+                fillNonRepeatablePart.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
+                serviceLineCMSDocumentCreator.create(entry.getValue(), createCMSPdfDocumentResourceUseCase.getForm());
+                DoctorInfo doctorInfo = patientInvoiceRecords.stream()
+                        .findFirst()
+                        .get()
+                        .getPatientSession().getDoctorInfo();
+                physicianCMSDocumentCreator.create(doctorInfo, createCMSPdfDocumentResourceUseCase.getForm());
+                createCMSPdfDocumentResourceUseCase.lockForm();
+                createCMSPdfDocumentResourceUseCase.closeResource();
+                fileNames.add(fileName);
+            }
+        }
+        if (!(providersGroup.size() > 1) && !(casesGroup.size() > 1)) {
             String fileName = "claim.pdf";
             createCMSPdfDocumentResourceUseCase.createResource(fileName);
             fillNonRepeatablePart.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());

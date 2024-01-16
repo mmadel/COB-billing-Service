@@ -1,5 +1,6 @@
 package com.cob.billing.model.clinical.patient.session;
 
+import com.cob.billing.model.admin.clinic.Clinic;
 import com.cob.billing.model.clinical.patient.CaseDiagnosis;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,7 @@ public class PatientSession {
     private Long  patientId;
     private DoctorInfo doctorInfo;
     private ClinicInfo clinicInfo;
+    private Clinic clinic;
     private Long serviceDate;
     private Long serviceStartTime;
     private Long serviceEndTime;

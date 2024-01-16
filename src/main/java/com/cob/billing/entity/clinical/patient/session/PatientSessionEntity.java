@@ -1,5 +1,7 @@
 package com.cob.billing.entity.clinical.patient.session;
 
+import com.cob.billing.entity.admin.ClinicEntity;
+import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyExternalEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.enums.PatientSessionStatus;
 import com.cob.billing.model.clinical.patient.CaseDiagnosis;
@@ -29,7 +31,7 @@ public class PatientSessionEntity {
     @Column(name = "id")
     private Long id;
     @ManyToOne
-    @JoinColumn(name="patient_id")
+    @JoinColumn(name = "patient_id")
     private PatientEntity patient;
     @Column(name = "doctor_info", columnDefinition = "json")
     @Type(type = "json")
@@ -38,6 +40,9 @@ public class PatientSessionEntity {
     @Column(name = "clinic_info", columnDefinition = "json")
     @Type(type = "json")
     private ClinicInfo clinicInfo;
+    @OneToOne
+    @JoinColumn(name = "clinic_id", referencedColumnName = "id")
+    ClinicEntity clinic;
     @Column(name = "service_date")
     private Long serviceDate;
     @Column(name = "service_start_time")
@@ -52,7 +57,7 @@ public class PatientSessionEntity {
     @Type(type = "json")
     private List<CaseDiagnosis> caseDiagnosis;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "session_id")
     private List<PatientSessionServiceLineEntity> serviceCodes;
 
@@ -61,7 +66,8 @@ public class PatientSessionEntity {
     private PatientSessionStatus status;
     @Column(name = "case_title")
     private String caseTitle;
-    public void addServiceCode(PatientSessionServiceLineEntity entity){
+
+    public void addServiceCode(PatientSessionServiceLineEntity entity) {
         this.serviceCodes.add(entity);
     }
 

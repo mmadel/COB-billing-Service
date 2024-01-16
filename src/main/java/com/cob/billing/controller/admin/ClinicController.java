@@ -53,8 +53,12 @@ public class ClinicController {
                                           @RequestParam(name = "limit") String limit) {
         Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
         return ResponseHandler
-                .generateResponse("Successfully find all patients",
+                .generateResponse("Successfully find all clinics",
                         HttpStatus.OK, null,
                         findClinicUseCase.findAll(paging));
+    }
+    @GetMapping("/find/all")
+    public ResponseEntity findAll(){
+        return new ResponseEntity(findClinicUseCase.findAll(),HttpStatus.OK);
     }
 }

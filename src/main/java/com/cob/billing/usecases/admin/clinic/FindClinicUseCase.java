@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Component
 public class FindClinicUseCase {
@@ -23,7 +24,7 @@ public class FindClinicUseCase {
     @Autowired
     ModelMapper mapper;
 
-    public ClinicResponse findAll(Pageable paging){
+    public ClinicResponse findAll(Pageable paging) {
         Page<ClinicEntity> pages = clinicRepository.findAll(paging);
         long total = (pages).getTotalElements();
         List<Clinic> records = pages.stream().map(clinic -> mapper.map(clinic, Clinic.class))
@@ -33,5 +34,14 @@ public class FindClinicUseCase {
                 .number_of_matching_records((int) total)
                 .records(records)
                 .build();
+    }
+
+    public List<Clinic> findAll() {
+        List<ClinicEntity> clinicEntities =
+                StreamSupport.stream(clinicRepository.findAll().spliterator(), false)
+                        .collect(Collectors.toList());
+        return clinicEntities.stream()
+                .map(clinic -> mapper.map(clinic, Clinic.class))
+                .collect(Collectors.toList());
     }
 }
