@@ -1,4 +1,4 @@
-package com.cob.billing.usecases.bill.invoice.cms;
+package com.cob.billing.usecases.bill.invoice.cms.filler;
 
 import com.cob.billing.model.bill.cms.CMSFields;
 import com.cob.billing.model.bill.invoice.tmp.*;
@@ -7,7 +7,7 @@ import com.itextpdf.forms.PdfAcroForm;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FillNonRepeatablePart {
+public class NotRepeatableCMSDocumentFiller {
     private PdfAcroForm cmsForm;
 
     public void fill(InvoiceRequest invoiceRequest ,PdfAcroForm cmsForm) {

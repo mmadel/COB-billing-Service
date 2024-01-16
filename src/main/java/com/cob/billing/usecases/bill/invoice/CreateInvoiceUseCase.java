@@ -2,32 +2,20 @@ package com.cob.billing.usecases.bill.invoice;
 
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
-import com.cob.billing.repositories.clinical.insurance.company.InsuranceCompanyExternalRepository;
-import com.cob.billing.repositories.clinical.insurance.company.InsuranceCompanyRepository;
-import com.cob.billing.repositories.bill.invoice.PatientInvoiceRepository;
-import com.cob.billing.repositories.clinical.PatientRepository;
-import com.cob.billing.repositories.clinical.insurance.company.PatientInvoiceExternalCompanyRepository;
-import com.cob.billing.repositories.clinical.insurance.company.PatientInvoiceInternalCompanyRepository;
-import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
-import com.cob.billing.repositories.clinical.session.ServiceLineRepository;
-import com.cob.billing.usecases.bill.invoice.cms.CreateCMSDocumentUseCase;
-import com.cob.billing.usecases.bill.invoice.cms.TestUseCase;
+import com.cob.billing.usecases.bill.invoice.cms.filler.FillCMSDocumentUseCase;
 import com.cob.billing.usecases.bill.invoice.record.CreateInvoiceRecordUseCase;
 import com.cob.billing.usecases.bill.invoice.record.MapInvoiceRecordUseCase;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.utils.PdfMerger;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -35,14 +23,13 @@ import java.util.List;
 public class CreateInvoiceUseCase {
     @Autowired
     ChangeSessionStatusUseCase changeSessionStatusUseCase;
-    @Autowired
-    CreateCMSDocumentUseCase createCMSDocumentUseCase;
+
     @Autowired
     CreateInvoiceRecordUseCase createInvoiceRecordUseCase;
     @Autowired
     MapInvoiceRecordUseCase mapInvoiceRecordUseCase;
     @Autowired
-    TestUseCase testUseCase;
+    FillCMSDocumentUseCase fillCMSDocumentUseCase;
     @Autowired
     ResourceLoader resourceLoader;
 
@@ -54,7 +41,7 @@ public class CreateInvoiceUseCase {
         mapInvoiceRecordUseCase.mapRecord(invoiceRequest.getInvoiceInsuranceCompanyInformation().getVisibility()
                 , invoiceRequest.getInvoiceInsuranceCompanyInformation().getName()
                 , createInvoiceRecordUseCase.patientInvoiceRecords);
-        List<String> files = testUseCase.test(invoiceRequest, createInvoiceRecordUseCase.patientInvoiceRecords);
+        List<String> files = fillCMSDocumentUseCase.fill(invoiceRequest, createInvoiceRecordUseCase.patientInvoiceRecords);
         changeSessionStatus(invoiceRequest.getSelectedSessionServiceLine());
         writeCMSDocumentToHttpResponse(response, files);
     }

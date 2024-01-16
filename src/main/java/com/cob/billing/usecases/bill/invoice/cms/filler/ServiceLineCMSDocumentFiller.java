@@ -1,4 +1,4 @@
-package com.cob.billing.usecases.bill.invoice.cms.creators;
+package com.cob.billing.usecases.bill.invoice.cms.filler;
 
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class ServiceLineCMSDocumentCreator {
+public class ServiceLineCMSDocumentFiller {
     public PdfAcroForm cmsForm;
 
     public void create(List<PatientInvoiceEntity> patientInvoices,PdfAcroForm cmsForm) {
