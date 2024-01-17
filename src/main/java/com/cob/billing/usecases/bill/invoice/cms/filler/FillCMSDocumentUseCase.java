@@ -6,10 +6,6 @@ import com.cob.billing.model.admin.clinic.Clinic;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.cob.billing.model.clinical.patient.session.DoctorInfo;
 import com.cob.billing.usecases.bill.invoice.cms.CreateCMSPdfDocumentResourceUseCase;
-import com.cob.billing.usecases.bill.invoice.cms.filler.LocationCMSDocumentFiller;
-import com.cob.billing.usecases.bill.invoice.cms.filler.NotRepeatableCMSDocumentFiller;
-import com.cob.billing.usecases.bill.invoice.cms.filler.PhysicianCMSDocumentFiller;
-import com.cob.billing.usecases.bill.invoice.cms.filler.ServiceLineCMSDocumentFiller;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -69,7 +65,7 @@ public class FillCMSDocumentUseCase {
                 fileNames.add(fileName);
             }
         }
-        if (casesGroup.size() > 1) {
+        else if (casesGroup.size() > 1) {
             for (Map.Entry<String, List<PatientInvoiceEntity>> entry : casesGroup.entrySet()) {
                 String fileName = "case_" + entry.getKey();
                 createCMSPdfDocumentResourceUseCase.createResource(fileName);
@@ -82,7 +78,7 @@ public class FillCMSDocumentUseCase {
                 fileNames.add(fileName);
             }
         }
-        if (clinicsGroup.size() > 1) {
+        else if (clinicsGroup.size() > 1) {
             for (Map.Entry<ClinicEntity, List<PatientInvoiceEntity>> entry : clinicsGroup.entrySet()) {
                 String fileName = "clinic_" + entry.getKey().getNpi();
                 createCMSPdfDocumentResourceUseCase.createResource(fileName);
@@ -97,7 +93,22 @@ public class FillCMSDocumentUseCase {
             }
 
         }
-        if (!(providersGroup.size() > 1) && !(casesGroup.size() > 1) && !(clinicsGroup.size() > 1)) {
+
+        else if ((!(providersGroup.size() > 1) && !(casesGroup.size() > 1) && !(clinicsGroup.size() > 1))
+                && (invoiceRequest.getInvoiceRequestConfiguration().getIsOneDateServicePerClaim() != null
+                && invoiceRequest.getInvoiceRequestConfiguration().getIsOneDateServicePerClaim())) {
+            for (Map.Entry<Long, List<PatientInvoiceEntity>> entry : datesGroup.entrySet()) {
+                String fileName = "date_" + entry.getKey();
+                createCMSPdfDocumentResourceUseCase.createResource(fileName);
+                notRepeatableCMSDocumentFiller.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
+                serviceLineCMSDocumentFiller.create(entry.getValue(), createCMSPdfDocumentResourceUseCase.getForm());
+                physicianCMSDocumentFiller.create(getDoctorInfo(patientInvoiceRecords), createCMSPdfDocumentResourceUseCase.getForm());
+                locationCMSDocumentFiller.create(getClinic(patientInvoiceRecords), createCMSPdfDocumentResourceUseCase.getForm());
+                createCMSPdfDocumentResourceUseCase.lockForm();
+                createCMSPdfDocumentResourceUseCase.closeResource();
+                fileNames.add(fileName);
+            }
+        }else {
             String fileName = "claim.pdf";
             createCMSPdfDocumentResourceUseCase.createResource(fileName);
             notRepeatableCMSDocumentFiller.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
@@ -107,22 +118,6 @@ public class FillCMSDocumentUseCase {
             createCMSPdfDocumentResourceUseCase.lockForm();
             createCMSPdfDocumentResourceUseCase.closeResource();
             fileNames.add(fileName);
-
-        }
-        if ((!(providersGroup.size() > 1) && !(casesGroup.size() > 1) && !(clinicsGroup.size() > 1))
-                && (invoiceRequest.getInvoiceRequestConfiguration().getIsOneDateServicePerClaim() != null
-                && invoiceRequest.getInvoiceRequestConfiguration().getIsOneDateServicePerClaim())) {
-            for (Map.Entry<Long, List<PatientInvoiceEntity>> entry : datesGroup.entrySet()) {
-                String fileName = "date_" + entry.getKey();
-                createCMSPdfDocumentResourceUseCase.createResource(fileName);
-                serviceLineCMSDocumentFiller.create(entry.getValue(), createCMSPdfDocumentResourceUseCase.getForm());
-
-                physicianCMSDocumentFiller.create(getDoctorInfo(patientInvoiceRecords), createCMSPdfDocumentResourceUseCase.getForm());
-
-                locationCMSDocumentFiller.create(getClinic(patientInvoiceRecords), createCMSPdfDocumentResourceUseCase.getForm());
-                createCMSPdfDocumentResourceUseCase.lockForm();
-                createCMSPdfDocumentResourceUseCase.closeResource();
-            }
         }
         return fileNames;
     }

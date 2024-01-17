@@ -1,5 +1,6 @@
 package com.cob.billing.usecases.bill.invoice;
 
+import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.cob.billing.usecases.bill.invoice.cms.filler.FillCMSDocumentUseCase;
@@ -41,9 +42,10 @@ public class CreateInvoiceUseCase {
         mapInvoiceRecordUseCase.mapRecord(invoiceRequest.getInvoiceInsuranceCompanyInformation().getVisibility()
                 , invoiceRequest.getInvoiceInsuranceCompanyInformation().getName()
                 , createInvoiceRecordUseCase.patientInvoiceRecords);
-        List<String> files = fillCMSDocumentUseCase.fill(invoiceRequest, createInvoiceRecordUseCase.patientInvoiceRecords);
+
         changeSessionStatus(invoiceRequest.getSelectedSessionServiceLine());
-        writeCMSDocumentToHttpResponse(response, files);
+
+        createSMCDocument(invoiceRequest, createInvoiceRecordUseCase.patientInvoiceRecords, response);
     }
 
     private void changeSessionStatus(List<SelectedSessionServiceLine> selectedSessionServiceLines) {
@@ -53,16 +55,23 @@ public class CreateInvoiceUseCase {
                 });
     }
 
+    private void createSMCDocument(InvoiceRequest invoiceRequest, List<PatientInvoiceEntity> patientInvoiceRecords
+            , HttpServletResponse response) throws IOException {
+        List<String> files = fillCMSDocumentUseCase.fill(invoiceRequest, patientInvoiceRecords);
+        writeCMSDocumentToHttpResponse(response, files);
+    }
+
     private void writeCMSDocumentToHttpResponse(HttpServletResponse response, List<String> files) throws IOException {
         PdfWriter writer = new PdfWriter(response.getOutputStream());
         PdfDocument pdf = new PdfDocument(writer);
         PdfMerger merger = new PdfMerger(pdf);
-        for(int i = 0 ; i < files.size() ; i ++){
+        for (int i = 0; i < files.size(); i++) {
             File dd = new File(files.get(i));
             PdfReader source = new PdfReader(dd);
             PdfDocument sourceDoc = new PdfDocument(source);
             merger.merge(sourceDoc, 1, sourceDoc.getNumberOfPages());
             sourceDoc.close();
+            dd.delete();
         }
         merger.close();
     }
