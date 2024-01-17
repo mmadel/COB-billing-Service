@@ -16,26 +16,30 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Main {
     static File ddd = new File("C:\\cob\\documents\\billing\\form-cms1500.pdf");
 
     public static void main(String[] args) throws IOException {
-        PdfReader reader = new PdfReader(ddd);
-        PdfDocument existingPdf = new PdfDocument(reader, new PdfWriter("filled-form.pdf"));
-
-        PdfAcroForm cmsForm = PdfAcroForm.getAcroForm(existingPdf, true);
-        existingPdf.removePage(2);
-        cmsForm.getField("pt_name").setValue("mohamed ahmed");
-        cmsForm.flattenFields();
-        for (Map.Entry<String, PdfFormField> entry : cmsForm.getAllFormFields().entrySet()) {
-            entry.getValue().getFontSize();
-            System.out.println(entry.getKey() + " " + entry.getValue().getDisplayValue());
-        }
-//        createNewDoc();
-        existingPdf.close();
-        reader.close();
+        groupList();
+//        PdfReader reader = new PdfReader(ddd);
+//        PdfDocument existingPdf = new PdfDocument(reader, new PdfWriter("filled-form.pdf"));
+//
+//        PdfAcroForm cmsForm = PdfAcroForm.getAcroForm(existingPdf, true);
+//        existingPdf.removePage(2);
+//        cmsForm.getField("pt_name").setValue("mohamed ahmed");
+//        cmsForm.flattenFields();
+//        for (Map.Entry<String, PdfFormField> entry : cmsForm.getAllFormFields().entrySet()) {
+//            entry.getValue().getFontSize();
+//            System.out.println(entry.getKey() + " " + entry.getValue().getDisplayValue());
+//        }
+//        existingPdf.close();
+//        reader.close();
 
 //        PdfDocument pdf = new PdfDocument(new PdfWriter("final.pdf"));
 //        PdfMerger merger = new PdfMerger(pdf);
@@ -67,6 +71,35 @@ public class Main {
         cmsForm.flattenFields();
         document.close();
 
+    }
+    private static void groupList(){
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        list.add(5);
+        list.add(6);
+        list.add(7);
+        list.add(8);
+        list.add(9);
+        list.add(10);
+        list.add(11);
+        list.add(12);
+        list.add(13);
+        list.add(14);
+        list.add(15);
+        list.add(16);
+        list.add(17);
+        list.add(18);
+        list.add(19);
+        list.add(20);
+
+        int chunkSize = 6;
+        List<List<Integer>> groupedLists = IntStream.range(0, (list.size() + chunkSize - 1) / chunkSize)
+                .mapToObj(i -> list.subList(i * chunkSize, Math.min((i + 1) * chunkSize, list.size())))
+                .collect(Collectors.toList());
+        System.out.println();
     }
 
 }

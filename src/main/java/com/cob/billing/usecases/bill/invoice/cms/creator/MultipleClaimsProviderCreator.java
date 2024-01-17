@@ -2,13 +2,13 @@ package com.cob.billing.usecases.bill.invoice.cms.creator;
 
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
+import com.cob.billing.model.clinical.patient.session.DoctorInfo;
 import com.cob.billing.usecases.bill.invoice.cms.CreateCMSPdfDocumentResourceUseCase;
 import com.cob.billing.usecases.bill.invoice.cms.filler.LocationCMSDocumentFiller;
 import com.cob.billing.usecases.bill.invoice.cms.filler.NotRepeatableCMSDocumentFiller;
 import com.cob.billing.usecases.bill.invoice.cms.filler.PhysicianCMSDocumentFiller;
 import com.cob.billing.usecases.bill.invoice.cms.filler.ServiceLineCMSDocumentFiller;
 import com.cob.billing.usecases.bill.invoice.cms.finder.ClinicModelFinder;
-import com.cob.billing.usecases.bill.invoice.cms.finder.ProviderModelFinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class MultipleDatesPerClaimCreator {
+public class MultipleClaimsProviderCreator {
     @Autowired
     private CreateCMSPdfDocumentResourceUseCase createCMSPdfDocumentResourceUseCase;
     @Autowired
@@ -31,18 +31,18 @@ public class MultipleDatesPerClaimCreator {
     @Autowired
     private LocationCMSDocumentFiller locationCMSDocumentFiller;
 
-    private Map<Long, List<PatientInvoiceEntity>> dates;
+    private Map<DoctorInfo, List<PatientInvoiceEntity>> providers;
 
     public List<String> create(InvoiceRequest invoiceRequest, List<PatientInvoiceEntity> patientInvoiceRecords) throws IOException {
         List<String> fileNames = new ArrayList<>();
         group(patientInvoiceRecords);
-        if (isMultiple()) {
-            for (Map.Entry<Long, List<PatientInvoiceEntity>> entry : dates.entrySet()) {
-                String fileName = "date_" + entry.getKey();
+        if(isMultiple()){
+            for (Map.Entry<DoctorInfo, List<PatientInvoiceEntity>> entry : providers.entrySet()) {
+                String fileName = "provider_" + entry.getKey().getDoctorNPI();
                 createCMSPdfDocumentResourceUseCase.createResource(fileName);
                 notRepeatableCMSDocumentFiller.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
                 serviceLineCMSDocumentFiller.create(entry.getValue(), createCMSPdfDocumentResourceUseCase.getForm());
-                physicianCMSDocumentFiller.create(ProviderModelFinder.find(patientInvoiceRecords), createCMSPdfDocumentResourceUseCase.getForm());
+                physicianCMSDocumentFiller.create(entry.getKey(), createCMSPdfDocumentResourceUseCase.getForm());
                 locationCMSDocumentFiller.create(ClinicModelFinder.find(patientInvoiceRecords), createCMSPdfDocumentResourceUseCase.getForm());
                 createCMSPdfDocumentResourceUseCase.lockForm();
                 createCMSPdfDocumentResourceUseCase.closeResource();
@@ -53,11 +53,12 @@ public class MultipleDatesPerClaimCreator {
     }
 
     private void group(List<PatientInvoiceEntity> patientInvoiceRecords) {
-        dates = patientInvoiceRecords.stream()
-                .collect(Collectors.groupingBy(patientInvoice -> patientInvoice.getPatientSession().getServiceDate()));
+        providers =
+                patientInvoiceRecords.stream()
+                        .collect(Collectors.groupingBy(patientInvoice -> patientInvoice.getPatientSession().getDoctorInfo()));
     }
 
     private boolean isMultiple() {
-        return dates.size() > 1 ? true : false;
+        return providers.size() > 1 ? true : false;
     }
 }

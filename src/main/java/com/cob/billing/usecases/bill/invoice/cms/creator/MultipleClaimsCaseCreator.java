@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class MultipleCasesPerClaimCreator {
+public class MultipleClaimsCaseCreator {
     @Autowired
     private CreateCMSPdfDocumentResourceUseCase createCMSPdfDocumentResourceUseCase;
     @Autowired

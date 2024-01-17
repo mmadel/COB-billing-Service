@@ -15,28 +15,32 @@ import java.util.List;
 @Component
 public class FillCMSDocumentUseCase {
     @Autowired
-    MultipleProvidersPerClaimCreator multipleProvidersPerClaimCreator;
+    MultipleClaimsProviderCreator multipleClaimsProviderCreator;
     @Autowired
-    MultipleClinicsPerClaimCreator multipleClinicsPerClaimCreator;
+    MultipleClaimsClinicCreator multipleClaimsClinicCreator;
     @Autowired
-    MultipleCasesPerClaimCreator multipleCasesPerClaimCreator;
+    MultipleClaimsCaseCreator multipleClaimsCaseCreator;
     @Autowired
-    MultipleDatesPerClaimCreator multipleDatesPerClaimCreator;
+    MultipleClaimsDateCreator multipleClaimsDateCreator;
     @Autowired
     SingleClaimCreator singleClaimCreator;
+    @Autowired
+    MultipleClaimsLineCreator multipleClaimsLineCreator;
+
     DateServiceClaim dateServiceClaim;
 
     public List<String> fill(InvoiceRequest invoiceRequest, List<PatientInvoiceEntity> patientInvoiceRecords) throws IOException {
         checkIsDatePerClaim(invoiceRequest.getInvoiceRequestConfiguration());
         List<String> fileNames = new ArrayList<>();
-        fileNames.addAll(multipleProvidersPerClaimCreator.create(invoiceRequest, patientInvoiceRecords));
-        fileNames.addAll(multipleClinicsPerClaimCreator.create(invoiceRequest, patientInvoiceRecords));
-        fileNames.addAll(multipleCasesPerClaimCreator.create(invoiceRequest, patientInvoiceRecords));
+        fileNames.addAll(multipleClaimsProviderCreator.create(invoiceRequest, patientInvoiceRecords));
+        fileNames.addAll(multipleClaimsClinicCreator.create(invoiceRequest, patientInvoiceRecords));
+        fileNames.addAll(multipleClaimsCaseCreator.create(invoiceRequest, patientInvoiceRecords));
+        fileNames.addAll(multipleClaimsLineCreator.create(invoiceRequest, patientInvoiceRecords));
 
         if (!(fileNames.size() > 1)) {
             switch (dateServiceClaim) {
                 case Per_Date:
-                    fileNames.addAll(multipleDatesPerClaimCreator.create(invoiceRequest, patientInvoiceRecords));
+                    fileNames.addAll(multipleClaimsDateCreator.create(invoiceRequest, patientInvoiceRecords));
                     break;
                 case All:
                     fileNames.addAll(singleClaimCreator.create(invoiceRequest, patientInvoiceRecords));
