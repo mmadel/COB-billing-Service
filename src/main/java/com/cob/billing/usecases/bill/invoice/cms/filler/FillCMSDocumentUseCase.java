@@ -1,138 +1,58 @@
 package com.cob.billing.usecases.bill.invoice.cms.filler;
 
-import com.cob.billing.entity.admin.ClinicEntity;
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
-import com.cob.billing.model.admin.clinic.Clinic;
+import com.cob.billing.enums.DateServiceClaim;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
-import com.cob.billing.model.clinical.patient.session.DoctorInfo;
-import com.cob.billing.usecases.bill.invoice.cms.CreateCMSPdfDocumentResourceUseCase;
-import org.modelmapper.ModelMapper;
+import com.cob.billing.model.bill.invoice.tmp.InvoiceRequestConfiguration;
+import com.cob.billing.usecases.bill.invoice.cms.creator.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class FillCMSDocumentUseCase {
-
     @Autowired
-    CreateCMSPdfDocumentResourceUseCase createCMSPdfDocumentResourceUseCase;
+    MultipleProvidersPerClaimCreator multipleProvidersPerClaimCreator;
     @Autowired
-    NotRepeatableCMSDocumentFiller notRepeatableCMSDocumentFiller;
+    MultipleClinicsPerClaimCreator multipleClinicsPerClaimCreator;
     @Autowired
-    ServiceLineCMSDocumentFiller serviceLineCMSDocumentFiller;
+    MultipleCasesPerClaimCreator multipleCasesPerClaimCreator;
     @Autowired
-    PhysicianCMSDocumentFiller physicianCMSDocumentFiller;
+    MultipleDatesPerClaimCreator multipleDatesPerClaimCreator;
     @Autowired
-    LocationCMSDocumentFiller locationCMSDocumentFiller;
-    @Autowired
-    ModelMapper mapper;
-
+    SingleClaimCreator singleClaimCreator;
+    DateServiceClaim dateServiceClaim;
 
     public List<String> fill(InvoiceRequest invoiceRequest, List<PatientInvoiceEntity> patientInvoiceRecords) throws IOException {
+        checkIsDatePerClaim(invoiceRequest.getInvoiceRequestConfiguration());
         List<String> fileNames = new ArrayList<>();
-        Map<DoctorInfo, List<PatientInvoiceEntity>> providersGroup =
-                patientInvoiceRecords.stream()
-                        .collect(Collectors.groupingBy(patientInvoice -> patientInvoice.getPatientSession().getDoctorInfo()));
+        fileNames.addAll(multipleProvidersPerClaimCreator.create(invoiceRequest, patientInvoiceRecords));
+        fileNames.addAll(multipleClinicsPerClaimCreator.create(invoiceRequest, patientInvoiceRecords));
+        fileNames.addAll(multipleCasesPerClaimCreator.create(invoiceRequest, patientInvoiceRecords));
 
-        Map<String, List<PatientInvoiceEntity>> casesGroup =
-                patientInvoiceRecords.stream()
-                        .collect(Collectors.groupingBy(patientInvoice -> patientInvoice.getPatientSession().getCaseTitle()));
-
-        Map<ClinicEntity, List<PatientInvoiceEntity>> clinicsGroup =
-                patientInvoiceRecords.stream()
-                        .collect(Collectors.groupingBy(patientInvoice -> patientInvoice.getPatientSession().getClinic()));
-
-        Map<Long, List<PatientInvoiceEntity>> datesGroup =
-                patientInvoiceRecords.stream()
-                        .collect(Collectors.groupingBy(patientInvoice -> patientInvoice.getPatientSession().getServiceDate()));
-
-
-        if (providersGroup.size() > 1) {
-            for (Map.Entry<DoctorInfo, List<PatientInvoiceEntity>> entry : providersGroup.entrySet()) {
-                String fileName = "provider_" + entry.getKey().getDoctorNPI();
-                createCMSPdfDocumentResourceUseCase.createResource(fileName);
-                notRepeatableCMSDocumentFiller.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
-                serviceLineCMSDocumentFiller.create(entry.getValue(), createCMSPdfDocumentResourceUseCase.getForm());
-                physicianCMSDocumentFiller.create(entry.getKey(), createCMSPdfDocumentResourceUseCase.getForm());
-                locationCMSDocumentFiller.create(getClinic(patientInvoiceRecords), createCMSPdfDocumentResourceUseCase.getForm());
-                createCMSPdfDocumentResourceUseCase.lockForm();
-                createCMSPdfDocumentResourceUseCase.closeResource();
-                fileNames.add(fileName);
+        if (!(fileNames.size() > 1)) {
+            switch (dateServiceClaim) {
+                case Per_Date:
+                    fileNames.addAll(multipleDatesPerClaimCreator.create(invoiceRequest, patientInvoiceRecords));
+                    break;
+                case All:
+                    fileNames.addAll(singleClaimCreator.create(invoiceRequest, patientInvoiceRecords));
             }
-        }
-        else if (casesGroup.size() > 1) {
-            for (Map.Entry<String, List<PatientInvoiceEntity>> entry : casesGroup.entrySet()) {
-                String fileName = "case_" + entry.getKey();
-                createCMSPdfDocumentResourceUseCase.createResource(fileName);
-                notRepeatableCMSDocumentFiller.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
-                serviceLineCMSDocumentFiller.create(entry.getValue(), createCMSPdfDocumentResourceUseCase.getForm());
-                physicianCMSDocumentFiller.create(getDoctorInfo(patientInvoiceRecords), createCMSPdfDocumentResourceUseCase.getForm());
-                locationCMSDocumentFiller.create(getClinic(patientInvoiceRecords), createCMSPdfDocumentResourceUseCase.getForm());
-                createCMSPdfDocumentResourceUseCase.lockForm();
-                createCMSPdfDocumentResourceUseCase.closeResource();
-                fileNames.add(fileName);
-            }
-        }
-        else if (clinicsGroup.size() > 1) {
-            for (Map.Entry<ClinicEntity, List<PatientInvoiceEntity>> entry : clinicsGroup.entrySet()) {
-                String fileName = "clinic_" + entry.getKey().getNpi();
-                createCMSPdfDocumentResourceUseCase.createResource(fileName);
-                notRepeatableCMSDocumentFiller.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
-                serviceLineCMSDocumentFiller.create(entry.getValue(), createCMSPdfDocumentResourceUseCase.getForm());
-                physicianCMSDocumentFiller.create(getDoctorInfo(patientInvoiceRecords), createCMSPdfDocumentResourceUseCase.getForm());
-                Clinic clinic = mapper.map(entry.getKey(), Clinic.class);
-                locationCMSDocumentFiller.create(clinic, createCMSPdfDocumentResourceUseCase.getForm());
-                createCMSPdfDocumentResourceUseCase.lockForm();
-                createCMSPdfDocumentResourceUseCase.closeResource();
-                fileNames.add(fileName);
-            }
-
-        }
-
-        else if ((!(providersGroup.size() > 1) && !(casesGroup.size() > 1) && !(clinicsGroup.size() > 1))
-                && (invoiceRequest.getInvoiceRequestConfiguration().getIsOneDateServicePerClaim() != null
-                && invoiceRequest.getInvoiceRequestConfiguration().getIsOneDateServicePerClaim())) {
-            for (Map.Entry<Long, List<PatientInvoiceEntity>> entry : datesGroup.entrySet()) {
-                String fileName = "date_" + entry.getKey();
-                createCMSPdfDocumentResourceUseCase.createResource(fileName);
-                notRepeatableCMSDocumentFiller.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
-                serviceLineCMSDocumentFiller.create(entry.getValue(), createCMSPdfDocumentResourceUseCase.getForm());
-                physicianCMSDocumentFiller.create(getDoctorInfo(patientInvoiceRecords), createCMSPdfDocumentResourceUseCase.getForm());
-                locationCMSDocumentFiller.create(getClinic(patientInvoiceRecords), createCMSPdfDocumentResourceUseCase.getForm());
-                createCMSPdfDocumentResourceUseCase.lockForm();
-                createCMSPdfDocumentResourceUseCase.closeResource();
-                fileNames.add(fileName);
-            }
-        }else {
-            String fileName = "claim.pdf";
-            createCMSPdfDocumentResourceUseCase.createResource(fileName);
-            notRepeatableCMSDocumentFiller.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
-            serviceLineCMSDocumentFiller.create(patientInvoiceRecords, createCMSPdfDocumentResourceUseCase.getForm());
-            physicianCMSDocumentFiller.create(getDoctorInfo(patientInvoiceRecords), createCMSPdfDocumentResourceUseCase.getForm());
-            locationCMSDocumentFiller.create(getClinic(patientInvoiceRecords), createCMSPdfDocumentResourceUseCase.getForm());
-            createCMSPdfDocumentResourceUseCase.lockForm();
-            createCMSPdfDocumentResourceUseCase.closeResource();
-            fileNames.add(fileName);
         }
         return fileNames;
     }
 
-    private DoctorInfo getDoctorInfo(List<PatientInvoiceEntity> patientInvoiceRecords) {
-        return patientInvoiceRecords.stream()
-                .findFirst()
-                .get()
-                .getPatientSession().getDoctorInfo();
-    }
-
-    private Clinic getClinic(List<PatientInvoiceEntity> patientInvoiceRecords) {
-        return mapper.map(patientInvoiceRecords.stream()
-                .findFirst()
-                .get()
-                .getPatientSession().getClinic(), Clinic.class);
+    private void checkIsDatePerClaim(InvoiceRequestConfiguration invoiceRequestConfiguration) {
+        if (invoiceRequestConfiguration.getIsOneDateServicePerClaim() != null) {
+            if (!invoiceRequestConfiguration.getIsOneDateServicePerClaim())
+                dateServiceClaim = DateServiceClaim.All;
+            if (invoiceRequestConfiguration.getIsOneDateServicePerClaim())
+                dateServiceClaim = DateServiceClaim.Per_Date;
+        } else {
+            dateServiceClaim = DateServiceClaim.All;
+        }
     }
 }
