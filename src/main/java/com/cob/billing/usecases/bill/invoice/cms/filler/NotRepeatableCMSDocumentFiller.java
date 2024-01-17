@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class NotRepeatableCMSDocumentFiller {
     private PdfAcroForm cmsForm;
 
-    public void fill(InvoiceRequest invoiceRequest ,PdfAcroForm cmsForm) {
+    public void fill(InvoiceRequest invoiceRequest, PdfAcroForm cmsForm) {
         this.cmsForm = cmsForm;
         cmsForm.getField(CMSFields.INSURANCE_ID).setValue(invoiceRequest.getInvoicePatientInsuredInformation().getPrimaryId());
         fillCarrier(invoiceRequest.getInvoiceInsuranceCompanyInformation());
@@ -55,35 +55,39 @@ public class NotRepeatableCMSDocumentFiller {
                 .replace(")", "")
                 .replace("-", ""));
 
-        if (patientInformation.getPatientAdvancedInformation().getUnableToWorkStartDate() != null
-                && patientInformation.getPatientAdvancedInformation().getUnableToWorkEndDate() != null) {
-            String[] unableToWorkDateStartDate = DateConstructor.construct(patientInformation.getPatientAdvancedInformation().getUnableToWorkStartDate());
-            String[] unableToWorkDateEndDate = DateConstructor.construct(patientInformation.getPatientAdvancedInformation().getUnableToWorkEndDate());
-            cmsForm.getField("work_mm_from").setValue(unableToWorkDateStartDate[0]);
-            cmsForm.getField("work_dd_from").setValue(unableToWorkDateStartDate[1]);
-            cmsForm.getField("work_yy_from").setValue(unableToWorkDateStartDate[2]);
+        if (patientInformation.getPatientAdvancedInformation() != null) {
+            if (patientInformation.getPatientAdvancedInformation().getUnableToWorkStartDate() != null
+                    && patientInformation.getPatientAdvancedInformation().getUnableToWorkEndDate() != null) {
+                String[] unableToWorkDateStartDate = DateConstructor.construct(patientInformation.getPatientAdvancedInformation().getUnableToWorkStartDate());
+                String[] unableToWorkDateEndDate = DateConstructor.construct(patientInformation.getPatientAdvancedInformation().getUnableToWorkEndDate());
+                cmsForm.getField("work_mm_from").setValue(unableToWorkDateStartDate[0]);
+                cmsForm.getField("work_dd_from").setValue(unableToWorkDateStartDate[1]);
+                cmsForm.getField("work_yy_from").setValue(unableToWorkDateStartDate[2]);
 
-            cmsForm.getField("work_mm_end").setValue(unableToWorkDateEndDate[0]);
-            cmsForm.getField("work_dd_end").setValue(unableToWorkDateEndDate[1]);
-            cmsForm.getField("work_yy_end").setValue(unableToWorkDateEndDate[2]);
+                cmsForm.getField("work_mm_end").setValue(unableToWorkDateEndDate[0]);
+                cmsForm.getField("work_dd_end").setValue(unableToWorkDateEndDate[1]);
+                cmsForm.getField("work_yy_end").setValue(unableToWorkDateEndDate[2]);
+            }
+
+            if (patientInformation.getPatientAdvancedInformation().getHospitalizedStartDate() != null
+                    && patientInformation.getPatientAdvancedInformation().getHospitalizedEndDate() != null) {
+                String[] hospitalizedStartDate = DateConstructor.construct(patientInformation.getPatientAdvancedInformation().getHospitalizedStartDate());
+                String[] hospitalizedEndDate = DateConstructor.construct(patientInformation.getPatientAdvancedInformation().getHospitalizedEndDate());
+                cmsForm.getField("hosp_mm_from").setValue(hospitalizedStartDate[0]);
+                cmsForm.getField("hosp_dd_from").setValue(hospitalizedStartDate[1]);
+                cmsForm.getField("hosp_yy_from").setValue(hospitalizedStartDate[2]);
+
+                cmsForm.getField("hosp_mm_end").setValue(hospitalizedEndDate[0]);
+                cmsForm.getField("hosp_dd_end").setValue(hospitalizedEndDate[1]);
+                cmsForm.getField("hosp_yy_end").setValue(hospitalizedEndDate[2]);
+            }
+            if (patientInformation.getPatientAdvancedInformation().getPateintAdvancedCondtion() != null) {
+                cmsForm.getField("employment").setValue(patientInformation.getPatientAdvancedInformation().getPateintAdvancedCondtion().isEmployment() ? "YES" : "NO", false);
+                cmsForm.getField("pt_auto_accident").setValue(patientInformation.getPatientAdvancedInformation().getPateintAdvancedCondtion().isAutoAccident() ? "YES" : "NO", false);
+                cmsForm.getField("other_accident").setValue(patientInformation.getPatientAdvancedInformation().getPateintAdvancedCondtion().isOtherAccident() ? "YES" : "NO", false);
+                cmsForm.getField("accident_place").setValue("");
+            }
         }
-
-        if (patientInformation.getPatientAdvancedInformation().getHospitalizedStartDate() != null
-                && patientInformation.getPatientAdvancedInformation().getHospitalizedEndDate() != null) {
-            String[] hospitalizedStartDate = DateConstructor.construct(patientInformation.getPatientAdvancedInformation().getHospitalizedStartDate());
-            String[] hospitalizedEndDate = DateConstructor.construct(patientInformation.getPatientAdvancedInformation().getHospitalizedEndDate());
-            cmsForm.getField("hosp_mm_from").setValue(hospitalizedStartDate[0]);
-            cmsForm.getField("hosp_dd_from").setValue(hospitalizedStartDate[1]);
-            cmsForm.getField("hosp_yy_from").setValue(hospitalizedStartDate[2]);
-
-            cmsForm.getField("hosp_mm_end").setValue(hospitalizedEndDate[0]);
-            cmsForm.getField("hosp_dd_end").setValue(hospitalizedEndDate[1]);
-            cmsForm.getField("hosp_yy_end").setValue(hospitalizedEndDate[2]);
-        }
-        cmsForm.getField("employment").setValue(patientInformation.getPatientAdvancedInformation().getPateintAdvancedCondtion().isEmployment() ? "YES" : "NO", false);
-        cmsForm.getField("pt_auto_accident").setValue(patientInformation.getPatientAdvancedInformation().getPateintAdvancedCondtion().isAutoAccident() ? "YES" : "NO", false);
-        cmsForm.getField("other_accident").setValue(patientInformation.getPatientAdvancedInformation().getPateintAdvancedCondtion().isOtherAccident() ? "YES" : "NO", false);
-        cmsForm.getField("accident_place").setValue("");
     }
 
     private void fillPatientInsured(InvoicePatientInsuredInformation invoicePatientInsuredInformation) {

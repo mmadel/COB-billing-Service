@@ -1,4 +1,4 @@
-package com.cob.billing.usecases.bill.invoice.cms.creator;
+package com.cob.billing.usecases.bill.invoice.cms.checker;
 
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 

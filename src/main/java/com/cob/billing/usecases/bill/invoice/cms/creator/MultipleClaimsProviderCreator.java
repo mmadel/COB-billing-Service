@@ -4,6 +4,7 @@ import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.cob.billing.model.clinical.patient.session.DoctorInfo;
 import com.cob.billing.usecases.bill.invoice.cms.CreateCMSPdfDocumentResourceUseCase;
+import com.cob.billing.usecases.bill.invoice.cms.checker.ServiceLineExceedChunkChecker;
 import com.cob.billing.usecases.bill.invoice.cms.filler.LocationCMSDocumentFiller;
 import com.cob.billing.usecases.bill.invoice.cms.filler.NotRepeatableCMSDocumentFiller;
 import com.cob.billing.usecases.bill.invoice.cms.filler.PhysicianCMSDocumentFiller;
@@ -70,6 +71,6 @@ public class MultipleClaimsProviderCreator {
     }
 
     private boolean isMultiple() {
-        return providers.size() > 1 ? true : false;
+        return providers.size() > 1;
     }
 }

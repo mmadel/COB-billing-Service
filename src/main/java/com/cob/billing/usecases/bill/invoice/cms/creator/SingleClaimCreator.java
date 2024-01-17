@@ -2,13 +2,7 @@ package com.cob.billing.usecases.bill.invoice.cms.creator;
 
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
-import com.cob.billing.usecases.bill.invoice.cms.CreateCMSPdfDocumentResourceUseCase;
-import com.cob.billing.usecases.bill.invoice.cms.filler.LocationCMSDocumentFiller;
-import com.cob.billing.usecases.bill.invoice.cms.filler.NotRepeatableCMSDocumentFiller;
-import com.cob.billing.usecases.bill.invoice.cms.filler.PhysicianCMSDocumentFiller;
-import com.cob.billing.usecases.bill.invoice.cms.filler.ServiceLineCMSDocumentFiller;
-import com.cob.billing.usecases.bill.invoice.cms.finder.ClinicModelFinder;
-import com.cob.billing.usecases.bill.invoice.cms.finder.ProviderModelFinder;
+import com.cob.billing.usecases.bill.invoice.cms.checker.ServiceLineExceedChunkChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,28 +13,25 @@ import java.util.List;
 
 @Component
 public class SingleClaimCreator {
-    @Autowired
-    private CreateCMSPdfDocumentResourceUseCase createCMSPdfDocumentResourceUseCase;
-    @Autowired
-    private NotRepeatableCMSDocumentFiller notRepeatableCMSDocumentFiller;
-    @Autowired
-    private ServiceLineCMSDocumentFiller serviceLineCMSDocumentFiller;
-    @Autowired
-    private PhysicianCMSDocumentFiller physicianCMSDocumentFiller;
-    @Autowired
-    private LocationCMSDocumentFiller locationCMSDocumentFiller;
 
-    public List<String> create(InvoiceRequest invoiceRequest, List<PatientInvoiceEntity> patientInvoiceRecords) throws IOException {
+    @Autowired
+    FilesClaimCreator filesClaimCreator;
+
+    public List<String> create(List<PatientInvoiceEntity> invoices,
+                               InvoiceRequest invoiceRequest) throws IOException {
         List<String> fileNames = new ArrayList<>();
-        String fileName = "claim.pdf";
-        createCMSPdfDocumentResourceUseCase.createResource(fileName);
-        notRepeatableCMSDocumentFiller.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
-        serviceLineCMSDocumentFiller.create(patientInvoiceRecords, createCMSPdfDocumentResourceUseCase.getForm());
-        physicianCMSDocumentFiller.create(ProviderModelFinder.find(patientInvoiceRecords), createCMSPdfDocumentResourceUseCase.getForm());
-        locationCMSDocumentFiller.create(ClinicModelFinder.find(patientInvoiceRecords), createCMSPdfDocumentResourceUseCase.getForm());
-        createCMSPdfDocumentResourceUseCase.lockForm();
-        createCMSPdfDocumentResourceUseCase.closeResource();
-        fileNames.add(fileName);
+        generate(invoices, invoiceRequest, fileNames);
         return fileNames;
+    }
+
+    private void generate(List<PatientInvoiceEntity> invoices,
+                          InvoiceRequest invoiceRequest, List<String> fileNames) throws IOException {
+
+        List<List<PatientInvoiceEntity>> serviceLinesChunks = ServiceLineExceedChunkChecker.check(invoices);
+        for (int i = 0; i < serviceLinesChunks.size(); i++) {
+            List<PatientInvoiceEntity> invoicesChunk = serviceLinesChunks.get(i);
+            String fileName = "claim.pdf" + "_" + i;
+            filesClaimCreator.create(fileName, invoiceRequest, invoicesChunk, fileNames);
+        }
     }
 }
