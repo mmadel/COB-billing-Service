@@ -31,22 +31,15 @@ public class MultipleClaimsProviderCreator {
     @Autowired
     private LocationCMSDocumentFiller locationCMSDocumentFiller;
 
+
     private Map<DoctorInfo, List<PatientInvoiceEntity>> providers;
 
     public List<String> create(InvoiceRequest invoiceRequest, List<PatientInvoiceEntity> patientInvoiceRecords) throws IOException {
         List<String> fileNames = new ArrayList<>();
         group(patientInvoiceRecords);
-        if(isMultiple()){
+        if (isMultiple()) {
             for (Map.Entry<DoctorInfo, List<PatientInvoiceEntity>> entry : providers.entrySet()) {
-                String fileName = "provider_" + entry.getKey().getDoctorNPI();
-                createCMSPdfDocumentResourceUseCase.createResource(fileName);
-                notRepeatableCMSDocumentFiller.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
-                serviceLineCMSDocumentFiller.create(entry.getValue(), createCMSPdfDocumentResourceUseCase.getForm());
-                physicianCMSDocumentFiller.create(entry.getKey(), createCMSPdfDocumentResourceUseCase.getForm());
-                locationCMSDocumentFiller.create(ClinicModelFinder.find(patientInvoiceRecords), createCMSPdfDocumentResourceUseCase.getForm());
-                createCMSPdfDocumentResourceUseCase.lockForm();
-                createCMSPdfDocumentResourceUseCase.closeResource();
-                fileNames.add(fileName);
+                generate(entry.getKey(), entry.getValue(), invoiceRequest, fileNames);
             }
         }
         return fileNames;
@@ -56,6 +49,24 @@ public class MultipleClaimsProviderCreator {
         providers =
                 patientInvoiceRecords.stream()
                         .collect(Collectors.groupingBy(patientInvoice -> patientInvoice.getPatientSession().getDoctorInfo()));
+    }
+
+    private void generate(DoctorInfo provider, List<PatientInvoiceEntity> invoices,
+                          InvoiceRequest invoiceRequest,
+                          List<String> fileNames) throws IOException {
+        List<List<PatientInvoiceEntity>> serviceLinesChunks = ServiceLineExceedChunkChecker.check(invoices);
+        for (int i = 0; serviceLinesChunks.size() > i; i++) {
+            List<PatientInvoiceEntity> invoicesChunk = serviceLinesChunks.get(i);
+            String fileName = "provider_" + provider.getDoctorNPI() + "_" + i;
+            createCMSPdfDocumentResourceUseCase.createResource(fileName);
+            notRepeatableCMSDocumentFiller.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
+            serviceLineCMSDocumentFiller.create(invoicesChunk, createCMSPdfDocumentResourceUseCase.getForm());
+            physicianCMSDocumentFiller.create(provider, createCMSPdfDocumentResourceUseCase.getForm());
+            locationCMSDocumentFiller.create(ClinicModelFinder.find(invoicesChunk), createCMSPdfDocumentResourceUseCase.getForm());
+            createCMSPdfDocumentResourceUseCase.lockForm();
+            createCMSPdfDocumentResourceUseCase.closeResource();
+            fileNames.add(fileName);
+        }
     }
 
     private boolean isMultiple() {

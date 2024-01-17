@@ -35,7 +35,6 @@ public class FillCMSDocumentUseCase {
         fileNames.addAll(multipleClaimsProviderCreator.create(invoiceRequest, patientInvoiceRecords));
         fileNames.addAll(multipleClaimsClinicCreator.create(invoiceRequest, patientInvoiceRecords));
         fileNames.addAll(multipleClaimsCaseCreator.create(invoiceRequest, patientInvoiceRecords));
-        fileNames.addAll(multipleClaimsLineCreator.create(invoiceRequest, patientInvoiceRecords));
 
         if (!(fileNames.size() > 1)) {
             switch (dateServiceClaim) {
