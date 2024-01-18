@@ -27,7 +27,7 @@ public class CreatePatientUseCase {
         toBeCreated.setReferringProvider(null);
         PatientEntity created = repository.save(toBeCreated);
 
-        if (patient.getReferringProvider() != null)
+        if (patient.getReferringProvider() != null && !patient.getReferringProvider().isEmpty())
             assignReferringProvider(created, patient.getReferringProvider().getNpi());
         return created.getId();
     }

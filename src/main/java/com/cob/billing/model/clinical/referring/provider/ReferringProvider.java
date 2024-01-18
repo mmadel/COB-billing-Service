@@ -10,4 +10,8 @@ public class ReferringProvider {
     private String firstName;
     private String lastName;
     private String npi;
+
+    public boolean isEmpty() {
+        return firstName == "" && lastName == "" && npi == "";
+    }
 }
