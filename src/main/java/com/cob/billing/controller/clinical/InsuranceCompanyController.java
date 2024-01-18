@@ -3,10 +3,7 @@ package com.cob.billing.controller.clinical;
 import com.cob.billing.model.bill.InsuranceCompanyConfiguration;
 import com.cob.billing.model.bill.InsuranceCompanyMapper;
 import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibility;
-import com.cob.billing.usecases.clinical.patient.insurance.company.CreateInsuranceCompanyConfigurationUseCase;
-import com.cob.billing.usecases.clinical.patient.insurance.company.FindInsuranceCompaniesUseCase;
-import com.cob.billing.usecases.clinical.patient.insurance.company.FindInsuranceCompanyConfigurationTmpUseCase;
-import com.cob.billing.usecases.clinical.patient.insurance.company.MapInsuranceCompanyToPayerUseCase;
+import com.cob.billing.usecases.clinical.patient.insurance.company.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +22,8 @@ public class InsuranceCompanyController {
     FindInsuranceCompanyConfigurationTmpUseCase findInsuranceCompanyConfigurationUseCase;
     @Autowired
     MapInsuranceCompanyToPayerUseCase mapInsuranceCompanyToPayerUseCase;
+    @Autowired
+    UpdateInsuranceCompanyConfigurationUseCase updateInsuranceCompanyConfigurationUseCase;
 
 
     @PostMapping("/map")
@@ -56,6 +55,11 @@ public class InsuranceCompanyController {
     @PostMapping("/configure")
     public ResponseEntity configure(@RequestBody InsuranceCompanyConfiguration model) {
         createInsuranceCompanyConfigurationUseCase.create(model);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+    @PostMapping("/update/configure")
+    public ResponseEntity updateConfigure(@RequestBody InsuranceCompanyConfiguration model) {
+        updateInsuranceCompanyConfigurationUseCase.update(model);
         return new ResponseEntity(HttpStatus.OK);
     }
 

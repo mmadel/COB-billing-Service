@@ -42,6 +42,7 @@ public class FindInsuranceCompanyConfigurationTmpUseCase {
         insuranceCompanyConfiguration.setBillingProvider(mapper.map(getBillingProvider(insuranceCompanyConfigurationEntity.getBox33()), Organization.class));
         insuranceCompanyConfiguration.setBox26(insuranceCompanyConfigurationEntity.getBox26());
         insuranceCompanyConfiguration.setBox32(insuranceCompanyConfigurationEntity.getBox32());
+        insuranceCompanyConfiguration.setId(insuranceCompanyConfigurationEntity.getId());
         return insuranceCompanyConfiguration;
     }
 
