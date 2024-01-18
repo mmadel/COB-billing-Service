@@ -41,14 +41,21 @@ public class InsuranceCompanyController {
         return new ResponseEntity(findInsuranceCompaniesUseCase.find(), HttpStatus.OK);
     }
 
+    @GetMapping("/find/name/{name}")
+    public ResponseEntity findAll(@PathVariable String name) {
+        return new ResponseEntity(findInsuranceCompaniesUseCase.findByName(name), HttpStatus.OK);
+    }
+
     @GetMapping("/find/internal")
     public ResponseEntity findInternal() {
         return new ResponseEntity(findInsuranceCompaniesUseCase.findInternal(), HttpStatus.OK);
     }
+
     @GetMapping("/find/internal/id/{id}")
     public ResponseEntity findInternalPayer(@PathVariable Long id) {
         return new ResponseEntity(findInsuranceCompaniesUseCase.findInternalPayer(id), HttpStatus.OK);
     }
+
     @PostMapping("/configure")
     public ResponseEntity configure(@RequestBody InsuranceCompanyConfiguration model) {
         createInsuranceCompanyConfigurationUseCase.create(model);

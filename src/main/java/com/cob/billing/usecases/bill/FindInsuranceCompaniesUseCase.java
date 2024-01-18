@@ -27,6 +27,13 @@ public class FindInsuranceCompaniesUseCase {
     @Autowired
     InsuranceCompanyPayerRepository insuranceCompanyPayerRepository;
 
+    public List<InsuranceCompanyHolder> findByName(String name) {
+        return find().stream()
+                .filter(insuranceCompany -> insuranceCompany.getName().equals(name))
+                .collect(Collectors.toList());
+
+    }
+
     public List<InsuranceCompanyHolder> find() {
         List<InsuranceCompanyHolder> insuranceCompanyHolder = new ArrayList<>();
         insuranceCompanyRepository.findAll()

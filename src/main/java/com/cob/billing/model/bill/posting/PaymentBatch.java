@@ -1,5 +1,6 @@
 package com.cob.billing.model.bill.posting;
 
+import com.cob.billing.model.clinical.insurance.company.InsuranceCompany;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +14,7 @@ public class PaymentBatch {
 
     private Long checkNumber;
     private Long depositDate;
-    private PostingInsuranceCompany insuranceCompany;
+    private InsuranceCompany insuranceCompany;
 
 
 }
