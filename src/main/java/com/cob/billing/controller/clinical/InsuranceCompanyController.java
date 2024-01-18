@@ -3,7 +3,6 @@ package com.cob.billing.controller.clinical;
 import com.cob.billing.model.bill.InsuranceCompanyConfiguration;
 import com.cob.billing.model.bill.InsuranceCompanyMapper;
 import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibility;
-import com.cob.billing.usecases.FindInsuranceCompanyConfigurationUseCase;
 import com.cob.billing.usecases.bill.CreateInsuranceCompanyConfigurationUseCase;
 import com.cob.billing.usecases.bill.FindInsuranceCompaniesUseCase;
 import com.cob.billing.usecases.clinical.patient.insurance.company.FindInsuranceCompanyConfigurationTmpUseCase;
@@ -12,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/insurance/company")
@@ -62,6 +59,11 @@ public class InsuranceCompanyController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @GetMapping("/find/element/configuration/id/{id}/visibility/{visibility}")
+    public ResponseEntity findelementConfiguration(@PathVariable Long id, @PathVariable String visibility) {
+        return new ResponseEntity(findInsuranceCompanyConfigurationUseCase.findElement(id, InsuranceCompanyVisibility.valueOf(visibility)),
+                HttpStatus.OK);
+    }
     @GetMapping("/find/configuration/id/{id}/visibility/{visibility}")
     public ResponseEntity findConfiguration(@PathVariable Long id, @PathVariable String visibility) {
         return new ResponseEntity(findInsuranceCompanyConfigurationUseCase.find(id, InsuranceCompanyVisibility.valueOf(visibility)),

@@ -3,9 +3,12 @@ package com.cob.billing.usecases.clinical.patient.insurance.company;
 import com.cob.billing.entity.admin.OrganizationEntity;
 import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyConfigurationEntity;
 import com.cob.billing.enums.OrganizationType;
+import com.cob.billing.model.admin.Organization;
+import com.cob.billing.model.bill.InsuranceCompanyConfiguration;
 import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibility;
 import com.cob.billing.repositories.admin.OrganizationRepository;
 import com.cob.billing.repositories.bill.InsuranceCompanyConfigurationRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +24,28 @@ public class FindInsuranceCompanyConfigurationTmpUseCase {
     InsuranceCompanyConfigurationRepository insuranceCompanyConfigurationRepository;
     @Autowired
     OrganizationRepository organizationRepository;
+    @Autowired
+    ModelMapper mapper;
 
-    public String[] find(Long id, InsuranceCompanyVisibility visibility) {
+    public InsuranceCompanyConfiguration find(Long id, InsuranceCompanyVisibility visibility) {
+        InsuranceCompanyConfigurationEntity insuranceCompanyConfigurationEntity = null;
+        InsuranceCompanyConfiguration insuranceCompanyConfiguration = new InsuranceCompanyConfiguration();
+        switch (visibility) {
+            case Internal:
+                insuranceCompanyConfigurationEntity = insuranceCompanyConfigurationRepository.findByInternalInsuranceCompany_Id(id).get();
+
+                break;
+            case External:
+                insuranceCompanyConfigurationEntity = insuranceCompanyConfigurationRepository.findByExternalInsuranceCompany_Id(id).get();
+                break;
+        }
+        insuranceCompanyConfiguration.setBillingProvider(mapper.map(getBillingProvider(insuranceCompanyConfigurationEntity.getBox33()), Organization.class));
+        insuranceCompanyConfiguration.setBox26(insuranceCompanyConfigurationEntity.getBox26());
+        insuranceCompanyConfiguration.setBox32(insuranceCompanyConfigurationEntity.getBox32());
+        return insuranceCompanyConfiguration;
+    }
+
+    public String[] findElement(Long id, InsuranceCompanyVisibility visibility) {
         InsuranceCompanyConfigurationEntity insuranceCompanyConfiguration = null;
         OrganizationEntity organization = null;
         String[] result = new String[6];
@@ -35,10 +58,8 @@ public class FindInsuranceCompanyConfigurationTmpUseCase {
                 insuranceCompanyConfiguration = insuranceCompanyConfigurationRepository.findByExternalInsuranceCompany_Id(id).get();
                 break;
         }
-        if (insuranceCompanyConfiguration.getBox33() == -1L)
-            organization = organizationRepository.findByType(OrganizationType.Default).get();
-        else
-            organization = organizationRepository.findById(insuranceCompanyConfiguration.getBox33()).get();
+        organization = getBillingProvider(insuranceCompanyConfiguration.getBox33());
+
 
         if (organization != null) {
             result[BILLING_PROVIDER_NAME] = organization.getBusinessName();
@@ -55,5 +76,14 @@ public class FindInsuranceCompanyConfigurationTmpUseCase {
         if (insuranceCompanyConfiguration.getBox26().equals("pateint_external_id"))
             result[PATIENT_ACCOUNT] = "externalId";
         return result;
+    }
+
+    private OrganizationEntity getBillingProvider(Long box33) {
+        OrganizationEntity organization = null;
+        if (box33 == -1L)
+            organization = organizationRepository.findByType(OrganizationType.Default).get();
+        else
+            organization = organizationRepository.findById(box33).get();
+        return organization;
     }
 }
