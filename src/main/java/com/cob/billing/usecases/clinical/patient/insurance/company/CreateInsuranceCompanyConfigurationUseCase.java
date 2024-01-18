@@ -1,4 +1,4 @@
-package com.cob.billing.usecases.bill;
+package com.cob.billing.usecases.clinical.patient.insurance.company;
 
 import com.cob.billing.entity.admin.OrganizationEntity;
 import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyConfigurationEntity;
