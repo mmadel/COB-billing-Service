@@ -23,4 +23,7 @@ public class AddPayerUseCase {
                 .collect(Collectors.toList());
         repository.saveAll(entities);
     }
+    public Long add(Payer model){
+        return repository.save(mapper.map(model, PayerEntity.class)).getId();
+    }
 }
