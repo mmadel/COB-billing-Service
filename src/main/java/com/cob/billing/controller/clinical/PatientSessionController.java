@@ -38,7 +38,12 @@ public class PatientSessionController {
                 .generateResponse("Successfully updated Patient Session",
                         HttpStatus.OK, updatePatientSessionUseCase.update(patientSession));
     }
-
+    @GetMapping("/find/id/{id}")
+    public ResponseEntity<Object> findById(@PathVariable Long sessionId){
+        return ResponseHandler
+                .generateResponse("Successfully updated Patient Session",
+                        HttpStatus.OK,null);
+    }
 
     @GetMapping("/find/patientId/{patientId}")
     public ResponseEntity<Object> find(@RequestParam(name = "offset") String offset,
