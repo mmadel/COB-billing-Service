@@ -5,6 +5,7 @@ import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.invoice.ChangeSessionStatusUseCase;
 import com.cob.billing.usecases.clinical.patient.session.CreatePatientSessionUseCase;
 import com.cob.billing.usecases.clinical.patient.session.FindSessionByPatientUseCase;
+import com.cob.billing.usecases.clinical.patient.session.FindSessionUseCase;
 import com.cob.billing.usecases.clinical.patient.session.UpdatePatientSessionUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,8 @@ public class PatientSessionController {
     FindSessionByPatientUseCase findSessionByPatientUseCase;
     @Autowired
     ChangeSessionStatusUseCase changeSessionStatusUseCase;
+    @Autowired
+    FindSessionUseCase findSessionUseCase;
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody PatientSession patientSession) {
@@ -38,11 +41,11 @@ public class PatientSessionController {
                 .generateResponse("Successfully updated Patient Session",
                         HttpStatus.OK, updatePatientSessionUseCase.update(patientSession));
     }
-    @GetMapping("/find/id/{id}")
+    @GetMapping("/find/id/{sessionId}")
     public ResponseEntity<Object> findById(@PathVariable Long sessionId){
         return ResponseHandler
                 .generateResponse("Successfully updated Patient Session",
-                        HttpStatus.OK,null);
+                        HttpStatus.OK,findSessionUseCase.findById(sessionId));
     }
 
     @GetMapping("/find/patientId/{patientId}")
