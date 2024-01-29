@@ -23,11 +23,11 @@ public class NotRepeatableCMSDocumentFiller {
         String assigned[] = invoiceInsuranceCompanyInformation.getAssigner();
         if (assigned == null) {
             cmsForm.getField(CMSFields.INSURANCE_NAME).setValue(invoiceInsuranceCompanyInformation.getName());
-            cmsForm.getField(CMSFields.INSURANCE_ADDRESS).setValue(invoiceInsuranceCompanyInformation.getAddress().getAddress());
+            cmsForm.getField(CMSFields.INSURANCE_ADDRESS).setValue(invoiceInsuranceCompanyInformation.getAddress().getAddress() == null ? "" : invoiceInsuranceCompanyInformation.getAddress().getAddress());
             cmsForm.getField(CMSFields.INSURANCE_ADDRESS2).setValue("");
-            cmsForm.getField(CMSFields.INSURANCE_CITY_STATE_ZIP).setValue(invoiceInsuranceCompanyInformation.getAddress().getCity()
-                    + "," + invoiceInsuranceCompanyInformation.getAddress().getState()
-                    + " " + invoiceInsuranceCompanyInformation.getAddress().getZipCode());
+            cmsForm.getField(CMSFields.INSURANCE_CITY_STATE_ZIP).setValue(invoiceInsuranceCompanyInformation.getAddress().getCity() == null ? "" : invoiceInsuranceCompanyInformation.getAddress().getCity()
+                    + "," + invoiceInsuranceCompanyInformation.getAddress().getState() == null ? "" : invoiceInsuranceCompanyInformation.getAddress().getState()
+                    + " " + invoiceInsuranceCompanyInformation.getAddress().getZipCode() == null ? "" : invoiceInsuranceCompanyInformation.getAddress().getZipCode());
         } else {
             cmsForm.getField(CMSFields.INSURANCE_NAME).setValue(assigned[1]);
             cmsForm.getField(CMSFields.INSURANCE_ADDRESS).setValue(assigned[2]);
