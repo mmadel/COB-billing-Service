@@ -26,24 +26,26 @@ public class FindProviderByNPIUseCase {
     }
 
     private Provider map(NPPESResponse nppesResponse) {
-        Result result = nppesResponse.getResults().get(0);
         Provider provider = new Provider();
-        provider.setFirstName(result.getBasic().getFirst_name());
-        provider.setLastName(result.getBasic().last_name);
-        provider.setPhone(result.getAddresses().get(0).getTelephone_number());
-        provider.setNpi(result.number);
-        Address address = new Address();
-        address.setFirst(result.getAddresses().get(0).address_1);
-        address.setSecond(result.getAddresses().get(0).address_2);
-        address.setCountry(result.getAddresses().get(0).country_name);
-        address.setCity(result.getAddresses().get(0).city);
-        address.setState(result.getAddresses().get(0).state);
-        address.setZipCode(result.getAddresses().get(0).postal_code);
-        provider.setAddress(address);
-        ProviderInfo providerInfo = new ProviderInfo();
-        providerInfo.setTaxonomyCode(result.getTaxonomies().get(0).code);
-        providerInfo.setLicense(result.getTaxonomies().get(0).license);
-        provider.setProviderInfo(providerInfo);
+        if (nppesResponse.result_count != 0) {
+            Result result = nppesResponse.getResults().get(0);
+            provider.setFirstName(result.getBasic().getFirst_name());
+            provider.setLastName(result.getBasic().last_name);
+            provider.setPhone(result.getAddresses().get(0).getTelephone_number());
+            provider.setNpi(result.number);
+            Address address = new Address();
+            address.setFirst(result.getAddresses().get(0).address_1);
+            address.setSecond(result.getAddresses().get(0).address_2);
+            address.setCountry(result.getAddresses().get(0).country_name);
+            address.setCity(result.getAddresses().get(0).city);
+            address.setState(result.getAddresses().get(0).state);
+            address.setZipCode(result.getAddresses().get(0).postal_code);
+            provider.setAddress(address);
+            ProviderInfo providerInfo = new ProviderInfo();
+            providerInfo.setTaxonomyCode(result.getTaxonomies().get(0).code);
+            providerInfo.setLicense(result.getTaxonomies().get(0).license);
+            provider.setProviderInfo(providerInfo);
+        }
         return provider;
     }
 }
