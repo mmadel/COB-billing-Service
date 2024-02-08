@@ -57,10 +57,4 @@ public class PatientSessionController {
                 .generateResponse("Successfully finding Patient Session",
                         HttpStatus.OK, null, findSessionByPatientUseCase.find(paging, patientId));
     }
-
-    @PutMapping("/change/status/serviceCode/{serviceCodeId}")
-    public ResponseEntity changeStatus(@PathVariable Long serviceCodeId) {
-        changeSessionStatusUseCase.change(serviceCodeId);
-        return new ResponseEntity(HttpStatus.OK);
-    }
 }

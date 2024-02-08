@@ -23,7 +23,7 @@ public class CreateCMSDocumentUseCase {
     @Autowired
     SingleClaimCreator singleClaimCreator;
 
-    public List<String> fill(InvoiceRequest invoiceRequest, List<PatientInvoiceEntity> patientInvoiceRecords) throws IOException {
+    public List<String> createCMSDocument(InvoiceRequest invoiceRequest, List<PatientInvoiceEntity> patientInvoiceRecords) throws IOException {
 
         List<String> fileNames = new ArrayList<>();
         fileNames.addAll(multipleClaimsProviderCreator.create(invoiceRequest, patientInvoiceRecords));

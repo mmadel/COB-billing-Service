@@ -3,7 +3,6 @@ package com.cob.billing.usecases.bill.invoice;
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.model.admin.clinic.Clinic;
-import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.bill.invoice.tmp.*;
 import com.cob.billing.model.clinical.patient.session.DoctorInfo;
 import com.cob.billing.model.integration.claimmd.Charge;
@@ -11,12 +10,10 @@ import com.cob.billing.model.integration.claimmd.Claim;
 import com.cob.billing.model.integration.claimmd.ClaimUploadRequest;
 import com.cob.billing.usecases.bill.invoice.cms.finder.ClinicModelFinder;
 import com.cob.billing.usecases.bill.invoice.cms.finder.ProviderModelFinder;
-import com.cob.billing.usecases.bill.invoice.record.CreateInvoiceRecordUseCase;
-import com.cob.billing.usecases.bill.invoice.record.MapInvoiceRecordUseCase;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -24,31 +21,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class CreateElectronicInvoiceUseCase {
+public class GenerateElectronicInvoiceUseCase {
+
     @Autowired
-    CreateInvoiceRecordUseCase createInvoiceRecordUseCase;
+    private CreateInvoiceRecordUseCase createInvoiceRecordUseCase;
     @Autowired
-    MapInvoiceRecordUseCase mapInvoiceRecordUseCase;
-    @Autowired
-    ChangeSessionStatusUseCase changeSessionStatusUseCase;
+    private ChangeSessionStatusUseCase changeSessionStatusUseCase;
 
+    public ClaimUploadRequest generate(InvoiceRequest invoiceRequest) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException {
+        List<PatientInvoiceEntity> createdInvoicesRecords = createInvoiceRecordUseCase.createRecord(invoiceRequest);
 
-    public ClaimUploadRequest create(InvoiceRequest invoiceRequest) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, JsonProcessingException {
+        changeSessionStatusUseCase.change(invoiceRequest.getSelectedSessionServiceLine());
 
-        createInvoiceRecordUseCase.createRecord(invoiceRequest.getSelectedSessionServiceLine()
-                , invoiceRequest.getInvoiceRequestConfiguration(), invoiceRequest.getPatientInformation().getId());
-
-        mapInvoiceRecordUseCase.mapRecord(invoiceRequest.getInvoiceInsuranceCompanyInformation().getVisibility()
-                , invoiceRequest.getInvoiceInsuranceCompanyInformation().getName()
-                , createInvoiceRecordUseCase.patientInvoiceRecords);
-        changeSessionStatus(invoiceRequest.getSelectedSessionServiceLine());
-        return fill(invoiceRequest, createInvoiceRecordUseCase.patientInvoiceRecords);
+        return CreateElectronicClaim(invoiceRequest, createdInvoicesRecords);
     }
-    private void changeSessionStatus(List<SelectedSessionServiceLine> selectedSessionServiceLines) {
-        selectedSessionServiceLines
-                .forEach(serviceLine -> changeSessionStatusUseCase.change(serviceLine.getServiceLine()));
-    }
-    private ClaimUploadRequest fill(InvoiceRequest invoiceRequest, List<PatientInvoiceEntity> patientInvoiceRecords) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+
+    private ClaimUploadRequest CreateElectronicClaim(InvoiceRequest invoiceRequest, List<PatientInvoiceEntity> patientInvoiceRecords) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         Claim claim = new Claim();
         fillBillProvider(invoiceRequest.getInvoiceBillingProviderInformation(), claim);
         fillInsured(invoiceRequest.getInvoicePatientInsuredInformation(), claim);
@@ -238,6 +226,7 @@ public class CreateElectronicInvoiceUseCase {
     private boolean containsSession(List<PatientSessionEntity> list, Long id) {
         return list.stream().anyMatch(p -> p.getId().equals(id));
     }
+
     private String getCharForNumber(int i) {
         return i > 0 && i < 27 ? String.valueOf((char) (i + 64)) : null;
     }
