@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 @Component
@@ -33,9 +34,11 @@ public class CreateInvoiceUseCase {
     CreateCMSDocumentUseCase createCMSDocumentUseCase;
     @Autowired
     ResourceLoader resourceLoader;
+    @Autowired
+    CreateElectronicInvoiceUseCase createElectronicInvoiceUseCase;
 
     @Transactional
-    public void create(InvoiceRequest invoiceRequest, HttpServletResponse response) throws IOException {
+    public void create(InvoiceRequest invoiceRequest, HttpServletResponse response) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         createInvoiceRecordUseCase.createRecord(invoiceRequest.getSelectedSessionServiceLine()
                 , invoiceRequest.getInvoiceRequestConfiguration(), invoiceRequest.getPatientInformation().getId());
 
@@ -46,6 +49,7 @@ public class CreateInvoiceUseCase {
         changeSessionStatus(invoiceRequest.getSelectedSessionServiceLine());
 
         createSMCDocument(invoiceRequest, createInvoiceRecordUseCase.patientInvoiceRecords, response);
+
     }
 
     private void changeSessionStatus(List<SelectedSessionServiceLine> selectedSessionServiceLines) {
