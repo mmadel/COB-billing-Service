@@ -29,7 +29,7 @@ public class GenerateCMSInvoiceUseCase {
 
 
     @Transactional
-    public void generate(InvoiceRequest invoiceRequest, HttpServletResponse response) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+    public void generate(InvoiceRequest invoiceRequest, HttpServletResponse response) throws IOException {
 
         List<PatientInvoiceEntity> createdInvoicesRecords = createInvoiceRecordUseCase.createRecord(invoiceRequest);
 

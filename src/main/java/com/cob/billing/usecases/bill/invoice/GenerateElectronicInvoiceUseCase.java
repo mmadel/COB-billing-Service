@@ -28,7 +28,7 @@ public class GenerateElectronicInvoiceUseCase {
     @Autowired
     private ChangeSessionStatusUseCase changeSessionStatusUseCase;
 
-    public ClaimUploadRequest generate(InvoiceRequest invoiceRequest) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException {
+    public ClaimUploadRequest generate(InvoiceRequest invoiceRequest) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         List<PatientInvoiceEntity> createdInvoicesRecords = createInvoiceRecordUseCase.createRecord(invoiceRequest);
 
         changeSessionStatusUseCase.change(invoiceRequest.getSelectedSessionServiceLine());
