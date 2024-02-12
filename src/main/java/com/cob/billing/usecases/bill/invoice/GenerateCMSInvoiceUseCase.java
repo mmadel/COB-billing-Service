@@ -29,27 +29,13 @@ public class GenerateCMSInvoiceUseCase {
 
 
     @Transactional
-    public void generate(InvoiceRequest invoiceRequest, HttpServletResponse response) throws IOException {
+    public List<String> generate(InvoiceRequest invoiceRequest, HttpServletResponse response) throws IOException {
 
-        List<PatientInvoiceEntity> createdInvoicesRecords = createInvoiceRecordUseCase.createRecord(invoiceRequest);
+        createInvoiceRecordUseCase.createRecord(invoiceRequest);
 
         changeSessionStatusUseCase.change(invoiceRequest.getSelectedSessionServiceLine());
-        List<String> generatedTmpFiles = createCMSDocumentUseCase.createCMSDocument(invoiceRequest, createdInvoicesRecords);
-        writeCMSDocumentToHttpResponse(response, generatedTmpFiles);
+
+        return createCMSDocumentUseCase.createCMSDocument(invoiceRequest);
     }
 
-    private void writeCMSDocumentToHttpResponse(HttpServletResponse response, List<String> files) throws IOException {
-        PdfWriter writer = new PdfWriter(response.getOutputStream());
-        PdfDocument pdf = new PdfDocument(writer);
-        PdfMerger merger = new PdfMerger(pdf);
-        for (String file : files) {
-            File tmpFile = new File(file);
-            PdfReader source = new PdfReader(tmpFile);
-            PdfDocument sourceDoc = new PdfDocument(source);
-            merger.merge(sourceDoc, 1, sourceDoc.getNumberOfPages());
-            sourceDoc.close();
-            tmpFile.delete();
-        }
-        merger.close();
-    }
 }

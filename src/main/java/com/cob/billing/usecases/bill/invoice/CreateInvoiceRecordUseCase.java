@@ -6,6 +6,8 @@ import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyExterna
 import com.cob.billing.entity.clinical.insurance.compnay.PatientInvoiceExternalCompanyEntity;
 import com.cob.billing.entity.clinical.insurance.compnay.PatientInvoiceInternalCompanyEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
+import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
+import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.enums.DateServiceClaim;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
@@ -19,6 +21,7 @@ import com.cob.billing.repositories.clinical.insurance.company.PatientInvoiceExt
 import com.cob.billing.repositories.clinical.insurance.company.PatientInvoiceInternalCompanyRepository;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import com.cob.billing.repositories.clinical.session.ServiceLineRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,6 +48,8 @@ public class CreateInvoiceRecordUseCase {
     private PatientInvoiceInternalCompanyRepository patientInvoiceInternalCompanyRepository;
     @Autowired
     private PatientInvoiceExternalCompanyRepository patientInvoiceExternalCompanyRepository;
+    @Autowired
+    ModelMapper mapper;
 
     public List<PatientInvoiceEntity> createRecord(InvoiceRequest invoiceRequest) {
         List<PatientInvoiceEntity> toBeCreated = new ArrayList<>();
@@ -55,8 +60,8 @@ public class CreateInvoiceRecordUseCase {
                     patientInvoice.setPatient(patient);
                     patientInvoice.setDelayedReason(invoiceRequest.getInvoiceRequestConfiguration().getDelayedReason());
                     patientInvoice.setIsOneDateServicePerClaim(invoiceRequest.getInvoiceRequestConfiguration().getIsOneDateServicePerClaim());
-                    patientInvoice.setServiceLine(serviceLineRepository.findById(serviceLine.getServiceLine()).get());
-                    patientInvoice.setPatientSession(patientSessionRepository.findById(serviceLine.getSessionId()).get());
+                    patientInvoice.setServiceLine(mapper.map(serviceLine.getServiceLine(), PatientSessionServiceLineEntity.class));
+                    patientInvoice.setPatientSession(mapper.map(serviceLine.getSessionId(), PatientSessionEntity.class));
                     toBeCreated.add(patientInvoice);
                 });
         List<PatientInvoiceEntity> patientInvoiceRecords = StreamSupport.stream(patientInvoiceRepository.saveAll(toBeCreated).spliterator(), false)

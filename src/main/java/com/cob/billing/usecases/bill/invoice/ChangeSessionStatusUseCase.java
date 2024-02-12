@@ -20,7 +20,7 @@ public class ChangeSessionStatusUseCase {
 
     public void change(List<SelectedSessionServiceLine> selectedSessionServiceLines) {
         selectedSessionServiceLines.forEach(model -> {
-            PatientSessionServiceLineEntity serviceLine = serviceLineRepository.findById(model.getServiceLine()).get();
+            PatientSessionServiceLineEntity serviceLine = serviceLineRepository.findById(model.getServiceLine().getId()).get();
             serviceLine.setType("Invoice");
             serviceLineRepository.save(serviceLine);
             PatientSessionEntity patientSessionEntity = patientSessionRepository.findSessionByServiceCodeId(serviceLine.getId());

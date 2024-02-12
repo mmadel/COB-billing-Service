@@ -41,9 +41,9 @@ public class GenerateElectronicInvoiceUseCase {
         fillBillProvider(invoiceRequest.getInvoiceBillingProviderInformation(), claim);
         fillInsured(invoiceRequest.getInvoicePatientInsuredInformation(), claim);
         fillPatient(invoiceRequest.getPatientInformation(), claim);
-        fillProvider(ProviderModelFinder.find(patientInvoiceRecords), claim);
+      //  fillProvider(ProviderModelFinder.find(patientInvoiceRecords), claim);
         fillPayer(invoiceRequest.getInvoiceInsuranceCompanyInformation(), claim);
-        fillFacility(ClinicModelFinder.find(patientInvoiceRecords), claim);
+       // fillFacility(ClinicModelFinder.find(patientInvoiceRecords), claim);
         fillCharge(patientInvoiceRecords, claim);
         ClaimUploadRequest claimUploadRequest = new ClaimUploadRequest();
         List<Claim> claims = new ArrayList<>();
