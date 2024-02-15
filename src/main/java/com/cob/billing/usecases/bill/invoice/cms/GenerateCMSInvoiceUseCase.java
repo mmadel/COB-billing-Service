@@ -1,20 +1,13 @@
-package com.cob.billing.usecases.bill.invoice;
+package com.cob.billing.usecases.bill.invoice.cms;
 
-import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
-import com.cob.billing.usecases.bill.invoice.cms.CreateCMSDocumentUseCase;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfReader;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.utils.PdfMerger;
+import com.cob.billing.usecases.bill.invoice.ChangeSessionStatusUseCase;
+import com.cob.billing.usecases.bill.invoice.CreateInvoiceRecordUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 @Component
@@ -29,7 +22,7 @@ public class GenerateCMSInvoiceUseCase {
 
 
     @Transactional
-    public List<String> generate(InvoiceRequest invoiceRequest, HttpServletResponse response) throws IOException {
+    public List<String> generate(InvoiceRequest invoiceRequest) throws IOException {
 
         createInvoiceRecordUseCase.createRecord(invoiceRequest);
 

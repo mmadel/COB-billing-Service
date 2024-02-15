@@ -40,13 +40,7 @@ public class ClaimCreator {
         for (int i = 0; i < serviceLinesChunks.size(); i++) {
             List<SelectedSessionServiceLine> invoicesChunk = serviceLinesChunks.get(i);
             String fileName = "claim.pdf" + "_" + i;
-            createCMSPdfDocumentResourceUseCase.createResource(fileName);
-            notRepeatableCMSDocumentFiller.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
-            serviceLineCMSDocumentFiller.create(invoicesChunk, createCMSPdfDocumentResourceUseCase.getForm());
-            physicianCMSDocumentFiller.create(ProviderModelFinder.find(invoicesChunk), createCMSPdfDocumentResourceUseCase.getForm());
-            locationCMSDocumentFiller.create(ClinicModelFinder.find(invoicesChunk), createCMSPdfDocumentResourceUseCase.getForm());
-            createCMSPdfDocumentResourceUseCase.lockForm();
-            createCMSPdfDocumentResourceUseCase.closeResource();
+            createBasicClaimPart(fileName, invoicesChunk);
             fileNames.add(fileName);
         }
         return fileNames;
@@ -94,13 +88,7 @@ public class ClaimCreator {
         for (int i = 0; i < serviceLinesChunks.size(); i++) {
             List<SelectedSessionServiceLine> invoicesChunk = serviceLinesChunks.get(i);
             String fileName = "case_" + caseTitle + "_" + i;
-            createCMSPdfDocumentResourceUseCase.createResource(fileName);
-            notRepeatableCMSDocumentFiller.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
-            serviceLineCMSDocumentFiller.create(invoicesChunk, createCMSPdfDocumentResourceUseCase.getForm());
-            physicianCMSDocumentFiller.create(ProviderModelFinder.find(invoicesChunk), createCMSPdfDocumentResourceUseCase.getForm());
-            locationCMSDocumentFiller.create(ClinicModelFinder.find(invoicesChunk), createCMSPdfDocumentResourceUseCase.getForm());
-            createCMSPdfDocumentResourceUseCase.lockForm();
-            createCMSPdfDocumentResourceUseCase.closeResource();
+            createBasicClaimPart(fileName, invoicesChunk);
             fileNames.add(fileName);
         }
         return fileNames;
@@ -112,13 +100,7 @@ public class ClaimCreator {
         for (int i = 0; i < serviceLinesChunks.size(); i++) {
             List<SelectedSessionServiceLine> invoicesChunk = serviceLinesChunks.get(i);
             String fileName = "date_" + date + "_" + i;
-            createCMSPdfDocumentResourceUseCase.createResource(fileName);
-            notRepeatableCMSDocumentFiller.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
-            serviceLineCMSDocumentFiller.create(invoicesChunk, createCMSPdfDocumentResourceUseCase.getForm());
-            physicianCMSDocumentFiller.create(ProviderModelFinder.find(invoicesChunk), createCMSPdfDocumentResourceUseCase.getForm());
-            locationCMSDocumentFiller.create(ClinicModelFinder.find(invoicesChunk), createCMSPdfDocumentResourceUseCase.getForm());
-            createCMSPdfDocumentResourceUseCase.lockForm();
-            createCMSPdfDocumentResourceUseCase.closeResource();
+            createBasicClaimPart(fileName, invoicesChunk);
             fileNames.add(fileName);
         }
         return fileNames;
@@ -126,5 +108,15 @@ public class ClaimCreator {
 
     public void setInvoiceRequest(InvoiceRequest invoiceRequest) {
         this.invoiceRequest = invoiceRequest;
+    }
+
+    private void createBasicClaimPart(String filename , List<SelectedSessionServiceLine> invoicesChunk) throws IOException {
+        createCMSPdfDocumentResourceUseCase.createResource(filename);
+        notRepeatableCMSDocumentFiller.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
+        serviceLineCMSDocumentFiller.create(invoicesChunk, createCMSPdfDocumentResourceUseCase.getForm());
+        physicianCMSDocumentFiller.create(ProviderModelFinder.find(invoicesChunk), createCMSPdfDocumentResourceUseCase.getForm());
+        locationCMSDocumentFiller.create(ClinicModelFinder.find(invoicesChunk), createCMSPdfDocumentResourceUseCase.getForm());
+        createCMSPdfDocumentResourceUseCase.lockForm();
+        createCMSPdfDocumentResourceUseCase.closeResource();
     }
 }

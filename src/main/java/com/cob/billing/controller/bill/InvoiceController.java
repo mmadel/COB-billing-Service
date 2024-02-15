@@ -2,10 +2,9 @@ package com.cob.billing.controller.bill;
 
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.cob.billing.response.handler.ResponseHandler;
-import com.cob.billing.usecases.bill.invoice.GenerateElectronicInvoiceUseCase;
-import com.cob.billing.usecases.bill.invoice.GenerateCMSInvoiceUseCase;
+import com.cob.billing.usecases.bill.invoice.electronic.GenerateElectronicInvoiceUseCase;
+import com.cob.billing.usecases.bill.invoice.cms.GenerateCMSInvoiceUseCase;
 import com.cob.billing.usecases.bill.invoice.FindNotSubmittedPatientSessionUseCase;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
@@ -53,7 +52,7 @@ public class InvoiceController {
                        HttpServletResponse response) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "inline");
-        List<String> files = generateCMSInvoiceUseCase.generate(invoiceRequest, response);
+        List<String> files = generateCMSInvoiceUseCase.generate(invoiceRequest);
         PdfWriter writer = new PdfWriter(response.getOutputStream());
         PdfDocument pdf = new PdfDocument(writer);
         PdfMerger merger = new PdfMerger(pdf);
@@ -70,7 +69,7 @@ public class InvoiceController {
 
     @PostMapping("/create/electronic")
     public ResponseEntity<Object> createElectronic(@RequestBody InvoiceRequest invoiceRequest,
-                                                   HttpServletResponse response) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+                                                   HttpServletResponse response) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         response.setContentType("application/json");
         response.setHeader("Content-Disposition", "inline");
         Gson gson = new Gson();

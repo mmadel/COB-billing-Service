@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -12,6 +13,9 @@ import java.util.List;
 public class Claim {
     private String accept_assign;
     private String auto_accident;
+    private String onset_date;
+    private String accident_date;
+    private String info_release;
     private String balance_due;
     private String bill_addr_1;
     private String bill_city;

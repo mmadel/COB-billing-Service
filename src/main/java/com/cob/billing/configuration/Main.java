@@ -2,7 +2,9 @@ package com.cob.billing.configuration;
 
 
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
+import com.cob.billing.enums.Gender;
 import com.cob.billing.model.integration.claimmd.Charge;
+import com.cob.billing.usecases.bill.invoice.electronic.enums.BillingProviderTaxIDType;
 import com.itextpdf.forms.PdfAcroForm;
 import com.itextpdf.forms.fields.PdfFormField;
 import com.itextpdf.kernel.geom.Rectangle;
@@ -30,20 +32,20 @@ public class Main {
     static File ddd = new File("C:\\cob\\documents\\billing\\form-cms1500.pdf");
 
     public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        reflectionTest();
+
+        //reflectionTest();
 //        nestedList();
         //groupList();
-//        PdfReader reader = new PdfReader(ddd);
-//        PdfDocument existingPdf = new PdfDocument(reader, new PdfWriter("filled-form.pdf"));
+        PdfReader reader = new PdfReader(ddd);
+        PdfDocument existingPdf = new PdfDocument(reader, new PdfWriter("filled-form.pdf"));
 //
-//        PdfAcroForm cmsForm = PdfAcroForm.getAcroForm(existingPdf, true);
-//        existingPdf.removePage(2);
-//        cmsForm.getField("pt_name").setValue("mohamed ahmed");
-//        cmsForm.flattenFields();
-//        for (Map.Entry<String, PdfFormField> entry : cmsForm.getAllFormFields().entrySet()) {
-//            entry.getValue().getFontSize();
-//            System.out.println(entry.getKey() + " " + entry.getValue().getDisplayValue());
-//        }
+        PdfAcroForm cmsForm = PdfAcroForm.getAcroForm(existingPdf, true);
+        existingPdf.removePage(2);
+        cmsForm.flattenFields();
+        for (Map.Entry<String, PdfFormField> entry : cmsForm.getAllFormFields().entrySet()) {
+            entry.getValue().getFontSize();
+            System.out.println(entry.getKey() + " " + entry.getValue().getDisplayValue());
+        }
 //        existingPdf.close();
 //        reader.close();
 

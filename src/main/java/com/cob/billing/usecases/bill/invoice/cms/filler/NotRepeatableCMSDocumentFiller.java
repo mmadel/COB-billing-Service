@@ -28,6 +28,8 @@ public class NotRepeatableCMSDocumentFiller {
             cmsForm.getField(CMSFields.INSURANCE_CITY_STATE_ZIP).setValue(invoiceInsuranceCompanyInformation.getAddress().getCity() == null ? "" : invoiceInsuranceCompanyInformation.getAddress().getCity()
                     + "," + invoiceInsuranceCompanyInformation.getAddress().getState() == null ? "" : invoiceInsuranceCompanyInformation.getAddress().getState()
                     + " " + invoiceInsuranceCompanyInformation.getAddress().getZipCode() == null ? "" : invoiceInsuranceCompanyInformation.getAddress().getZipCode());
+            cmsForm.getField("assignment").setValue(invoiceInsuranceCompanyInformation.getIsAssignment() ? "YES" : "NO", false);
+            cmsForm.getField("ins_signature").setValue(invoiceInsuranceCompanyInformation.getSignature());
         } else {
             cmsForm.getField(CMSFields.INSURANCE_NAME).setValue(assigned[1]);
             cmsForm.getField(CMSFields.INSURANCE_ADDRESS).setValue(assigned[2]);
@@ -125,5 +127,9 @@ public class NotRepeatableCMSDocumentFiller {
                 .replace("-", ""));
         cmsForm.getField("tax_id").setValue(invoiceBillingProviderInformation.getTaxId());
         cmsForm.getField("ssn").setValue("EIN", false);
+        cmsForm.getField("pin").setValue(invoiceBillingProviderInformation.getNpi());
+        cmsForm.getField("grp").setValue(invoiceBillingProviderInformation.getTaxonomy());
+        //npi for location
+        cmsForm.getField("pin1").setValue(invoiceBillingProviderInformation.getNpi());
     }
 }
