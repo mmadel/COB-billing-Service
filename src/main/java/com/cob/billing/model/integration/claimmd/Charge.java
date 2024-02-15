@@ -1,19 +1,24 @@
 package com.cob.billing.model.integration.claimmd;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Charge {
-    public String charge;
-    public String charge_record_type;
-    public String diag_ref;
-    public String from_date;
-    public String place_of_service;
-    public String proc_code;
-    public String remote_chgid;
-    public String thru_date;
-    public String units;
-    public String mod1;
+    private String charge;
+    private String charge_record_type;
+    private String diag_ref;
+    private String from_date;
+    private String place_of_service;
+    private String proc_code;
+    private String remote_chgid;
+    private String thru_date;
+    private String units;
+    private String mod1;
+    private String mod2;
+    private String mod3;
+    private String mod4;
 }

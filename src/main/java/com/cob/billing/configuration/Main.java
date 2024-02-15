@@ -2,6 +2,9 @@ package com.cob.billing.configuration;
 
 
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
+import com.cob.billing.enums.Gender;
+import com.cob.billing.model.integration.claimmd.Charge;
+import com.cob.billing.usecases.bill.invoice.electronic.enums.BillingProviderTaxIDType;
 import com.itextpdf.forms.PdfAcroForm;
 import com.itextpdf.forms.fields.PdfFormField;
 import com.itextpdf.kernel.geom.Rectangle;
@@ -15,6 +18,8 @@ import com.itextpdf.layout.element.AreaBreak;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -26,20 +31,21 @@ import java.util.stream.IntStream;
 public class Main {
     static File ddd = new File("C:\\cob\\documents\\billing\\form-cms1500.pdf");
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+
+        //reflectionTest();
 //        nestedList();
-        groupList();
-//        PdfReader reader = new PdfReader(ddd);
-//        PdfDocument existingPdf = new PdfDocument(reader, new PdfWriter("filled-form.pdf"));
+        //groupList();
+        PdfReader reader = new PdfReader(ddd);
+        PdfDocument existingPdf = new PdfDocument(reader, new PdfWriter("filled-form.pdf"));
 //
-//        PdfAcroForm cmsForm = PdfAcroForm.getAcroForm(existingPdf, true);
-//        existingPdf.removePage(2);
-//        cmsForm.getField("pt_name").setValue("mohamed ahmed");
-//        cmsForm.flattenFields();
-//        for (Map.Entry<String, PdfFormField> entry : cmsForm.getAllFormFields().entrySet()) {
-//            entry.getValue().getFontSize();
-//            System.out.println(entry.getKey() + " " + entry.getValue().getDisplayValue());
-//        }
+        PdfAcroForm cmsForm = PdfAcroForm.getAcroForm(existingPdf, true);
+        existingPdf.removePage(2);
+        cmsForm.flattenFields();
+        for (Map.Entry<String, PdfFormField> entry : cmsForm.getAllFormFields().entrySet()) {
+            entry.getValue().getFontSize();
+            System.out.println(entry.getKey() + " " + entry.getValue().getDisplayValue());
+        }
 //        existingPdf.close();
 //        reader.close();
 
@@ -105,7 +111,8 @@ public class Main {
         System.out.println();
 
     }
-//    private static void nestedList() {
+
+    //    private static void nestedList() {
 //        List<List<String>> list = new ArrayList<>();
 //        List<String> list1 = new ArrayList<>();
 //        list1.add("list1-objA");
@@ -127,4 +134,11 @@ public class Main {
 //                });
 //
 //    }
+    private static void reflectionTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Charge charge = new Charge();
+        //charge.setMod1();
+//        Method method = Charge.class.getMethod("setMod"+1,String.class);
+//        method.invoke(charge,"GP11");
+        System.out.println(charge.getMod1());
+    }
 }

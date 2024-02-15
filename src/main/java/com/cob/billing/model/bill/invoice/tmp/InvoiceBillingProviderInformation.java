@@ -14,4 +14,6 @@ public class InvoiceBillingProviderInformation {
     private String ssn;
     private String taxId;
     private Boolean identifierFlag;
+    private String npi;
+    private String taxonomy;
 }

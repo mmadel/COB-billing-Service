@@ -20,6 +20,8 @@ public class FindInsuranceCompanyConfigurationTmpUseCase {
     private final static int BILLING_PROVIDER_PHONE = 3;
     private final static int BILLING_PROVIDER_TAX_ID = 4;
     private final static int PATIENT_ACCOUNT = 5;
+    private final static int BILLING_PROVIDER_NPI = 6;
+    private final static int BILLING_PROVIDER_NPI_TAXONOMY = 7;
     @Autowired
     InsuranceCompanyConfigurationRepository insuranceCompanyConfigurationRepository;
     @Autowired
@@ -49,7 +51,7 @@ public class FindInsuranceCompanyConfigurationTmpUseCase {
     public String[] findElement(Long id, InsuranceCompanyVisibility visibility) {
         InsuranceCompanyConfigurationEntity insuranceCompanyConfiguration = null;
         OrganizationEntity organization = null;
-        String[] result = new String[6];
+        String[] result = new String[8];
         switch (visibility) {
             case Internal:
                 insuranceCompanyConfiguration = insuranceCompanyConfigurationRepository.findByInternalInsuranceCompany_Id(id).get();
@@ -76,6 +78,8 @@ public class FindInsuranceCompanyConfigurationTmpUseCase {
             result[PATIENT_ACCOUNT] = "ssn";
         if (insuranceCompanyConfiguration.getBox26().equals("pateint_external_id"))
             result[PATIENT_ACCOUNT] = "externalId";
+        result[BILLING_PROVIDER_NPI] = organization.getNpi();
+        result[BILLING_PROVIDER_NPI_TAXONOMY] = organization.getOrganizationData().getTaxonomy();
         return result;
     }
 

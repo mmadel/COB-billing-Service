@@ -2,6 +2,8 @@ package com.cob.billing.usecases.bill.invoice.cms.filler;
 
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
+import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
+import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.util.DateConstructor;
 import com.itextpdf.forms.PdfAcroForm;
 import org.springframework.stereotype.Component;
@@ -14,13 +16,13 @@ import java.util.List;
 public class ServiceLineCMSDocumentFiller {
     public PdfAcroForm cmsForm;
 
-    public void create(List<PatientInvoiceEntity> patientInvoices,PdfAcroForm cmsForm) {
+    public void create(List<SelectedSessionServiceLine> patientInvoices, PdfAcroForm cmsForm) {
         this.cmsForm = cmsForm;
         int counter = 1;
         double totalCharge = 0.0;
         DecimalFormat df = new DecimalFormat("#.00");
-        for (PatientInvoiceEntity patientInvoice : patientInvoices) {
-            String[] dateOfService = DateConstructor.construct(patientInvoice.getPatientSession().getServiceDate());
+        for (SelectedSessionServiceLine sessionServiceLine : patientInvoices) {
+            String[] dateOfService = DateConstructor.construct(sessionServiceLine.getSessionId().getServiceDate());
             cmsForm.getField("sv" + counter + "_mm_from").setValue(dateOfService[0]);
             cmsForm.getField("sv" + counter + "_dd_from").setValue(dateOfService[1]);
             cmsForm.getField("sv" + counter + "_yy_from").setValue(dateOfService[2]);
@@ -28,14 +30,14 @@ public class ServiceLineCMSDocumentFiller {
             cmsForm.getField("sv" + counter + "_mm_end").setValue(dateOfService[0]);
             cmsForm.getField("sv" + counter + "_dd_end").setValue(dateOfService[1]);
             cmsForm.getField("sv" + counter + "_yy_end").setValue(dateOfService[2]);
-            cmsForm.getField("ch" + counter).setValue(String.valueOf(patientInvoice.getServiceLine().getCptCode().getCharge())
-                    , df.format(patientInvoice.getServiceLine().getCptCode().getCharge()).replace(".", " "));
-            cmsForm.getField("day" + counter).setValue(patientInvoice.getServiceLine().getCptCode().getUnit().toString());
+            cmsForm.getField("ch" + counter).setValue(String.valueOf(sessionServiceLine.getServiceLine().getCptCode().getCharge())
+                    , df.format(sessionServiceLine.getServiceLine().getCptCode().getCharge()).replace(".", " "));
+            cmsForm.getField("day" + counter).setValue(sessionServiceLine.getServiceLine().getCptCode().getUnit().toString());
 
-            cmsForm.getField("place" + counter).setValue(patientInvoice.getPatientSession().getPlaceOfCode().split("_")[1]);
-            cmsForm.getField("cpt" + counter).setValue(patientInvoice.getServiceLine().getCptCode().getServiceCode());
-            if (patientInvoice.getServiceLine().getCptCode().getModifier().length() > 0) {
-                String[] modList = patientInvoice.getServiceLine().getCptCode().getModifier().split("\\.");
+            cmsForm.getField("place" + counter).setValue(sessionServiceLine.getSessionId().getPlaceOfCode().split("_")[1]);
+            cmsForm.getField("cpt" + counter).setValue(sessionServiceLine.getServiceLine().getCptCode().getServiceCode());
+            if (sessionServiceLine.getServiceLine().getCptCode().getModifier().length() > 0) {
+                String[] modList = sessionServiceLine.getServiceLine().getCptCode().getModifier().split("\\.");
                 try {
                     cmsForm.getField("mod" + counter).setValue(modList[0]);
                     cmsForm.getField("mod" + counter + "a").setValue(modList[1]);
@@ -45,9 +47,9 @@ public class ServiceLineCMSDocumentFiller {
 
                 }
             }
-            cmsForm.getField("local" + counter).setValue(patientInvoice.getPatientSession().getDoctorInfo().getDoctorNPI());
+            cmsForm.getField("local" + counter).setValue(sessionServiceLine.getSessionId().getDoctorInfo().getDoctorNPI());
             counter = counter + 1;
-            totalCharge = totalCharge + patientInvoice.getServiceLine().getCptCode().getCharge();
+            totalCharge = totalCharge + sessionServiceLine.getServiceLine().getCptCode().getCharge();
         }
         df.format(totalCharge);
         getSessionDiagnosis(patientInvoices);
@@ -55,19 +57,19 @@ public class ServiceLineCMSDocumentFiller {
     }
 
 
-    private void getSessionDiagnosis(List<PatientInvoiceEntity> patientInvoices) {
-        List<PatientSessionEntity> sessions = new ArrayList<>();
-        for (PatientInvoiceEntity patientInvoice : patientInvoices) {
-            if (!containsSession(sessions, patientInvoice.getPatientSession().getId()))
-                sessions.add(patientInvoice.getPatientSession());
+    private void getSessionDiagnosis(List<SelectedSessionServiceLine> selectedSessionServiceLines) {
+        List<PatientSession> sessions = new ArrayList<>();
+        for (SelectedSessionServiceLine sessionServiceLine : selectedSessionServiceLines) {
+            if (!containsSession(sessions, sessionServiceLine.getSessionId().getId()))
+                sessions.add(sessionServiceLine.getSessionId());
         }
         List<String> sessionDiagnosis = new ArrayList<>();
-        for (PatientSessionEntity patientSession : sessions) {
+        for (PatientSession patientSession : sessions) {
             patientSession.getCaseDiagnosis().stream()
                     .forEach(caseDiagnosis -> sessionDiagnosis.add(caseDiagnosis.getDiagnosisCode()));
         }
         fillDiagnosis(sessionDiagnosis);
-        fillCPTDiagnosis(patientInvoices, sessionDiagnosis);
+        fillCPTDiagnosis(selectedSessionServiceLines, sessionDiagnosis);
     }
 
     private void fillDiagnosis(List<String> sessionDiagnosis) {
@@ -78,12 +80,12 @@ public class ServiceLineCMSDocumentFiller {
         }
     }
 
-    private void fillCPTDiagnosis(List<PatientInvoiceEntity> patientInvoices, List<String> sessionDiagnosis) {
+    private void fillCPTDiagnosis(List<SelectedSessionServiceLine> selectedSessionServiceLines, List<String> sessionDiagnosis) {
         int counter = 1;
-        for (PatientInvoiceEntity patientInvoice : patientInvoices) {
+        for (SelectedSessionServiceLine sessionServiceLine : selectedSessionServiceLines) {
             List<String> indexes = new ArrayList<>();
-            if (patientInvoice.getServiceLine().getDiagnoses() != null) {
-                for (String serviceLineDiagnosis : patientInvoice.getServiceLine().getDiagnoses()) {
+            if (sessionServiceLine.getServiceLine().getDiagnoses() != null) {
+                for (String serviceLineDiagnosis : sessionServiceLine.getServiceLine().getDiagnoses()) {
                     int index = sessionDiagnosis.indexOf(serviceLineDiagnosis);
                     if (index != -1)
                         indexes.add(getCharForNumber(index + 1));
@@ -98,7 +100,7 @@ public class ServiceLineCMSDocumentFiller {
         return i > 0 && i < 27 ? String.valueOf((char) (i + 64)) : null;
     }
 
-    private boolean containsSession(List<PatientSessionEntity> list, Long id) {
+    private boolean containsSession(List<PatientSession> list, Long id) {
         return list.stream().anyMatch(p -> p.getId().equals(id));
     }
 }

@@ -12,4 +12,6 @@ public class InvoiceInsuranceCompanyInformation {
     private BasicAddress address;
     private InsuranceCompanyVisibility visibility;
     private String[] assigner; /* payerId , payerName , payerAddress*/
+    private Boolean isAssignment;
+    private String signature;
 }
