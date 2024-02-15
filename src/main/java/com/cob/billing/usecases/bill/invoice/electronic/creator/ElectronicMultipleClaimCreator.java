@@ -42,10 +42,15 @@ public class ElectronicMultipleClaimCreator {
         }
     }
 
-    private void createMultipleClinics(InvoiceRequest invoiceRequest, List<Claim> claims) {
+    private void createMultipleClinics(InvoiceRequest invoiceRequest, List<Claim> claims) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         Map<Clinic, List<SelectedSessionServiceLine>> clinics =
                 invoiceRequest.getSelectedSessionServiceLine().stream()
                         .collect(Collectors.groupingBy(patientInvoice -> patientInvoice.getSessionId().getClinic()));
+        if (clinics.size() > 1) {
+            for (Map.Entry<Clinic, List<SelectedSessionServiceLine>> entry : clinics.entrySet()) {
+                claims.add(claimCreator.create(entry.getKey(), entry.getValue()));
+            }
+        }
     }
 
     private void createMultipleCases(InvoiceRequest invoiceRequest, List<Claim> claims) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {

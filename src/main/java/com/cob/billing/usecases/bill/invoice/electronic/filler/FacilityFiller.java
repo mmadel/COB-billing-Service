@@ -12,6 +12,6 @@ public class FacilityFiller {
         claim.setFacility_state(clinic.getClinicdata().getState());
         claim.setFacility_zip(clinic.getClinicdata().getZipCode());
         claim.setFacility_npi(clinic.getNpi());
-        claim.setFacility_zip(clinic.getTitle());
+        claim.setFacility_name(clinic.getTitle());
     }
 }

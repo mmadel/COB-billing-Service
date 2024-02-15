@@ -5,6 +5,7 @@ import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.cob.billing.model.clinical.patient.session.DoctorInfo;
 import com.cob.billing.model.integration.claimmd.Claim;
+import com.cob.billing.usecases.bill.invoice.cms.finder.ClinicModelFinder;
 import com.cob.billing.usecases.bill.invoice.cms.finder.ProviderModelFinder;
 import com.cob.billing.usecases.bill.invoice.electronic.filler.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class ElectronicClaimCreator {
     private PayerFiller payerFiller;
     @Autowired
     private ServiceLinesFiller serviceLinesFiller;
+    @Autowired
+    FacilityFiller facilityFiller;
 
     private InvoiceRequest invoiceRequest;
 
@@ -37,6 +40,7 @@ public class ElectronicClaimCreator {
     public Claim create(DoctorInfo provider, List<SelectedSessionServiceLine> selectedSessionServiceLine) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         Claim claim = new Claim();
         billingProviderFiller.fill(invoiceRequest.getInvoiceBillingProviderInformation(), claim);
+
         insuredPatientFiller.fill(invoiceRequest.getInvoicePatientInsuredInformation(), claim);
         patientFiller.fill(invoiceRequest.getPatientInformation(), claim);
         providerFiller.fill(provider, claim);
@@ -46,8 +50,16 @@ public class ElectronicClaimCreator {
 
     }
 
-    public void create(Clinic clinic, List<SelectedSessionServiceLine> selectedSessionServiceLine) {
-
+    public Claim create(Clinic clinic, List<SelectedSessionServiceLine> selectedSessionServiceLine) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        Claim claim = new Claim();
+        billingProviderFiller.fill(invoiceRequest.getInvoiceBillingProviderInformation(), claim);
+        insuredPatientFiller.fill(invoiceRequest.getInvoicePatientInsuredInformation(), claim);
+        patientFiller.fill(invoiceRequest.getPatientInformation(), claim);
+        providerFiller.fill(ProviderModelFinder.find(invoiceRequest.getSelectedSessionServiceLine()), claim);
+        facilityFiller.fill(clinic, claim);
+        payerFiller.fill(invoiceRequest.getInvoiceInsuranceCompanyInformation(), claim);
+        serviceLinesFiller.fill(selectedSessionServiceLine, claim);
+        return claim;
     }
 
     public Claim create(List<SelectedSessionServiceLine> selectedSessionServiceLine) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
@@ -57,12 +69,14 @@ public class ElectronicClaimCreator {
     public void setInvoiceRequest(InvoiceRequest invoiceRequest) {
         this.invoiceRequest = invoiceRequest;
     }
+
     private Claim createBasicClaimPart(List<SelectedSessionServiceLine> selectedSessionServiceLine) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         Claim claim = new Claim();
         billingProviderFiller.fill(invoiceRequest.getInvoiceBillingProviderInformation(), claim);
         insuredPatientFiller.fill(invoiceRequest.getInvoicePatientInsuredInformation(), claim);
         patientFiller.fill(invoiceRequest.getPatientInformation(), claim);
         providerFiller.fill(ProviderModelFinder.find(invoiceRequest.getSelectedSessionServiceLine()), claim);
+        facilityFiller.fill(ClinicModelFinder.find(invoiceRequest.getSelectedSessionServiceLine()), claim);
         payerFiller.fill(invoiceRequest.getInvoiceInsuranceCompanyInformation(), claim);
         serviceLinesFiller.fill(selectedSessionServiceLine, claim);
         return claim;
