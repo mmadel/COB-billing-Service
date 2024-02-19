@@ -10,5 +10,4 @@ public class PatientAdvancedDates {
     private Long lastSeenByDoctor;
     private Long accident;
     private Long firstTreatment;
-    private Long sameIInes;
 }
