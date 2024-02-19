@@ -1,13 +1,12 @@
 package com.cob.billing.entity.clinical.patient.insurance;
 
-import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyEntity;
 import com.cob.billing.entity.clinical.insurance.compnay.PatientInsuranceExternalCompanyEntity;
 import com.cob.billing.entity.clinical.insurance.compnay.PatientInsuranceInternalCompanyEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
-import com.cob.billing.model.bill.payer.Payer;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsuranceAdvanced;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsurancePolicy;
 import com.cob.billing.model.clinical.patient.insurance.PatientRelation;
+import com.cob.billing.model.common.BasicAddress;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,6 +42,10 @@ public class PatientInsuranceEntity {
     @Column(name = "patient_insurance_advanced", columnDefinition = "json")
     @Type(type = "json")
     private PatientInsuranceAdvanced patientInsuranceAdvanced;
+
+    @Column(name = "insurance_company_address", columnDefinition = "json")
+    @Type(type = "json")
+    private BasicAddress insuranceCompanyAddress;
 
     @ManyToOne
     @JoinColumn(name = "patient_id")

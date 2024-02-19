@@ -12,6 +12,7 @@ import com.cob.billing.repositories.clinical.insurance.company.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -37,6 +38,7 @@ public class CreatePatientInsuranceCompanyUseCase {
     @Autowired
     InsuranceCompanyPayerRepository insuranceCompanyPayerRepository;
 
+    @Transactional
     public PatientInsurance create(PatientInsurance patientInsurance, Long patientId) {
         PatientInsuranceEntity toBeCreated = mapper.map(patientInsurance, PatientInsuranceEntity.class);
         PatientEntity patient = repository.findById(patientId).orElseThrow(() -> new IllegalArgumentException());
@@ -99,17 +101,23 @@ public class CreatePatientInsuranceCompanyUseCase {
     }
 
     private void mapPatientInsuranceToInsuranceCompany(PatientInsuranceEntity patientInsurance, InsuranceCompanyEntity insuranceCompany) {
-        PatientInsuranceInternalCompanyEntity patientInsuranceInternalCompany = new PatientInsuranceInternalCompanyEntity();
-        patientInsuranceInternalCompany.setPatientInsurance(patientInsurance);
-        patientInsuranceInternalCompany.setInsuranceCompany(insuranceCompany);
-        patientInsuranceInternalCompanyRepository.save(patientInsuranceInternalCompany);
+        Optional<PatientInsuranceInternalCompanyEntity> patientInsuranceInternalCompanyEntity = patientInsuranceInternalCompanyRepository.findByInsuranceCompany_IdAndPatientInsurance_Id(insuranceCompany.getId(), patientInsurance.getId());
+        if (!patientInsuranceInternalCompanyEntity.isPresent()) {
+            PatientInsuranceInternalCompanyEntity patientInsuranceInternalCompany = new PatientInsuranceInternalCompanyEntity();
+            patientInsuranceInternalCompany.setPatientInsurance(patientInsurance);
+            patientInsuranceInternalCompany.setInsuranceCompany(insuranceCompany);
+            patientInsuranceInternalCompanyRepository.save(patientInsuranceInternalCompany);
+        }
     }
 
     private void mapPatientInsuranceToExternalInsuranceCompany(PatientInsuranceEntity patientInsurance, InsuranceCompanyExternalEntity insuranceCompany) {
-        PatientInsuranceExternalCompanyEntity patientInsuranceExternalCompany = new PatientInsuranceExternalCompanyEntity();
-        patientInsuranceExternalCompany.setExternalPatientInsurance(patientInsurance);
-        patientInsuranceExternalCompany.setInsuranceCompany(insuranceCompany);
-        patientInsuranceExternalCompanyRepository.save(patientInsuranceExternalCompany);
+        Optional<PatientInsuranceExternalCompanyEntity> patientInsuranceExternalCompanyEntity = patientInsuranceExternalCompanyRepository.findByExternalPatientInsurance_IdAndInsuranceCompany_Id(patientInsurance.getId(), insuranceCompany.getId());
+        if (!patientInsuranceExternalCompanyEntity.isPresent()) {
+            PatientInsuranceExternalCompanyEntity patientInsuranceExternalCompany = new PatientInsuranceExternalCompanyEntity();
+            patientInsuranceExternalCompany.setExternalPatientInsurance(patientInsurance);
+            patientInsuranceExternalCompany.setInsuranceCompany(insuranceCompany);
+            patientInsuranceExternalCompanyRepository.save(patientInsuranceExternalCompany);
+        }
     }
 
     private void createInsuranceCompanyConfiguration(Object insuranceCompany) {

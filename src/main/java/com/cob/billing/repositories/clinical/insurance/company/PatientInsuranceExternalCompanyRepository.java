@@ -5,6 +5,8 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface PatientInsuranceExternalCompanyRepository extends CrudRepository<PatientInsuranceExternalCompanyEntity,Long> {
+public interface PatientInsuranceExternalCompanyRepository extends CrudRepository<PatientInsuranceExternalCompanyEntity, Long> {
     Optional<PatientInsuranceExternalCompanyEntity> deleteByExternalPatientInsurance_Id(Long id);
+
+    Optional<PatientInsuranceExternalCompanyEntity> findByExternalPatientInsurance_IdAndInsuranceCompany_Id(Long patientInsuranceId, Long insuranceCompanyId);
 }
