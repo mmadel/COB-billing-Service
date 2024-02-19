@@ -40,7 +40,8 @@ public class MapPatientUseCase {
                     if (patientInsuranceEntity.getPatientInsuranceExternalCompany() != null) {
                         patientInsurance.setVisibility(InsuranceCompanyVisibility.External);
                         String[] insuranceCompany = {patientInsuranceEntity.getPatientInsuranceExternalCompany().getInsuranceCompany().getName(),
-                                patientInsuranceEntity.getPatientInsuranceExternalCompany().getInsuranceCompany().getId().toString()};
+                                patientInsuranceEntity.getPatientInsuranceExternalCompany().getInsuranceCompany().getId().toString(),
+                                patientInsuranceEntity.getPatientInsuranceExternalCompany().getInsuranceCompany().getPayerId().toString()};
                         patientInsurance.setInsuranceCompany(insuranceCompany);
                         patientInsurance.setInsuranceCompanyAddress(patientInsuranceEntity.getPatientInsuranceExternalCompany().getInsuranceCompany().getAddress());
                     }
