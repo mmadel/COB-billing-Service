@@ -32,20 +32,31 @@ public class Main {
     static File ddd = new File("C:\\cob\\documents\\billing\\form-cms1500.pdf");
 
     public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-
+        String plan = "sddjskjsldj";
+        switch (plan) {
+            case "Medicare_Part_A":
+            case "Medicare_Part_B":
+                System.out.println("Medicare_Part_A OR Medicare_Part_B");
+                break;
+            case "Medicaid":
+                System.out.println("Medicaid");
+                break;
+            default:
+                System.out.println("Group");
+        }
         //reflectionTest();
 //        nestedList();
         //groupList();
         PdfReader reader = new PdfReader(ddd);
         PdfDocument existingPdf = new PdfDocument(reader, new PdfWriter("filled-form.pdf"));
 //
-        PdfAcroForm cmsForm = PdfAcroForm.getAcroForm(existingPdf, true);
-        existingPdf.removePage(2);
-        cmsForm.flattenFields();
-        for (Map.Entry<String, PdfFormField> entry : cmsForm.getAllFormFields().entrySet()) {
-            entry.getValue().getFontSize();
-            System.out.println(entry.getKey() + " " + entry.getValue().getDisplayValue());
-        }
+//        PdfAcroForm cmsForm = PdfAcroForm.getAcroForm(existingPdf, true);
+//        existingPdf.removePage(2);
+//        cmsForm.flattenFields();
+//        for (Map.Entry<String, PdfFormField> entry : cmsForm.getAllFormFields().entrySet()) {
+//            entry.getValue().getFontSize();
+//            System.out.println(entry.getKey() + " " + entry.getValue().getDisplayValue());
+//        }
 //        existingPdf.close();
 //        reader.close();
 

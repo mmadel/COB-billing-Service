@@ -35,8 +35,17 @@ public class NotRepeatableCMSDocumentFiller {
             cmsForm.getField(CMSFields.INSURANCE_ADDRESS).setValue(assigned[2]);
             cmsForm.getField(CMSFields.INSURANCE_CITY_STATE_ZIP).setValue(assigned[3]);
         }
-        cmsForm.getField(CMSFields.INSURANCE_TYPE).setValue("Group", false);
-
+        switch (invoiceInsuranceCompanyInformation.getInsuranceType()) {
+            case "Medicare_Part_A":
+            case "Medicare_Part_B":
+                cmsForm.getField(CMSFields.INSURANCE_TYPE).setValue("Medicare", false);
+                break;
+            case "Medicaid":
+                cmsForm.getField(CMSFields.INSURANCE_TYPE).setValue("Medicaid",false);
+                break;
+            default:
+                cmsForm.getField(CMSFields.INSURANCE_TYPE).setValue("Group",false);
+        }
     }
 
     private void fillPatient(InvoicePatientInformation patientInformation) {
