@@ -103,8 +103,21 @@ public class NotRepeatableCMSDocumentFiller {
 
     private void fillPatientInsured(InvoicePatientInsuredInformation invoicePatientInsuredInformation) {
         String[] insuredDOB = DateConstructor.construct(invoicePatientInsuredInformation.getDateOfBirth());
-        cmsForm.getField("ins_name").setValue(invoicePatientInsuredInformation.getLastName() + "," + invoicePatientInsuredInformation.getLastName());
-        cmsForm.getField("rel_to_ins").setValue(invoicePatientInsuredInformation.getRelationToInsured().substring(0, 1), false);
+        cmsForm.getField("ins_name").setValue(invoicePatientInsuredInformation.getLastName() + "," + invoicePatientInsuredInformation.getFirstName());
+        switch (invoicePatientInsuredInformation.getRelationToInsured()){
+            case "Self":
+                cmsForm.getField("rel_to_ins").setValue("S", false);
+                break;
+            case "Spouse":
+                cmsForm.getField("rel_to_ins").setValue("M", false);
+                break;
+            case "Parent":
+                cmsForm.getField("rel_to_ins").setValue("C", false);
+                break;
+            case "Other":
+                cmsForm.getField("rel_to_ins").setValue("O", false);
+                break;
+        }
         cmsForm.getField("ins_street").setValue(invoicePatientInsuredInformation.getAddress().getFirst());
         cmsForm.getField("ins_city").setValue(invoicePatientInsuredInformation.getAddress().getCity());
         cmsForm.getField("ins_state").setValue(invoicePatientInsuredInformation.getAddress().getState());
