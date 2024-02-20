@@ -46,6 +46,10 @@ public class NotRepeatableCMSDocumentFiller {
             default:
                 cmsForm.getField(CMSFields.INSURANCE_TYPE).setValue("Group",false);
         }
+        if(invoiceInsuranceCompanyInformation.getNumberOfActivePatientInsurances() > 1)
+            cmsForm.getField(CMSFields.INSURANCE_BENEFIT).setValue("YES",false);
+        else
+            cmsForm.getField(CMSFields.INSURANCE_BENEFIT).setValue("NO",false);
     }
 
     private void fillPatient(InvoicePatientInformation patientInformation) {

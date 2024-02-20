@@ -15,4 +15,5 @@ public class InvoiceInsuranceCompanyInformation {
     private Boolean isAssignment;
     private String signature;
     private String insuranceType;
+    private Integer numberOfActivePatientInsurances;
 }
