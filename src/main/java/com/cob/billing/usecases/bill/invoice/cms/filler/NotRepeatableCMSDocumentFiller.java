@@ -50,6 +50,9 @@ public class NotRepeatableCMSDocumentFiller {
             cmsForm.getField(CMSFields.INSURANCE_BENEFIT).setValue("YES",false);
         else
             cmsForm.getField(CMSFields.INSURANCE_BENEFIT).setValue("NO",false);
+
+        cmsForm.getField(CMSFields.INSURANCE_POLICY_GROUP).setValue(invoiceInsuranceCompanyInformation.getPolicyInformation()[0]);
+        cmsForm.getField(CMSFields.INSURANCE_PLAN_NAME).setValue(invoiceInsuranceCompanyInformation.getPolicyInformation()[1]);
     }
 
     private void fillPatient(InvoicePatientInformation patientInformation) {
@@ -132,7 +135,6 @@ public class NotRepeatableCMSDocumentFiller {
                 .replace("(", "")
                 .replace(")", "")
                 .replace("-", ""));
-        cmsForm.getField("ins_policy").setValue("");
         cmsForm.getField("ins_sex").setValue(invoicePatientInsuredInformation.getGender().name().equals("Male") ? "MALE" : "FEMALE", false);
         cmsForm.getField("ins_dob_mm").setValue(insuredDOB[0]);
         cmsForm.getField("ins_dob_dd").setValue(insuredDOB[1]);
