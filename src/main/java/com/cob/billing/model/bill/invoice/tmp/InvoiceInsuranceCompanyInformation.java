@@ -16,4 +16,5 @@ public class InvoiceInsuranceCompanyInformation {
     private String signature;
     private String insuranceType;
     private Integer numberOfActivePatientInsurances;
+    private String[] policyInformation;
 }
