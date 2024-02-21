@@ -23,4 +23,5 @@ public class PatientInsurance {
     private String[] insuranceCompany;
     private BasicAddress insuranceCompanyAddress;
     private String[] assigner;
+    private Long createdAt;
 }
