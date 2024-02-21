@@ -5,6 +5,8 @@ import com.cob.billing.model.common.BasicAddress;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 @Getter
 public class InvoiceInsuranceCompanyInformation {
@@ -17,4 +19,5 @@ public class InvoiceInsuranceCompanyInformation {
     private String insuranceType;
     private Integer numberOfActivePatientInsurances;
     private String[] policyInformation;
+    private List<String[]> otherInsurances;
 }
