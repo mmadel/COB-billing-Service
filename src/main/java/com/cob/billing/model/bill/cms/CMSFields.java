@@ -10,4 +10,7 @@ public interface CMSFields {
     String INSURANCE_BENEFIT = "ins_benefit_plan";
     String INSURANCE_POLICY_GROUP= "ins_policy";
     String INSURANCE_PLAN_NAME= "ins_plan_name";
+    String OTHER_INSURANCE_RELATED_NAME= "other_ins_name";
+    String OTHER_INSURANCE_POLICY_GROUP= "other_ins_policy";
+    String OTHER_INSURANCE_PLAN_NAME= "other_ins_plan_name";
 }

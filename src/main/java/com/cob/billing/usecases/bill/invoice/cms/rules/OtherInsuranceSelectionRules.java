@@ -6,7 +6,12 @@ import java.util.List;
 
 @Component
 public class OtherInsuranceSelectionRules {
-    public String[] select(List<String[]> otherInsurances ){
+    private List<String[]> otherInsurances;
+    public String[] select(List<String[]> otherInsurances){
+        this.otherInsurances = otherInsurances;
+        if(otherInsurances.size()==1)
+            return new String[]{otherInsurances.get(0)[0],
+                    otherInsurances.get(0)[1],otherInsurances.get(0)[2]};
         return null;
     }
 }
