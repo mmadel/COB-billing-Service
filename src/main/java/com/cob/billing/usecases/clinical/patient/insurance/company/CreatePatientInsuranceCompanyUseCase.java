@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,6 +44,8 @@ public class CreatePatientInsuranceCompanyUseCase {
         PatientInsuranceEntity toBeCreated = mapper.map(patientInsurance, PatientInsuranceEntity.class);
         PatientEntity patient = repository.findById(patientId).orElseThrow(() -> new IllegalArgumentException());
         toBeCreated.setPatient(patient);
+        if (patientInsurance.getId() == null)
+            toBeCreated.setCreatedAt(new Date().getTime());
         PatientInsuranceEntity created = patientInsuranceRepository.save(toBeCreated);
         PatientInsurance result = new PatientInsurance();
         result.setId(created.getId());
