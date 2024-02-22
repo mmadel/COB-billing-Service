@@ -54,6 +54,8 @@ public class ServiceLineCMSDocumentFiller {
         df.format(totalCharge);
         getSessionDiagnosis(patientInvoices);
         cmsForm.getField("t_charge").setValue(String.valueOf(totalCharge), df.format(totalCharge).replace(".", " "));
+        cmsForm.getField("99icd").setFontSize(10.0f);
+        cmsForm.getField("99icd").setValue("0");
     }
 
 
