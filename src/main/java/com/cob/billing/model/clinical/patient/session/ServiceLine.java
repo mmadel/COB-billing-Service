@@ -14,4 +14,5 @@ public class ServiceLine {
     private CPTCode cptCode;
     private String type;
     private List<String> diagnoses;
+    private Boolean isCorrect;
 }

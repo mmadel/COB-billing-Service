@@ -3,10 +3,7 @@ package com.cob.billing.controller.clinical;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.invoice.ChangeSessionStatusUseCase;
-import com.cob.billing.usecases.clinical.patient.session.CreatePatientSessionUseCase;
-import com.cob.billing.usecases.clinical.patient.session.FindSessionByPatientUseCase;
-import com.cob.billing.usecases.clinical.patient.session.FindSessionUseCase;
-import com.cob.billing.usecases.clinical.patient.session.UpdatePatientSessionUseCase;
+import com.cob.billing.usecases.clinical.patient.session.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +24,8 @@ public class PatientSessionController {
     ChangeSessionStatusUseCase changeSessionStatusUseCase;
     @Autowired
     FindSessionUseCase findSessionUseCase;
+    @Autowired
+    CorrectPatientSessionUseCase correctPatientSessionUseCase;
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody PatientSession patientSession) {
@@ -41,11 +40,12 @@ public class PatientSessionController {
                 .generateResponse("Successfully updated Patient Session",
                         HttpStatus.OK, updatePatientSessionUseCase.update(patientSession));
     }
+
     @GetMapping("/find/id/{sessionId}")
-    public ResponseEntity<Object> findById(@PathVariable Long sessionId){
+    public ResponseEntity<Object> findById(@PathVariable Long sessionId) {
         return ResponseHandler
                 .generateResponse("Successfully updated Patient Session",
-                        HttpStatus.OK,findSessionUseCase.findById(sessionId));
+                        HttpStatus.OK, findSessionUseCase.findById(sessionId));
     }
 
     @GetMapping("/find/patientId/{patientId}")
@@ -56,5 +56,12 @@ public class PatientSessionController {
         return ResponseHandler
                 .generateResponse("Successfully finding Patient Session",
                         HttpStatus.OK, null, findSessionByPatientUseCase.find(paging, patientId));
+    }
+
+    @PutMapping("/correct")
+    public ResponseEntity<Object> correctClaim(@RequestBody PatientSession patientSession) {
+        return ResponseHandler
+                .generateResponse("Successfully updated Patient Session",
+                        HttpStatus.OK, correctPatientSessionUseCase.correct(patientSession));
     }
 }
