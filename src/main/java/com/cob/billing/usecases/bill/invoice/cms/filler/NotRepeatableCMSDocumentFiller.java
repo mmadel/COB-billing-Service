@@ -22,6 +22,7 @@ public class NotRepeatableCMSDocumentFiller {
         fillPatient(invoiceRequest.getPatientInformation());
         fillPatientInsured(invoiceRequest.getInvoicePatientInsuredInformation());
         fillBillingProvider(invoiceRequest.getInvoiceBillingProviderInformation());
+        fillCorrectInvoice(invoiceRequest.getCorrectClaimInformation());
     }
 
     private void fillCarrier(InvoiceInsuranceCompanyInformation invoiceInsuranceCompanyInformation) throws IllegalAccessException {
@@ -196,5 +197,12 @@ public class NotRepeatableCMSDocumentFiller {
         cmsForm.getField("grp").setValue(invoiceBillingProviderInformation.getTaxonomy());
         //npi for location
         cmsForm.getField("pin1").setValue(invoiceBillingProviderInformation.getNpi());
+    }
+
+    private void fillCorrectInvoice(CorrectClaimInformation correctClaimInformation) {
+        if (correctClaimInformation != null) {
+            cmsForm.getField("medicaid_resub").setValue(correctClaimInformation.getResubmissionCode());
+            cmsForm.getField("original_ref").setValue(correctClaimInformation.getRefNumber());
+        }
     }
 }
