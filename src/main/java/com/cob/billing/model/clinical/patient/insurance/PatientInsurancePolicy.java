@@ -12,4 +12,5 @@ public class PatientInsurancePolicy {
     private String policyGroup;
     private String plan;
     private String employer;
+    private String claimCasualty;
 }

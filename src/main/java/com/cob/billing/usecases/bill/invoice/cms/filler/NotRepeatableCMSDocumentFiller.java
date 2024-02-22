@@ -63,6 +63,12 @@ public class NotRepeatableCMSDocumentFiller {
             cmsForm.getField(CMSFields.OTHER_INSURANCE_POLICY_GROUP).setValue(otherPatientInsuranceValues.getPolicyGroup());
             cmsForm.getField(CMSFields.OTHER_INSURANCE_PLAN_NAME).setValue(otherPatientInsuranceValues.getPlanName());
         }
+        if (invoiceInsuranceCompanyInformation.getInsuranceType().equals("Workers_Compensation_Health_Claim") ||
+                invoiceInsuranceCompanyInformation.getInsuranceType().equals("Automobile_Medical")){
+            cmsForm.getField("57").setValue("Y4");
+            cmsForm.getField("58").setValue(invoiceInsuranceCompanyInformation.getPolicyInformation()[3]);
+        }
+
     }
 
     private void fillPatient(InvoicePatientInformation patientInformation) {
