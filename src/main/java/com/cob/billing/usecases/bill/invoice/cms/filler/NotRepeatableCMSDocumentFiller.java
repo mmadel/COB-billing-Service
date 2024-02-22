@@ -6,9 +6,10 @@ import com.cob.billing.usecases.bill.invoice.cms.rules.OtherInsuranceSelectionRu
 import com.cob.billing.util.DateConstructor;
 import com.itextpdf.forms.PdfAcroForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component()
 public class NotRepeatableCMSDocumentFiller {
     @Autowired
     private OtherInsuranceSelectionRules otherInsuranceSelectionRules;
@@ -64,7 +65,7 @@ public class NotRepeatableCMSDocumentFiller {
             cmsForm.getField(CMSFields.OTHER_INSURANCE_PLAN_NAME).setValue(otherPatientInsuranceValues.getPlanName());
         }
         if (invoiceInsuranceCompanyInformation.getInsuranceType().equals("Workers_Compensation_Health_Claim") ||
-                invoiceInsuranceCompanyInformation.getInsuranceType().equals("Automobile_Medical")){
+                invoiceInsuranceCompanyInformation.getInsuranceType().equals("Automobile_Medical")) {
             cmsForm.getField("57").setValue("Y4");
             cmsForm.getField("58").setValue(invoiceInsuranceCompanyInformation.getPolicyInformation()[3]);
         }
@@ -120,6 +121,22 @@ public class NotRepeatableCMSDocumentFiller {
                 cmsForm.getField("pt_auto_accident").setValue(patientInformation.getPatientAdvancedInformation().getPateintAdvancedCondtion().isAutoAccident() ? "YES" : "NO", false);
                 cmsForm.getField("other_accident").setValue(patientInformation.getPatientAdvancedInformation().getPateintAdvancedCondtion().isOtherAccident() ? "YES" : "NO", false);
                 cmsForm.getField("accident_place").setValue("");
+            }
+            if (patientInformation.getPatientAdvancedInformation().getPatientAdvancedDates() != null) {
+                if (patientInformation.getPatientAdvancedInformation().getPatientAdvancedDates().getFirstSymptoms() != null) {
+                    cmsForm.getField("73").setValue("431");
+                    String[] firstSymptomsDate = DateConstructor.construct(patientInformation.getPatientAdvancedInformation().getPatientAdvancedDates().getFirstSymptoms());
+                    cmsForm.getField("cur_ill_mm").setValue(firstSymptomsDate[0]);
+                    cmsForm.getField("cur_ill_dd").setValue(firstSymptomsDate[1]);
+                    cmsForm.getField("cur_ill_yy").setValue(firstSymptomsDate[2]);
+                }
+                if (patientInformation.getPatientAdvancedInformation().getPatientAdvancedDates().getAccident() != null) {
+                    cmsForm.getField("74").setValue("439");
+                    String[] accidentDate = DateConstructor.construct(patientInformation.getPatientAdvancedInformation().getPatientAdvancedDates().getAccident());
+                    cmsForm.getField("sim_ill_mm").setValue(accidentDate[0]);
+                    cmsForm.getField("sim_ill_dd").setValue(accidentDate[1]);
+                    cmsForm.getField("sim_ill_yy").setValue(accidentDate[2]);
+                }
             }
         }
     }
