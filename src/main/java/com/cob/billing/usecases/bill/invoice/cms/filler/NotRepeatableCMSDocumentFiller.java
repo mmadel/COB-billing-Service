@@ -2,15 +2,19 @@ package com.cob.billing.usecases.bill.invoice.cms.filler;
 
 import com.cob.billing.model.bill.cms.CMSFields;
 import com.cob.billing.model.bill.invoice.tmp.*;
+import com.cob.billing.usecases.bill.invoice.cms.rules.OtherInsuranceSelectionRules;
 import com.cob.billing.util.DateConstructor;
 import com.itextpdf.forms.PdfAcroForm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class NotRepeatableCMSDocumentFiller {
+    @Autowired
+    private OtherInsuranceSelectionRules otherInsuranceSelectionRules;
     private PdfAcroForm cmsForm;
 
-    public void fill(InvoiceRequest invoiceRequest, PdfAcroForm cmsForm) {
+    public void fill(InvoiceRequest invoiceRequest, PdfAcroForm cmsForm) throws IllegalAccessException {
         this.cmsForm = cmsForm;
         cmsForm.getField(CMSFields.INSURANCE_ID).setValue(invoiceRequest.getInvoicePatientInsuredInformation().getPrimaryId());
         fillCarrier(invoiceRequest.getInvoiceInsuranceCompanyInformation());
@@ -19,7 +23,7 @@ public class NotRepeatableCMSDocumentFiller {
         fillBillingProvider(invoiceRequest.getInvoiceBillingProviderInformation());
     }
 
-    private void fillCarrier(InvoiceInsuranceCompanyInformation invoiceInsuranceCompanyInformation) {
+    private void fillCarrier(InvoiceInsuranceCompanyInformation invoiceInsuranceCompanyInformation) throws IllegalAccessException {
         String assigned[] = invoiceInsuranceCompanyInformation.getAssigner();
         if (assigned == null) {
             cmsForm.getField(CMSFields.INSURANCE_NAME).setValue(invoiceInsuranceCompanyInformation.getName());
@@ -35,7 +39,35 @@ public class NotRepeatableCMSDocumentFiller {
             cmsForm.getField(CMSFields.INSURANCE_ADDRESS).setValue(assigned[2]);
             cmsForm.getField(CMSFields.INSURANCE_CITY_STATE_ZIP).setValue(assigned[3]);
         }
-        cmsForm.getField(CMSFields.INSURANCE_TYPE).setValue("Group", false);
+        switch (invoiceInsuranceCompanyInformation.getInsuranceType()) {
+            case "Medicare_Part_A":
+            case "Medicare_Part_B":
+                cmsForm.getField(CMSFields.INSURANCE_TYPE).setValue("Medicare", false);
+                break;
+            case "Medicaid":
+                cmsForm.getField(CMSFields.INSURANCE_TYPE).setValue("Medicaid", false);
+                break;
+            default:
+                cmsForm.getField(CMSFields.INSURANCE_TYPE).setValue("Group", false);
+        }
+        if (invoiceInsuranceCompanyInformation.getNumberOfActivePatientInsurances() > 1)
+            cmsForm.getField(CMSFields.INSURANCE_BENEFIT).setValue("YES", false);
+        else
+            cmsForm.getField(CMSFields.INSURANCE_BENEFIT).setValue("NO", false);
+
+        cmsForm.getField(CMSFields.INSURANCE_POLICY_GROUP).setValue(invoiceInsuranceCompanyInformation.getPolicyInformation()[0]);
+        cmsForm.getField(CMSFields.INSURANCE_PLAN_NAME).setValue(invoiceInsuranceCompanyInformation.getPolicyInformation()[1]);
+        OtherPatientInsurance otherPatientInsuranceValues = otherInsuranceSelectionRules.select(invoiceInsuranceCompanyInformation.getOtherInsurances(), invoiceInsuranceCompanyInformation.getPolicyInformation()[2]);
+        if (otherPatientInsuranceValues != null) {
+            cmsForm.getField(CMSFields.OTHER_INSURANCE_RELATED_NAME).setValue(otherPatientInsuranceValues.getInsuredName());
+            cmsForm.getField(CMSFields.OTHER_INSURANCE_POLICY_GROUP).setValue(otherPatientInsuranceValues.getPolicyGroup());
+            cmsForm.getField(CMSFields.OTHER_INSURANCE_PLAN_NAME).setValue(otherPatientInsuranceValues.getPlanName());
+        }
+        if (invoiceInsuranceCompanyInformation.getInsuranceType().equals("Workers_Compensation_Health_Claim") ||
+                invoiceInsuranceCompanyInformation.getInsuranceType().equals("Automobile_Medical")){
+            cmsForm.getField("57").setValue("Y4");
+            cmsForm.getField("58").setValue(invoiceInsuranceCompanyInformation.getPolicyInformation()[3]);
+        }
 
     }
 
@@ -94,8 +126,21 @@ public class NotRepeatableCMSDocumentFiller {
 
     private void fillPatientInsured(InvoicePatientInsuredInformation invoicePatientInsuredInformation) {
         String[] insuredDOB = DateConstructor.construct(invoicePatientInsuredInformation.getDateOfBirth());
-        cmsForm.getField("ins_name").setValue(invoicePatientInsuredInformation.getLastName() + "," + invoicePatientInsuredInformation.getLastName());
-        cmsForm.getField("rel_to_ins").setValue(invoicePatientInsuredInformation.getRelationToInsured().substring(0, 1), false);
+        cmsForm.getField("ins_name").setValue(invoicePatientInsuredInformation.getLastName() + "," + invoicePatientInsuredInformation.getFirstName());
+        switch (invoicePatientInsuredInformation.getRelationToInsured()) {
+            case "Self":
+                cmsForm.getField("rel_to_ins").setValue("S", false);
+                break;
+            case "Spouse":
+                cmsForm.getField("rel_to_ins").setValue("M", false);
+                break;
+            case "Parent":
+                cmsForm.getField("rel_to_ins").setValue("C", false);
+                break;
+            case "Other":
+                cmsForm.getField("rel_to_ins").setValue("O", false);
+                break;
+        }
         cmsForm.getField("ins_street").setValue(invoicePatientInsuredInformation.getAddress().getFirst());
         cmsForm.getField("ins_city").setValue(invoicePatientInsuredInformation.getAddress().getCity());
         cmsForm.getField("ins_state").setValue(invoicePatientInsuredInformation.getAddress().getState());
@@ -106,13 +151,10 @@ public class NotRepeatableCMSDocumentFiller {
                 .replace("(", "")
                 .replace(")", "")
                 .replace("-", ""));
-        cmsForm.getField("ins_policy").setValue("");
         cmsForm.getField("ins_sex").setValue(invoicePatientInsuredInformation.getGender().name().equals("Male") ? "MALE" : "FEMALE", false);
         cmsForm.getField("ins_dob_mm").setValue(insuredDOB[0]);
         cmsForm.getField("ins_dob_dd").setValue(insuredDOB[1]);
         cmsForm.getField("ins_dob_yy").setValue(insuredDOB[2]);
-        cmsForm.getField("other_ins_name").setValue("");
-        cmsForm.getField("other_ins_policy").setValue("");
     }
 
     private void fillBillingProvider(InvoiceBillingProviderInformation invoiceBillingProviderInformation) {

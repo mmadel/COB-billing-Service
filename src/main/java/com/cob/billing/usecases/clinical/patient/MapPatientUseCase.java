@@ -76,5 +76,6 @@ public class MapPatientUseCase {
         destination.setPatientInsurancePolicy(source.getPatientInsurancePolicy());
         destination.setPatientInsuranceAdvanced(source.getPatientInsuranceAdvanced());
         destination.setIsArchived(source.getIsArchived());
+        destination.setCreatedAt(source.getCreatedAt());
     }
 }

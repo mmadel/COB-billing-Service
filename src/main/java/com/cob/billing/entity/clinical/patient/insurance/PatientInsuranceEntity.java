@@ -28,7 +28,7 @@ public class PatientInsuranceEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name ="relation")
+    @Column(name = "relation")
     private String relation;
 
     @Column(name = "Patient_relation", columnDefinition = "json")
@@ -54,9 +54,12 @@ public class PatientInsuranceEntity {
     @Column(name = "is_archived")
     private Boolean isArchived;
 
-    @OneToOne(cascade = CascadeType.ALL,mappedBy = "patientInsurance")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "patientInsurance")
     private PatientInsuranceInternalCompanyEntity patientInsuranceInternalCompany;
 
-    @OneToOne(cascade = CascadeType.ALL,mappedBy = "externalPatientInsurance")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "externalPatientInsurance")
     private PatientInsuranceExternalCompanyEntity patientInsuranceExternalCompany;
+
+    @Column(name = "createdAt")
+    private Long createdAt;
 }

@@ -1,27 +1,16 @@
 package com.cob.billing.configuration;
 
 
-import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
-import com.cob.billing.enums.Gender;
 import com.cob.billing.model.integration.claimmd.Charge;
-import com.cob.billing.usecases.bill.invoice.electronic.enums.BillingProviderTaxIDType;
 import com.itextpdf.forms.PdfAcroForm;
 import com.itextpdf.forms.fields.PdfFormField;
-import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.utils.PdfMerger;
-import com.itextpdf.layout.element.AreaBreak;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +21,12 @@ public class Main {
     static File ddd = new File("C:\\cob\\documents\\billing\\form-cms1500.pdf");
 
     public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-
         //reflectionTest();
 //        nestedList();
         //groupList();
+
+
+
         PdfReader reader = new PdfReader(ddd);
         PdfDocument existingPdf = new PdfDocument(reader, new PdfWriter("filled-form.pdf"));
 //
@@ -46,8 +37,8 @@ public class Main {
             entry.getValue().getFontSize();
             System.out.println(entry.getKey() + " " + entry.getValue().getDisplayValue());
         }
-//        existingPdf.close();
-//        reader.close();
+        existingPdf.close();
+        reader.close();
 
 //        PdfDocument pdf = new PdfDocument(new PdfWriter("final.pdf"));
 //        PdfMerger merger = new PdfMerger(pdf);

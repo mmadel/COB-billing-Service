@@ -34,7 +34,7 @@ public class ClaimCreator {
 
     private InvoiceRequest invoiceRequest;
 
-    public List<String> create() throws IOException {
+    public List<String> create() throws IOException, IllegalAccessException {
         List<List<SelectedSessionServiceLine>> serviceLinesChunks = ServiceLineExceedChunkChecker.check(invoiceRequest.getSelectedSessionServiceLine());
         List<String> fileNames = new ArrayList<>();
         for (int i = 0; i < serviceLinesChunks.size(); i++) {
@@ -46,7 +46,7 @@ public class ClaimCreator {
         return fileNames;
     }
 
-    public List<String> create(DoctorInfo provider, List<SelectedSessionServiceLine> selectedSessionServiceLine) throws IOException {
+    public List<String> create(DoctorInfo provider, List<SelectedSessionServiceLine> selectedSessionServiceLine) throws IOException, IllegalAccessException {
         List<List<SelectedSessionServiceLine>> serviceLinesChunks = ServiceLineExceedChunkChecker.check(selectedSessionServiceLine);
         List<String> fileNames = new ArrayList<>();
         for (int i = 0; i < serviceLinesChunks.size(); i++) {
@@ -64,7 +64,7 @@ public class ClaimCreator {
         return fileNames;
     }
 
-    public List<String> create(Clinic clinic, List<SelectedSessionServiceLine> selectedSessionServiceLine) throws IOException {
+    public List<String> create(Clinic clinic, List<SelectedSessionServiceLine> selectedSessionServiceLine) throws IOException, IllegalAccessException {
         List<List<SelectedSessionServiceLine>> serviceLinesChunks = ServiceLineExceedChunkChecker.check(selectedSessionServiceLine);
         List<String> fileNames = new ArrayList<>();
         for (int i = 0; serviceLinesChunks.size() > i; i++) {
@@ -82,7 +82,7 @@ public class ClaimCreator {
         return fileNames;
     }
 
-    public List<String> create(String caseTitle, List<SelectedSessionServiceLine> selectedSessionServiceLine) throws IOException {
+    public List<String> create(String caseTitle, List<SelectedSessionServiceLine> selectedSessionServiceLine) throws IOException, IllegalAccessException {
         List<List<SelectedSessionServiceLine>> serviceLinesChunks = ServiceLineExceedChunkChecker.check(selectedSessionServiceLine);
         List<String> fileNames = new ArrayList<>();
         for (int i = 0; i < serviceLinesChunks.size(); i++) {
@@ -94,7 +94,7 @@ public class ClaimCreator {
         return fileNames;
     }
 
-    public List<String> create(Long date, List<SelectedSessionServiceLine> selectedSessionServiceLine) throws IOException {
+    public List<String> create(Long date, List<SelectedSessionServiceLine> selectedSessionServiceLine) throws IOException, IllegalAccessException {
         List<List<SelectedSessionServiceLine>> serviceLinesChunks = ServiceLineExceedChunkChecker.check(selectedSessionServiceLine);
         List<String> fileNames = new ArrayList<>();
         for (int i = 0; i < serviceLinesChunks.size(); i++) {
@@ -110,7 +110,7 @@ public class ClaimCreator {
         this.invoiceRequest = invoiceRequest;
     }
 
-    private void createBasicClaimPart(String filename , List<SelectedSessionServiceLine> invoicesChunk) throws IOException {
+    private void createBasicClaimPart(String filename , List<SelectedSessionServiceLine> invoicesChunk) throws IOException, IllegalAccessException {
         createCMSPdfDocumentResourceUseCase.createResource(filename);
         notRepeatableCMSDocumentFiller.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
         serviceLineCMSDocumentFiller.create(invoicesChunk, createCMSPdfDocumentResourceUseCase.getForm());

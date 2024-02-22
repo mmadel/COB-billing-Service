@@ -18,7 +18,7 @@ public class CreateCMSDocumentUseCase {
     @Autowired
     MultipleClaimCreator multipleClaimCreator;
 
-    public List<String> createCMSDocument(InvoiceRequest invoiceRequest) throws IOException {
+    public List<String> createCMSDocument(InvoiceRequest invoiceRequest) throws IOException, IllegalAccessException {
 
         List<String> fileNames = new ArrayList<>();
         fileNames.addAll(multipleClaimCreator.create(invoiceRequest));
