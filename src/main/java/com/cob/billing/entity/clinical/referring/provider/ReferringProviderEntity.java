@@ -24,7 +24,10 @@ public class ReferringProviderEntity {
     private String lastName;
     @Column(name = "npi")
     private String npi;
-
+    @Column(name = "referring_provider_id")
+    private String referringProviderId;
+    @Column(name = "referring_provider_qualifier")
+    private String referringProviderIdQualifier;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "referringProvider")
     List<PatientEntity> patients = new ArrayList<>();
 }
