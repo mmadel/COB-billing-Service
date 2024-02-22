@@ -14,7 +14,7 @@ public class NotRepeatableCMSDocumentFiller {
     private OtherInsuranceSelectionRules otherInsuranceSelectionRules;
     private PdfAcroForm cmsForm;
 
-    public void fill(InvoiceRequest invoiceRequest, PdfAcroForm cmsForm) {
+    public void fill(InvoiceRequest invoiceRequest, PdfAcroForm cmsForm) throws IllegalAccessException {
         this.cmsForm = cmsForm;
         cmsForm.getField(CMSFields.INSURANCE_ID).setValue(invoiceRequest.getInvoicePatientInsuredInformation().getPrimaryId());
         fillCarrier(invoiceRequest.getInvoiceInsuranceCompanyInformation());
@@ -23,7 +23,7 @@ public class NotRepeatableCMSDocumentFiller {
         fillBillingProvider(invoiceRequest.getInvoiceBillingProviderInformation());
     }
 
-    private void fillCarrier(InvoiceInsuranceCompanyInformation invoiceInsuranceCompanyInformation) {
+    private void fillCarrier(InvoiceInsuranceCompanyInformation invoiceInsuranceCompanyInformation) throws IllegalAccessException {
         String assigned[] = invoiceInsuranceCompanyInformation.getAssigner();
         if (assigned == null) {
             cmsForm.getField(CMSFields.INSURANCE_NAME).setValue(invoiceInsuranceCompanyInformation.getName());
@@ -57,11 +57,11 @@ public class NotRepeatableCMSDocumentFiller {
 
         cmsForm.getField(CMSFields.INSURANCE_POLICY_GROUP).setValue(invoiceInsuranceCompanyInformation.getPolicyInformation()[0]);
         cmsForm.getField(CMSFields.INSURANCE_PLAN_NAME).setValue(invoiceInsuranceCompanyInformation.getPolicyInformation()[1]);
-        String[] otherPatientInsuranceValues = otherInsuranceSelectionRules.select(invoiceInsuranceCompanyInformation.getOtherInsurances());
+        OtherPatientInsurance otherPatientInsuranceValues = otherInsuranceSelectionRules.select(invoiceInsuranceCompanyInformation.getOtherInsurances(), invoiceInsuranceCompanyInformation.getPolicyInformation()[2]);
         if (otherPatientInsuranceValues != null) {
-            cmsForm.getField(CMSFields.OTHER_INSURANCE_RELATED_NAME).setValue(otherPatientInsuranceValues[0]);
-            cmsForm.getField(CMSFields.OTHER_INSURANCE_POLICY_GROUP).setValue(otherPatientInsuranceValues[1]);
-            cmsForm.getField(CMSFields.OTHER_INSURANCE_PLAN_NAME).setValue(otherPatientInsuranceValues[2]);
+            cmsForm.getField(CMSFields.OTHER_INSURANCE_RELATED_NAME).setValue(otherPatientInsuranceValues.getInsuredName());
+            cmsForm.getField(CMSFields.OTHER_INSURANCE_POLICY_GROUP).setValue(otherPatientInsuranceValues.getPolicyGroup());
+            cmsForm.getField(CMSFields.OTHER_INSURANCE_PLAN_NAME).setValue(otherPatientInsuranceValues.getPlanName());
         }
     }
 

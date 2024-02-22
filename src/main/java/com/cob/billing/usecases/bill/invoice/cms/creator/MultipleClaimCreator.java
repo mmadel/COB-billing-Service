@@ -20,7 +20,7 @@ public class MultipleClaimCreator {
     @Autowired
     ClaimCreator claimCreator;
 
-    public List<String> create(InvoiceRequest invoiceRequest) throws IOException {
+    public List<String> create(InvoiceRequest invoiceRequest) throws IOException, IllegalAccessException {
         List<String> fileNames = new ArrayList<>();
         claimCreator.setInvoiceRequest(invoiceRequest);
         createMultipleProviders(invoiceRequest, fileNames);
@@ -31,7 +31,7 @@ public class MultipleClaimCreator {
     }
 
 
-    private void createMultipleProviders(InvoiceRequest invoiceRequest, List<String> fileNames) throws IOException {
+    private void createMultipleProviders(InvoiceRequest invoiceRequest, List<String> fileNames) throws IOException, IllegalAccessException {
         Map<DoctorInfo, List<SelectedSessionServiceLine>>
                 providers =
                 invoiceRequest.getSelectedSessionServiceLine().stream()
@@ -44,7 +44,7 @@ public class MultipleClaimCreator {
         }
     }
 
-    private void createMultipleClinics(InvoiceRequest invoiceRequest, List<String> fileNames) throws IOException {
+    private void createMultipleClinics(InvoiceRequest invoiceRequest, List<String> fileNames) throws IOException, IllegalAccessException {
         Map<Clinic, List<SelectedSessionServiceLine>> clinics =
                 invoiceRequest.getSelectedSessionServiceLine().stream()
                         .collect(Collectors.groupingBy(patientInvoice -> patientInvoice.getSessionId().getClinic()));
@@ -56,7 +56,7 @@ public class MultipleClaimCreator {
         }
     }
 
-    private void createMultipleCases(InvoiceRequest invoiceRequest, List<String> fileNames) throws IOException {
+    private void createMultipleCases(InvoiceRequest invoiceRequest, List<String> fileNames) throws IOException, IllegalAccessException {
         Map<String, List<SelectedSessionServiceLine>> cases =
                 invoiceRequest.getSelectedSessionServiceLine().stream()
                         .collect(Collectors.groupingBy(patientInvoice -> patientInvoice.getSessionId().getCaseTitle()));
@@ -68,7 +68,7 @@ public class MultipleClaimCreator {
         }
     }
 
-    private void createMultipleDates(InvoiceRequest invoiceRequest, List<String> fileNames) throws IOException {
+    private void createMultipleDates(InvoiceRequest invoiceRequest, List<String> fileNames) throws IOException, IllegalAccessException {
         Map<Long, List<SelectedSessionServiceLine>> dates = invoiceRequest.getSelectedSessionServiceLine().stream()
                 .collect(Collectors.groupingBy(patientInvoice -> patientInvoice.getSessionId().getServiceDate()));
         if (dates.size() > 1 &&

@@ -19,5 +19,5 @@ public class InvoiceInsuranceCompanyInformation {
     private String insuranceType;
     private Integer numberOfActivePatientInsurances;
     private String[] policyInformation;
-    private List<String[]> otherInsurances;
+    private List<OtherPatientInsurance> otherInsurances;
 }
