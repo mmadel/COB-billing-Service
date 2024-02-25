@@ -48,6 +48,8 @@ public class ServiceLineCMSDocumentFiller {
                 }
             }
             cmsForm.getField("local" + counter).setValue(sessionServiceLine.getSessionId().getDoctorInfo().getDoctorNPI());
+            cmsForm.getField("emg" + counter).setValue(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderIdQualifier());
+            cmsForm.getField("local" + counter + "a").setValue(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderId());
             counter = counter + 1;
             totalCharge = totalCharge + sessionServiceLine.getServiceLine().getCptCode().getCharge();
         }

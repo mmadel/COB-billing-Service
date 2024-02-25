@@ -1,5 +1,6 @@
 package com.cob.billing.model.clinical.patient.session;
 
+import com.cob.billing.model.clinical.provider.LegacyID;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ public class DoctorInfo {
     private String doctorFirstName;
     private String doctorLastName;
     private String doctorNPI;
+    private LegacyID legacyID;
 
     @Override
     public boolean equals(Object o) {
