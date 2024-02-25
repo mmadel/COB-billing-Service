@@ -1,5 +1,6 @@
 package com.cob.billing.entity.clinical.provider;
 
+import com.cob.billing.model.clinical.provider.LegacyID;
 import com.cob.billing.model.clinical.provider.ProviderInfo;
 import com.cob.billing.model.common.Address;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
@@ -39,4 +40,8 @@ public class ProviderEntity {
     @Column(name = "provider_info", columnDefinition = "json")
     @Type(type = "json")
     private ProviderInfo ProviderInfo;
+
+    @Column(name = "legacy_id", columnDefinition = "json")
+    @Type(type = "json")
+    private LegacyID legacyID;
 }

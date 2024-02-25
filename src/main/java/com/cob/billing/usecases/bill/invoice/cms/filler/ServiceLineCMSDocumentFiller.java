@@ -48,12 +48,16 @@ public class ServiceLineCMSDocumentFiller {
                 }
             }
             cmsForm.getField("local" + counter).setValue(sessionServiceLine.getSessionId().getDoctorInfo().getDoctorNPI());
+            cmsForm.getField("emg" + counter).setValue(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderIdQualifier());
+            cmsForm.getField("local" + counter + "a").setValue(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderId());
             counter = counter + 1;
             totalCharge = totalCharge + sessionServiceLine.getServiceLine().getCptCode().getCharge();
         }
         df.format(totalCharge);
         getSessionDiagnosis(patientInvoices);
         cmsForm.getField("t_charge").setValue(String.valueOf(totalCharge), df.format(totalCharge).replace(".", " "));
+        cmsForm.getField("99icd").setFontSize(10.0f);
+        cmsForm.getField("99icd").setValue("0");
     }
 
 

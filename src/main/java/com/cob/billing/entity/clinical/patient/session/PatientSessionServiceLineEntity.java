@@ -32,4 +32,7 @@ public class PatientSessionServiceLineEntity {
     @Column(name = "diagnoses", columnDefinition = "json")
     @Type(type = "json")
     private List<String> diagnoses;
+
+    @Column(name="is_correct")
+    private Boolean isCorrect;
 }

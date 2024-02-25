@@ -15,5 +15,6 @@ public class InvoiceRequest {
     private InvoiceBillingProviderInformation invoiceBillingProviderInformation;
     private InvoiceRequestConfiguration invoiceRequestConfiguration;
     private List<SelectedSessionServiceLine> selectedSessionServiceLine;
+    private CorrectClaimInformation correctClaimInformation;
 
 }
