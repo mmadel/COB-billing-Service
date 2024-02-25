@@ -18,5 +18,7 @@ public class Provider {
 
     private ProviderInfo providerInfo;
 
+    private LegacyID legacyID;
+
 
 }
