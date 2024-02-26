@@ -90,7 +90,17 @@ public class NotRepeatableCMSDocumentFiller {
                 .replace("(", "")
                 .replace(")", "")
                 .replace("-", ""));
-
+        switch (patientInformation.getBox26()) {
+            case "primaryId":
+                cmsForm.getField("pt_account").setValue(patientInformation.getInsuredPrimaryId());
+                break;
+            case "ssn":
+                cmsForm.getField("pt_account").setValue(patientInformation.getSsn());
+                break;
+            case "externalId":
+                cmsForm.getField("pt_account").setValue(patientInformation.getExternalId());
+                break;
+        }
         if (patientInformation.getPatientAdvancedInformation() != null) {
             if (patientInformation.getPatientAdvancedInformation().getUnableToWorkStartDate() != null
                     && patientInformation.getPatientAdvancedInformation().getUnableToWorkEndDate() != null) {

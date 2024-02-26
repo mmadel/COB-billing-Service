@@ -22,4 +22,5 @@ public class InvoicePatientInformation {
     private String externalId;
     private String box26;
     private ReferringProvider referringProvider;
+    private String insuredPrimaryId;
 }
