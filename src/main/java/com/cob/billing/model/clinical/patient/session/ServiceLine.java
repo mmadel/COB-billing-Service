@@ -15,4 +15,5 @@ public class ServiceLine {
     private String type;
     private List<String> diagnoses;
     private Boolean isCorrect;
+    private String lineNote;
 }

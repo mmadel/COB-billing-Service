@@ -27,12 +27,15 @@ public class PatientSessionServiceLineEntity {
     @Column(name = "cpt_code", columnDefinition = "json")
     @Type(type = "json")
     private CPTCode cptCode;
-    @Column(name="type")
+    @Column(name = "type")
     private String type;
     @Column(name = "diagnoses", columnDefinition = "json")
     @Type(type = "json")
     private List<String> diagnoses;
 
-    @Column(name="is_correct")
+    @Column(name = "is_correct")
     private Boolean isCorrect;
+
+    @Column(name = "line_note")
+    private String lineNote;
 }
