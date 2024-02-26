@@ -12,4 +12,5 @@ public class PatientAdvancedInformation {
     private Long unableToWorkEndDate;
     private Long hospitalizedStartDate;
     private Long hospitalizedEndDate;
+    private String additionalInformation;
 }
