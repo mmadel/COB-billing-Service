@@ -140,7 +140,7 @@ public class NotRepeatableCMSDocumentFiller {
                 }
             }
             cmsForm.getField("85").setValue("DN");
-            String referringProviderName = patientInformation.getReferringProvider().getLastName() + "," + patientInformation.getReferringProvider().getFirstName();
+            String referringProviderName = patientInformation.getReferringProvider().getFirstName() + " " + patientInformation.getReferringProvider().getLastName();
             cmsForm.getField("ref_physician").setValue(referringProviderName);
             cmsForm.getField("id_physician").setValue(patientInformation.getReferringProvider().getNpi());
             cmsForm.getField("physician number 17a1").setValue(patientInformation.getReferringProvider().getReferringProviderIdQualifier());
