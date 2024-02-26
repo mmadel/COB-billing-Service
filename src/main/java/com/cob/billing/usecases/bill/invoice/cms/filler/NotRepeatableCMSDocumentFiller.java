@@ -33,7 +33,7 @@ public class NotRepeatableCMSDocumentFiller {
             cmsForm.getField(CMSFields.INSURANCE_ADDRESS2).setValue("");
             cmsForm.getField(CMSFields.INSURANCE_CITY_STATE_ZIP).setValue(invoiceInsuranceCompanyInformation.getAddress().getCity() == null ? "" : invoiceInsuranceCompanyInformation.getAddress().getCity()
                     + "," + invoiceInsuranceCompanyInformation.getAddress().getState() == null ? "" : invoiceInsuranceCompanyInformation.getAddress().getState()
-                    + " " + invoiceInsuranceCompanyInformation.getAddress().getZipCode() == null ? "" : invoiceInsuranceCompanyInformation.getAddress().getZipCode().replace("-",""));
+                    + " " + invoiceInsuranceCompanyInformation.getAddress().getZipCode() == null ? "" : invoiceInsuranceCompanyInformation.getAddress().getZipCode().replace("-", ""));
             cmsForm.getField("assignment").setValue(invoiceInsuranceCompanyInformation.getIsAssignment() ? "YES" : "NO", false);
             cmsForm.getField("ins_signature").setValue(invoiceInsuranceCompanyInformation.getSignature());
         } else {
@@ -83,7 +83,7 @@ public class NotRepeatableCMSDocumentFiller {
         cmsForm.getField("pt_street").setValue(patientInformation.getAddress().getFirst());
         cmsForm.getField("pt_city").setValue(patientInformation.getAddress().getCity());
         cmsForm.getField("pt_state").setValue(patientInformation.getAddress().getState());
-        cmsForm.getField("pt_zip").setValue(patientInformation.getAddress().getZipCode().replace("-",""));
+        cmsForm.getField("pt_zip").setValue(patientInformation.getAddress().getZipCode().replace("-", ""));
         cmsForm.getField("pt_AreaCode").setValue(patientInformation.getPhone().substring(1, 4));
         cmsForm.getField("pt_phone").setValue(patientInformation.getPhone()
                 .substring(5, patientInformation.getPhone().length())
@@ -104,7 +104,6 @@ public class NotRepeatableCMSDocumentFiller {
                 cmsForm.getField("work_dd_end").setValue(unableToWorkDateEndDate[1]);
                 cmsForm.getField("work_yy_end").setValue(unableToWorkDateEndDate[2]);
             }
-
             if (patientInformation.getPatientAdvancedInformation().getHospitalizedStartDate() != null
                     && patientInformation.getPatientAdvancedInformation().getHospitalizedEndDate() != null) {
                 String[] hospitalizedStartDate = DateConstructor.construct(patientInformation.getPatientAdvancedInformation().getHospitalizedStartDate());
@@ -145,6 +144,10 @@ public class NotRepeatableCMSDocumentFiller {
             cmsForm.getField("id_physician").setValue(patientInformation.getReferringProvider().getNpi());
             cmsForm.getField("physician number 17a1").setValue(patientInformation.getReferringProvider().getReferringProviderIdQualifier());
             cmsForm.getField("physician number 17a").setValue(patientInformation.getReferringProvider().getReferringProviderId());
+
+            if (patientInformation.getPatientAdvancedInformation().getAdditionalInformation() != null) {
+                cmsForm.getField("96").setValue(patientInformation.getPatientAdvancedInformation().getAdditionalInformation());
+            }
         }
     }
 
@@ -168,7 +171,7 @@ public class NotRepeatableCMSDocumentFiller {
         cmsForm.getField("ins_street").setValue(invoicePatientInsuredInformation.getAddress().getFirst());
         cmsForm.getField("ins_city").setValue(invoicePatientInsuredInformation.getAddress().getCity());
         cmsForm.getField("ins_state").setValue(invoicePatientInsuredInformation.getAddress().getState());
-        cmsForm.getField("ins_zip").setValue(invoicePatientInsuredInformation.getAddress().getZipCode().replace("-",""));
+        cmsForm.getField("ins_zip").setValue(invoicePatientInsuredInformation.getAddress().getZipCode().replace("-", ""));
         cmsForm.getField("ins_phone area").setValue(invoicePatientInsuredInformation.getPhone().substring(1, 4));
         cmsForm.getField("ins_phone").setValue(invoicePatientInsuredInformation.getPhone()
                 .substring(5, invoicePatientInsuredInformation.getPhone().length())
