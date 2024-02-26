@@ -50,6 +50,28 @@ public class ServiceLineCMSDocumentFiller {
             cmsForm.getField("local" + counter).setValue(sessionServiceLine.getSessionId().getDoctorInfo().getDoctorNPI());
             cmsForm.getField("emg" + counter).setValue(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderIdQualifier());
             cmsForm.getField("local" + counter + "a").setValue(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderId());
+            if (sessionServiceLine.getServiceLine().getLineNote() != null) {
+                switch (counter) {
+                    case 1:
+                        cmsForm.getField("Suppl").setValue(sessionServiceLine.getServiceLine().getLineNote());
+                        break;
+                    case 2:
+                        cmsForm.getField("Suppla").setValue(sessionServiceLine.getServiceLine().getLineNote());
+                        break;
+                    case 3:
+                        cmsForm.getField("Supplb").setValue(sessionServiceLine.getServiceLine().getLineNote());
+                        break;
+                    case 4:
+                        cmsForm.getField("Supplc").setValue(sessionServiceLine.getServiceLine().getLineNote());
+                        break;
+                    case 5:
+                        cmsForm.getField("Suppld").setValue(sessionServiceLine.getServiceLine().getLineNote());
+                        break;
+                    case 6:
+                        cmsForm.getField("Supple").setValue(sessionServiceLine.getServiceLine().getLineNote());
+                        break;
+                }
+            }
             counter = counter + 1;
             totalCharge = totalCharge + sessionServiceLine.getServiceLine().getCptCode().getCharge();
         }
