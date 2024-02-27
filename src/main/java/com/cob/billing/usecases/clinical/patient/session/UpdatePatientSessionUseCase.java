@@ -40,6 +40,11 @@ public class UpdatePatientSessionUseCase {
         if (!allInvoice)
             toBeUpdated.setStatus(changeSessionStatus(model.getId(), model.getServiceCodes()));
         removeServiceCodes(model.getId(), model.getServiceCodes());
+        setDefaultCorrectClaimFlag(toBeUpdated);
+        boolean correctSession = toBeUpdated.getServiceCodes().stream()
+                .anyMatch(obj -> obj.getIsCorrect());
+        if (correctSession)
+            markNewServiceLineAsCorrect(toBeUpdated);
         return patientSessionRepository.save(toBeUpdated).getId();
     }
 
@@ -96,4 +101,18 @@ public class UpdatePatientSessionUseCase {
         return hasNewServiceLine.get();
     }
 
+    private void setDefaultCorrectClaimFlag(PatientSessionEntity patientSession) {
+        patientSession.getServiceCodes().forEach(patientSessionServiceLineEntity -> {
+            if (patientSessionServiceLineEntity.getIsCorrect() == null)
+                patientSessionServiceLineEntity.setIsCorrect(false);
+        });
+    }
+
+    private void markNewServiceLineAsCorrect(PatientSessionEntity patientSession) {
+        patientSession.getServiceCodes().stream()
+                .filter(patientSessionServiceLineEntity -> patientSessionServiceLineEntity.getId() == null)
+                .forEach(patientSessionServiceLineEntity -> {
+                    patientSessionServiceLineEntity.setIsCorrect(true);
+                });
+    }
 }
