@@ -23,11 +23,17 @@ public class FindSessionByPatientUseCase {
     PatientSessionRepository patientSessionRepository;
     @Autowired
     ModelMapper mapper;
-    public PatientSessionResponse find(Pageable paging, Long patientId){
-        Page<PatientSessionEntity> pages =patientSessionRepository.findByPatient_Id(paging, patientId);
+
+    public PatientSessionResponse find(Pageable paging, Long patientId) {
+        Page<PatientSessionEntity> pages = patientSessionRepository.findByPatient_Id(paging, patientId);
         long total = (pages).getTotalElements();
         List<PatientSession> records = pages.stream().map(patientSessionEntity -> mapper.map(patientSessionEntity, PatientSession.class))
                 .collect(Collectors.toList());
+        records.forEach(patientSession -> {
+            boolean isAnyServiceLineCorrect = patientSession.getServiceCodes().stream()
+                    .anyMatch(obj -> obj.getIsCorrect() != null && obj.getIsCorrect());
+            patientSession.setIsCorrectSession(isAnyServiceLineCorrect);
+        });
         return PatientSessionResponse.builder()
                 .number_of_records(records.size())
                 .number_of_matching_records((int) total)

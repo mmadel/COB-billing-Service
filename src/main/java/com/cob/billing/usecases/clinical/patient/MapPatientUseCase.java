@@ -68,7 +68,7 @@ public class MapPatientUseCase {
         patient.setPatientInsurances(patientInsurances);
         patient.getSessions().forEach(patientSession -> {
             boolean isAnyServiceLineCorrect = patientSession.getServiceCodes().stream()
-                    .anyMatch(obj -> obj.getIsCorrect() !=null && obj.getIsCorrect());
+                    .anyMatch(obj -> obj.getIsCorrect() != null && obj.getIsCorrect());
             patientSession.setIsCorrectSession(isAnyServiceLineCorrect);
         });
         return patient;
