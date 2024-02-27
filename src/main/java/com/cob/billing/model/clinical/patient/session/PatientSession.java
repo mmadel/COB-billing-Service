@@ -18,12 +18,11 @@ public class PatientSession {
     private Long serviceDate;
     private Long serviceStartTime;
     private Long serviceEndTime;
-
     private String authorization;
     private String placeOfCode;
     private String caseTitle;
     private List<CaseDiagnosis> caseDiagnosis;
-
     private List<ServiceLine> serviceCodes;
     private Boolean isCasesAttached;
+    private Boolean isCorrectSession;
 }
