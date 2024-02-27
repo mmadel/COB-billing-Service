@@ -60,8 +60,6 @@ public class PatientSessionController {
 
     @PutMapping("/correct")
     public ResponseEntity<Object> correctClaim(@RequestBody PatientSession patientSession) {
-        return ResponseHandler
-                .generateResponse("Successfully updated Patient Session",
-                        HttpStatus.OK, correctPatientSessionUseCase.correct(patientSession));
+        return new ResponseEntity<>(correctPatientSessionUseCase.correct(patientSession), HttpStatus.OK);
     }
 }

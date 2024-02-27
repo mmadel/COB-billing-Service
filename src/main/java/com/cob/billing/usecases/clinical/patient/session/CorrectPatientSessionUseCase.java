@@ -15,7 +15,7 @@ public class CorrectPatientSessionUseCase {
     @Autowired
     PatientSessionRepository patientSessionRepository;
 
-    public Long correct(PatientSession model) {
+    public PatientSession correct(PatientSession model) {
         // set session status to be PatientSessionStatus.Prepare
         //set all service lines to that session to be Initial
         PatientSessionEntity correctClaim = mapper.map(model, PatientSessionEntity.class);
@@ -25,6 +25,7 @@ public class CorrectPatientSessionUseCase {
                     patientSessionServiceLineEntity.setType("Initial");
                     patientSessionServiceLineEntity.setIsCorrect(true);
                 });
-        return patientSessionRepository.save(correctClaim).getId();
+        return mapper.map(patientSessionRepository.save(correctClaim), PatientSession.class);
+
     }
 }
