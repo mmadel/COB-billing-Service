@@ -35,7 +35,10 @@ public class UpdatePatientSessionUseCase {
         PatientEntity patient = patientRepository.findById(model.getPatientId()).get();
         PatientSessionEntity toBeUpdated = mapper.map(model, PatientSessionEntity.class);
         toBeUpdated.setPatient(patient);
-        toBeUpdated.setStatus(changeSessionStatus(model.getId(), model.getServiceCodes()));
+        boolean allInvoice = model.getServiceCodes().stream()
+                .allMatch(obj -> "Invoice".equals(obj.getType()));
+        if (!allInvoice)
+            toBeUpdated.setStatus(changeSessionStatus(model.getId(), model.getServiceCodes()));
         removeServiceCodes(model.getId(), model.getServiceCodes());
         return patientSessionRepository.save(toBeUpdated).getId();
     }
