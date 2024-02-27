@@ -22,6 +22,8 @@ public class ChangeSessionStatusUseCase {
         selectedSessionServiceLines.forEach(model -> {
             PatientSessionServiceLineEntity serviceLine = serviceLineRepository.findById(model.getServiceLine().getId()).get();
             serviceLine.setType("Invoice");
+            if(serviceLine.getIsCorrect())
+                serviceLine.setIsCorrect(false);
             serviceLineRepository.save(serviceLine);
             PatientSessionEntity patientSessionEntity = patientSessionRepository.findSessionByServiceCodeId(serviceLine.getId());
             changeSessionStatusToPartial(patientSessionEntity);
