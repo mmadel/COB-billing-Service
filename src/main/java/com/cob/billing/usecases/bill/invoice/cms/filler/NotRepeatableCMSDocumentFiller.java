@@ -2,6 +2,7 @@ package com.cob.billing.usecases.bill.invoice.cms.filler;
 
 import com.cob.billing.model.bill.cms.CMSFields;
 import com.cob.billing.model.bill.invoice.tmp.*;
+import com.cob.billing.model.clinical.patient.advanced.PatientAdvancedDates;
 import com.cob.billing.usecases.bill.invoice.cms.rules.OtherInsuranceSelectionRules;
 import com.cob.billing.util.DateConstructor;
 import com.itextpdf.forms.PdfAcroForm;
@@ -140,9 +141,10 @@ public class NotRepeatableCMSDocumentFiller {
                     cmsForm.getField("cur_ill_dd").setValue(firstSymptomsDate[1]);
                     cmsForm.getField("cur_ill_yy").setValue(firstSymptomsDate[2]);
                 }
-                if (patientInformation.getPatientAdvancedInformation().getPatientAdvancedDates().getAccident() != null) {
-                    cmsForm.getField("74").setValue("439");
-                    String[] accidentDate = DateConstructor.construct(patientInformation.getPatientAdvancedInformation().getPatientAdvancedDates().getAccident());
+                if (patientInformation.getPatientAdvancedInformation().getPatientAdvancedDates() != null) {
+                    Long[] box15Data= findDateForBox15(patientInformation.getPatientAdvancedInformation().getPatientAdvancedDates());
+                    cmsForm.getField("74").setValue(box15Data[1].toString());
+                    String[] accidentDate = DateConstructor.construct(box15Data[0]);
                     cmsForm.getField("sim_ill_mm").setValue(accidentDate[0]);
                     cmsForm.getField("sim_ill_dd").setValue(accidentDate[1]);
                     cmsForm.getField("sim_ill_yy").setValue(accidentDate[2]);
@@ -162,7 +164,10 @@ public class NotRepeatableCMSDocumentFiller {
             }
         }
     }
-
+    private Long[] findDateForBox15(PatientAdvancedDates patientAdvancedDates){
+        return patientAdvancedDates.getAccident() !=null ? new Long[]{patientAdvancedDates.getAccident(), 439L} :
+                patientAdvancedDates.getFirstTreatment() != null? new Long[]{patientAdvancedDates.getFirstTreatment(),454L} : new Long[]{patientAdvancedDates.getLastSeenByDoctor(),304L};
+    }
     private void fillPatientInsured(InvoicePatientInsuredInformation invoicePatientInsuredInformation) {
         String[] insuredDOB = DateConstructor.construct(invoicePatientInsuredInformation.getDateOfBirth());
         cmsForm.getField("ins_name").setValue(invoicePatientInsuredInformation.getLastName() + "," + invoicePatientInsuredInformation.getFirstName());
