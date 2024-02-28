@@ -48,8 +48,10 @@ public class ServiceLineCMSDocumentFiller {
                 }
             }
             cmsForm.getField("local" + counter).setValue(sessionServiceLine.getSessionId().getDoctorInfo().getDoctorNPI());
-            cmsForm.getField("emg" + counter).setValue(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderIdQualifier());
-            cmsForm.getField("local" + counter + "a").setValue(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderId());
+            if (sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID() != null) {
+                cmsForm.getField("emg" + counter).setValue(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderIdQualifier());
+                cmsForm.getField("local" + counter + "a").setValue(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderId());
+            }
             if (sessionServiceLine.getServiceLine().getLineNote() != null) {
                 switch (counter) {
                     case 1:

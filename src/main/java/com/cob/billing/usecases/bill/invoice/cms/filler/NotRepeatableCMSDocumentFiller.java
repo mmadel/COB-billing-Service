@@ -152,9 +152,11 @@ public class NotRepeatableCMSDocumentFiller {
             String referringProviderName = patientInformation.getReferringProvider().getFirstName() + " " + patientInformation.getReferringProvider().getLastName();
             cmsForm.getField("ref_physician").setValue(referringProviderName);
             cmsForm.getField("id_physician").setValue(patientInformation.getReferringProvider().getNpi());
-            cmsForm.getField("physician number 17a1").setValue(patientInformation.getReferringProvider().getReferringProviderIdQualifier());
-            cmsForm.getField("physician number 17a").setValue(patientInformation.getReferringProvider().getReferringProviderId());
-
+            if (patientInformation.getReferringProvider().getReferringProviderIdQualifier() != null &&
+                    patientInformation.getReferringProvider().getReferringProviderId() != null) {
+                cmsForm.getField("physician number 17a1").setValue(patientInformation.getReferringProvider().getReferringProviderIdQualifier());
+                cmsForm.getField("physician number 17a").setValue(patientInformation.getReferringProvider().getReferringProviderId());
+            }
             if (patientInformation.getPatientAdvancedInformation().getAdditionalInformation() != null) {
                 cmsForm.getField("96").setValue(patientInformation.getPatientAdvancedInformation().getAdditionalInformation());
             }
