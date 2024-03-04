@@ -1,12 +1,15 @@
 package com.cob.billing.usecases.bill.invoice;
 
-import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
+import com.cob.billing.model.bill.invoice.tmp.InvoiceResponse;
 import com.cob.billing.model.bill.posting.PaymentServiceLine;
+import com.cob.billing.model.response.ClientPostingPaymentResponse;
 import com.cob.billing.repositories.bill.invoice.PatientInvoiceRepository;
 import com.cob.billing.repositories.bill.payer.PayerRepository;
 import com.cob.billing.repositories.clinical.PatientRepository;
+import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
+import com.cob.billing.util.PaginationUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class FindSubmittedPatientSessionUseCase {
+public class FindSubmittedSessionsByPatientUseCase {
     @Autowired
     PatientRepository patientRepository;
     @Autowired
@@ -26,17 +29,26 @@ public class FindSubmittedPatientSessionUseCase {
     PayerRepository repository;
     @Autowired
     ModelMapper mapper;
+    @Autowired
+    PatientSessionRepository patientSessionRepository;
 
-    public List<PaymentServiceLine> findClient(Long clientId) {
-        List<Object> objs = patientRepository.findBySessionSubmittedByPatient(clientId);
-        List<PaymentServiceLine> records = new ArrayList<>();
-        objs.stream().forEach(o -> {
-            Object[] result = (Object[]) o;
-            PatientSessionServiceLineEntity serviceLine = (PatientSessionServiceLineEntity) result[0];
-            PatientSessionEntity session = (PatientSessionEntity) result[1];
-            records.add(constructServiceLine(serviceLine, session));
-        });
-        return records;
+    public ClientPostingPaymentResponse find(int offset, int limit, Long clientId) {
+        List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findSubmittedSessionsByPatient(clientId);
+        List<PaymentServiceLine> response = new ArrayList<>();
+        patientSessionEntities.stream()
+                .forEach(patientSessionEntity -> {
+                    patientSessionEntity.getServiceCodes().stream()
+                            .forEach(patientSessionServiceLineEntity -> {
+                                PaymentServiceLine paymentServiceLine = constructServiceLine(patientSessionServiceLineEntity, patientSessionEntity);
+                                response.add(paymentServiceLine);
+                            });
+                });
+        List<PaymentServiceLine> records = PaginationUtil.paginate(response, offset, limit);
+        return ClientPostingPaymentResponse.builder()
+                .number_of_records(records.size())
+                .number_of_matching_records((int) response.size())
+                .records(records)
+                .build();
     }
 
     public Map<String, List<PaymentServiceLine>> findInsuranceCompany(Long insuranceCompanyId) {

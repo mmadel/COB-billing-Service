@@ -10,6 +10,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PatientSessionRepository extends PagingAndSortingRepository<PatientSessionEntity, Long> {
 
@@ -18,4 +19,37 @@ public interface PatientSessionRepository extends PagingAndSortingRepository<Pat
     @Query("SELECT  ps FROM PatientSessionEntity ps  JOIN ps.serviceCodes serviceCode WHERE serviceCode.id =:serviceCodeId")
     PatientSessionEntity findSessionByServiceCodeId(@Param("serviceCodeId") Long serviceCodeId);
 
+    @Query("SELECT DISTINCT s , sc FROM PatientSessionEntity s INNER JOIN FETCH s.serviceCodes sc " +
+            "WHERE (s.status = 'Prepare' OR s.status = 'Partial')" +
+            "AND sc.type NOT IN ('Invoice', 'Cancel')")
+    List<PatientSessionEntity> findPrepareAndPartialSessions();
+
+    @Query("SELECT DISTINCT s FROM PatientSessionEntity s INNER JOIN FETCH s.serviceCodes sc " +
+            "WHERE (s.status = 'Prepare' OR s.status = 'Partial')" +
+            "AND sc.type NOT IN ('Invoice', 'Cancel')" +
+            "AND s.patient.id= :patientId")
+    List<PatientSessionEntity> findPrepareAndPartialSessionsByPatient(@Param("patientId") Long patientId);
+
+    @Query("SELECT DISTINCT s FROM PatientSessionEntity s INNER JOIN FETCH s.serviceCodes sc " +
+            "WHERE (s.status = 'Prepare' OR s.status = 'Partial')" +
+            "AND sc.type NOT IN ('Invoice', 'Cancel')" +
+            "AND s.patient.id= :patientId " +
+            "AND (:dateFrom is null or s.serviceDate >= :dateFrom) " +
+            "AND (:dateTo is null or s.serviceDate <= :dateTo)" +
+            "AND (:caseTitle is null or upper(s.caseTitle) LIKE CONCAT('%',:caseTitle,'%'))" +
+            "AND ((:provider is null or upper(JSON_EXTRACT(s.doctorInfo, '$.doctorFirstName')) LIKE CONCAT('%',:provider,'%')) " +
+            "OR ((:provider is null or upper(JSON_EXTRACT(s.doctorInfo, '$.doctorLastName')) LIKE CONCAT('%',:provider,'%'))) ) ")
+    List<PatientSessionEntity> findPrepareAndPartialSessionsByPatientFilteredByDate(@Param("patientId") Long patientId, @Param("dateFrom") Long dateFrom
+            , @Param("dateTo") Long dateTo
+            , @Param("provider") String provider
+            , @Param("caseTitle") String caseTitle);
+
+
+    @Query("SELECT  DISTINCT s FROM PatientSessionEntity s INNER JOIN  s.serviceCodes sc " +
+            "WHERE (s.status = 'Submit' OR s.status = 'Partial')" +
+            "AND s.patient.id= :patientId " +
+            "AND sc.type  IN ('Invoice')")
+    List<PatientSessionEntity> findSubmittedSessionsByPatient(@Param("patientId") Long patientId);
+
+    Optional<List<PatientSessionEntity>> findByPatient_Id(Long patientId);
 }

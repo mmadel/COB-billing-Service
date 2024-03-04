@@ -12,6 +12,7 @@ import java.util.List;
 public class PatientSession {
     private Long id;
     private Long  patientId;
+    private String patientName;
     private DoctorInfo doctorInfo;
     private ClinicInfo clinicInfo;
     private Clinic clinic;

@@ -19,6 +19,7 @@ public abstract class ResponseHandler {
 
         return new ResponseEntity<>(map, status);
     }
+
     public static ResponseEntity<Object> generateResponse(String message, HttpStatus status,
                                                           Object responseObj, PatientResponse response) {
         Map<String, Object> map = populateResponseMap(message, status,
@@ -27,12 +28,37 @@ public abstract class ResponseHandler {
         return new ResponseEntity<>(map, status);
     }
     public static ResponseEntity<Object> generateResponse(String message, HttpStatus status,
+                                                          Object responseObj, PatientSessionServiceLineResponse response) {
+        Map<String, Object> map = populateResponseMap(message, status,
+                response.getNumber_of_records(), response.getNumber_of_matching_records());
+        map.put("records", response.getRecords());
+        return new ResponseEntity<>(map, status);
+    }
+
+    public static ResponseEntity<Object> generateResponse(String message, HttpStatus status,
+                                                          Object responseObj, MinimalPatientResponse response) {
+        Map<String, Object> map = populateResponseMap(message, status,
+                response.getNumber_of_records(), response.getNumber_of_matching_records());
+        map.put("records", response.getRecords());
+        return new ResponseEntity<>(map, status);
+    }
+
+    public static ResponseEntity<Object> generateResponse(String message, HttpStatus status,
+                                                          Object responseObj, InvoicePatientSessionResponse response) {
+        Map<String, Object> map = populateResponseMap(message, status,
+                response.getNumber_of_records(), response.getNumber_of_matching_records());
+        map.put("records", response.getRecords());
+        return new ResponseEntity<>(map, status);
+    }
+
+    public static ResponseEntity<Object> generateResponse(String message, HttpStatus status,
                                                           Object responseObj, ClientPostingPaymentResponse response) {
         Map<String, Object> map = populateResponseMap(message, status,
                 response.getNumber_of_records(), response.getNumber_of_matching_records());
         map.put("records", response.getRecords());
         return new ResponseEntity<>(map, status);
     }
+
     public static ResponseEntity<Object> generateResponse(String message, HttpStatus status,
                                                           Object responseObj, ClinicResponse response) {
         Map<String, Object> map = populateResponseMap(message, status,
@@ -40,6 +66,7 @@ public abstract class ResponseHandler {
         map.put("records", response.getRecords());
         return new ResponseEntity<>(map, status);
     }
+
     public static ResponseEntity<Object> generateResponse(String message, HttpStatus status,
                                                           Object responseObj, ReferringProviderResponse response) {
         Map<String, Object> map = populateResponseMap(message, status,
@@ -47,6 +74,7 @@ public abstract class ResponseHandler {
         map.put("records", response.getRecords());
         return new ResponseEntity<>(map, status);
     }
+
     public static ResponseEntity<Object> generateResponse(String message, HttpStatus status,
                                                           Object responseObj, ProviderResponse response) {
         Map<String, Object> map = populateResponseMap(message, status,
@@ -54,6 +82,7 @@ public abstract class ResponseHandler {
         map.put("records", response.getRecords());
         return new ResponseEntity<>(map, status);
     }
+
     public static ResponseEntity<Object> generateResponse(String message, HttpStatus status,
                                                           Object responseObj, PatientSessionResponse response) {
         Map<String, Object> map = populateResponseMap(message, status,
@@ -62,8 +91,8 @@ public abstract class ResponseHandler {
         return new ResponseEntity<>(map, status);
     }
 
-    protected static  Map<String, Object> populateResponseMap(String message, HttpStatus status,
-                                                           Integer numberOfRecords, Integer numberOfMatchingRecords) {
+    protected static Map<String, Object> populateResponseMap(String message, HttpStatus status,
+                                                             Integer numberOfRecords, Integer numberOfMatchingRecords) {
         Map<String, Object> map = new HashMap<>();
         map.put("message", message);
         map.put("number_of_records", numberOfRecords);

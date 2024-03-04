@@ -63,9 +63,9 @@ public class PatientController {
         return new ResponseEntity(findPatientByNamUseCase.findByFirstAndLastName(first, last), HttpStatus.OK);
     }
 
-    @GetMapping("find/cases/patientId/{patientId}")
-    public ResponseEntity findPatientCases(@PathVariable Long patientId) {
-        return new ResponseEntity(findPatientCasesUseCase.find(patientId), HttpStatus.OK);
-    }
+//    @GetMapping("find/cases/patientId/{patientId}")
+//    public ResponseEntity findPatientCases(@PathVariable Long patientId) {
+//        return new ResponseEntity(findPatientCasesUseCase.find(patientId), HttpStatus.OK);
+//    }
 
 }
