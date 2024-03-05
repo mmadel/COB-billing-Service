@@ -144,10 +144,12 @@ public class NotRepeatableCMSDocumentFiller {
                 if (patientInformation.getPatientAdvancedInformation().getPatientAdvancedDates() != null) {
                     Long[] box15Data= findDateForBox15(patientInformation.getPatientAdvancedInformation().getPatientAdvancedDates());
                     cmsForm.getField("74").setValue(box15Data[1].toString());
-                    String[] accidentDate = DateConstructor.construct(box15Data[0]);
-                    cmsForm.getField("sim_ill_mm").setValue(accidentDate[0]);
-                    cmsForm.getField("sim_ill_dd").setValue(accidentDate[1]);
-                    cmsForm.getField("sim_ill_yy").setValue(accidentDate[2]);
+                    if(box15Data[0] != null){
+                        String[] accidentDate = DateConstructor.construct(box15Data[0]);
+                        cmsForm.getField("sim_ill_mm").setValue(accidentDate[0]);
+                        cmsForm.getField("sim_ill_dd").setValue(accidentDate[1]);
+                        cmsForm.getField("sim_ill_yy").setValue(accidentDate[2]);
+                    }
                 }
             }
             cmsForm.getField("85").setValue("DN");
