@@ -31,7 +31,7 @@ public class PostingController {
                         HttpStatus.OK, null, findSubmittedSessionsByPatientUseCase.find(offset + 1, limit, patientId));
     }
 
-    @PutMapping("/find")
+    @PostMapping("/find")
     public ResponseEntity<Object> findClientFiltered(@RequestParam(name = "offset") int offset,
                                                      @RequestParam(name = "limit") int limit
             , @RequestBody PostingSearchCriteria postingSearchCriteria) {
