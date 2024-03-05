@@ -27,13 +27,6 @@ public class FindInsuranceCompaniesUseCase {
     @Autowired
     InsuranceCompanyPayerRepository insuranceCompanyPayerRepository;
 
-    public List<InsuranceCompanyHolder> findByName(String name) {
-        return find().stream()
-                .filter(insuranceCompany -> insuranceCompany.getName().equals(name))
-                .collect(Collectors.toList());
-
-    }
-
     public List<InsuranceCompanyHolder> find() {
         List<InsuranceCompanyHolder> insuranceCompanyHolder = new ArrayList<>();
         insuranceCompanyRepository.findAll()
@@ -45,7 +38,30 @@ public class FindInsuranceCompaniesUseCase {
                     internalHolder.setVisibility(InsuranceCompanyVisibility.Internal);
                     insuranceCompanyHolder.add(internalHolder);
                 });
-        insuranceCompanyExternalRepository.findAll().stream()
+        insuranceCompanyExternalRepository.findAll()
+                .forEach(insuranceCompanyExternal -> {
+                    InsuranceCompanyHolder internalHolder = new InsuranceCompanyHolder();
+                    internalHolder.setId(insuranceCompanyExternal.getId());
+                    internalHolder.setName(insuranceCompanyExternal.getName());
+                    internalHolder.setVisibility(InsuranceCompanyVisibility.External);
+                    insuranceCompanyHolder.add(internalHolder);
+                });
+        return insuranceCompanyHolder;
+
+    }
+
+    public List<InsuranceCompanyHolder> find(String name) {
+        List<InsuranceCompanyHolder> insuranceCompanyHolder = new ArrayList<>();
+        insuranceCompanyRepository.findByInsuranceCompanyName(name)
+                .stream()
+                .forEach(insuranceCompany -> {
+                    InsuranceCompanyHolder internalHolder = new InsuranceCompanyHolder();
+                    internalHolder.setId(insuranceCompany.getId());
+                    internalHolder.setName(insuranceCompany.getName());
+                    internalHolder.setVisibility(InsuranceCompanyVisibility.Internal);
+                    insuranceCompanyHolder.add(internalHolder);
+                });
+        insuranceCompanyExternalRepository.findByInsuranceCompanyName(name).stream()
                 .forEach(insuranceCompanyExternal -> {
                     InsuranceCompanyHolder internalHolder = new InsuranceCompanyHolder();
                     internalHolder.setId(insuranceCompanyExternal.getId());

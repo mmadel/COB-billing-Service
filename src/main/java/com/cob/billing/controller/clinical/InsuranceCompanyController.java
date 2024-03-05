@@ -39,7 +39,7 @@ public class InsuranceCompanyController {
 
     @GetMapping("/find/name/{name}")
     public ResponseEntity findAll(@PathVariable String name) {
-        return new ResponseEntity(findInsuranceCompaniesUseCase.findByName(name), HttpStatus.OK);
+        return new ResponseEntity(findInsuranceCompaniesUseCase.find(name), HttpStatus.OK);
     }
 
     @GetMapping("/find/internal")
