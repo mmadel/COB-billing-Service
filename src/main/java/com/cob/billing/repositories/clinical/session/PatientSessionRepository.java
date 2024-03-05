@@ -39,7 +39,7 @@ public interface PatientSessionRepository extends PagingAndSortingRepository<Pat
             "AND (:caseTitle is null or upper(s.caseTitle) LIKE CONCAT('%',:caseTitle,'%'))" +
             "AND ((:provider is null or upper(JSON_EXTRACT(s.doctorInfo, '$.doctorFirstName')) LIKE CONCAT('%',:provider,'%')) " +
             "OR ((:provider is null or upper(JSON_EXTRACT(s.doctorInfo, '$.doctorLastName')) LIKE CONCAT('%',:provider,'%'))) ) ")
-    List<PatientSessionEntity> findPrepareAndPartialSessionsByPatientFilteredByDate(@Param("patientId") Long patientId, @Param("dateFrom") Long dateFrom
+    List<PatientSessionEntity> findPrepareAndPartialSessionsByPatientFiltered(@Param("patientId") Long patientId, @Param("dateFrom") Long dateFrom
             , @Param("dateTo") Long dateTo
             , @Param("provider") String provider
             , @Param("caseTitle") String caseTitle);
@@ -48,8 +48,17 @@ public interface PatientSessionRepository extends PagingAndSortingRepository<Pat
     @Query("SELECT  DISTINCT s FROM PatientSessionEntity s INNER JOIN  s.serviceCodes sc " +
             "WHERE (s.status = 'Submit' OR s.status = 'Partial')" +
             "AND s.patient.id= :patientId " +
-            "AND sc.type  IN ('Invoice')")
+            "AND sc.type  IN ('Invoice') ")
     List<PatientSessionEntity> findSubmittedSessionsByPatient(@Param("patientId") Long patientId);
+
+    @Query("SELECT  DISTINCT s FROM PatientSessionEntity s INNER JOIN  s.serviceCodes sc " +
+            "WHERE (s.status = 'Submit' OR s.status = 'Partial')" +
+            "AND s.patient.id= :patientId " +
+            "AND sc.type  IN ('Invoice') " +
+            "AND (:dateFrom is null or s.serviceDate >= :dateFrom) " +
+            "AND (:dateTo is null or s.serviceDate <= :dateTo)")
+    List<PatientSessionEntity> findSubmittedSessionsByPatientFiltered(@Param("patientId") Long patientId, @Param("dateFrom") Long dateFrom
+            , @Param("dateTo") Long dateTo);
 
     Optional<List<PatientSessionEntity>> findByPatient_Id(Long patientId);
 }

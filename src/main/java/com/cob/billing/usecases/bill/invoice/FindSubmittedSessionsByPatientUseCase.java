@@ -4,6 +4,7 @@ import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceResponse;
 import com.cob.billing.model.bill.posting.PaymentServiceLine;
+import com.cob.billing.model.bill.posting.filter.PostingSearchCriteria;
 import com.cob.billing.model.response.ClientPostingPaymentResponse;
 import com.cob.billing.repositories.bill.invoice.PatientInvoiceRepository;
 import com.cob.billing.repositories.bill.payer.PayerRepository;
@@ -34,15 +35,18 @@ public class FindSubmittedSessionsByPatientUseCase {
 
     public ClientPostingPaymentResponse find(int offset, int limit, Long clientId) {
         List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findSubmittedSessionsByPatient(clientId);
-        List<PaymentServiceLine> response = new ArrayList<>();
-        patientSessionEntities.stream()
-                .forEach(patientSessionEntity -> {
-                    patientSessionEntity.getServiceCodes().stream()
-                            .forEach(patientSessionServiceLineEntity -> {
-                                PaymentServiceLine paymentServiceLine = constructServiceLine(patientSessionServiceLineEntity, patientSessionEntity);
-                                response.add(paymentServiceLine);
-                            });
-                });
+        List<PaymentServiceLine> response = createPaymentServiceLineResponse(patientSessionEntities);
+        List<PaymentServiceLine> records = PaginationUtil.paginate(response, offset, limit);
+        return ClientPostingPaymentResponse.builder()
+                .number_of_records(response.size())
+                .number_of_matching_records((int) records.size())
+                .records(records)
+                .build();
+    }
+
+    public ClientPostingPaymentResponse find(int offset, int limit, PostingSearchCriteria postingSearchCriteria) {
+        List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findSubmittedSessionsByPatientFiltered(postingSearchCriteria.getEntityId(), postingSearchCriteria.getStartDate(), postingSearchCriteria.getEndDate());
+        List<PaymentServiceLine> response = createPaymentServiceLineResponse(patientSessionEntities);
         List<PaymentServiceLine> records = PaginationUtil.paginate(response, offset, limit);
         return ClientPostingPaymentResponse.builder()
                 .number_of_records(response.size())
@@ -69,6 +73,19 @@ public class FindSubmittedSessionsByPatientUseCase {
                 });
 
         return paymentServiceLinePatientMap;
+    }
+
+    private List<PaymentServiceLine> createPaymentServiceLineResponse(List<PatientSessionEntity> patientSessionEntities) {
+        List<PaymentServiceLine> response = new ArrayList<>();
+        patientSessionEntities.stream()
+                .forEach(patientSessionEntity -> {
+                    patientSessionEntity.getServiceCodes().stream()
+                            .forEach(patientSessionServiceLineEntity -> {
+                                PaymentServiceLine paymentServiceLine = constructServiceLine(patientSessionServiceLineEntity, patientSessionEntity);
+                                response.add(paymentServiceLine);
+                            });
+                });
+        return response;
     }
 
     private PaymentServiceLine constructServiceLine(PatientSessionServiceLineEntity serviceLine, PatientSessionEntity session) {

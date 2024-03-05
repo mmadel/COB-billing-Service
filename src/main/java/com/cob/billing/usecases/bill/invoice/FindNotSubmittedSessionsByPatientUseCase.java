@@ -29,7 +29,7 @@ public class FindNotSubmittedSessionsByPatientUseCase {
 
     public PatientSessionServiceLineResponse findFiltered(int offset, int limit, Long patientId, PatientSessionSearchCriteria patientSessionSearchCriteria) {
 
-        List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findPrepareAndPartialSessionsByPatientFilteredByDate(patientId
+        List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findPrepareAndPartialSessionsByPatientFiltered(patientId
                 , patientSessionSearchCriteria.getStartDate(), patientSessionSearchCriteria.getEndDate()
                 , patientSessionSearchCriteria.getProvider() != null ? patientSessionSearchCriteria.getProvider().toUpperCase().trim() : null,
                 patientSessionSearchCriteria.getSessionCase() != null ? patientSessionSearchCriteria.getSessionCase().toUpperCase().trim() : null);

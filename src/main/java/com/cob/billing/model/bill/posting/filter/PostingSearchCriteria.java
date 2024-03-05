@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class PostingFilterModel {
+public class PostingSearchCriteria {
     private Long entityId;
     private Long startDate;
     private Long endDate;
