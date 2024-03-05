@@ -26,7 +26,7 @@ public class PostingController {
             , @PathVariable(name = "patientId") Long patientId) {
         return ResponseHandler
                 .generateResponse("Successfully finding  patients with session status submitted",
-                        HttpStatus.OK, findSubmittedSessionsByPatientUseCase.find(offset, limit, patientId));
+                        HttpStatus.OK,null, findSubmittedSessionsByPatientUseCase.find(offset+1, limit, patientId));
     }
 
     @GetMapping("/find/insurance/company/{insuranceCompanyId}")

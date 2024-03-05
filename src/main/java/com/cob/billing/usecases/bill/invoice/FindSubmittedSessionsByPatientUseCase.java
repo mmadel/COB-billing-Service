@@ -45,8 +45,8 @@ public class FindSubmittedSessionsByPatientUseCase {
                 });
         List<PaymentServiceLine> records = PaginationUtil.paginate(response, offset, limit);
         return ClientPostingPaymentResponse.builder()
-                .number_of_records(records.size())
-                .number_of_matching_records((int) response.size())
+                .number_of_records(response.size())
+                .number_of_matching_records((int) records.size())
                 .records(records)
                 .build();
     }
