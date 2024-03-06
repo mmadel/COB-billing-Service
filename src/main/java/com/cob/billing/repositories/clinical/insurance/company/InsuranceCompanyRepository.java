@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface InsuranceCompanyRepository extends JpaRepository<InsuranceCompanyEntity,Long> {
     @Query("SELECT ic FROM InsuranceCompanyEntity ic where " +
-            "ic.name =:name")
+            "(:name is null or upper(ic.name) LIKE CONCAT('%',:name,'%'))")
     Optional<InsuranceCompanyEntity> findByInsuranceCompanyName(@Param("name") String name);
 }

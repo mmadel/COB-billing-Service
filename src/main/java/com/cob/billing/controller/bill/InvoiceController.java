@@ -1,18 +1,18 @@
 package com.cob.billing.controller.bill;
 
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
+import com.cob.billing.model.clinical.patient.session.filter.PatientSessionSearchCriteria;
 import com.cob.billing.response.handler.ResponseHandler;
+import com.cob.billing.usecases.bill.invoice.FindNotSubmittedSessionsByPatientUseCase;
 import com.cob.billing.usecases.bill.invoice.electronic.GenerateElectronicInvoiceUseCase;
 import com.cob.billing.usecases.bill.invoice.cms.GenerateCMSInvoiceUseCase;
-import com.cob.billing.usecases.bill.invoice.FindNotSubmittedPatientSessionUseCase;
+import com.cob.billing.usecases.bill.invoice.FindNotSubmittedSessionsGroupByPatientsUseCase;
 import com.google.gson.Gson;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.utils.PdfMerger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,24 +27,42 @@ import java.util.List;
 @RequestMapping(value = "/invoice")
 public class InvoiceController {
     @Autowired
-    FindNotSubmittedPatientSessionUseCase findNotSubmittedPatientSessionUseCase;
+    FindNotSubmittedSessionsGroupByPatientsUseCase findNotSubmittedSessionsGroupByPatientsUseCase;
+    @Autowired
+    FindNotSubmittedSessionsByPatientUseCase findNotSubmittedSessionsByPatientUseCase;
     @Autowired
     GenerateCMSInvoiceUseCase generateCMSInvoiceUseCase;
     @Autowired
     GenerateElectronicInvoiceUseCase generateElectronicInvoiceUseCase;
 
-    @GetMapping("/find/clients")
-    public ResponseEntity<Object> find(@RequestParam(name = "offset") String offset,
-                                       @RequestParam(name = "limit") String limit) {
-        Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
+    @GetMapping("/find")
+    public ResponseEntity<Object> find(@RequestParam(name = "offset") int offset,
+                                       @RequestParam(name = "limit") int limit) {
         return ResponseHandler
-                .generateResponse("Successfully finding  patients with session status prepared",
-                        HttpStatus.OK, null, findNotSubmittedPatientSessionUseCase.findNotSubmittedSession(paging));
+                .generateResponse("Successfully find clients with not submitted sessions",
+                        HttpStatus.OK, null,
+                        findNotSubmittedSessionsGroupByPatientsUseCase.find(offset + 1, limit));
     }
 
-    @GetMapping("/find/clientId/{clientId}")
-    public ResponseEntity find(@PathVariable Long clientId) {
-        return new ResponseEntity<>(findNotSubmittedPatientSessionUseCase.findNotSubmittedSessionByPatient(clientId), HttpStatus.OK);
+    @GetMapping("/find/patient/{patientId}")
+    public ResponseEntity<Object> findByClient(@RequestParam(name = "offset") int offset,
+                                               @RequestParam(name = "limit") int limit
+            , @PathVariable(name = "patientId") Long patientId) {
+        return ResponseHandler
+                .generateResponse("Successfully find clients with not submitted sessions",
+                        HttpStatus.OK, null,
+                        findNotSubmittedSessionsByPatientUseCase.find(offset + 1, limit, patientId));
+    }
+
+    @PostMapping("/find/patient/{patientId}")
+    public ResponseEntity<Object> findByClientFiltered(@RequestParam(name = "offset") int offset,
+                                                           @RequestParam(name = "limit") int limit
+            , @PathVariable(name = "patientId") Long patientId
+            , @RequestBody PatientSessionSearchCriteria patientSessionSearchCriteria) {
+        return ResponseHandler
+                .generateResponse("Successfully find clients with not submitted sessions",
+                        HttpStatus.OK, null,
+                        findNotSubmittedSessionsByPatientUseCase.findFiltered(offset + 1, limit, patientId, patientSessionSearchCriteria));
     }
 
     @PostMapping(value = "/create", consumes = "application/json")

@@ -1,5 +1,6 @@
 package com.cob.billing.controller.clinical;
 
+import com.cob.billing.model.clinical.patient.CPTCode;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.invoice.ChangeSessionStatusUseCase;
@@ -26,6 +27,8 @@ public class PatientSessionController {
     FindSessionUseCase findSessionUseCase;
     @Autowired
     CorrectPatientSessionUseCase correctPatientSessionUseCase;
+    @Autowired
+    UpdatePatientSessionItemUseCase updatePatientSessionItemUseCase;
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody PatientSession patientSession) {
@@ -40,6 +43,13 @@ public class PatientSessionController {
                 .generateResponse("Successfully updated Patient Session",
                         HttpStatus.OK, updatePatientSessionUseCase.update(patientSession));
     }
+    @PutMapping("/update/items/serviceLineId/{serviceLineId}")
+    public ResponseEntity<Object> updateItems(@PathVariable Long serviceLineId , @RequestBody CPTCode cptCode) {
+        return ResponseHandler
+                .generateResponse("Successfully updated Patient Session",
+                        HttpStatus.OK, updatePatientSessionItemUseCase.update(serviceLineId,cptCode));
+    }
+
 
     @GetMapping("/find/id/{sessionId}")
     public ResponseEntity<Object> findById(@PathVariable Long sessionId) {

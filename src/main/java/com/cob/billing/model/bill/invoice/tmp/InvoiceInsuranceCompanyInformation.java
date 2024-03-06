@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 public class InvoiceInsuranceCompanyInformation {
     private String name;
+    private Long id;
     private BasicAddress address;
     private InsuranceCompanyVisibility visibility;
     private String[] assigner; /* payerId , payerName , payerAddress*/

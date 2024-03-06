@@ -5,6 +5,7 @@ import com.cob.billing.enums.PatientSessionStatus;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,14 @@ public class CorrectPatientSessionUseCase {
     PatientSessionRepository patientSessionRepository;
 
     public PatientSession correct(PatientSession model) {
+        this.mapper = new ModelMapper();
+        mapper.addMappings(new PropertyMap<PatientSessionEntity, PatientSession>() {
+            @Override
+            protected void configure() {
+                skip(
+                        destination.getPatientName());
+            }
+        });
         // set session status to be PatientSessionStatus.Prepare
         //set all service lines to that session to be Initial
         PatientSessionEntity correctClaim = mapper.map(model, PatientSessionEntity.class);

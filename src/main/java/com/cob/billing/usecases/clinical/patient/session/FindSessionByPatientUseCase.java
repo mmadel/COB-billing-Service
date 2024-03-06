@@ -1,13 +1,16 @@
 package com.cob.billing.usecases.clinical.patient.session;
 
+import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.referring.provider.ReferringProviderEntity;
+import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.model.clinical.referring.provider.ReferringProvider;
 import com.cob.billing.model.response.PatientSessionResponse;
 import com.cob.billing.model.response.ReferringProviderResponse;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,9 +28,22 @@ public class FindSessionByPatientUseCase {
     ModelMapper mapper;
 
     public PatientSessionResponse find(Pageable paging, Long patientId) {
+        this.mapper = new ModelMapper();
+        mapper.addMappings(new PropertyMap<PatientSessionEntity, PatientSession>() {
+            @Override
+            protected void configure() {
+                skip(
+                        destination.getPatientName());
+            }
+        });
         Page<PatientSessionEntity> pages = patientSessionRepository.findByPatient_Id(paging, patientId);
         long total = (pages).getTotalElements();
-        List<PatientSession> records = pages.stream().map(patientSessionEntity -> mapper.map(patientSessionEntity, PatientSession.class))
+        List<PatientSession> records = pages.stream().map(patientSessionEntity -> {
+                    PatientSession patientSession = mapper.map(patientSessionEntity, PatientSession.class);
+                    patientSession.setPatientName(patientSessionEntity.getPatient().getLastName() + ',' + patientSessionEntity.getPatient().getFirstName());
+                    patientSession.setPatientId(patientSessionEntity.getPatient().getId());
+                    return patientSession;
+                })
                 .collect(Collectors.toList());
         records.forEach(patientSession -> {
             boolean isAnyServiceLineCorrect = patientSession.getServiceCodes().stream()

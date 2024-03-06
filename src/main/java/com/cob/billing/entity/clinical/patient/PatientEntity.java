@@ -65,11 +65,11 @@ public class PatientEntity {
     @JoinColumn(name = "referring_provider_id")
     private ReferringProviderEntity referringProvider;
 
-    @OneToMany( mappedBy = "patient")
-    private List<PatientInsuranceEntity> insurances;
+//    @OneToMany( mappedBy = "patient")
+//    private List<PatientInsuranceEntity> insurances;
 
-    @OneToMany( mappedBy = "patient")
-    private List<PatientSessionEntity> sessions;
+//    @OneToMany( mappedBy = "patient")
+//    private List<PatientSessionEntity> sessions;
 
     @Column(name = "ssn")
     private String ssn;
