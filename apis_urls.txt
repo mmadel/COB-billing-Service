@@ -1,0 +1,84 @@
+ClinicController
+	/clinic/create
+	/clinic/delete/clinicId/{clinicId}
+	/clinic/find/all
+	/clinic/find
+	/clinic/update
+	
+OrganizationController
+	/organization/create
+	/organization/find/default
+	/organization/update
+	
+CaseDiagnosisController
+	/case/diagnosis/find/term/{term}
+	
+InsuranceCompanyController
+	/insurance/company/configure
+	/insurance/company/find
+	/insurance/company/find/name/{name}
+	/insurance/company/find/configuration/id/{id}/visibility/{visibility}
+	/insurance/company/find/element/configuration/id/{id}/visibility/{visibility}
+	/insurance/company/find/internal
+	/insurance/company/find/internal/id/{id}
+	/insurance/company/map
+	/insurance/company/update/configure
+	
+PatientCaseController
+	/patient/case/create/patient/{patientId}
+	/patient/case/delete/{id}
+	/patient/case/find/patientId/{patientId}
+	
+PatientController
+	/patient/create
+	/patient/find
+	/patient/find/first/{first}/last/{last}
+	/patient/find/patientId/{patientId}
+	/patient/find/name/{name}
+	
+PatientInsuranceController
+	/patient/insurance/company/create/patient/{patientId}
+	/patient/insurance/company/delete/{id}/visibility/{visibility}
+	
+PatientSessionController
+	/session/correct
+	/session/create
+	/session/find/patientId/{patientId}
+	/session/find/id/{sessionId}
+	/session/update
+	/session/update/items/serviceLineId/{serviceLineId}
+	
+ProviderController
+	/provider/create
+	/provider/find/all
+	/provider/find
+	/provider/
+	/provider/
+	
+ReferringProviderController
+	/referring/provider/create
+	/referring/provider/find/all
+	/referring/provider/find
+
+
+InvoiceController
+		/invoice/create
+		/invoice/create/electronic
+		/invoice/find
+		/invoice/find/patient/{patientId}
+		/invoice/find/patient/{patientId}
+		
+PayerController
+	/payer/find
+	/payer/create
+
+PostingController
+	/posting/create/payments/clientId/{clientId}
+	/posting/create/payments/insurance/company
+	/posting/find/patient/{patientId}
+	/posting/find
+	/posting/find/insurance/company/{insuranceCompanyId}
+	
+NPPESController
+	/nppes/find/provider/npi/{npi}
+	
