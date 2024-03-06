@@ -1,8 +1,5 @@
 package com.cob.billing.entity.bill.invoice;
 
-import com.cob.billing.entity.clinical.insurance.compnay.PatientInsuranceExternalCompanyEntity;
-import com.cob.billing.entity.clinical.insurance.compnay.PatientInvoiceExternalCompanyEntity;
-import com.cob.billing.entity.clinical.insurance.compnay.PatientInvoiceInternalCompanyEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
@@ -43,16 +40,12 @@ public class PatientInvoiceEntity {
     @Column(name = "created_at")
     private Long createdAt;
 
+    @Column(name = "insurance_company_id")
+    private Long insuranceCompanyId;
+
     @PrePersist
     private void setCreatedDate() {
         createdAt = new Date().getTime();
     }
-
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "externalInsuranceCompany")
-    private PatientInvoiceExternalCompanyEntity patientInvoiceExternalCompany;
-
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "internalInsuranceCompany")
-    private PatientInvoiceInternalCompanyEntity patientInvoiceInternalCompany;
-
 
 }
