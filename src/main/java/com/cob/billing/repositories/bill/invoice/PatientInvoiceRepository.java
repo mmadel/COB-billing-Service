@@ -14,7 +14,8 @@ public interface PatientInvoiceRepository extends CrudRepository<PatientInvoiceE
     @Query("SELECT  pinv FROM PatientInvoiceEntity pinv " +
             "WHERE  " +
             " pinv.serviceLine.type ='Invoice' " +
-            "AND (pinv.patientSession.status='Submit' OR pinv.patientSession.status='Partial') AND pinv.insuranceCompanyId = :insuranceCompany")
+            "AND (pinv.patientSession.status='Submit' OR pinv.patientSession.status='Partial') " +
+            "AND pinv.insuranceCompanyId = :insuranceCompany")
     List<PatientInvoiceEntity> findBySessionSubmittedByInsuranceCompany(@Param("insuranceCompany") Long insuranceCompany);
 
 }

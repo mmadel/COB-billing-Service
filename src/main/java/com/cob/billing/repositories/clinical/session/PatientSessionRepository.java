@@ -21,18 +21,18 @@ public interface PatientSessionRepository extends PagingAndSortingRepository<Pat
 
     @Query("SELECT DISTINCT s , sc FROM PatientSessionEntity s INNER JOIN FETCH s.serviceCodes sc " +
             "WHERE (s.status = 'Prepare' OR s.status = 'Partial')" +
-            "AND sc.type NOT IN ('Invoice', 'Cancel')")
+            "AND sc.type NOT IN ('Invoice', 'Cancel','Close')")
     List<PatientSessionEntity> findPrepareAndPartialSessions();
 
     @Query("SELECT DISTINCT s FROM PatientSessionEntity s INNER JOIN FETCH s.serviceCodes sc " +
             "WHERE (s.status = 'Prepare' OR s.status = 'Partial')" +
-            "AND sc.type NOT IN ('Invoice', 'Cancel')" +
+            "AND sc.type NOT IN ('Invoice', 'Cancel','Close')" +
             "AND s.patient.id= :patientId")
     List<PatientSessionEntity> findPrepareAndPartialSessionsByPatient(@Param("patientId") Long patientId);
 
     @Query("SELECT DISTINCT s FROM PatientSessionEntity s INNER JOIN FETCH s.serviceCodes sc " +
             "WHERE (s.status = 'Prepare' OR s.status = 'Partial')" +
-            "AND sc.type NOT IN ('Invoice', 'Cancel')" +
+            "AND sc.type NOT IN ('Invoice', 'Cancel','Close')" +
             "AND s.patient.id= :patientId " +
             "AND (:dateFrom is null or s.serviceDate >= :dateFrom) " +
             "AND (:dateTo is null or s.serviceDate <= :dateTo)" +
@@ -51,7 +51,7 @@ public interface PatientSessionRepository extends PagingAndSortingRepository<Pat
             "AND sc.type  IN ('Invoice') ")
     List<PatientSessionEntity> findSubmittedSessionsByPatient(@Param("patientId") Long patientId);
 
-    @Query("SELECT  DISTINCT s FROM PatientSessionEntity s INNER JOIN  s.serviceCodes sc " +
+    @Query("SELECT  DISTINCT s FROM PatientSessionEntity s INNER JOIN FETCH  s.serviceCodes sc " +
             "WHERE (s.status = 'Submit' OR s.status = 'Partial')" +
             "AND s.patient.id= :patientId " +
             "AND sc.type  IN ('Invoice') " +

@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -47,63 +46,60 @@ public class CreateServiceLinesPaymentUseCase {
                 })
                 .collect(Collectors.toList());
         patientPaymentServiceLineRepository.saveAll(serviceLineEntities);
-
-        updateSessionAndServiceLineStatus(payments);
+        Map<Long, List<PaymentServiceLine>> groupedSessions = payments.stream()
+                .collect(Collectors.groupingBy(PaymentServiceLine::getSessionId));
+        List<Long> sessionId = new ArrayList<>();
+        List<PaymentServiceLine> serviceLines = new ArrayList<>();
+        groupedSessions.entrySet().stream()
+                .forEach(sessionGroup -> {
+                    sessionId.add(sessionGroup.getKey());
+                    serviceLines.addAll(sessionGroup.getValue());
+                });
+        evaluateServiceLinesStatus(payments);
+        evaluateSessionStatus(sessionId);
     }
 
-    public void  create(Map<Long, List<PaymentServiceLine>> payments){
+    public void create(Map<Long, List<PaymentServiceLine>> payments) {
         payments.forEach((patientId, paymentsServiceLines) -> {
-            create(paymentsServiceLines,patientId);
+            create(paymentsServiceLines, patientId);
         });
     }
 
-    private void updateSessionAndServiceLineStatus(List<PaymentServiceLine> payments) {
-        Map<Long, List<PaymentServiceLine>> groupedSessions = payments.stream()
-                .collect(Collectors.groupingBy(PaymentServiceLine::getSessionId));
-        List<Long> preparedSessionIds = new ArrayList<>();
-        List<Long> partialSessionIds = new ArrayList<>();
-        groupedSessions.entrySet().stream()
-                .forEach(sessionGroup -> {
-                    PatientSessionStatus status = evaluateServiceLineStatusAndGetSessionStatus(sessionGroup.getValue());
-                    switch (status) {
-                        case Prepare:
-                            preparedSessionIds.add(sessionGroup.getKey());
-                            break;
-                        case Partial:
-                            partialSessionIds.add(sessionGroup.getKey());
-                            break;
-                    }
-                });
-        if (!preparedSessionIds.isEmpty())
-            chaneSessionStatus(preparedSessionIds, PatientSessionStatus.Prepare);
-        if (!partialSessionIds.isEmpty())
-            chaneSessionStatus(partialSessionIds, PatientSessionStatus.Partial);
-    }
-
-    private PatientSessionStatus evaluateServiceLineStatusAndGetSessionStatus(List<PaymentServiceLine> paymentServiceLines) {
-        AtomicReference<Boolean> resubmitFlag = new AtomicReference<>(false);
-        AtomicReference<Boolean> closeFlag = new AtomicReference<>(false);
+    private void evaluateServiceLinesStatus(List<PaymentServiceLine> payments) {
         List<Long> resubmittedServiceLines = new ArrayList<>();
         List<Long> closedServiceLines = new ArrayList<>();
-        paymentServiceLines.stream()
-                .forEach(paymentServiceLine -> {
-                    if (paymentServiceLine.getSessionAction() != null) {
-                        if (paymentServiceLine.getSessionAction().equals(SessionAction.Resubmit)) {
-                            resubmittedServiceLines.add(paymentServiceLine.getServiceCodeId());
-                            resubmitFlag.set(true);
-                        }
-                        if (paymentServiceLine.getSessionAction().equals(SessionAction.Close)) {
-                            closedServiceLines.add(paymentServiceLine.getServiceCodeId());
-                            closeFlag.set(true);
-                        }
-                    }
-                });
+        payments.forEach(paymentServiceLine -> {
+            if (paymentServiceLine.getSessionAction() != null) {
+                if (paymentServiceLine.getSessionAction().equals(SessionAction.Resubmit)) {
+                    resubmittedServiceLines.add(paymentServiceLine.getServiceCodeId());
+                }
+                if (paymentServiceLine.getSessionAction().equals(SessionAction.Close)) {
+                    closedServiceLines.add(paymentServiceLine.getServiceCodeId());
+                }
+            }
+        });
         if (!resubmittedServiceLines.isEmpty())
             updateServiceLineStatus(resubmittedServiceLines, "Initial");
         if (!closedServiceLines.isEmpty())
             updateServiceLineStatus(closedServiceLines, "Close");
+    }
 
-        return checkSessionStatusFlag(resubmitFlag.get().booleanValue(), closeFlag.get().booleanValue());
+    private void evaluateSessionStatus(List<Long> sessions) {
+        List<PatientSessionEntity> submitSessions = new ArrayList<>();
+        List<PatientSessionEntity> partialSessions = new ArrayList<>();
+        patientSessionRepository.findAllById(sessions).forEach(patientSessionEntity -> {
+            if(patientSessionEntity.getServiceCodes().stream().allMatch(patientSessionServiceLineEntity -> patientSessionServiceLineEntity.getType().equals("Close"))){
+                patientSessionEntity.setStatus(PatientSessionStatus.Submit);
+                submitSessions.add(patientSessionEntity);
+            }else{
+                patientSessionEntity.setStatus(PatientSessionStatus.Partial);
+                partialSessions.add(patientSessionEntity);
+            }
+        });
+        if(submitSessions.size()> 0)
+            patientSessionRepository.saveAll(submitSessions);
+        if(partialSessions.size()> 0)
+            patientSessionRepository.saveAll(partialSessions);
     }
 
     private void updateServiceLineStatus(List<Long> serviceLines, String type) {
@@ -114,22 +110,5 @@ public class CreateServiceLinesPaymentUseCase {
                 .forEach(serviceLine -> serviceLine.setType(type));
 
         serviceLineRepository.saveAll(result);
-    }
-
-    private void chaneSessionStatus(List<Long> sessionId, PatientSessionStatus status) {
-        List<PatientSessionEntity> result =
-                StreamSupport.stream(patientSessionRepository.findAllById(sessionId).spliterator(), false)
-                        .collect(Collectors.toList());
-        result.stream()
-                .forEach(patientSession -> patientSession.setStatus(status));
-        patientSessionRepository.saveAll(result);
-    }
-
-    private PatientSessionStatus checkSessionStatusFlag(Boolean preparedSessionFlag, Boolean partialSessionFlag) {
-        if (preparedSessionFlag && partialSessionFlag)
-            return PatientSessionStatus.Partial;
-        if (preparedSessionFlag)
-            return PatientSessionStatus.Prepare;
-        return PatientSessionStatus.Submit;
     }
 }

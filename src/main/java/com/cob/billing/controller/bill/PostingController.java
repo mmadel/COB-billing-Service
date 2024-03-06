@@ -2,7 +2,6 @@ package com.cob.billing.controller.bill;
 
 import com.cob.billing.model.bill.posting.PaymentServiceLine;
 import com.cob.billing.model.bill.posting.filter.PostingSearchCriteria;
-import com.cob.billing.model.clinical.patient.session.filter.PatientSessionSearchCriteria;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.invoice.FindSubmittedSessionsByPatientUseCase;
 import com.cob.billing.usecases.bill.posting.CreateServiceLinesPaymentUseCase;
@@ -37,8 +36,7 @@ public class PostingController {
             , @RequestBody PostingSearchCriteria postingSearchCriteria) {
         return ResponseHandler
                 .generateResponse("Successfully finding  filtered patients with session status submitted",
-                        HttpStatus.OK, null, findSubmittedSessionsByPatientUseCase.
-                                find(offset + 1, limit, postingSearchCriteria));
+                        HttpStatus.OK, null, findSubmittedSessionsByPatientUseCase.find(offset + 1, limit, postingSearchCriteria));
     }
 
     @GetMapping("/find/insurance/company/{insuranceCompanyId}")
