@@ -81,4 +81,7 @@ PostingController
 	
 NPPESController
 	/nppes/find/provider/npi/{npi}
+
+PatientAuthorizationController
+    /authorization
 	
