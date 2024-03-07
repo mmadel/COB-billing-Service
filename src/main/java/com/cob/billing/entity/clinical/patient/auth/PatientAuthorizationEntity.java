@@ -18,7 +18,7 @@ public class PatientAuthorizationEntity {
     @Column(name = "auth_number")
     private String authNumber;
     @Column(name = "ins_company")
-    private String insCompany;
+    private Long patientInsuranceCompany;
     @Column(name = "service_code")
     private String serviceCode;
     @Column(name = "start_date")
