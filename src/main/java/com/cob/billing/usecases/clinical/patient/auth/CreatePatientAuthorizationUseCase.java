@@ -24,6 +24,7 @@ public class CreatePatientAuthorizationUseCase {
         PatientEntity patient = patientRepository.findById(model.getPatientId()).get();
         PatientAuthorizationEntity toBeCreated = mapper.map(model, PatientAuthorizationEntity.class);
         toBeCreated.setPatientInsuranceCompany(Long.parseLong(model.getInsCompany()[1]));
+        toBeCreated.setPatientInsuranceCompanyName(model.getInsCompany()[0]);
         toBeCreated.setPatient(patient);
         return patientAuthorizationRepository.save(toBeCreated).getId();
     }
