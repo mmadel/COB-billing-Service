@@ -13,4 +13,5 @@ public class PatientAuthorization {
     private Long expireDateNumber;
     private Integer visit;
     private Integer remaining;
+    private Long patientId;
 }
