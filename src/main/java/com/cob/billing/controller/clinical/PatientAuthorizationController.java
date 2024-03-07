@@ -6,10 +6,7 @@ import com.cob.billing.usecases.clinical.patient.auth.CreatePatientAuthorization
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/authorization")
@@ -24,5 +21,10 @@ public class PatientAuthorizationController {
                 .generateResponse("Successfully added Patient-Auth",
                         HttpStatus.OK,
                         createPatientAuthorizationUseCase.create(model));
+    }
+
+    @GetMapping("find/patientId/{patientId}")
+    public ResponseEntity<Object> findAll(@PathVariable Long patientId) {
+        return new ResponseEntity(null, HttpStatus.OK);
     }
 }
