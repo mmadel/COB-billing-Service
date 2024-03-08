@@ -23,11 +23,11 @@ public class AssignPatientAuthorizationUseCase {
     private List<Long[]> getPatientAuthorizationDates(List<PatientAuthorization> patientAuthorizations) {
         List<Long[]> dates = new ArrayList<>();
         if (patientAuthorizations.size() == 1) {
-            Long date[] = {patientAuthorizations.get(0).getStartDateNumber(), patientAuthorizations.get(0).getExpireDateNumber()};
+            Long date[] = {patientAuthorizations.get(0).getStartDateNumber(), patientAuthorizations.get(0).getExpireDateNumber(), patientAuthorizations.get(0).getId()};
             dates.add(date);
         } else {
             for (int i = 0; i < patientAuthorizations.size(); i++) {
-                Long date[] = {patientAuthorizations.get(0).getStartDateNumber(), patientAuthorizations.get(i).getExpireDateNumber()};
+                Long date[] = {patientAuthorizations.get(0).getStartDateNumber(), patientAuthorizations.get(i).getExpireDateNumber(), patientAuthorizations.get(i).getId()};
                 dates.add(date);
             }
         }
