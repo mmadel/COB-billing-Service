@@ -4,7 +4,6 @@ import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.model.clinical.patient.MinimalPatient;
 import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.model.response.MinimalPatientResponse;
-import com.cob.billing.model.response.PatientResponse;
 import com.cob.billing.repositories.clinical.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,7 +21,7 @@ public class FindPatientUseCase {
     @Autowired
     MapPatientUseCase mapPatientUseCase;
     @Autowired
-    PatientAuthorizationCheckerUseCase patientAuthorizationCheckerUseCase;
+    AssignPatientAuthorizationUseCase assignPatientAuthorizationUseCase;
 
     public MinimalPatientResponse findAll(Pageable paging) {
         Page<PatientEntity> pages = patientRepository.findAll(paging);
@@ -46,7 +45,7 @@ public class FindPatientUseCase {
     public Patient findById(Long patientId) {
         PatientEntity entity = patientRepository.findById(patientId).get();
         Patient patient =  mapPatientUseCase.map(entity);
-        patientAuthorizationCheckerUseCase.find(patient);
+        assignPatientAuthorizationUseCase.find(patient);
         return patient;
     }
 }

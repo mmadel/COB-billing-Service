@@ -7,6 +7,8 @@ import com.cob.billing.model.common.Address;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 @Getter
 public class InvoicePatientInformation {
@@ -23,4 +25,5 @@ public class InvoicePatientInformation {
     private String box26;
     private ReferringProvider referringProvider;
     private String insuredPrimaryId;
+    private List<Long[]> authorizationDates;
 }
