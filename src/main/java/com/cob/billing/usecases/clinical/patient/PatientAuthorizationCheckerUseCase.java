@@ -17,7 +17,7 @@ public class PatientAuthorizationCheckerUseCase {
     @Autowired
     PatientAuthorizationRepository patientAuthorizationRepository;
 
-    public void check(InvoiceRequest invoiceRequest) {
+    public void check(InvoiceRequest invoiceRequest) throws IllegalAccessException {
         List<Long[]> dates = invoiceRequest.getPatientInformation().getAuthorizationDates();
         List<Long> patientAuthorizationsToBeDecrements;
         if (dates.size() == 1)
@@ -39,11 +39,13 @@ public class PatientAuthorizationCheckerUseCase {
         return patientAuthorizations;
     }
 
-    private List<Long> checkPatientAuthorizations(List<Long[]> dates, List<SelectedSessionServiceLine> serviceLines) {
+    private List<Long> checkPatientAuthorizations(List<Long[]> dates, List<SelectedSessionServiceLine> serviceLines) throws IllegalAccessException {
         List<Long> patientAuthorizations = new ArrayList<>();
         dates.forEach(date -> {
             patientAuthorizations.addAll(checkPatientAuthorization(date, serviceLines));
         });
+        if(patientAuthorizations.size() > 1)
+            throw new IllegalAccessException("Over Lapping");
         return patientAuthorizations;
     }
 
