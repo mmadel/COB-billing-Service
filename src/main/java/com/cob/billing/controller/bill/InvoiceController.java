@@ -66,23 +66,30 @@ public class InvoiceController {
     }
 
     @PostMapping(value = "/create", consumes = "application/json")
-    public void create(@RequestBody InvoiceRequest invoiceRequest,
+    public ResponseEntity create(@RequestBody InvoiceRequest invoiceRequest,
                        HttpServletResponse response) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "inline");
-        List<String> files = generateCMSInvoiceUseCase.generate(invoiceRequest);
-        PdfWriter writer = new PdfWriter(response.getOutputStream());
-        PdfDocument pdf = new PdfDocument(writer);
-        PdfMerger merger = new PdfMerger(pdf);
-        for (String file : files) {
-            File tmpFile = new File(file);
-            PdfReader source = new PdfReader(tmpFile);
-            PdfDocument sourceDoc = new PdfDocument(source);
-            merger.merge(sourceDoc, 1, sourceDoc.getNumberOfPages());
-            sourceDoc.close();
-            tmpFile.delete();
+        List<String> files;
+        try{
+            files = generateCMSInvoiceUseCase.generate(invoiceRequest);
+            PdfWriter writer = new PdfWriter(response.getOutputStream());
+            PdfDocument pdf = new PdfDocument(writer);
+            PdfMerger merger = new PdfMerger(pdf);
+            for (String file : files) {
+                File tmpFile = new File(file);
+                PdfReader source = new PdfReader(tmpFile);
+                PdfDocument sourceDoc = new PdfDocument(source);
+                merger.merge(sourceDoc, 1, sourceDoc.getNumberOfPages());
+                sourceDoc.close();
+                tmpFile.delete();
+            }
+            merger.close();
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (Exception ex){
+            return new ResponseEntity<>(ex.getMessage(),HttpStatus.CONFLICT);
         }
-        merger.close();
+
     }
 
     @PostMapping("/create/electronic")
