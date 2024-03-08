@@ -6,6 +6,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class PatientAuthorization {
+    private Long id;
     private String authNumber;
     private String[] insCompany;
     private String serviceCode;
