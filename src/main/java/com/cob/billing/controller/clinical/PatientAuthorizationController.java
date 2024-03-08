@@ -3,6 +3,7 @@ package com.cob.billing.controller.clinical;
 import com.cob.billing.model.clinical.patient.auth.PatientAuthorization;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.clinical.patient.auth.CreatePatientAuthorizationUseCase;
+import com.cob.billing.usecases.clinical.patient.auth.DeletePatientAuthorizationUseCase;
 import com.cob.billing.usecases.clinical.patient.auth.FetchPatientAuthorizationUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,8 @@ public class PatientAuthorizationController {
     CreatePatientAuthorizationUseCase createPatientAuthorizationUseCase;
     @Autowired
     FetchPatientAuthorizationUseCase fetchPatientAuthorizationUseCase;
+    @Autowired
+    DeletePatientAuthorizationUseCase deletePatientAuthorizationUseCase;
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody PatientAuthorization model) {
@@ -33,6 +36,7 @@ public class PatientAuthorizationController {
 
     @DeleteMapping("/delete/patientId/{patientId}")
     public ResponseEntity<Object> delete(@PathVariable Long patientId) {
+        deletePatientAuthorizationUseCase.delete(patientId);
         return new ResponseEntity(HttpStatus.OK);
     }
 }
