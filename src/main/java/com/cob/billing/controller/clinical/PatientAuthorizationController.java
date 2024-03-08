@@ -34,9 +34,9 @@ public class PatientAuthorizationController {
         return new ResponseEntity(fetchPatientAuthorizationUseCase.find(patientId), HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/patientId/{patientId}")
-    public ResponseEntity<Object> delete(@PathVariable Long patientId) {
-        deletePatientAuthorizationUseCase.delete(patientId);
+    @DeleteMapping("/delete/auth/{authid}")
+    public ResponseEntity<Object> delete(@PathVariable Long authid) {
+        deletePatientAuthorizationUseCase.delete(authid);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeletePatientAuthorizationUseCase {
     @Autowired
     PatientAuthorizationRepository patientAuthorizationRepository;
-    public void delete(Long patientId){
-        patientAuthorizationRepository.deleteByPatientId(patientId);
+    public void delete(Long authId){
+        patientAuthorizationRepository.deleteById(authId);
     }
 }

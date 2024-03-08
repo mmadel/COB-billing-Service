@@ -9,6 +9,4 @@ import java.util.Optional;
 
 public interface PatientAuthorizationRepository extends PagingAndSortingRepository<PatientAuthorizationEntity, Long> {
     Optional<List<PatientAuthorizationEntity>> findByPatient_Id(Long patientId);
-    @Modifying
-    Optional<Object> deleteByPatientId(Long patientId);
 }
