@@ -21,6 +21,9 @@ public interface PatientRepository extends PagingAndSortingRepository<PatientEnt
     PatientEntity findByFirstNameAndLastName(String firstName, String lastName);
 
     @Modifying
-    @Query("update PatientEntity p set  p.authTurnOff = :turnOffFlag where p.id = :patientId")
-    void turnOffAuthorization(@Param("patientId") Long patientId ,@Param("turnOffFlag") Boolean turnOffFlag);
+    @Query("update PatientEntity p set  p.authTurnOff = true where p.id = :patientId")
+    void turnOffAuthorization(@Param("patientId") Long patientId );
+    @Modifying
+    @Query("update PatientEntity p set  p.authTurnOff = false where p.id = :patientId")
+    void turnOnAuthorization(@Param("patientId") Long patientId);
 }
