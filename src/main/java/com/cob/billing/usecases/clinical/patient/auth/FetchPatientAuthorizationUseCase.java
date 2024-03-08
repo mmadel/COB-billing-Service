@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,8 +23,13 @@ public class FetchPatientAuthorizationUseCase {
                     PatientAuthorization patientAuthorization = mapper.map(patientAuthorizationEntity, PatientAuthorization.class);
                     String[] insCompany = {patientAuthorizationEntity.getPatientInsuranceCompany().toString(), patientAuthorizationEntity.getPatientInsuranceCompanyName()};
                     patientAuthorization.setInsCompany(insCompany);
+                    patientAuthorization.setIsExpired(checkExpiration(patientAuthorizationEntity.getExpireDateNumber()));
                     return patientAuthorization;
                 })
                 .collect(Collectors.toList());
+    }
+
+    private boolean checkExpiration(Long authExpireDate) {
+        return new Date().getTime() > authExpireDate  ;
     }
 }
