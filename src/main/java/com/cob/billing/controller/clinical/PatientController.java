@@ -68,7 +68,7 @@ public class PatientController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/auth/on/patientId/{patientId}")
+        @GetMapping("/auth/on/patientId/{patientId}")
     public ResponseEntity turnOnPatientAuthorization(@PathVariable Long patientId) {
         flagPatientAuthorizationUseCase.turnOn(patientId);
         return new ResponseEntity(HttpStatus.OK);
