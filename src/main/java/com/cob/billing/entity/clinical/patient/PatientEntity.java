@@ -65,16 +65,13 @@ public class PatientEntity {
     @JoinColumn(name = "referring_provider_id")
     private ReferringProviderEntity referringProvider;
 
-//    @OneToMany( mappedBy = "patient")
-//    private List<PatientInsuranceEntity> insurances;
-
-//    @OneToMany( mappedBy = "patient")
-//    private List<PatientSessionEntity> sessions;
-
     @Column(name = "ssn")
     private String ssn;
     @Column(name = "external_id")
     private String externalId;
+
+    @Column(name = "auth_turn_off")
+    private Boolean authTurnOff;
 
 
 }

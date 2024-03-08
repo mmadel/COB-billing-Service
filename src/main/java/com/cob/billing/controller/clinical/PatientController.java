@@ -4,10 +4,7 @@ import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibili
 import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsurance;
 import com.cob.billing.response.handler.ResponseHandler;
-import com.cob.billing.usecases.clinical.patient.CreatePatientUseCase;
-import com.cob.billing.usecases.clinical.patient.FindPatientByNamUseCase;
-import com.cob.billing.usecases.clinical.patient.FindPatientCasesUseCase;
-import com.cob.billing.usecases.clinical.patient.FindPatientUseCase;
+import com.cob.billing.usecases.clinical.patient.*;
 import com.cob.billing.usecases.clinical.patient.insurance.company.DeletePatientInsuranceCompanyUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +26,8 @@ public class PatientController {
     FindPatientCasesUseCase findPatientCasesUseCase;
     @Autowired
     DeletePatientInsuranceCompanyUseCase deletePatientInsuranceCompanyUseCase;
+    @Autowired
+    FlagPatientAuthorizationUseCase flagPatientAuthorizationUseCase;
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody Patient model) {
@@ -63,9 +62,16 @@ public class PatientController {
         return new ResponseEntity(findPatientByNamUseCase.findByFirstAndLastName(first, last), HttpStatus.OK);
     }
 
-//    @GetMapping("find/cases/patientId/{patientId}")
-//    public ResponseEntity findPatientCases(@PathVariable Long patientId) {
-//        return new ResponseEntity(findPatientCasesUseCase.find(patientId), HttpStatus.OK);
-//    }
+    @GetMapping("/auth/off/patientId/{patientId}")
+    public ResponseEntity turnOffPatientAuthorization(@PathVariable Long patientId) {
+        flagPatientAuthorizationUseCase.turnOff(patientId);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/auth/on/patientId/{patientId}")
+    public ResponseEntity turnOnPatientAuthorization(@PathVariable Long patientId) {
+        flagPatientAuthorizationUseCase.turnOn(patientId);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
 }
