@@ -28,6 +28,13 @@ public class PatientAuthorizationController {
                         HttpStatus.OK,
                         createPatientAuthorizationUseCase.create(model));
     }
+    @PostMapping("/update")
+    public ResponseEntity<Object> update(@RequestBody PatientAuthorization model) {
+        return ResponseHandler
+                .generateResponse("Successfully updated Patient-Auth",
+                        HttpStatus.OK,
+                        createPatientAuthorizationUseCase.create(model));
+    }
 
     @GetMapping("/find/patientId/{patientId}")
     public ResponseEntity<Object> findAll(@PathVariable Long patientId) {
