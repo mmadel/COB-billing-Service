@@ -20,7 +20,7 @@ public class CreatePatientAuthorizationUseCase {
     @Autowired
     ModelMapper mapper;
 
-    public Long create(PatientAuthorization model) {
+    public Long createOrUpdate(PatientAuthorization model) {
         PatientEntity patient = patientRepository.findById(model.getPatientId()).get();
         PatientAuthorizationEntity toBeCreated = mapper.map(model, PatientAuthorizationEntity.class);
         toBeCreated.setPatientInsuranceCompany(Long.parseLong(model.getInsCompany()[1]));

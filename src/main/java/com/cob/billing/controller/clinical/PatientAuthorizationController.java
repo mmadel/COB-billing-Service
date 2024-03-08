@@ -26,7 +26,14 @@ public class PatientAuthorizationController {
         return ResponseHandler
                 .generateResponse("Successfully added Patient-Auth",
                         HttpStatus.OK,
-                        createPatientAuthorizationUseCase.create(model));
+                        createPatientAuthorizationUseCase.createOrUpdate(model));
+    }
+    @PutMapping("/update")
+    public ResponseEntity<Object> update(@RequestBody PatientAuthorization model) {
+        return ResponseHandler
+                .generateResponse("Successfully updated Patient-Auth",
+                        HttpStatus.OK,
+                        createPatientAuthorizationUseCase.createOrUpdate(model));
     }
 
     @GetMapping("/find/patientId/{patientId}")
