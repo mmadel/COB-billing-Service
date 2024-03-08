@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Component
@@ -20,13 +21,16 @@ public class PatientAuthorizationCheckerUseCase {
     public void check(InvoiceRequest invoiceRequest) throws IllegalAccessException {
         List<Long[]> dates = invoiceRequest.getPatientInformation().getAuthorizationDates();
         List<Long> patientAuthorizationsToBeDecrements;
+        String authNumber = "";
         if (dates.size() == 1)
             patientAuthorizationsToBeDecrements = checkPatientAuthorization(dates.get(0), invoiceRequest.getSelectedSessionServiceLine());
         else
             patientAuthorizationsToBeDecrements = checkPatientAuthorizations(dates, invoiceRequest.getSelectedSessionServiceLine());
 
         if (!patientAuthorizationsToBeDecrements.isEmpty())
-            updateSinglePatientAuthorization(patientAuthorizationsToBeDecrements);
+            authNumber = updateSinglePatientAuthorization(patientAuthorizationsToBeDecrements);
+        if (authNumber != "")
+            invoiceRequest.getPatientInformation().setAuthNumber(authNumber);
     }
 
     private List<Long> checkPatientAuthorization(Long[] dates, List<SelectedSessionServiceLine> serviceLines) {
@@ -44,22 +48,21 @@ public class PatientAuthorizationCheckerUseCase {
         dates.forEach(date -> {
             patientAuthorizations.addAll(checkPatientAuthorization(date, serviceLines));
         });
-        if(patientAuthorizations.size() > 1)
+        if (patientAuthorizations.size() > 1)
             throw new IllegalAccessException("Over Lapping");
         return patientAuthorizations;
     }
 
-    private void updateSinglePatientAuthorization(List<Long> authIds) {
+    private String updateSinglePatientAuthorization(List<Long> authIds) {
+        AtomicReference<String> authNumber = new AtomicReference<>("");
         List<PatientAuthorizationEntity> toBeUpdate = new ArrayList<>();
         patientAuthorizationRepository.findAllById(authIds).forEach(patientAuthorizationEntity -> {
+            authNumber.set(patientAuthorizationEntity.getAuthNumber());
             int remaining = patientAuthorizationEntity.getRemaining() + 1;
             patientAuthorizationEntity.setRemaining(remaining);
             toBeUpdate.add(patientAuthorizationEntity);
         });
         patientAuthorizationRepository.saveAll(toBeUpdate);
-    }
-
-    private void updateMultiplePatientAuthorization(List<Long> authIds) {
-
+        return authNumber.get();
     }
 }

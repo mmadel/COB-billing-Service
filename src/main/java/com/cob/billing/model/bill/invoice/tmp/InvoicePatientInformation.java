@@ -26,4 +26,5 @@ public class InvoicePatientInformation {
     private ReferringProvider referringProvider;
     private String insuredPrimaryId;
     private List<Long[]> authorizationDates;
+    private String authNumber;
 }
