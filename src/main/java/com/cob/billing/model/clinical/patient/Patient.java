@@ -45,4 +45,5 @@ public class Patient {
     private String externalId;
     private PatientAdvancedInformation patientAdvancedInformation;
     private Boolean authTurnOff;
+    private List<Long[]> authorizationDates;
 }
