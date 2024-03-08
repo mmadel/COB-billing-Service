@@ -19,12 +19,14 @@ public class PatientAuthorizationCheckerUseCase {
 
     public void check(InvoiceRequest invoiceRequest) {
         List<Long[]> dates = invoiceRequest.getPatientInformation().getAuthorizationDates();
-        List<Long> patientAuthorizationsToBeDecrements = new ArrayList<>();
+        List<Long> patientAuthorizationsToBeDecrements;
         if (dates.size() == 1)
             patientAuthorizationsToBeDecrements = checkPatientAuthorization(dates.get(0), invoiceRequest.getSelectedSessionServiceLine());
+        else
+            patientAuthorizationsToBeDecrements = checkPatientAuthorizations(dates, invoiceRequest.getSelectedSessionServiceLine());
 
         if (!patientAuthorizationsToBeDecrements.isEmpty())
-            updatePatientAuthorization(patientAuthorizationsToBeDecrements);
+            updateSinglePatientAuthorization(patientAuthorizationsToBeDecrements);
     }
 
     private List<Long> checkPatientAuthorization(Long[] dates, List<SelectedSessionServiceLine> serviceLines) {
@@ -37,13 +39,25 @@ public class PatientAuthorizationCheckerUseCase {
         return patientAuthorizations;
     }
 
-    private void updatePatientAuthorization(List<Long> authIds) {
+    private List<Long> checkPatientAuthorizations(List<Long[]> dates, List<SelectedSessionServiceLine> serviceLines) {
+        List<Long> patientAuthorizations = new ArrayList<>();
+        dates.forEach(date -> {
+            patientAuthorizations.addAll(checkPatientAuthorization(date, serviceLines));
+        });
+        return patientAuthorizations;
+    }
+
+    private void updateSinglePatientAuthorization(List<Long> authIds) {
         List<PatientAuthorizationEntity> toBeUpdate = new ArrayList<>();
         patientAuthorizationRepository.findAllById(authIds).forEach(patientAuthorizationEntity -> {
-            int remaining  = patientAuthorizationEntity.getRemaining() + 1;
+            int remaining = patientAuthorizationEntity.getRemaining() + 1;
             patientAuthorizationEntity.setRemaining(remaining);
             toBeUpdate.add(patientAuthorizationEntity);
         });
         patientAuthorizationRepository.saveAll(toBeUpdate);
+    }
+
+    private void updateMultiplePatientAuthorization(List<Long> authIds) {
+
     }
 }

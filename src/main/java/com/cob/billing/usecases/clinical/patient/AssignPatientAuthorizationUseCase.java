@@ -27,7 +27,7 @@ public class AssignPatientAuthorizationUseCase {
             dates.add(date);
         } else {
             for (int i = 0; i < patientAuthorizations.size(); i++) {
-                Long date[] = {patientAuthorizations.get(0).getStartDateNumber(), patientAuthorizations.get(i).getExpireDateNumber(), patientAuthorizations.get(i).getId()};
+                Long date[] = {patientAuthorizations.get(i).getStartDateNumber(), patientAuthorizations.get(i).getExpireDateNumber(), patientAuthorizations.get(i).getId()};
                 dates.add(date);
             }
         }
