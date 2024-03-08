@@ -21,6 +21,8 @@ public class FindPatientUseCase {
 
     @Autowired
     MapPatientUseCase mapPatientUseCase;
+    @Autowired
+    PatientAuthorizationCheckerUseCase patientAuthorizationCheckerUseCase;
 
     public MinimalPatientResponse findAll(Pageable paging) {
         Page<PatientEntity> pages = patientRepository.findAll(paging);
@@ -43,6 +45,8 @@ public class FindPatientUseCase {
 
     public Patient findById(Long patientId) {
         PatientEntity entity = patientRepository.findById(patientId).get();
-        return mapPatientUseCase.map(entity);
+        Patient patient =  mapPatientUseCase.map(entity);
+        patientAuthorizationCheckerUseCase.find(patient);
+        return patient;
     }
 }
