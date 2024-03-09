@@ -15,4 +15,7 @@ public interface PatientAuthorizationRepository extends PagingAndSortingReposito
     @Modifying
     @Query("update PatientAuthorizationEntity pauth set pauth.selected =true where pauth.patient.id =:patientId and pauth.id =:authId")
     void assignAuthorizationToPatient(@Param("patientId") Long patientId, @Param("authId") Long authId);
+    @Modifying
+    @Query("update PatientAuthorizationEntity pauth set pauth.selected =false where pauth.patient.id =:patientId and pauth.id =:authId")
+    void unAssignAuthorizationToPatient(@Param("patientId") Long patientId, @Param("authId") Long authId);
 }
