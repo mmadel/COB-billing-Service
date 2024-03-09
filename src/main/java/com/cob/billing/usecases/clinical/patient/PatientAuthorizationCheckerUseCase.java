@@ -58,7 +58,7 @@ public class PatientAuthorizationCheckerUseCase {
         List<PatientAuthorizationEntity> toBeUpdate = new ArrayList<>();
         patientAuthorizationRepository.findAllById(authIds).forEach(patientAuthorizationEntity -> {
             authNumber.set(patientAuthorizationEntity.getAuthNumber());
-            int remaining = patientAuthorizationEntity.getRemaining() + 1;
+            int remaining = patientAuthorizationEntity.getRemaining() - 1;
             patientAuthorizationEntity.setRemaining(remaining);
             toBeUpdate.add(patientAuthorizationEntity);
         });
