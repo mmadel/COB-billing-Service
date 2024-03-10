@@ -1,6 +1,7 @@
 package com.cob.billing.model.bill.invoice.tmp;
 
 import com.cob.billing.enums.Gender;
+import com.cob.billing.model.bill.invoice.tmp.auth.AuthorizationInformation;
 import com.cob.billing.model.clinical.patient.advanced.PatientAdvancedInformation;
 import com.cob.billing.model.clinical.referring.provider.ReferringProvider;
 import com.cob.billing.model.common.Address;
@@ -25,6 +26,10 @@ public class InvoicePatientInformation {
     private String box26;
     private ReferringProvider referringProvider;
     private String insuredPrimaryId;
+    private AuthorizationInformation authorizationInformation;
+
     private List<Long[]> authorizationDates;
     private String authNumber;
+
+
 }
