@@ -1,5 +1,6 @@
 package com.cob.billing.usecases.clinical.patient;
 
+import com.cob.billing.model.bill.invoice.tmp.auth.AuthorizationInformation;
 import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.model.clinical.patient.auth.PatientAuthorization;
 import com.cob.billing.usecases.clinical.patient.auth.FetchPatientAuthorizationUseCase;
@@ -16,21 +17,18 @@ public class AssignPatientAuthorizationUseCase {
 
     public void find(Patient patient) {
         List<PatientAuthorization> patientAuthorizations = fetchPatientAuthorizationUseCase.find(patient.getId());
-        if (!patientAuthorizations.isEmpty())
-            patient.setAuthorizationDates(getPatientAuthorizationDates(patientAuthorizations));
-    }
-
-    private List<Long[]> getPatientAuthorizationDates(List<PatientAuthorization> patientAuthorizations) {
-        List<Long[]> dates = new ArrayList<>();
-        if (patientAuthorizations.size() == 1) {
-            Long date[] = {patientAuthorizations.get(0).getStartDateNumber(), patientAuthorizations.get(0).getExpireDateNumber(), patientAuthorizations.get(0).getId()};
-            dates.add(date);
-        } else {
+        if (!patientAuthorizations.isEmpty()) {
+            AuthorizationInformation authorizationInformation = new AuthorizationInformation();
             for (int i = 0; i < patientAuthorizations.size(); i++) {
-                Long date[] = {patientAuthorizations.get(i).getStartDateNumber(), patientAuthorizations.get(i).getExpireDateNumber(), patientAuthorizations.get(i).getId()};
-                dates.add(date);
+                Long authorizationStartDate = patientAuthorizations.get(i).getStartDateNumber();
+                Long authorizationExpiryDate = patientAuthorizations.get(i).getExpireDateNumber();
+                Long authorizationId = patientAuthorizations.get(i).getId();
+                Long insuranceCompanyId = Long.parseLong(patientAuthorizations.get(i).getInsCompany()[0]);
+                Long[] authorizationMetaData = {authorizationStartDate, authorizationExpiryDate, authorizationId, insuranceCompanyId};
+                authorizationInformation.getMetaData().add(authorizationMetaData);
+                authorizationInformation.setTurning(patient.getAuthTurnOff());
             }
+            patient.setAuthorizationInformation(authorizationInformation);
         }
-        return dates;
     }
 }

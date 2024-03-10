@@ -12,6 +12,11 @@ public class AuthorizationRemainingHandling implements AuthorizationHandling {
 
     @Override
     public void processRequest(InvoiceRequest request) {
+        if (request.getPatientInformation().getAuthorizationSelection().getRemainingCounter() > 1) {
+            // Fill to Submit Claim
+        } else {
+            // throw exception
+        }
 
     }
 }

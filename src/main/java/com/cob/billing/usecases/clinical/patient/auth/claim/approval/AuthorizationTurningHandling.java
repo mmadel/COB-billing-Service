@@ -12,6 +12,11 @@ public class AuthorizationTurningHandling implements AuthorizationHandling {
 
     @Override
     public void processRequest(InvoiceRequest request) {
+        if (!request.getPatientInformation().getAuthorizationInformation().getTurning()) {
+            System.out.println("Authorization is turned Off");
+        } else {
+            nextAuthorizationHandling.processRequest(request);
+        }
 
     }
 }
