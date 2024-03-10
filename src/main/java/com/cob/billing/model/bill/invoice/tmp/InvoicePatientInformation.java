@@ -28,5 +28,5 @@ public class InvoicePatientInformation {
     private ReferringProvider referringProvider;
     private String insuredPrimaryId;
     private AuthorizationInformation authorizationInformation;
-    private AuthorizationSelection authorizationSelection;
+    private AuthorizationSelection authorizationSelection  = new AuthorizationSelection();
 }

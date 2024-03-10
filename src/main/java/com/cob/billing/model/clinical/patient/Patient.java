@@ -45,6 +45,5 @@ public class Patient {
     private String ssn;
     private String externalId;
     private PatientAdvancedInformation patientAdvancedInformation;
-    private Boolean authTurnOff;
     private AuthorizationInformation authorizationInformation;
 }

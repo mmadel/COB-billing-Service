@@ -25,8 +25,8 @@ public class AssignPatientAuthorizationUseCase {
                 Long authorizationId = patientAuthorizations.get(i).getId();
                 Long insuranceCompanyId = Long.parseLong(patientAuthorizations.get(i).getInsCompany()[0]);
                 Long[] authorizationMetaData = {authorizationStartDate, authorizationExpiryDate, authorizationId, insuranceCompanyId};
-                authorizationInformation.getMetaData().add(authorizationMetaData);
-                authorizationInformation.setTurning(patient.getAuthTurnOff());
+                authorizationInformation.getAuthorizationsMetaData().add(authorizationMetaData);
+                authorizationInformation.setTurning(patient.getAuthorizationInformation().getTurning());
             }
             patient.setAuthorizationInformation(authorizationInformation);
         }

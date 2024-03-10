@@ -15,6 +15,6 @@ public class AuthorizationInformation {
         [2] authorization id
         [3] insurance company id
      */
-    private List<Long[]> metaData = new ArrayList<>();
+    private List<Long[]> authorizationsMetaData = new ArrayList<>();
     private Boolean turning;
 }

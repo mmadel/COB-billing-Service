@@ -4,6 +4,7 @@ import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyPayerEn
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.insurance.PatientInsuranceEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
+import com.cob.billing.model.bill.invoice.tmp.auth.AuthorizationInformation;
 import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibility;
 import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsurance;
@@ -47,6 +48,7 @@ public class MapPatientUseCase {
         List<PatientInsurance> patientInsurances = mapPatientInsurancesUseCase.map(patientInsuranceEntities);
         patient.setPatientInsurances(patientInsurances);
         patient.setSessions(findPatientSession(entity.getId()));
+        patient.setAuthorizationInformation(findPatientAuthorization(entity));
         return patient;
     }
 
@@ -63,5 +65,11 @@ public class MapPatientUseCase {
         return patientSessionEntities.stream()
                 .map(patientSessionEntity -> mapper.map(patientSessionEntity, PatientSession.class))
                 .collect(Collectors.toList());
+    }
+
+    private AuthorizationInformation findPatientAuthorization(PatientEntity entity) {
+        AuthorizationInformation authorizationInformation = new AuthorizationInformation();
+        authorizationInformation.setTurning(entity.getAuthTurnOff());
+        return authorizationInformation;
     }
 }
