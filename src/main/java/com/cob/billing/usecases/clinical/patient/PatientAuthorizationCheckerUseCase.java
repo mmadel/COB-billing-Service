@@ -29,6 +29,11 @@ public class PatientAuthorizationCheckerUseCase {
     AuthorizationHandling authorizationExpirationHandling;
 
     @Autowired
+    @Qualifier("AssignHandler")
+    AuthorizationHandling authorizationAssignHandler;
+
+
+    @Autowired
     @Qualifier("RemainingHandling")
     AuthorizationHandling authorizationRemainingHandling;
 
@@ -36,7 +41,8 @@ public class PatientAuthorizationCheckerUseCase {
         authorizationTurningHandling.setNextHandler(authorizationSelectionHandling);
         authorizationSelectionHandling.setNextHandler(authorizationMultipleSessionSelectionHandler);
         authorizationMultipleSessionSelectionHandler.setNextHandler(authorizationOverLapSelectionHandler);
-        authorizationOverLapSelectionHandler.setNextHandler(authorizationExpirationHandling);
+        authorizationOverLapSelectionHandler.setNextHandler(authorizationAssignHandler);
+        authorizationAssignHandler.setNextHandler(authorizationExpirationHandling);
         authorizationExpirationHandling.setNextHandler(authorizationRemainingHandling);
         authorizationTurningHandling.processRequest(invoiceRequest);
     }

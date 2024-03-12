@@ -16,10 +16,8 @@ public class AuthorizationRemainingHandling implements AuthorizationHandling {
 
     @Override
     public void processRequest(InvoiceRequest request) {
-        if (request.getPatientInformation().getAuthorizationSelection().getRemainingCounter() > 1) {
-            // Fill to Submit Claim
-        } else {
-            // throw exception
+        if (!(request.getPatientInformation().getAuthorizationSelection().getRemainingCounter() >= 1)) {
+            System.out.println("throw exception authorization credit is finished");
         }
 
     }

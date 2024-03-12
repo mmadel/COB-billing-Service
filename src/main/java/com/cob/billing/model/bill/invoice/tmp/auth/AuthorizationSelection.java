@@ -19,5 +19,6 @@ public class AuthorizationSelection {
 
     private Long authorizationId;
     private Integer remainingCounter;
+    private Long expiryDate;
     private String authorizationNumber;
 }

@@ -17,11 +17,11 @@ public class AuthorizationExpirationHandling implements AuthorizationHandling {
 
     @Override
     public void processRequest(InvoiceRequest request) {
-//        Long expirationDate = request.getPatientInformation().getAuthorizationSelection().getExpiryDate();
-//        if (expirationDate < new Date().getTime()) {
-//            nextAuthorizationHandling.processRequest(request);
-//        } else {
-//            //throw exception
-//        }
+        Long expirationDate = request.getPatientInformation().getAuthorizationSelection().getExpiryDate();
+        if (expirationDate > new Date().getTime()) {
+            nextAuthorizationHandling.processRequest(request);
+        } else {
+            System.out.println("throw exception expiration ");
+        }
     }
 }

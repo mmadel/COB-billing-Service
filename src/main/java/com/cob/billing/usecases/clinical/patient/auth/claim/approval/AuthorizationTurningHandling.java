@@ -21,7 +21,7 @@ public class AuthorizationTurningHandling implements AuthorizationHandling {
 
     @Override
     public void processRequest(InvoiceRequest request) {
-        if (request.getPatientInformation().getAuthorizationInformation().getTurning()) {
+        if (!request.getPatientInformation().getAuthorizationInformation().getTurning()) {
             nextAuthorizationHandling.processRequest(request);
         } else {
             PatientAuthorizationEntity patientAuthorizationEntity =

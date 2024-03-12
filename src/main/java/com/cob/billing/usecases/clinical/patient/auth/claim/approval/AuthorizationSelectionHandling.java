@@ -22,15 +22,15 @@ public class AuthorizationSelectionHandling implements AuthorizationHandling {
 
     @Override
     public void processRequest(InvoiceRequest invoiceRequest) {
-        List<Long[]> selectedAuthorizations = null;
+        List<Long[]> selectedAuthorizations = new ArrayList<>();
         List<Long[]> authorizations = invoiceRequest.getPatientInformation().getAuthorizationInformation().getAuthorizationsMetaData();
         if (authorizations.size() == 1) {
-            selectedAuthorizations = selectAuthorization(authorizations.stream().findFirst().get()
-                    , invoiceRequest.getInvoiceInsuranceCompanyInformation().getId(), invoiceRequest.getSelectedSessionServiceLine());
+            selectedAuthorizations.addAll(selectAuthorization(authorizations.stream().findFirst().get()
+                    , invoiceRequest.getInvoiceInsuranceCompanyInformation().getId(), invoiceRequest.getSelectedSessionServiceLine()));
         } else {
             for (int i = 0; i < authorizations.size(); i++) {
-                selectedAuthorizations = selectAuthorization(authorizations.get(i)
-                        , invoiceRequest.getInvoiceInsuranceCompanyInformation().getId(), invoiceRequest.getSelectedSessionServiceLine());
+                selectedAuthorizations.addAll(selectAuthorization(authorizations.get(i)
+                        , invoiceRequest.getInvoiceInsuranceCompanyInformation().getId(), invoiceRequest.getSelectedSessionServiceLine()));
             }
         }
         if (selectedAuthorizations != null && selectedAuthorizations.size() > 0) {
@@ -44,7 +44,7 @@ public class AuthorizationSelectionHandling implements AuthorizationHandling {
         List<PatientSession> sessions = serviceLines.stream().map(serviceLine -> serviceLine.getSessionId()).collect(Collectors.toList());
         for (int i = 0; i < sessions.size(); i++) {
             PatientSession patientSession = sessions.get(i);
-            if (patientSession.getServiceDate() >= authorizationData[0] && patientSession.getServiceDate() <= authorizationData[1] && authorizationData[3] == insuranceCompanyId) {
+            if (patientSession.getServiceDate() >= authorizationData[0] && patientSession.getServiceDate() <= authorizationData[1] && authorizationData[3].equals(insuranceCompanyId)) {
                 /*
                         [0] start date
                         [1] expiry date
