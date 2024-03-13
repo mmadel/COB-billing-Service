@@ -1,5 +1,6 @@
 package com.cob.billing.usecases.clinical.patient;
 
+import com.cob.billing.entity.clinical.patient.auth.PatientAuthorizationEntity;
 import com.cob.billing.model.bill.invoice.tmp.auth.AuthorizationInformation;
 import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.model.clinical.patient.auth.PatientAuthorization;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class AssignPatientAuthorizationUseCase {
@@ -27,6 +29,8 @@ public class AssignPatientAuthorizationUseCase {
                 Long[] authorizationMetaData = {authorizationStartDate, authorizationExpiryDate, authorizationId, insuranceCompanyId};
                 authorizationInformation.getAuthorizationsMetaData().add(authorizationMetaData);
                 authorizationInformation.setTurning(patient.getAuthorizationInformation().getTurning());
+                Optional<PatientAuthorization> selectedPatientAuthorization = patientAuthorizations.stream().filter(patientAuthorization -> patientAuthorization.getSelected()).findFirst();
+                authorizationInformation.setSelected(!selectedPatientAuthorization.isEmpty());
             }
             patient.setAuthorizationInformation(authorizationInformation);
         }
