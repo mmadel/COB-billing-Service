@@ -33,9 +33,7 @@ public class AuthorizationTurningHandling implements AuthorizationHandling {
                     .stream()
                     .filter(patientAuthorization -> patientAuthorization.getSelected())
                     .findFirst();
-            if (patientAuthorizationEntity.isEmpty())
-                throw new AuthorizationException(HttpStatus.CONFLICT, AuthorizationException.AUTH_SELECTION,new Object[]{""});
-            else {
+            if (!patientAuthorizationEntity.isEmpty()) {
                 PatientAuthorizationEntity patientAuthorization = patientAuthorizationEntity.get();
                 if (patientAuthorization.getAuthNumber() != null)
                     request.getPatientInformation().getAuthorizationSelection().setAuthorizationNumber(patientAuthorization.getAuthNumber());
