@@ -17,6 +17,7 @@ public class AuthorizationSelection {
      */
     List<Long[]> authorizations;
 
+    private Long authorizationId;
     private Integer remainingCounter;
     private Long expiryDate;
     private String authorizationNumber;

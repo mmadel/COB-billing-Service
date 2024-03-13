@@ -30,6 +30,7 @@ public class AuthorizationAssignHandler implements AuthorizationHandling {
             request.getPatientInformation().getAuthorizationSelection().setExpiryDate(expiryDate);
             request.getPatientInformation().getAuthorizationSelection().setRemainingCounter(patientAuthorization.getRemaining());
             request.getPatientInformation().getAuthorizationSelection().setAuthorizationNumber(patientAuthorization.getAuthNumber());
+            request.getPatientInformation().getAuthorizationSelection().setAuthorizationId(authorizationId);
         }
 
         nextAuthorizationHandling.processRequest(request);
