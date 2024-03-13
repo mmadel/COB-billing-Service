@@ -18,7 +18,7 @@ public class PatientAuthorizationCheckerUseCase {
     AuthorizationHandling authorizationSelectionHandling;
 
     @Autowired
-    @Qualifier("SelectionHandling")
+    @Qualifier("MultipleSessionSelectionHandler")
     AuthorizationHandling authorizationMultipleSessionSelectionHandler;
 
     @Autowired

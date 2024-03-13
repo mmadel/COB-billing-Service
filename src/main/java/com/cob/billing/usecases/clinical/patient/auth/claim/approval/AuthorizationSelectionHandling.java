@@ -1,20 +1,29 @@
 package com.cob.billing.usecases.clinical.patient.auth.claim.approval;
 
+import com.cob.billing.entity.clinical.patient.auth.PatientAuthorizationEntity;
 import com.cob.billing.exception.business.AuthorizationException;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
+import com.cob.billing.repositories.clinical.PatientAuthorizationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @Qualifier("SelectionHandling")
 public class AuthorizationSelectionHandling implements AuthorizationHandling {
+
     private AuthorizationHandling nextAuthorizationHandling;
+    private boolean isAuthorizationSelectedManually = false;
+
+    @Autowired
+    PatientAuthorizationRepository patientAuthorizationRepository;
 
     @Override
     public void setNextHandler(AuthorizationHandling nextHandler) {
@@ -23,21 +32,9 @@ public class AuthorizationSelectionHandling implements AuthorizationHandling {
 
     @Override
     public void processRequest(InvoiceRequest invoiceRequest) throws AuthorizationException {
-        List<Long[]> selectedAuthorizations = new ArrayList<>();
-        List<Long[]> authorizations = invoiceRequest.getPatientInformation().getAuthorizationInformation().getAuthorizationsMetaData();
-        if (authorizations.size() == 1) {
-            selectedAuthorizations.addAll(selectAuthorization(authorizations.stream().findFirst().get()
-                    , invoiceRequest.getInvoiceInsuranceCompanyInformation().getId(), invoiceRequest.getSelectedSessionServiceLine()));
-        } else {
-            for (int i = 0; i < authorizations.size(); i++) {
-                selectedAuthorizations.addAll(selectAuthorization(authorizations.get(i)
-                        , invoiceRequest.getInvoiceInsuranceCompanyInformation().getId(), invoiceRequest.getSelectedSessionServiceLine()));
-            }
-        }
-        if (selectedAuthorizations != null && selectedAuthorizations.size() > 0) {
-            invoiceRequest.getPatientInformation().getAuthorizationSelection().setAuthorizations(selectedAuthorizations);
-            nextAuthorizationHandling.processRequest(invoiceRequest);
-        }
+        catchSelectedAuthorization(invoiceRequest);
+        if (!isAuthorizationSelectedManually)
+            selectAuthorization(invoiceRequest);
     }
 
     private List<Long[]> selectAuthorization(Long[] authorizationData, Long insuranceCompanyId, List<SelectedSessionServiceLine> serviceLines) {
@@ -57,5 +54,37 @@ public class AuthorizationSelectionHandling implements AuthorizationHandling {
             }
         }
         return selectedAuthorizations;
+    }
+
+    private void catchSelectedAuthorization(InvoiceRequest request) {
+        Optional<PatientAuthorizationEntity> patientAuthorizationEntity;
+        patientAuthorizationEntity = patientAuthorizationRepository.findByPatient_Id(request.getPatientInformation().getId()).get()
+                .stream()
+                .filter(patientAuthorization -> patientAuthorization.getSelected())
+                .findFirst();
+        if (!patientAuthorizationEntity.isEmpty()) {
+            PatientAuthorizationEntity patientAuthorization = patientAuthorizationEntity.get();
+            request.getPatientInformation().getAuthorizationSelection().setAuthorizationNumber(patientAuthorization.getAuthNumber());
+            request.getPatientInformation().getAuthorizationSelection().setRemainingCounter(patientAuthorization.getRemaining());
+            isAuthorizationSelectedManually = true;
+        }
+    }
+
+    private void selectAuthorization(InvoiceRequest invoiceRequest) throws AuthorizationException {
+        List<Long[]> selectedAuthorizations = new ArrayList<>();
+        List<Long[]> authorizations = invoiceRequest.getPatientInformation().getAuthorizationInformation().getAuthorizationsMetaData();
+        if (authorizations.size() == 1)
+            selectedAuthorizations.addAll(selectAuthorization(authorizations.stream().findFirst().get()
+                    , invoiceRequest.getInvoiceInsuranceCompanyInformation().getId(), invoiceRequest.getSelectedSessionServiceLine()));
+        else
+            for (int i = 0; i < authorizations.size(); i++) {
+                selectedAuthorizations.addAll(selectAuthorization(authorizations.get(i)
+                        , invoiceRequest.getInvoiceInsuranceCompanyInformation().getId(), invoiceRequest.getSelectedSessionServiceLine()));
+            }
+
+        if (selectedAuthorizations != null && selectedAuthorizations.size() > 0) {
+            invoiceRequest.getPatientInformation().getAuthorizationSelection().setAuthorizations(selectedAuthorizations);
+            nextAuthorizationHandling.processRequest(invoiceRequest);
+        }
     }
 }

@@ -21,10 +21,11 @@ public class AuthorizationMultipleSessionSelectionHandler implements Authorizati
 
     @Override
     public void processRequest(InvoiceRequest request) throws AuthorizationException {
-        if (hasMultipleSessions(request.getPatientInformation().getAuthorizationSelection().getAuthorizations()))
-            System.out.println("//throw exception : Submitted service lines attached to multiple sessions : Please Select authorization");
-        else
-            nextAuthorizationHandling.processRequest(request);
+//        if (hasMultipleSessions(request.getPatientInformation().getAuthorizationSelection().getAuthorizations()))
+//            System.out.println("Submitted service lines attached to multiple sessions during the authorization timeslot : Please Select authorization");
+//        else
+//
+        nextAuthorizationHandling.processRequest(request);
 
     }
 
