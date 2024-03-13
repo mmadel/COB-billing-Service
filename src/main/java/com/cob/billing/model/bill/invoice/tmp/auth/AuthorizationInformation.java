@@ -17,4 +17,5 @@ public class AuthorizationInformation {
      */
     private List<Long[]> authorizationsMetaData = new ArrayList<>();
     private Boolean turning;
+    private Boolean selected;
 }

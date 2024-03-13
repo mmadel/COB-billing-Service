@@ -3,6 +3,7 @@ package com.cob.billing.usecases.clinical.patient.auth.claim.approval;
 import com.cob.billing.exception.business.AuthorizationException;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,7 +23,7 @@ public class AuthorizationExpirationHandling implements AuthorizationHandling {
         if (expirationDate > new Date().getTime()) {
             nextAuthorizationHandling.processRequest(request);
         } else {
-            System.out.println("throw exception expiration ");
+            throw new AuthorizationException(HttpStatus.CONFLICT, AuthorizationException.AUTH_EXPIRATION,new Object[]{""});
         }
     }
 }
