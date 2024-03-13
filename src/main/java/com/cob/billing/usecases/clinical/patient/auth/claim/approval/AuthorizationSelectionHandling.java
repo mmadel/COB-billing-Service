@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,7 +57,8 @@ public class AuthorizationSelectionHandling implements AuthorizationHandling {
         return selectedAuthorizations;
     }
 
-    private void pickSelectedAuthorization(InvoiceRequest request) {
+    private void pickSelectedAuthorization(InvoiceRequest request) throws AuthorizationException {
+        AtomicReference<Boolean> proceed = new AtomicReference<>(false);
         Optional<PatientAuthorizationEntity> patientAuthorizationEntity;
         patientAuthorizationEntity = patientAuthorizationRepository.findByPatient_Id(request.getPatientInformation().getId()).get()
                 .stream()
@@ -67,20 +69,52 @@ public class AuthorizationSelectionHandling implements AuthorizationHandling {
             request.getPatientInformation().getAuthorizationSelection().setAuthorizationNumber(patientAuthorization.getAuthNumber());
             request.getPatientInformation().getAuthorizationSelection().setRemainingCounter(patientAuthorization.getRemaining());
             request.getPatientInformation().getAuthorizationSelection().setExpiryDate(patientAuthorization.getExpireDateNumber());
+            request.getPatientInformation().getAuthorizationSelection().setAuthorizationId(patientAuthorization.getId());
+
+            List<PatientSession> sessions = request.getSelectedSessionServiceLine().stream().map(serviceLine -> serviceLine.getSessionId()).collect(Collectors.toList());
+            Long insuranceCompanyId = request.getInvoiceInsuranceCompanyInformation().getId();
+
+            sessions.forEach(patientSession -> {
+                Long dateOfService = patientSession.getServiceDate();
+                if (dateOfService >= patientAuthorization.getStartDateNumber()
+                        && dateOfService <= patientAuthorization.getExpireDateNumber()
+                        && insuranceCompanyId.equals(patientAuthorization.getPatientInsuranceCompany())) {
+                    proceed.set(true);
+                } else {
+                    proceed.set(false);
+                }
+            });
         }
+        if (proceed.get().booleanValue())
+            nextAuthorizationHandling.processRequest(request);
     }
 
     private void selectAuthorization(InvoiceRequest invoiceRequest) throws AuthorizationException {
         List<Long[]> selectedAuthorizations = new ArrayList<>();
         List<Long[]> authorizations = invoiceRequest.getPatientInformation().getAuthorizationInformation().getAuthorizationsMetaData();
+        Long insuranceCompanyId = invoiceRequest.getInvoiceInsuranceCompanyInformation().getId();
         if (authorizations.size() == 1)
             selectedAuthorizations.addAll(selectAuthorization(authorizations.stream().findFirst().get()
-                    , invoiceRequest.getInvoiceInsuranceCompanyInformation().getId(), invoiceRequest.getSelectedSessionServiceLine()));
-        else
-            for (int i = 0; i < authorizations.size(); i++) {
-                selectedAuthorizations.addAll(selectAuthorization(authorizations.get(i)
-                        , invoiceRequest.getInvoiceInsuranceCompanyInformation().getId(), invoiceRequest.getSelectedSessionServiceLine()));
-            }
+                    , insuranceCompanyId, invoiceRequest.getSelectedSessionServiceLine()));
+        else {
+            List<PatientSession> sessions = invoiceRequest.getSelectedSessionServiceLine().stream().map(serviceLine -> serviceLine.getSessionId()).collect(Collectors.toList());
+            sessions.forEach(patientSession -> {
+                for (int i = 0; i < authorizations.size(); i++) {
+                    Long[] authorizationData = authorizations.get(i);
+                    if (patientSession.getServiceDate() >= authorizationData[0] && patientSession.getServiceDate() <= authorizationData[1] && authorizationData[3].equals(insuranceCompanyId)) {
+                /*
+                        [0] start date
+                        [1] expiry date
+                        [2] authorization id
+                        [3] session id
+                 */
+                        Long[] authorization = {authorizationData[0], authorizationData[1], authorizationData[2], patientSession.getId()};
+                        selectedAuthorizations.add(authorization);
+                    }
+                }
+            });
+
+        }
 
         if (selectedAuthorizations != null && selectedAuthorizations.size() > 0) {
             invoiceRequest.getPatientInformation().getAuthorizationSelection().setAuthorizations(selectedAuthorizations);

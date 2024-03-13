@@ -26,7 +26,8 @@ public class CreatePatientAuthorizationUseCase {
         toBeCreated.setPatientInsuranceCompany(Long.parseLong(model.getInsCompany()[1]));
         toBeCreated.setPatientInsuranceCompanyName(model.getInsCompany()[0]);
         toBeCreated.setPatient(patient);
-        toBeCreated.setSelected(false);
+        if (!(model.getId() != null))
+            toBeCreated.setSelected(false);
         return patientAuthorizationRepository.save(toBeCreated).getId();
     }
 }

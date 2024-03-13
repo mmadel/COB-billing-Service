@@ -26,7 +26,7 @@ public class AuthorizationOverLapSelectionHandler implements AuthorizationHandli
             else {
                 nextAuthorizationHandling.processRequest(request);
             }
-
+        nextAuthorizationHandling.processRequest(request);
     }
 
     private Boolean isAuthorizationsOverLapped(List<Long[]> authorizations) {
