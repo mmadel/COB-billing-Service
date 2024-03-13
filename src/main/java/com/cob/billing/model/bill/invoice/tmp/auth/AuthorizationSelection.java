@@ -21,4 +21,5 @@ public class AuthorizationSelection {
     private Integer remainingCounter;
     private Long expiryDate;
     private String authorizationNumber;
+    private boolean isSelected;
 }

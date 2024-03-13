@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 public class AuthorizationSelectionHandling implements AuthorizationHandling {
 
     private AuthorizationHandling nextAuthorizationHandling;
-    private boolean isAuthorizationSelectedManually = false;
 
     @Autowired
     PatientAuthorizationRepository patientAuthorizationRepository;
@@ -33,7 +32,7 @@ public class AuthorizationSelectionHandling implements AuthorizationHandling {
     @Override
     public void processRequest(InvoiceRequest invoiceRequest) throws AuthorizationException {
         catchSelectedAuthorization(invoiceRequest);
-        if (!isAuthorizationSelectedManually)
+        if (!invoiceRequest.getPatientInformation().getAuthorizationSelection().isSelected())
             selectAuthorization(invoiceRequest);
     }
 
@@ -66,8 +65,9 @@ public class AuthorizationSelectionHandling implements AuthorizationHandling {
             PatientAuthorizationEntity patientAuthorization = patientAuthorizationEntity.get();
             request.getPatientInformation().getAuthorizationSelection().setAuthorizationNumber(patientAuthorization.getAuthNumber());
             request.getPatientInformation().getAuthorizationSelection().setRemainingCounter(patientAuthorization.getRemaining());
-            isAuthorizationSelectedManually = true;
-        }
+            request.getPatientInformation().getAuthorizationSelection().setSelected(true);
+        } else
+            request.getPatientInformation().getAuthorizationSelection().setSelected(false);
     }
 
     private void selectAuthorization(InvoiceRequest invoiceRequest) throws AuthorizationException {
