@@ -66,7 +66,7 @@ public class AuthorizationSelectionHandling implements AuthorizationHandling {
             PatientAuthorizationEntity patientAuthorization = patientAuthorizationEntity.get();
             request.getPatientInformation().getAuthorizationSelection().setAuthorizationNumber(patientAuthorization.getAuthNumber());
             request.getPatientInformation().getAuthorizationSelection().setRemainingCounter(patientAuthorization.getRemaining());
-            request.getPatientInformation().getAuthorizationSelection().setSelected(true);
+            request.getPatientInformation().getAuthorizationSelection().setExpiryDate(patientAuthorization.getExpireDateNumber());
         }
     }
 

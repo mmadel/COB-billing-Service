@@ -29,6 +29,7 @@ public class AuthorizationAssignHandler implements AuthorizationHandling {
             PatientAuthorizationEntity patientAuthorization = patientAuthorizationRepository.findById(authorizationId).get();
             request.getPatientInformation().getAuthorizationSelection().setExpiryDate(expiryDate);
             request.getPatientInformation().getAuthorizationSelection().setRemainingCounter(patientAuthorization.getRemaining());
+            request.getPatientInformation().getAuthorizationSelection().setAuthorizationNumber(patientAuthorization.getAuthNumber());
         }
 
         nextAuthorizationHandling.processRequest(request);
