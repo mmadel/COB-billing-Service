@@ -22,7 +22,7 @@ public class ApplicationConfiguration {
     public ResourceBundleMessageSource messageSource() {
 
         ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-        source.setBasenames("exception");
+        source.setBasenames("message/exception");
         source.setDefaultEncoding("UTF-8");
         source.setAlwaysUseMessageFormat(true);
 

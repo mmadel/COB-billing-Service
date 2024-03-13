@@ -1,5 +1,6 @@
 package com.cob.billing.usecases.clinical.patient;
 
+import com.cob.billing.exception.business.AuthorizationException;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.cob.billing.usecases.clinical.patient.auth.claim.approval.AuthorizationHandling;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class PatientAuthorizationCheckerUseCase {
     @Qualifier("RemainingHandling")
     AuthorizationHandling authorizationRemainingHandling;
 
-    public void check(InvoiceRequest invoiceRequest) throws IllegalAccessException {
+    public void check(InvoiceRequest invoiceRequest) throws AuthorizationException {
         authorizationTurningHandling.setNextHandler(authorizationSelectionHandling);
         authorizationSelectionHandling.setNextHandler(authorizationMultipleSessionSelectionHandler);
         authorizationMultipleSessionSelectionHandler.setNextHandler(authorizationOverLapSelectionHandler);

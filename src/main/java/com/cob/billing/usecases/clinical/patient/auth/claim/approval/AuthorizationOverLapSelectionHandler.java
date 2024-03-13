@@ -1,5 +1,6 @@
 package com.cob.billing.usecases.clinical.patient.auth.claim.approval;
 
+import com.cob.billing.exception.business.AuthorizationException;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class AuthorizationOverLapSelectionHandler implements AuthorizationHandli
     }
 
     @Override
-    public void processRequest(InvoiceRequest request) {
+    public void processRequest(InvoiceRequest request) throws AuthorizationException {
         if (isAuthorizationsOverLapped(request.getPatientInformation().getAuthorizationSelection().getAuthorizations()))
             System.out.println("//throw exception : the patient authorizations is overlapped: Please Select authorization");
         else {

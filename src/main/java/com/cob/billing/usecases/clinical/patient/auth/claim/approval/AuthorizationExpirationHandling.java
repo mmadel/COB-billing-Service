@@ -1,5 +1,6 @@
 package com.cob.billing.usecases.clinical.patient.auth.claim.approval;
 
+import com.cob.billing.exception.business.AuthorizationException;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class AuthorizationExpirationHandling implements AuthorizationHandling {
     }
 
     @Override
-    public void processRequest(InvoiceRequest request) {
+    public void processRequest(InvoiceRequest request) throws AuthorizationException {
         Long expirationDate = request.getPatientInformation().getAuthorizationSelection().getExpiryDate();
         if (expirationDate > new Date().getTime()) {
             nextAuthorizationHandling.processRequest(request);

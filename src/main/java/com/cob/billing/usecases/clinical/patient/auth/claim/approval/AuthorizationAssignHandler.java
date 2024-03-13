@@ -1,6 +1,7 @@
 package com.cob.billing.usecases.clinical.patient.auth.claim.approval;
 
 import com.cob.billing.entity.clinical.patient.auth.PatientAuthorizationEntity;
+import com.cob.billing.exception.business.AuthorizationException;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.cob.billing.repositories.clinical.PatientAuthorizationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class AuthorizationAssignHandler implements AuthorizationHandling {
     }
 
     @Override
-    public void processRequest(InvoiceRequest request) {
+    public void processRequest(InvoiceRequest request) throws AuthorizationException {
         Long[] selectedAuthorization = request.getPatientInformation().getAuthorizationSelection().getAuthorizations().stream().findFirst().get();
         Long expiryDate = selectedAuthorization[1];
         Long authorizationId = selectedAuthorization[2];

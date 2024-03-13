@@ -1,5 +1,6 @@
 package com.cob.billing.usecases.clinical.patient.auth.claim.approval;
 
+import com.cob.billing.exception.business.AuthorizationException;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
@@ -21,7 +22,7 @@ public class AuthorizationSelectionHandling implements AuthorizationHandling {
     }
 
     @Override
-    public void processRequest(InvoiceRequest invoiceRequest) {
+    public void processRequest(InvoiceRequest invoiceRequest) throws AuthorizationException {
         List<Long[]> selectedAuthorizations = new ArrayList<>();
         List<Long[]> authorizations = invoiceRequest.getPatientInformation().getAuthorizationInformation().getAuthorizationsMetaData();
         if (authorizations.size() == 1) {
