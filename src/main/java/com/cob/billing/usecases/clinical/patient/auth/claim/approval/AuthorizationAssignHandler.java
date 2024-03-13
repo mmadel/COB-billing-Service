@@ -22,7 +22,7 @@ public class AuthorizationAssignHandler implements AuthorizationHandling {
 
     @Override
     public void processRequest(InvoiceRequest request) throws AuthorizationException {
-        if (!request.getPatientInformation().getAuthorizationSelection().isSelected()) {
+        if (!request.getPatientInformation().getAuthorizationInformation().getSelected()) {
             Long[] selectedAuthorization = request.getPatientInformation().getAuthorizationSelection().getAuthorizations().stream().findFirst().get();
             Long expiryDate = selectedAuthorization[1];
             Long authorizationId = selectedAuthorization[2];

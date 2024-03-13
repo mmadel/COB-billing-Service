@@ -31,8 +31,9 @@ public class AuthorizationSelectionHandling implements AuthorizationHandling {
 
     @Override
     public void processRequest(InvoiceRequest invoiceRequest) throws AuthorizationException {
-        catchSelectedAuthorization(invoiceRequest);
-        if (!invoiceRequest.getPatientInformation().getAuthorizationSelection().isSelected())
+        if (invoiceRequest.getPatientInformation().getAuthorizationInformation().getSelected())
+            pickSelectedAuthorization(invoiceRequest);
+        else
             selectAuthorization(invoiceRequest);
     }
 
@@ -55,7 +56,7 @@ public class AuthorizationSelectionHandling implements AuthorizationHandling {
         return selectedAuthorizations;
     }
 
-    private void catchSelectedAuthorization(InvoiceRequest request) {
+    private void pickSelectedAuthorization(InvoiceRequest request) {
         Optional<PatientAuthorizationEntity> patientAuthorizationEntity;
         patientAuthorizationEntity = patientAuthorizationRepository.findByPatient_Id(request.getPatientInformation().getId()).get()
                 .stream()
@@ -66,8 +67,7 @@ public class AuthorizationSelectionHandling implements AuthorizationHandling {
             request.getPatientInformation().getAuthorizationSelection().setAuthorizationNumber(patientAuthorization.getAuthNumber());
             request.getPatientInformation().getAuthorizationSelection().setRemainingCounter(patientAuthorization.getRemaining());
             request.getPatientInformation().getAuthorizationSelection().setSelected(true);
-        } else
-            request.getPatientInformation().getAuthorizationSelection().setSelected(false);
+        }
     }
 
     private void selectAuthorization(InvoiceRequest invoiceRequest) throws AuthorizationException {

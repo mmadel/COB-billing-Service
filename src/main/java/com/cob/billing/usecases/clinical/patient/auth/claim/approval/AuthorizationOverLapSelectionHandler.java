@@ -20,9 +20,9 @@ public class AuthorizationOverLapSelectionHandler implements AuthorizationHandli
 
     @Override
     public void processRequest(InvoiceRequest request) throws AuthorizationException {
-        if (!request.getPatientInformation().getAuthorizationSelection().isSelected())
+        if (!request.getPatientInformation().getAuthorizationInformation().getSelected())
             if (isAuthorizationsOverLapped(request.getPatientInformation().getAuthorizationSelection().getAuthorizations()))
-                throw new AuthorizationException(HttpStatus.CONFLICT, AuthorizationException.AUTH_OVERLAP,new Object[]{""});
+                throw new AuthorizationException(HttpStatus.CONFLICT, AuthorizationException.AUTH_OVERLAP, new Object[]{""});
             else {
                 nextAuthorizationHandling.processRequest(request);
             }
