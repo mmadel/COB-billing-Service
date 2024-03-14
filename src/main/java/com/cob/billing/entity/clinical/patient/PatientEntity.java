@@ -70,8 +70,8 @@ public class PatientEntity {
     @Column(name = "external_id")
     private String externalId;
 
-    @Column(name = "auth_turn_off")
-    private Boolean authTurnOff;
+    @Column(name = "authorization_watching")
+    private Boolean authorizationWatching;
 
 
 }

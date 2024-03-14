@@ -17,14 +17,14 @@ public class SelectPatientAuthorizationUseCase {
     PatientAuthorizationRepository patientAuthorizationRepository;
 
     public void select(Long patientId, Long authorizationId) {
-        patientAuthorizationRepository.assignAuthorizationToPatient(patientId, authorizationId);
-        List<PatientAuthorizationEntity> filteredList = patientAuthorizationRepository.findByPatient_Id(patientId).get()
-                .stream()
-                .filter(patientAuthorizationEntity -> patientAuthorizationEntity.getId() != authorizationId)
-                .collect(Collectors.toList());
-        filteredList.forEach(patientAuthorizationEntity -> {
-            patientAuthorizationRepository.unAssignAuthorizationToPatient(patientId, patientAuthorizationEntity.getId());
-        });
+//        patientAuthorizationRepository.assignAuthorizationToPatient(patientId, authorizationId);
+//        List<PatientAuthorizationEntity> filteredList = patientAuthorizationRepository.findByPatient_Id(patientId).get()
+//                .stream()
+//                .filter(patientAuthorizationEntity -> patientAuthorizationEntity.getId() != authorizationId)
+//                .collect(Collectors.toList());
+//        filteredList.forEach(patientAuthorizationEntity -> {
+//            patientAuthorizationRepository.unAssignAuthorizationToPatient(patientId, patientAuthorizationEntity.getId());
+//        });
 
     }
 }

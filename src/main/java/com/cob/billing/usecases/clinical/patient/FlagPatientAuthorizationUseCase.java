@@ -18,19 +18,19 @@ public class FlagPatientAuthorizationUseCase {
     PatientAuthorizationRepository patientAuthorizationRepository;
 
     public void turnOff(Long patientId) {
-        patientRepository.turnOffAuthorization(patientId);
+        //patientRepository.turnOffAuthorization(patientId);
         removeSelectedAuthorization(patientId);
     }
 
     public void turnOn(Long patientId) {
-        patientRepository.turnOnAuthorization(patientId);
+        //patientRepository.turnOnAuthorization(patientId);
     }
 
     private void removeSelectedAuthorization(Long patientId) {
         List<PatientAuthorizationEntity> patientAuthorizationEntities = patientAuthorizationRepository.findByPatient_Id(patientId).get();
-        patientAuthorizationEntities.stream()
-                .filter(patientAuthorizationEntity -> patientAuthorizationEntity.getSelected())
-                .forEach(patientAuthorizationEntity -> patientAuthorizationEntity.setSelected(false));
+        //patientAuthorizationEntities.stream()
+                //.filter(patientAuthorizationEntity -> patientAuthorizationEntity.getSelected())
+                //.forEach(patientAuthorizationEntity -> patientAuthorizationEntity.setSelected(false));
         patientAuthorizationRepository.saveAll(patientAuthorizationEntities);
     }
 }

@@ -69,7 +69,7 @@ public class MapPatientUseCase {
 
     private AuthorizationInformation findPatientAuthorization(PatientEntity entity) {
         AuthorizationInformation authorizationInformation = new AuthorizationInformation();
-        authorizationInformation.setTurning(entity.getAuthTurnOff());
+        //authorizationInformation.setTurning(entity.getAuthTurnOff());
         return authorizationInformation;
     }
 }

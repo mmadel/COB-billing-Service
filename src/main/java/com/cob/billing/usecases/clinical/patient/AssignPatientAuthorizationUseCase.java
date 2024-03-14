@@ -29,8 +29,8 @@ public class AssignPatientAuthorizationUseCase {
                 Long[] authorizationMetaData = {authorizationStartDate, authorizationExpiryDate, authorizationId, insuranceCompanyId};
                 authorizationInformation.getAuthorizationsMetaData().add(authorizationMetaData);
                 authorizationInformation.setTurning(patient.getAuthorizationInformation().getTurning());
-                Optional<PatientAuthorization> selectedPatientAuthorization = patientAuthorizations.stream().filter(patientAuthorization -> patientAuthorization.getSelected()).findFirst();
-                authorizationInformation.setSelected(!selectedPatientAuthorization.isEmpty());
+                //Optional<PatientAuthorization> selectedPatientAuthorization = patientAuthorizations.stream().filter(patientAuthorization -> patientAuthorization.getSelected()).findFirst();
+                //authorizationInformation.setSelected(!selectedPatientAuthorization.isEmpty());
             }
             patient.setAuthorizationInformation(authorizationInformation);
         }

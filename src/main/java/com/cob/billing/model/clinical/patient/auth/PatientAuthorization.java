@@ -16,5 +16,4 @@ public class PatientAuthorization {
     private Integer remaining;
     private Long patientId;
     private Boolean isExpired;
-    private Boolean selected;
 }

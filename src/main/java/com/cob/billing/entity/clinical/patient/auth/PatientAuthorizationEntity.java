@@ -34,6 +34,5 @@ public class PatientAuthorizationEntity {
     @OneToOne
     @JoinColumn(name = "patient_id")
     private PatientEntity patient;
-    @Column(name = "selected")
-    private Boolean selected;
+
 }

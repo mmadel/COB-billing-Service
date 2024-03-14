@@ -62,7 +62,6 @@ public class AuthorizationSelectionHandling implements AuthorizationHandling {
         Optional<PatientAuthorizationEntity> patientAuthorizationEntity;
         patientAuthorizationEntity = patientAuthorizationRepository.findByPatient_Id(request.getPatientInformation().getId()).get()
                 .stream()
-                .filter(patientAuthorization -> patientAuthorization.getSelected())
                 .findFirst();
         if (!patientAuthorizationEntity.isEmpty()) {
             PatientAuthorizationEntity patientAuthorization = patientAuthorizationEntity.get();
