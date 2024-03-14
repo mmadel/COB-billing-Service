@@ -5,6 +5,7 @@ import com.cob.billing.entity.clinical.referring.provider.ReferringProviderEntit
 import com.cob.billing.enums.PatientSessionStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -61,4 +62,8 @@ public interface PatientSessionRepository extends PagingAndSortingRepository<Pat
             , @Param("dateTo") Long dateTo);
 
     Optional<List<PatientSessionEntity>> findByPatient_Id(Long patientId);
+
+    @Modifying
+    @Query("update PatientSessionEntity ps set ps.patientAuthorization.id = :authId where ps.id = :sessionId")
+    void assignAuthorization(@Param("sessionId") Long sessionId, @Param("authId") Long authId);
 }

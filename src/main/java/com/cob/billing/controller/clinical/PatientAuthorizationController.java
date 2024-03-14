@@ -51,9 +51,9 @@ public class PatientAuthorizationController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PutMapping("/select/patient/{patientId}/authorization/{authid}")
-    public ResponseEntity<Object> selectAuthorization(@PathVariable Long patientId, @PathVariable Long authid) {
-        selectPatientAuthorizationUseCase.select(patientId, authid);
+    @PutMapping("/select/session/{sessionId}/authorization/{authid}")
+    public ResponseEntity<Object> selectAuthorization(@PathVariable Long sessionId, @PathVariable Long authid) {
+        selectPatientAuthorizationUseCase.select(sessionId, authid);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

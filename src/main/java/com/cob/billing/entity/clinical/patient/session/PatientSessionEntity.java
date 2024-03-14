@@ -3,6 +3,7 @@ package com.cob.billing.entity.clinical.patient.session;
 import com.cob.billing.entity.admin.ClinicEntity;
 import com.cob.billing.entity.clinical.insurance.compnay.InsuranceCompanyExternalEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
+import com.cob.billing.entity.clinical.patient.auth.PatientAuthorizationEntity;
 import com.cob.billing.enums.PatientSessionStatus;
 import com.cob.billing.model.clinical.patient.CaseDiagnosis;
 import com.cob.billing.model.clinical.patient.session.ClinicInfo;
@@ -49,8 +50,6 @@ public class PatientSessionEntity {
     private Long serviceStartTime;
     @Column(name = "service_End_time")
     private Long serviceEndTime;
-    @Column(name = "authorization")
-    private String authorization;
     @Column(name = "place_of_code")
     private String placeOfCode;
     @Column(name = "case_diagnosis", columnDefinition = "json")
@@ -66,6 +65,9 @@ public class PatientSessionEntity {
     private PatientSessionStatus status;
     @Column(name = "case_title")
     private String caseTitle;
+    @OneToOne
+    @JoinColumn(name = "authorization_id", referencedColumnName = "id")
+    private PatientAuthorizationEntity patientAuthorization;
 
     public void addServiceCode(PatientSessionServiceLineEntity entity) {
         this.serviceCodes.add(entity);
@@ -83,4 +85,5 @@ public class PatientSessionEntity {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }
