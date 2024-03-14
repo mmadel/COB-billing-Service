@@ -18,12 +18,12 @@ public class FlagPatientAuthorizationUseCase {
     PatientAuthorizationRepository patientAuthorizationRepository;
 
     public void turnOff(Long patientId) {
-        //patientRepository.turnOffAuthorization(patientId);
+        patientRepository.turnOffAuthorization(patientId);
         removeSelectedAuthorization(patientId);
     }
 
     public void turnOn(Long patientId) {
-        //patientRepository.turnOnAuthorization(patientId);
+        patientRepository.turnOnAuthorization(patientId);
     }
 
     private void removeSelectedAuthorization(Long patientId) {
