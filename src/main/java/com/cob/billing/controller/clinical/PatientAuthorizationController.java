@@ -42,7 +42,11 @@ public class PatientAuthorizationController {
 
     @GetMapping("/find/patientId/{patientId}")
     public ResponseEntity<Object> findAll(@PathVariable Long patientId) {
-        return new ResponseEntity(fetchPatientAuthorizationUseCase.find(patientId), HttpStatus.OK);
+        return new ResponseEntity(fetchPatientAuthorizationUseCase.find(patientId , null), HttpStatus.OK);
+    }
+    @GetMapping("/find/patientId/{patientId}/session/{sessionId}")
+    public ResponseEntity<Object> findBySession(@PathVariable Long patientId, @PathVariable Long sessionId) {
+        return new ResponseEntity(fetchPatientAuthorizationUseCase.find(patientId, sessionId), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/auth/{authid}")
@@ -51,7 +55,7 @@ public class PatientAuthorizationController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PutMapping("/select/session/{sessionId}/authorization/{authid}")
+    @PutMapping("/assign/session/{sessionId}/authorization/{authid}")
     public ResponseEntity<Object> selectAuthorization(@PathVariable Long sessionId, @PathVariable Long authid) {
         selectPatientAuthorizationUseCase.select(sessionId, authid);
         return new ResponseEntity(HttpStatus.OK);

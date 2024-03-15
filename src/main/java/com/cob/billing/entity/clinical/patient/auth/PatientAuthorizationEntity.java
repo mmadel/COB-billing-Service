@@ -1,6 +1,7 @@
 package com.cob.billing.entity.clinical.patient.auth;
 
 import com.cob.billing.entity.clinical.patient.PatientEntity;
+import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,5 +35,7 @@ public class PatientAuthorizationEntity {
     @OneToOne
     @JoinColumn(name = "patient_id")
     private PatientEntity patient;
+    @OneToOne(mappedBy = "patientAuthorization")
+    private PatientSessionEntity session;
 
 }

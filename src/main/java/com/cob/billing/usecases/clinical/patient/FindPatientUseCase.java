@@ -45,7 +45,7 @@ public class FindPatientUseCase {
     public Patient findById(Long patientId) {
         PatientEntity entity = patientRepository.findById(patientId).get();
         Patient patient =  mapPatientUseCase.map(entity);
-        assignPatientAuthorizationUseCase.find(patient);
+        //assignPatientAuthorizationUseCase.find(patient);
         return patient;
     }
 }
