@@ -48,7 +48,6 @@ public class MapPatientUseCase {
         List<PatientInsurance> patientInsurances = mapPatientInsurancesUseCase.map(patientInsuranceEntities);
         patient.setPatientInsurances(patientInsurances);
         patient.setSessions(findPatientSession(entity.getId()));
-        patient.setAuthorizationInformation(findPatientAuthorization(entity));
         return patient;
     }
 
@@ -65,11 +64,5 @@ public class MapPatientUseCase {
         return patientSessionEntities.stream()
                 .map(patientSessionEntity -> mapper.map(patientSessionEntity, PatientSession.class))
                 .collect(Collectors.toList());
-    }
-
-    private AuthorizationInformation findPatientAuthorization(PatientEntity entity) {
-        AuthorizationInformation authorizationInformation = new AuthorizationInformation();
-        //authorizationInformation.setTurning(entity.getAuthTurnOff());
-        return authorizationInformation;
     }
 }

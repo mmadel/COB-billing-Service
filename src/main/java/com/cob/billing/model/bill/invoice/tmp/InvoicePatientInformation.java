@@ -27,4 +27,5 @@ public class InvoicePatientInformation {
     private String box26;
     private ReferringProvider referringProvider;
     private String insuredPrimaryId;
+    private Boolean authorizationWatching;
 }

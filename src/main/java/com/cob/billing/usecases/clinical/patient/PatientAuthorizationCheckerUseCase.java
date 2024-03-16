@@ -15,7 +15,7 @@ public class PatientAuthorizationCheckerUseCase {
     AuthorizationSessionSubmission authorizationSessionSubmission;
 
     public void check(InvoiceRequest invoiceRequest) throws AuthorizationException {
-        authorizationWatching.watch();
+        authorizationWatching.watch(invoiceRequest);
         authorizationSessionSubmission.submit();
     }
 }

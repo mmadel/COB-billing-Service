@@ -26,4 +26,5 @@ public class PatientSession {
     private List<ServiceLine> serviceCodes;
     private Boolean isCasesAttached;
     private Boolean isCorrectSession;
+    private String authorizationNumber;
 }
