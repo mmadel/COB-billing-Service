@@ -15,19 +15,21 @@ public class AuthorizationSessionSubmission {
     @Autowired
     PatientSessionRepository patientSessionRepository;
     @Autowired
-    ExecuteSessionAuthorizationValidation sessionAuthorizationValidation;
+    ExecuteSessionAuthorizationValidation executeSessionAuthorizationValidation;
     @Autowired
     ModelMapper mapper;
+
     public void submit(SubmissionSession submissionSession) throws AuthorizationException {
-        PatientSessionEntity session =  patientSessionRepository.findById(submissionSession.getPatientSession().getId()).get();
-        if(session.getPatientAuthorization() != null){
+        PatientSessionEntity session = patientSessionRepository.findById(submissionSession.getPatientSession().getId()).get();
+        if (session.getPatientAuthorization() != null) {
             System.out.println("session attached, call validation COR");
-            sessionAuthorizationValidation.check(submissionSession,authorizationData(session.getPatientAuthorization()));
-        }else{
+            executeSessionAuthorizationValidation.execute(submissionSession, authorizationData(session.getPatientAuthorization()));
+        } else {
             System.out.println("session not attached, call selection COR");
         }
     }
-    private Long[] authorizationData(PatientAuthorizationEntity patientAuthorization){
-        return new Long[] {patientAuthorization.getStartDateNumber(),patientAuthorization.getExpireDateNumber(),patientAuthorization.getRemaining().longValue(),patientAuthorization.getPatientInsuranceCompany()};
+
+    private Long[] authorizationData(PatientAuthorizationEntity patientAuthorization) {
+        return new Long[]{patientAuthorization.getStartDateNumber(), patientAuthorization.getExpireDateNumber(), patientAuthorization.getRemaining().longValue(), patientAuthorization.getPatientInsuranceCompany()};
     }
 }
