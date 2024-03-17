@@ -16,10 +16,14 @@ import java.util.stream.Collectors;
 public class AuthorizationWatching {
     @Autowired
     PatientSessionRepository patientSessionRepository;
+    @Autowired
+    AuthorizationSessionSubmission authorizationSessionSubmission;
 
     public void watch(InvoiceRequest invoiceRequest) {
         if (invoiceRequest.getPatientInformation().getAuthorizationWatching())
-            System.out.println("Session Authorization submission");
+            invoiceRequest.getSelectedSessionServiceLine().forEach(serviceLine -> {
+                authorizationSessionSubmission.submit(serviceLine.getSessionId());
+            });
         else {
             List<Long> sessionIds = getSessionIds(invoiceRequest.getSelectedSessionServiceLine());
 
