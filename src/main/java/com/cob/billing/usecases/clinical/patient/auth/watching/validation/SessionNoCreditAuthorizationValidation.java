@@ -13,7 +13,7 @@ public class SessionNoCreditAuthorizationValidation implements SessionAuthorizat
     }
 
     @Override
-    public void processRequest(PatientSession patientSession) throws AuthorizationException {
+    public void processRequest(PatientSession patientSession,Long[] authorizationData) throws AuthorizationException {
 
     }
 }

@@ -6,5 +6,5 @@ import com.cob.billing.model.clinical.patient.session.PatientSession;
 public interface SessionAuthorizationValidation {
     void setNextValidation(SessionAuthorizationValidation nextValidation);
 
-    void processRequest(PatientSession patientSession) throws AuthorizationException;
+    void processRequest(PatientSession patientSession , Long[] authorizationData) throws AuthorizationException;
 }

@@ -14,9 +14,9 @@ public class ExecuteSessionAuthorizationValidation {
     @Autowired
     SessionInvalidInsuranceCompanyValidation sessionInvalidInsuranceCompanyValidation;
 
-    public void check(PatientSession patientSession) throws AuthorizationException {
+    public void check(PatientSession patientSession, Long[] authorizationData) throws AuthorizationException {
         sessionOutOfRangeAuthorizationValidation.setNextValidation(sessionNoCreditAuthorizationValidation);
         sessionNoCreditAuthorizationValidation.setNextValidation(sessionInvalidInsuranceCompanyValidation);
-        sessionOutOfRangeAuthorizationValidation.processRequest(patientSession);
+        sessionOutOfRangeAuthorizationValidation.processRequest(patientSession, authorizationData);
     }
 }
