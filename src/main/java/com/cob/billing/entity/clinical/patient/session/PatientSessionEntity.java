@@ -65,7 +65,7 @@ public class PatientSessionEntity {
     private PatientSessionStatus status;
     @Column(name = "case_title")
     private String caseTitle;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "authorization_id", referencedColumnName = "id")
     private PatientAuthorizationEntity patientAuthorization;
 

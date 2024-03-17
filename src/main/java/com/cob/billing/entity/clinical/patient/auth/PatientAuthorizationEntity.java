@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "patient_authorization")
@@ -35,7 +36,7 @@ public class PatientAuthorizationEntity {
     @OneToOne
     @JoinColumn(name = "patient_id")
     private PatientEntity patient;
-    @OneToOne(mappedBy = "patientAuthorization")
-    private PatientSessionEntity session;
+    @OneToMany(mappedBy = "patientAuthorization")
+    private List<PatientSessionEntity> session;
 
 }

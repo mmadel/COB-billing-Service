@@ -1,5 +1,6 @@
 package com.cob.billing.usecases.clinical.patient.auth;
 
+import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.model.clinical.patient.auth.PatientAuthorization;
 import com.cob.billing.repositories.clinical.PatientAuthorizationRepository;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -28,9 +30,10 @@ public class FetchPatientAuthorizationUseCase {
                     String[] insCompany = {patientAuthorizationEntity.getPatientInsuranceCompany().toString(), patientAuthorizationEntity.getPatientInsuranceCompanyName()};
                     patientAuthorization.setInsCompany(insCompany);
                     patientAuthorization.setIsExpired(checkExpiration(patientAuthorizationEntity.getExpireDateNumber()));
-                    if (sessionId != null)
-                        patientAuthorization.setSelected(patientAuthorizationEntity.getSession().getId().equals(sessionId));
-
+                    if (sessionId != null && patientAuthorizationEntity.getSession()!= null){
+                        Optional<PatientSessionEntity>   patientSessionEntityOptional =  patientAuthorizationEntity.getSession().stream().filter(patientSessionEntity -> patientSessionEntity.getId().equals(sessionId)).findFirst();
+                        patientAuthorization.setSelected(patientSessionEntityOptional.isPresent());
+                    }
                     return patientAuthorization;
                 })
                 .collect(Collectors.toList());
