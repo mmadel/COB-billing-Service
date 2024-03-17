@@ -2,6 +2,7 @@ package com.cob.billing.usecases.clinical.patient.auth.watching;
 
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.exception.business.AuthorizationException;
+import com.cob.billing.model.bill.auth.SubmissionSession;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
@@ -23,10 +24,13 @@ public class AuthorizationWatching {
     public void watch(InvoiceRequest invoiceRequest) throws AuthorizationException {
         if (invoiceRequest.getPatientInformation().getAuthorizationWatching()) {
             for (SelectedSessionServiceLine serviceLine : invoiceRequest.getSelectedSessionServiceLine()) {
-                authorizationSessionSubmission.submit(serviceLine.getSessionId());
+                ;
+                authorizationSessionSubmission.submit(SubmissionSession.builder()
+                        .patientSession(serviceLine.getSessionId())
+                        .insuranceCompanyId(invoiceRequest.getInvoiceInsuranceCompanyInformation().getId())
+                        .build());
             }
-        }
-        else {
+        } else {
             List<Long> sessionIds = getSessionIds(invoiceRequest.getSelectedSessionServiceLine());
 
             Map<Long, String> mapping = mapSessionToAuthorizationNumber(sessionIds);

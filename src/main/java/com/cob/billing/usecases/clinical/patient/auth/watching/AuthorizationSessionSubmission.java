@@ -3,7 +3,7 @@ package com.cob.billing.usecases.clinical.patient.auth.watching;
 import com.cob.billing.entity.clinical.patient.auth.PatientAuthorizationEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.exception.business.AuthorizationException;
-import com.cob.billing.model.clinical.patient.session.PatientSession;
+import com.cob.billing.model.bill.auth.SubmissionSession;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import com.cob.billing.usecases.clinical.patient.auth.watching.validation.ExecuteSessionAuthorizationValidation;
 import org.modelmapper.ModelMapper;
@@ -18,11 +18,11 @@ public class AuthorizationSessionSubmission {
     ExecuteSessionAuthorizationValidation sessionAuthorizationValidation;
     @Autowired
     ModelMapper mapper;
-    public void submit(PatientSession patientSession) throws AuthorizationException {
-        PatientSessionEntity session =  patientSessionRepository.findById(patientSession.getId()).get();
+    public void submit(SubmissionSession submissionSession) throws AuthorizationException {
+        PatientSessionEntity session =  patientSessionRepository.findById(submissionSession.getPatientSession().getId()).get();
         if(session.getPatientAuthorization() != null){
             System.out.println("session attached, call validation COR");
-            sessionAuthorizationValidation.check(patientSession,authorizationData(session.getPatientAuthorization()));
+            sessionAuthorizationValidation.check(submissionSession,authorizationData(session.getPatientAuthorization()));
         }else{
             System.out.println("session not attached, call selection COR");
         }
