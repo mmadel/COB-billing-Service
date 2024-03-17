@@ -28,6 +28,6 @@ public class AuthorizationSessionSubmission {
         }
     }
     private Long[] authorizationData(PatientAuthorizationEntity patientAuthorization){
-        return new Long[] {patientAuthorization.getStartDateNumber(),patientAuthorization.getExpireDateNumber(),patientAuthorization.getPatientInsuranceCompany()};
+        return new Long[] {patientAuthorization.getStartDateNumber(),patientAuthorization.getExpireDateNumber(),patientAuthorization.getRemaining().longValue(),patientAuthorization.getPatientInsuranceCompany()};
     }
 }
