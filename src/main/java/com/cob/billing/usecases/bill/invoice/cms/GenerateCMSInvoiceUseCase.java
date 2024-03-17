@@ -33,7 +33,7 @@ public class GenerateCMSInvoiceUseCase {
 
         //      changeSessionStatusUseCase.change(invoiceRequest.getSelectedSessionServiceLine());
 
-            return createCMSDocumentUseCase.createCMSDocument(invoiceRequest);
+        return createCMSDocumentUseCase.createCMSDocument(invoiceRequest);
     }
 
 }
