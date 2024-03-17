@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class SessionOutOfRangeAuthorizationValidation implements SessionAuthorizationValidation {
     private SessionAuthorizationValidation sessionAuthorizationValidation;
     @Override
-    public void setNextHandler(SessionAuthorizationValidation nextValidation) {
+    public void setNextValidation(SessionAuthorizationValidation nextValidation) {
         this.sessionAuthorizationValidation = nextValidation;
     }
 

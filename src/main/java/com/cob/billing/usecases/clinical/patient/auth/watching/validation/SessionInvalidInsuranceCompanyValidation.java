@@ -9,7 +9,7 @@ public class SessionInvalidInsuranceCompanyValidation implements SessionAuthoriz
     private SessionAuthorizationValidation sessionAuthorizationValidation;
 
     @Override
-    public void setNextHandler(SessionAuthorizationValidation nextValidation) {
+    public void setNextValidation(SessionAuthorizationValidation nextValidation) {
         this.sessionAuthorizationValidation = nextValidation;
     }
 
