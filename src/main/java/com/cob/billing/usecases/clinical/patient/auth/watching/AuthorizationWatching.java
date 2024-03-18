@@ -21,7 +21,7 @@ public class AuthorizationWatching {
     SessionAuthorizationSelectionUseCase sessionAuthorizationSelectionUseCase;
 
     public void watch(InvoiceRequest invoiceRequest) throws AuthorizationException {
-        if (invoiceRequest.getPatientInformation().getAuthorizationWatching()) {
+        if (invoiceRequest.getPatientInformation().getAuthorizationWatching() != null && invoiceRequest.getPatientInformation().getAuthorizationWatching()) {
             for (SelectedSessionServiceLine serviceLine : invoiceRequest.getSelectedSessionServiceLine()) {
                 SubmissionSession submissionSession = SubmissionSession.builder()
                         .patientSession(serviceLine.getSessionId())
@@ -40,7 +40,7 @@ public class AuthorizationWatching {
             invoiceRequest.getSelectedSessionServiceLine().forEach(serviceLine -> {
                 String authNumber = mapping.get(serviceLine.getSessionId().getId());
                 if (authNumber != null)
-                    serviceLine.getSessionId().setAuthorization(authNumber);
+                    serviceLine.getSessionId().setAuthorizationNumber(authNumber);
             });
         }
     }
