@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -20,16 +21,27 @@ public class SelectAuthorizationForNotAssignedSessionUseCase {
 
     public void select(SubmissionSession submissionSession) throws AuthorizationException {
         List<PatientAuthorizationEntity> patientAuthorizations = patientAuthorizationRepository.findByPatient_Id(submissionSession.getPatientId()).get();
-        PatientAuthorizationEntity patientAuthorization = null;
+        List<PatientAuthorizationEntity> patientAuthorization = new ArrayList<>();
         if (patientAuthorizations.size() == 1) {
-            System.out.println("assign this auth to session");
-            patientAuthorization = patientAuthorizations.stream().findFirst().get();
-            if (!(submissionSession.getPatientSession().getServiceDate() >= patientAuthorization.getStartDateNumber() && submissionSession.getPatientSession().getServiceDate() <= patientAuthorization.getExpireDateNumber()))
+            System.out.println("assign auth to session");
+            Long startDate = patientAuthorizations.stream().findFirst().get().getStartDateNumber();
+            Long expiryDate = patientAuthorizations.stream().findFirst().get().getExpireDateNumber();
+            if (!(submissionSession.getPatientSession().getServiceDate() >= startDate && submissionSession.getPatientSession().getServiceDate() <= expiryDate))
                 throw new AuthorizationException(HttpStatus.CONFLICT, AuthorizationException.SESSION_AUTH_OUT_OF_RANGE, new Object[]{submissionSession.getPatientSession().getServiceDate().toString()});
+            else
+                patientAuthorization.add(patientAuthorizations.stream().findFirst().get());
         } else {
-
+            System.out.println("select from auths to assign to session");
+            for (PatientAuthorizationEntity authorization : patientAuthorizations) {
+                if (submissionSession.getPatientSession().getServiceDate() >= authorization.getStartDateNumber() && submissionSession.getPatientSession().getServiceDate() <= authorization.getExpireDateNumber())
+                    patientAuthorization.add(authorization);
+            }
         }
-        if (patientAuthorization != null)
-            submitMatchedSessionAuthorizationUseCase.submit(submissionSession, patientAuthorization.getId(), patientAuthorization.getAuthNumber());
+        if (patientAuthorization.isEmpty())
+            throw new AuthorizationException(HttpStatus.CONFLICT, AuthorizationException.SESSION_NO_MATCHED_AUTH, new Object[]{submissionSession.getPatientSession().getServiceDate().toString()});
+        else if (patientAuthorization.size() > 1)
+            throw new AuthorizationException(HttpStatus.CONFLICT, AuthorizationException.SESSION_AUTH_OVERLAP, new Object[]{submissionSession.getPatientSession().getServiceDate().toString()});
+        else
+            submitMatchedSessionAuthorizationUseCase.submit(submissionSession, patientAuthorization.get(0).getId(), patientAuthorization.get(0).getAuthNumber());
     }
 }
