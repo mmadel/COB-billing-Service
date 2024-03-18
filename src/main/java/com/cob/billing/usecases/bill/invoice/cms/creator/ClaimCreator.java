@@ -93,7 +93,17 @@ public class ClaimCreator {
         }
         return fileNames;
     }
-
+    public List<String> createAuths(String authorizationNumber, List<SelectedSessionServiceLine> selectedSessionServiceLine) throws IOException, IllegalAccessException {
+        List<List<SelectedSessionServiceLine>> serviceLinesChunks = ServiceLineExceedChunkChecker.check(selectedSessionServiceLine);
+        List<String> fileNames = new ArrayList<>();
+        for (int i = 0; i < serviceLinesChunks.size(); i++) {
+            List<SelectedSessionServiceLine> invoicesChunk = serviceLinesChunks.get(i);
+            String fileName = "auth_" + authorizationNumber + "_" + i;
+            createBasicClaimPart(fileName, invoicesChunk);
+            fileNames.add(fileName);
+        }
+        return fileNames;
+    }
     public List<String> create(Long date, List<SelectedSessionServiceLine> selectedSessionServiceLine) throws IOException, IllegalAccessException {
         List<List<SelectedSessionServiceLine>> serviceLinesChunks = ServiceLineExceedChunkChecker.check(selectedSessionServiceLine);
         List<String> fileNames = new ArrayList<>();

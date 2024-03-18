@@ -27,6 +27,7 @@ public class MultipleClaimCreator {
         createMultipleClinics(invoiceRequest, fileNames);
         createMultipleCases(invoiceRequest, fileNames);
         createMultipleDates(invoiceRequest, fileNames);
+        createMultipleAuthorization(invoiceRequest, fileNames);
         return fileNames;
     }
 
@@ -78,6 +79,18 @@ public class MultipleClaimCreator {
                 fileNames.addAll(files);
             }
         }
+    }
+
+    private void createMultipleAuthorization(InvoiceRequest invoiceRequest, List<String> fileNames) throws IOException, IllegalAccessException {
+        Map<String, List<SelectedSessionServiceLine>> authorizations = invoiceRequest.getSelectedSessionServiceLine().stream()
+                .collect(Collectors.groupingBy(patientInvoice -> patientInvoice.getSessionId().getAuthorizationNumber()));
+        if(authorizations.size()> 1){
+            for (Map.Entry<String, List<SelectedSessionServiceLine>> entry : authorizations.entrySet()) {
+                List<String> files = claimCreator.create(entry.getKey(), entry.getValue());
+                fileNames.addAll(files);
+            }
+        }
+
     }
 
     private boolean isDatePerClaim(InvoiceRequestConfiguration invoiceRequestConfiguration) {

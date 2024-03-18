@@ -18,7 +18,7 @@ public class SessionOutOfRangeAuthorizationValidation implements SessionAuthoriz
 
     @Override
     public void processRequest(SubmissionSession submissionSession, PickedAuthorizationSession pickedAuthorizationSession) throws AuthorizationException {
-        if (submissionSession.getPatientSession().getServiceDate() > pickedAuthorizationSession.getStartDate() && submissionSession.getPatientSession().getServiceDate() < pickedAuthorizationSession.getExpiryDate())
+        if (submissionSession.getPatientSession().getServiceDate() >= pickedAuthorizationSession.getStartDate() && submissionSession.getPatientSession().getServiceDate() <= pickedAuthorizationSession.getExpiryDate())
             sessionAuthorizationValidation.processRequest(submissionSession, pickedAuthorizationSession);
         else
             throw new AuthorizationException(HttpStatus.CONFLICT, AuthorizationException.SESSION_AUTH_OUT_OF_RANGE, new Object[]{submissionSession.getPatientSession().getServiceDate().toString()});

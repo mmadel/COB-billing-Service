@@ -6,25 +6,29 @@ import com.cob.billing.exception.business.AuthorizationException;
 import com.cob.billing.model.bill.auth.PickedAuthorizationSession;
 import com.cob.billing.model.bill.auth.SubmissionSession;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
-import com.cob.billing.usecases.clinical.patient.auth.watching.validation.ExecuteSessionAuthorizationValidation;
+import com.cob.billing.usecases.clinical.patient.auth.watching.submission.SubmitMatchedSessionAuthorizationUseCase;
+import com.cob.billing.usecases.clinical.patient.auth.watching.validation.ValidateSessionAuthorizationUseCase;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuthorizationSessionSubmission {
+public class SessionAuthorizationSelectionUseCase {
     @Autowired
     PatientSessionRepository patientSessionRepository;
     @Autowired
-    ExecuteSessionAuthorizationValidation executeSessionAuthorizationValidation;
+    ValidateSessionAuthorizationUseCase validateSessionAuthorizationUseCase;
+    @Autowired
+    SubmitMatchedSessionAuthorizationUseCase submitMatchedSessionAuthorizationUseCase;
     @Autowired
     ModelMapper mapper;
 
-    public void submit(SubmissionSession submissionSession) throws AuthorizationException {
+    public void select(SubmissionSession submissionSession) throws AuthorizationException {
         PatientSessionEntity session = patientSessionRepository.findById(submissionSession.getPatientSession().getId()).get();
         if (session.getPatientAuthorization() != null) {
-            System.out.println("session attached, call validation COR");
-            executeSessionAuthorizationValidation.execute(submissionSession, authorizationData(session.getPatientAuthorization()));
+            PickedAuthorizationSession pickedAuthorizationSession = authorizationData(session.getPatientAuthorization());
+            validateSessionAuthorizationUseCase.validate(submissionSession, pickedAuthorizationSession);
+            submitMatchedSessionAuthorizationUseCase.submit(submissionSession,  pickedAuthorizationSession.getId(),pickedAuthorizationSession.getAuthorizationNumber());
         } else {
             System.out.println("session not attached, call selection COR");
         }
@@ -32,10 +36,12 @@ public class AuthorizationSessionSubmission {
 
     private PickedAuthorizationSession authorizationData(PatientAuthorizationEntity patientAuthorization) {
         return PickedAuthorizationSession.builder()
+                .id(patientAuthorization.getId())
                 .startDate(patientAuthorization.getStartDateNumber())
                 .expiryDate(patientAuthorization.getExpireDateNumber())
                 .remainingValue(patientAuthorization.getRemaining())
                 .insuranceCompanyId(patientAuthorization.getPatientInsuranceCompany())
+                .authorizationNumber(patientAuthorization.getAuthNumber())
                 .build();
     }
 }

@@ -164,7 +164,6 @@ public class NotRepeatableCMSDocumentFiller {
             if (patientInformation.getPatientAdvancedInformation().getAdditionalInformation() != null) {
                 cmsForm.getField("96").setValue(patientInformation.getPatientAdvancedInformation().getAdditionalInformation());
             }
-            //cmsForm.getField("prior_auth").setValue(patientInformation.getAuthorizationSelection().getAuthorizationNumber());
         }
     }
     private Long[] findDateForBox15(PatientAdvancedDates patientAdvancedDates){
