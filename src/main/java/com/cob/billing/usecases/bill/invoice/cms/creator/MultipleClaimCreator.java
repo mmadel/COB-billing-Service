@@ -83,8 +83,9 @@ public class MultipleClaimCreator {
 
     private void createMultipleAuthorization(InvoiceRequest invoiceRequest, List<String> fileNames) throws IOException, IllegalAccessException {
         Map<String, List<SelectedSessionServiceLine>> authorizations = invoiceRequest.getSelectedSessionServiceLine().stream()
+                .filter(serviceLine -> serviceLine.getSessionId().getAuthorizationNumber() != null)
                 .collect(Collectors.groupingBy(patientInvoice -> patientInvoice.getSessionId().getAuthorizationNumber()));
-        if(authorizations.size()> 1){
+        if (authorizations.size() > 1) {
             for (Map.Entry<String, List<SelectedSessionServiceLine>> entry : authorizations.entrySet()) {
                 List<String> files = claimCreator.create(entry.getKey(), entry.getValue());
                 fileNames.addAll(files);

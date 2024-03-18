@@ -66,4 +66,8 @@ public interface PatientSessionRepository extends PagingAndSortingRepository<Pat
     @Modifying
     @Query("update PatientSessionEntity ps set ps.patientAuthorization.id = :authId where ps.id = :sessionId")
     void assignAuthorization(@Param("sessionId") Long sessionId, @Param("authId") Long authId);
+
+    @Modifying
+    @Query("update PatientSessionEntity ps set ps.patientAuthorization = null where ps.patient.id = :patientId")
+    void unAssignAuthorization(@Param("patientId") Long patientId);
 }
