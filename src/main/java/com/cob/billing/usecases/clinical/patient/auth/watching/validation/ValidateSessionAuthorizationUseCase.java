@@ -24,15 +24,6 @@ public class ValidateSessionAuthorizationUseCase {
         sessionOutOfRangeAuthorizationValidation.setNextValidation(sessionNoCreditAuthorizationValidation);
         sessionNoCreditAuthorizationValidation.setNextValidation(sessionInvalidInsuranceCompanyValidation);
         sessionOutOfRangeAuthorizationValidation.processRequest(submissionSession, pickedAuthorizationSession);
-
-        prepareSessionToSubmit(submissionSession.getPatientSession(), pickedAuthorizationSession.getId(), pickedAuthorizationSession.getAuthorizationNumber());
     }
 
-    private void prepareSessionToSubmit(PatientSession patientSession, Long authorizationId, String authorizationNumber) {
-        PatientAuthorizationEntity patientAuthorizationEntity = patientAuthorizationRepository.findById(authorizationId).get();
-        int remaining = patientAuthorizationEntity.getRemaining() - 1;
-        patientAuthorizationEntity.setRemaining(remaining);
-        patientAuthorizationRepository.save(patientAuthorizationEntity);
-        patientSession.setAuthorizationNumber(authorizationNumber);
-    }
 }
