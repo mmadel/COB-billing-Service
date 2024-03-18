@@ -1,6 +1,7 @@
 package com.cob.billing.usecases.clinical.patient.auth.watching.validation;
 
 import com.cob.billing.exception.business.AuthorizationException;
+import com.cob.billing.model.bill.auth.PickedAuthorizationSession;
 import com.cob.billing.model.bill.auth.SubmissionSession;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
 import org.springframework.http.HttpStatus;
@@ -16,11 +17,11 @@ public class SessionNoCreditAuthorizationValidation implements SessionAuthorizat
     }
 
     @Override
-    public void processRequest(SubmissionSession submissionSession, Long[] authorizationData) throws AuthorizationException {
-        if (authorizationData[2] == 0)
+    public void processRequest(SubmissionSession submissionSession, PickedAuthorizationSession pickedAuthorizationSession) throws AuthorizationException {
+        if (pickedAuthorizationSession.getRemainingValue() == 0)
             throw new AuthorizationException(HttpStatus.CONFLICT, AuthorizationException.SESSION_AUTH_NO_REMAINING, new Object[]{submissionSession.getPatientSession().getServiceDate().toString()});
         else
-            sessionAuthorizationValidation.processRequest(submissionSession, authorizationData);
+            sessionAuthorizationValidation.processRequest(submissionSession, pickedAuthorizationSession);
 
 
     }

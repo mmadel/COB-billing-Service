@@ -1,6 +1,7 @@
 package com.cob.billing.usecases.clinical.patient.auth.watching.validation;
 
 import com.cob.billing.exception.business.AuthorizationException;
+import com.cob.billing.model.bill.auth.PickedAuthorizationSession;
 import com.cob.billing.model.bill.auth.SubmissionSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,9 +15,9 @@ public class ExecuteSessionAuthorizationValidation {
     @Autowired
     SessionInvalidInsuranceCompanyValidation sessionInvalidInsuranceCompanyValidation;
 
-    public void execute(SubmissionSession submissionSession, Long[] authorizationData) throws AuthorizationException {
+    public void execute(SubmissionSession submissionSession, PickedAuthorizationSession pickedAuthorizationSession) throws AuthorizationException {
         sessionOutOfRangeAuthorizationValidation.setNextValidation(sessionNoCreditAuthorizationValidation);
         sessionNoCreditAuthorizationValidation.setNextValidation(sessionInvalidInsuranceCompanyValidation);
-        sessionOutOfRangeAuthorizationValidation.processRequest(submissionSession, authorizationData);
+        sessionOutOfRangeAuthorizationValidation.processRequest(submissionSession, pickedAuthorizationSession);
     }
 }

@@ -3,6 +3,7 @@ package com.cob.billing.usecases.clinical.patient.auth.watching;
 import com.cob.billing.entity.clinical.patient.auth.PatientAuthorizationEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.exception.business.AuthorizationException;
+import com.cob.billing.model.bill.auth.PickedAuthorizationSession;
 import com.cob.billing.model.bill.auth.SubmissionSession;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import com.cob.billing.usecases.clinical.patient.auth.watching.validation.ExecuteSessionAuthorizationValidation;
@@ -29,7 +30,12 @@ public class AuthorizationSessionSubmission {
         }
     }
 
-    private Long[] authorizationData(PatientAuthorizationEntity patientAuthorization) {
-        return new Long[]{patientAuthorization.getStartDateNumber(), patientAuthorization.getExpireDateNumber(), patientAuthorization.getRemaining().longValue(), patientAuthorization.getPatientInsuranceCompany()};
+    private PickedAuthorizationSession authorizationData(PatientAuthorizationEntity patientAuthorization) {
+        return PickedAuthorizationSession.builder()
+                .startDate(patientAuthorization.getStartDateNumber())
+                .expiryDate(patientAuthorization.getExpireDateNumber())
+                .remainingValue(patientAuthorization.getRemaining())
+                .insuranceCompanyId(patientAuthorization.getPatientInsuranceCompany())
+                .build();
     }
 }
