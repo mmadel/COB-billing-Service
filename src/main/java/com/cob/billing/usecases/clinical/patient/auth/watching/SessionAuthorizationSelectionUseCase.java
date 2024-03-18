@@ -6,6 +6,7 @@ import com.cob.billing.exception.business.AuthorizationException;
 import com.cob.billing.model.bill.auth.PickedAuthorizationSession;
 import com.cob.billing.model.bill.auth.SubmissionSession;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
+import com.cob.billing.usecases.clinical.patient.auth.watching.selection.SelectAuthorizationForNotAssignedSessionUseCase;
 import com.cob.billing.usecases.clinical.patient.auth.watching.submission.SubmitMatchedSessionAuthorizationUseCase;
 import com.cob.billing.usecases.clinical.patient.auth.watching.validation.ValidateSessionAuthorizationUseCase;
 import org.modelmapper.ModelMapper;
@@ -21,6 +22,8 @@ public class SessionAuthorizationSelectionUseCase {
     @Autowired
     SubmitMatchedSessionAuthorizationUseCase submitMatchedSessionAuthorizationUseCase;
     @Autowired
+    SelectAuthorizationForNotAssignedSessionUseCase selectAuthorizationForNotAssignedSessionUseCase;
+    @Autowired
     ModelMapper mapper;
 
     public void select(SubmissionSession submissionSession) throws AuthorizationException {
@@ -31,6 +34,7 @@ public class SessionAuthorizationSelectionUseCase {
             submitMatchedSessionAuthorizationUseCase.submit(submissionSession,  pickedAuthorizationSession.getId(),pickedAuthorizationSession.getAuthorizationNumber());
         } else {
             System.out.println("session not attached, call selection COR");
+            selectAuthorizationForNotAssignedSessionUseCase.select(submissionSession);
         }
     }
 

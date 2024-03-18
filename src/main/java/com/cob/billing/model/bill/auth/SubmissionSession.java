@@ -11,4 +11,5 @@ import lombok.Setter;
 public class SubmissionSession {
     private PatientSession patientSession;
     private Long insuranceCompanyId;
+    private Long patientId;
 }

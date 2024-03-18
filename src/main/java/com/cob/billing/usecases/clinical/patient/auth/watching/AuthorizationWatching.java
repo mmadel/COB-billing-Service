@@ -26,6 +26,7 @@ public class AuthorizationWatching {
                 SubmissionSession submissionSession = SubmissionSession.builder()
                         .patientSession(serviceLine.getSessionId())
                         .insuranceCompanyId(invoiceRequest.getInvoiceInsuranceCompanyInformation().getId())
+                        .patientId(invoiceRequest.getPatientInformation().getId())
                         .build();
                 sessionAuthorizationSelectionUseCase.select(submissionSession);
                 serviceLine.getSessionId().setAuthorizationNumber(submissionSession.getPatientSession().getAuthorizationNumber());
