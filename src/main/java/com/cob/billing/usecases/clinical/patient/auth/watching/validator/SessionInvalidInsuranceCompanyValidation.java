@@ -1,4 +1,4 @@
-package com.cob.billing.usecases.clinical.patient.auth.watching.validation;
+package com.cob.billing.usecases.clinical.patient.auth.watching.validator;
 
 import com.cob.billing.exception.business.AuthorizationException;
 import com.cob.billing.model.bill.auth.AuthorizationSession;
@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SessionNoCreditAuthorizationValidation implements SessionAuthorizationValidation {
+public class SessionInvalidInsuranceCompanyValidation implements SessionAuthorizationValidation {
     private SessionAuthorizationValidation sessionAuthorizationValidation;
 
     @Override
@@ -17,10 +17,8 @@ public class SessionNoCreditAuthorizationValidation implements SessionAuthorizat
 
     @Override
     public void processRequest(SubmissionSession submissionSession, AuthorizationSession authorizationSession) throws AuthorizationException {
-        if (authorizationSession.getRemainingValue() == 0)
-            throw new AuthorizationException(HttpStatus.CONFLICT, AuthorizationException.SESSION_AUTH_NO_REMAINING, new Object[]{""});
-        else
-            sessionAuthorizationValidation.processRequest(submissionSession, authorizationSession);
+        if(!submissionSession.getInsuranceCompanyId().equals(authorizationSession.getInsuranceCompanyId()))
+            throw new AuthorizationException(HttpStatus.CONFLICT, AuthorizationException.SESSION_AUTH_INVALID_INSURANCE_COMPANY, new Object[]{"submissionSession.getPatientSession().getServiceDate().toString()"});
 
 
     }

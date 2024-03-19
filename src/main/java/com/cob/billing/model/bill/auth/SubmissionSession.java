@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 public class SubmissionSession {
     private Long sessionId;
-    private Long sessionDateOfService;
+    private Long dateOfService;
     private Long insuranceCompanyId;
     private AuthorizationSession authorizationSession;
     private List<AuthorizationSession> patientAuthorizations;

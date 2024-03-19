@@ -1,4 +1,4 @@
-package com.cob.billing.usecases.clinical.patient.auth.watching.validation;
+package com.cob.billing.usecases.clinical.patient.auth.watching.validator;
 
 import com.cob.billing.exception.business.AuthorizationException;
 import com.cob.billing.model.bill.auth.AuthorizationSession;
@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SessionInvalidInsuranceCompanyValidation implements SessionAuthorizationValidation {
+public class SessionOutOfRangeAuthorizationValidation implements SessionAuthorizationValidation {
     private SessionAuthorizationValidation sessionAuthorizationValidation;
 
     @Override
@@ -17,9 +17,10 @@ public class SessionInvalidInsuranceCompanyValidation implements SessionAuthoriz
 
     @Override
     public void processRequest(SubmissionSession submissionSession, AuthorizationSession authorizationSession) throws AuthorizationException {
-        if(!submissionSession.getInsuranceCompanyId().equals(authorizationSession.getInsuranceCompanyId()))
-            throw new AuthorizationException(HttpStatus.CONFLICT, AuthorizationException.SESSION_AUTH_INVALID_INSURANCE_COMPANY, new Object[]{"submissionSession.getPatientSession().getServiceDate().toString()"});
-
+        if (submissionSession.getDateOfService() >= authorizationSession.getStartDate() && submissionSession.getDateOfService() <= authorizationSession.getExpiryDate())
+            sessionAuthorizationValidation.processRequest(submissionSession, authorizationSession);
+        else
+            throw new AuthorizationException(HttpStatus.CONFLICT, AuthorizationException.SESSION_AUTH_OUT_OF_RANGE, new Object[]{submissionSession.getDateOfService().toString()});
 
     }
 }

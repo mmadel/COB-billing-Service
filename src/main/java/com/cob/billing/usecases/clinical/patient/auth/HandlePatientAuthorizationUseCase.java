@@ -1,6 +1,7 @@
 package com.cob.billing.usecases.clinical.patient.auth;
 
 import com.cob.billing.entity.clinical.patient.auth.PatientAuthorizationEntity;
+import com.cob.billing.exception.business.AuthorizationException;
 import com.cob.billing.model.bill.auth.SubmissionSession;
 import com.cob.billing.model.bill.auth.util.AuthorizationMapper;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
@@ -8,17 +9,24 @@ import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.repositories.clinical.PatientAuthorizationRepository;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
+import com.cob.billing.usecases.clinical.patient.auth.watching.selection.AuthorizationSelection;
+import com.cob.billing.usecases.clinical.patient.auth.watching.selection.SessionAuthorizationExecutor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Component
 public class HandlePatientAuthorizationUseCase {
+    @Autowired
+    AuthorizationSelection authorizationSelection;
     @Autowired
     PatientSessionRepository patientSessionRepository;
     @Autowired
@@ -28,13 +36,20 @@ public class HandlePatientAuthorizationUseCase {
     private List<SelectedSessionServiceLine> invoicesSessionServiceLines;
     private List<SubmissionSession> submissionSessions;
 
-    public void handle(InvoiceRequest invoiceRequest) {
+    public void handle(InvoiceRequest invoiceRequest) throws AuthorizationException {
         invoicesSessionServiceLines = invoiceRequest.getSelectedSessionServiceLine();
         submissionSessions = prepareSubmissionSessions(invoiceRequest.getInvoiceInsuranceCompanyInformation().getId(), invoiceRequest.getPatientInformation().getId());
+        Map<Long , Integer> authorizationToUpdate = new HashMap<>();
         switch (invoiceRequest.getPatientInformation().getPatientAuthorizationWatching()) {
             case TurnOn:
                 System.out.println("Patient authorization is turned ON");
-
+                for (SubmissionSession submissionSession : submissionSessions) {
+                    authorizationSelection.select(submissionSession);
+                    PatientSession patientSession = pickPatientSession(submissionSession.getSessionId());
+                    patientSession.setAuthorizationNumber(submissionSession.getAuthorizationSession().getAuthorizationNumber());
+                    authorizationToUpdate.put(submissionSession.getAuthorizationSession().getId(),submissionSession.getAuthorizationSession().getRemainingValue());
+                }
+                updateAuthorization(authorizationToUpdate);
                 break;
             case TurnOff:
                 System.out.println("Patient authorization is turned OFF");
@@ -56,7 +71,7 @@ public class HandlePatientAuthorizationUseCase {
                 .map(patientSessionEntity ->
                         SubmissionSession.builder()
                                 .sessionId(patientSessionEntity.getId())
-                                .sessionDateOfService(patientSessionEntity.getServiceDate())
+                                .dateOfService(patientSessionEntity.getServiceDate())
                                 .authorizationSession(patientSessionEntity.getPatientAuthorization() != null ? AuthorizationMapper.map(patientSessionEntity.getPatientAuthorization()) : null)
                                 .insuranceCompanyId(insuranceCompany)
                                 .patientAuthorizations(AuthorizationMapper.map(patientAuthorizations))
@@ -70,6 +85,14 @@ public class HandlePatientAuthorizationUseCase {
                     return serviceLine.getSessionId();
                 }).findFirst();
         return patientSession.isPresent() ? patientSession.get() : null;
+    }
+
+    public void updateAuthorization(Map<Long , Integer> authorizationToUpdate){
+        for (var entry : authorizationToUpdate.entrySet()) {
+            PatientAuthorizationEntity patientAuthorizationEntity = patientAuthorizationRepository.findById(entry.getKey()).get();
+            patientAuthorizationEntity.setRemaining(entry.getValue());
+            patientAuthorizationRepository.save(patientAuthorizationEntity);
+        }
     }
 
 }

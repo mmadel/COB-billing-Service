@@ -8,7 +8,7 @@ import com.cob.billing.model.bill.auth.SubmissionSession;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import com.cob.billing.usecases.clinical.patient.auth.watching.selection.SelectAuthorizationForNotAssignedSessionUseCase;
 import com.cob.billing.usecases.clinical.patient.auth.watching.submission.SubmitMatchedSessionAuthorizationUseCase;
-import com.cob.billing.usecases.clinical.patient.auth.watching.validation.ValidateSessionAuthorizationUseCase;
+import com.cob.billing.usecases.clinical.patient.auth.watching.validator.ValidateSessionAuthorizationUseCase;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
