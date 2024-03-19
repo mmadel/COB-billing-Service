@@ -25,7 +25,7 @@ public class SubmitMatchedSessionAuthorizationUseCase {
     }
 
     private void assign(SubmissionSession submissionSession , String authorizationNumber) {
-        submissionSession.getPatientSession().setAuthorizationNumber(authorizationNumber);
+        //submissionSession.getPatientSession().setAuthorizationNumber(authorizationNumber);
         System.out.println();
     }
 }

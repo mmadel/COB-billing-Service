@@ -1,5 +1,6 @@
 package com.cob.billing.exception;
 
+import com.cob.billing.exception.business.AuthorizationException;
 import com.cob.billing.exception.business.BillingException;
 import com.cob.billing.exception.model.ErrorModel;
 import com.cob.billing.exception.response.ControllerErrorResponse;
@@ -24,9 +25,8 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     @Autowired
     ResourceBundleMessageSource messageSource;
 
-    @ExceptionHandler(value = {BillingException.class})
-    @ResponseBody
-    public ResponseEntity handleFeedbackExceptionException(BillingException ex, WebRequest request) {
+    @ExceptionHandler(BillingException.class)
+    public ResponseEntity handleParentException(BillingException ex, WebRequest request) {
         String errorMessage = messageSource.getMessage(ex.getCode(), ex.getParameters(), Locale.ENGLISH);
         ControllerErrorResponse controllerErrorResponse = new ControllerErrorResponse(errorMessage, ex.getStatus() == null ? HttpStatus.INTERNAL_SERVER_ERROR : ex.getStatus());
         log.error(controllerErrorResponse.getMessage());

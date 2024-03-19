@@ -24,12 +24,11 @@ public class AuthorizationWatching {
         if (invoiceRequest.getPatientInformation().getAuthorizationWatching() != null && invoiceRequest.getPatientInformation().getAuthorizationWatching()) {
             for (SelectedSessionServiceLine serviceLine : invoiceRequest.getSelectedSessionServiceLine()) {
                 SubmissionSession submissionSession = SubmissionSession.builder()
-                        .patientSession(serviceLine.getSessionId())
+                        //.patientSession(serviceLine.getSessionId())
                         .insuranceCompanyId(invoiceRequest.getInvoiceInsuranceCompanyInformation().getId())
-                        .patientId(invoiceRequest.getPatientInformation().getId())
                         .build();
                 sessionAuthorizationSelectionUseCase.select(submissionSession);
-                serviceLine.getSessionId().setAuthorizationNumber(submissionSession.getPatientSession().getAuthorizationNumber());
+              //  serviceLine.getSessionId().setAuthorizationNumber(submissionSession.getPatientSession().getAuthorizationNumber());
             }
 
         } else {
