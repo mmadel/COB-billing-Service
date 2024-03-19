@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-public class PickedAuthorizationSession {
+public class AuthorizationSession {
     private Long id;
     private Long startDate;
     private Long expiryDate;
