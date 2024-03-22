@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -32,6 +33,8 @@ public class CreateInvoiceRecordUseCase {
     public List<PatientInvoiceEntity> createRecord(InvoiceRequest invoiceRequest) {
         List<PatientInvoiceEntity> toBeCreated = new ArrayList<>();
         PatientEntity patient = patientRepository.findById(invoiceRequest.getPatientInformation().getId()).get();
+        Random rand = new Random();
+        String submissionId = String.format("%04d", rand.nextInt(10000));
         invoiceRequest.getSelectedSessionServiceLine()
                 .forEach(serviceLine -> {
                     PatientInvoiceEntity patientInvoice = new PatientInvoiceEntity();
@@ -41,6 +44,7 @@ public class CreateInvoiceRecordUseCase {
                     patientInvoice.setServiceLine(mapper.map(serviceLine.getServiceLine(), PatientSessionServiceLineEntity.class));
                     patientInvoice.setPatientSession(mapper.map(serviceLine.getSessionId(), PatientSessionEntity.class));
                     patientInvoice.setInsuranceCompanyId(invoiceRequest.getInvoiceInsuranceCompanyInformation().getId());
+                    patientInvoice.setSubmissionId(Long.parseLong(submissionId));
                     toBeCreated.add(patientInvoice);
                 });
         List<PatientInvoiceEntity> patientInvoiceRecords = StreamSupport.stream(patientInvoiceRepository.saveAll(toBeCreated).spliterator(), false)

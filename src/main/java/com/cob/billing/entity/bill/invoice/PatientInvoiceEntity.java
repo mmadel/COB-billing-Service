@@ -43,6 +43,9 @@ public class PatientInvoiceEntity {
     @Column(name = "insurance_company_id")
     private Long insuranceCompanyId;
 
+    @Column(name = "submission_id")
+    private Long submissionId;
+
     @PrePersist
     private void setCreatedDate() {
         createdAt = new Date().getTime();
