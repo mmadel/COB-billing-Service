@@ -27,11 +27,11 @@ public class GenerateCMSInvoiceUseCase {
     @Transactional
     public List<String> generate(InvoiceRequest invoiceRequest) throws IOException, IllegalAccessException, AuthorizationException {
 
-//        createInvoiceRecordUseCase.createRecord(invoiceRequest);
+        createInvoiceRecordUseCase.createRecord(invoiceRequest);
 
         patientAuthorizationCheckerUseCase.check(invoiceRequest);
 
-        //      changeSessionStatusUseCase.change(invoiceRequest.getSelectedSessionServiceLine());
+        changeSessionStatusUseCase.change(invoiceRequest.getSelectedSessionServiceLine());
 
         return createCMSDocumentUseCase.createCMSDocument(invoiceRequest);
     }
