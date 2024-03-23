@@ -1,10 +1,18 @@
 package com.cob.billing.usecases.bill.invoice;
 
+import com.cob.billing.entity.bill.invoice.PatientInvoiceDetailsEntity;
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
+import com.cob.billing.enums.SubmissionStatus;
+import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
+import com.cob.billing.model.bill.invoice.tmp.InvoiceInsuranceCompanyInformation;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
+import com.cob.billing.model.bill.invoice.tmp.InvoiceRequestConfiguration;
+import com.cob.billing.model.clinical.patient.session.PatientSession;
+import com.cob.billing.model.clinical.patient.session.ServiceLine;
+import com.cob.billing.repositories.bill.invoice.PatientInvoiceDetailsRepository;
 import com.cob.billing.repositories.bill.invoice.PatientInvoiceRepository;
 import com.cob.billing.repositories.clinical.PatientRepository;
 import com.cob.billing.repositories.clinical.insurance.company.InsuranceCompanyRepository;
@@ -16,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -26,30 +35,56 @@ public class CreateInvoiceRecordUseCase {
     private PatientRepository patientRepository;
     @Autowired
     private PatientInvoiceRepository patientInvoiceRepository;
-
+    @Autowired
+    private PatientInvoiceDetailsRepository patientInvoiceDetailsRepository;
     @Autowired
     ModelMapper mapper;
 
-    public List<PatientInvoiceEntity> createRecord(InvoiceRequest invoiceRequest) {
-        List<PatientInvoiceEntity> toBeCreated = new ArrayList<>();
+    public void createRecord(InvoiceRequest invoiceRequest) {
+        Map<String, List<SelectedSessionServiceLine>> dd = invoiceRequest.getSelectedSessionServiceLine().stream()
+                .collect(Collectors.groupingBy(serviceLine -> serviceLine.getSessionId().getDoctorInfo().getDoctorNPI()));
         PatientEntity patient = patientRepository.findById(invoiceRequest.getPatientInformation().getId()).get();
-        Random rand = new Random();
-        String submissionId = String.format("%04d", rand.nextInt(10000));
-        invoiceRequest.getSelectedSessionServiceLine()
-                .forEach(serviceLine -> {
-                    PatientInvoiceEntity patientInvoice = new PatientInvoiceEntity();
-                    patientInvoice.setPatient(patient);
-                    patientInvoice.setDelayedReason(invoiceRequest.getInvoiceRequestConfiguration().getDelayedReason());
-                    patientInvoice.setIsOneDateServicePerClaim(invoiceRequest.getInvoiceRequestConfiguration().getIsOneDateServicePerClaim());
-                    patientInvoice.setServiceLine(mapper.map(serviceLine.getServiceLine(), PatientSessionServiceLineEntity.class));
-                    patientInvoice.setPatientSession(mapper.map(serviceLine.getSessionId(), PatientSessionEntity.class));
-                    patientInvoice.setInsuranceCompanyId(invoiceRequest.getInvoiceInsuranceCompanyInformation().getId());
-                    patientInvoice.setSubmissionId(Long.parseLong(submissionId));
-                    toBeCreated.add(patientInvoice);
+        //create multiple invoice submission in case of sessions with diff provider
+        if (dd.size() > 1) {
+            for (String npi : dd.keySet()) {
+                PatientInvoiceEntity createdPatientInvoice = createPatientInvoice(patient, invoiceRequest.getInvoiceRequestConfiguration(), invoiceRequest.getInvoiceInsuranceCompanyInformation());
+                List<SelectedSessionServiceLine> serviceLines = dd.get(npi);
+                List<PatientInvoiceDetailsEntity> detailsEntities = new ArrayList<>();
+                serviceLines.forEach(serviceLine -> {
+                    detailsEntities.add(createPatientInvoiceDetails(serviceLine.getSessionId(), serviceLine.getServiceLine(), createdPatientInvoice));
                 });
-        List<PatientInvoiceEntity> patientInvoiceRecords = StreamSupport.stream(patientInvoiceRepository.saveAll(toBeCreated).spliterator(), false)
-                .collect(Collectors.toList());
-        return patientInvoiceRecords;
+                patientInvoiceDetailsRepository.saveAll(detailsEntities);
+            }
+        } else {
+            PatientInvoiceEntity createdPatientInvoice = createPatientInvoice(patient, invoiceRequest.getInvoiceRequestConfiguration(), invoiceRequest.getInvoiceInsuranceCompanyInformation());
+            List<PatientInvoiceDetailsEntity> detailsEntities = new ArrayList<>();
+            invoiceRequest.getSelectedSessionServiceLine().forEach(serviceLine -> {
+                detailsEntities.add(createPatientInvoiceDetails(serviceLine.getSessionId(), serviceLine.getServiceLine(), createdPatientInvoice));
+            });
+            patientInvoiceDetailsRepository.saveAll(detailsEntities);
+        }
     }
 
+    private PatientInvoiceEntity createPatientInvoice(PatientEntity patient,
+                                                      InvoiceRequestConfiguration invoiceRequestConfiguration,
+                                                      InvoiceInsuranceCompanyInformation invoiceInsuranceCompanyInformation) {
+        PatientInvoiceEntity patientInvoice = new PatientInvoiceEntity();
+        patientInvoice.setPatient(patient);
+        patientInvoice.setDelayedReason(invoiceRequestConfiguration.getDelayedReason());
+        patientInvoice.setIsOneDateServicePerClaim(invoiceRequestConfiguration.getIsOneDateServicePerClaim());
+        patientInvoice.setInsuranceCompany(invoiceInsuranceCompanyInformation);
+        Random rand = new Random();
+        String submissionId = String.format("%04d", rand.nextInt(10000));
+        patientInvoice.setSubmissionId(Long.parseLong(submissionId));
+        patientInvoice.setSubmissionStatus(SubmissionStatus.Success);
+        return patientInvoiceRepository.save(patientInvoice);
+    }
+
+    private PatientInvoiceDetailsEntity createPatientInvoiceDetails(PatientSession patientSession, ServiceLine serviceLine, PatientInvoiceEntity createdPatientInvoice) {
+        PatientInvoiceDetailsEntity patientInvoiceDetails = new PatientInvoiceDetailsEntity();
+        patientInvoiceDetails.setPatientSession(mapper.map(patientSession, PatientSessionEntity.class));
+        patientInvoiceDetails.setServiceLine(mapper.map(serviceLine, PatientSessionServiceLineEntity.class));
+        patientInvoiceDetails.setPatientInvoice(createdPatientInvoice);
+        return patientInvoiceDetails;
+    }
 }

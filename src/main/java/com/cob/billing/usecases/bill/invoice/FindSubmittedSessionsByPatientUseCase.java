@@ -2,10 +2,10 @@ package com.cob.billing.usecases.bill.invoice;
 
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
-import com.cob.billing.model.bill.invoice.tmp.InvoiceResponse;
 import com.cob.billing.model.bill.posting.PaymentServiceLine;
 import com.cob.billing.model.bill.posting.filter.PostingSearchCriteria;
 import com.cob.billing.model.response.ClientPostingPaymentResponse;
+import com.cob.billing.repositories.bill.invoice.PatientInvoiceDetailsRepository;
 import com.cob.billing.repositories.bill.invoice.PatientInvoiceRepository;
 import com.cob.billing.repositories.bill.payer.PayerRepository;
 import com.cob.billing.repositories.clinical.PatientRepository;
@@ -32,6 +32,8 @@ public class FindSubmittedSessionsByPatientUseCase {
     ModelMapper mapper;
     @Autowired
     PatientSessionRepository patientSessionRepository;
+    @Autowired
+    PatientInvoiceDetailsRepository patientInvoiceDetailsRepository;
 
     public ClientPostingPaymentResponse find(int offset, int limit, Long clientId) {
         List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findSubmittedSessionsByPatient(clientId);
@@ -57,18 +59,20 @@ public class FindSubmittedSessionsByPatientUseCase {
 
     public Map<String, List<PaymentServiceLine>> findInsuranceCompany(Long insuranceCompanyId) {
         Map<String, List<PaymentServiceLine>> paymentServiceLinePatientMap = new HashMap<>();
-        patientInvoiceRepository.findBySessionSubmittedByInsuranceCompany(insuranceCompanyId).stream()
-                .forEach(patientInvoice -> {
-                    String patient = patientInvoice.getPatient().getLastName() + ","
-                            + patientInvoice.getPatient().getFirstName() + ","
-                            + patientInvoice.getPatient().getId();
+
+        patientInvoiceDetailsRepository.findBySessionSubmittedByInsuranceCompany(insuranceCompanyId).stream()
+                .forEach(patientInvoiceDetails -> {
+                    String patient = patientInvoiceDetails.getPatientInvoice().getPatient().getLastName() + ","
+                            + patientInvoiceDetails.getPatientInvoice().getPatient().getFirstName() + ","
+                            + patientInvoiceDetails.getPatientInvoice().getPatient().getId();
                     if (paymentServiceLinePatientMap.get(patient) == null) {
                         List<PaymentServiceLine> records = new ArrayList<>();
-                        records.add(constructServiceLine(patientInvoice.getServiceLine(), patientInvoice.getPatientSession()));
+                        records.add(constructServiceLine(patientInvoiceDetails.getServiceLine(),
+                                patientInvoiceDetails.getPatientSession()));
                         paymentServiceLinePatientMap.put(patient, records);
                     } else {
                         List<PaymentServiceLine> records = paymentServiceLinePatientMap.get(patient);
-                        records.add(constructServiceLine(patientInvoice.getServiceLine(), patientInvoice.getPatientSession()));
+                        records.add(constructServiceLine(patientInvoiceDetails.getServiceLine(), patientInvoiceDetails.getPatientSession()));
                     }
                 });
 
@@ -81,23 +85,24 @@ public class FindSubmittedSessionsByPatientUseCase {
                 .forEach(patientSessionEntity -> {
                     patientSessionEntity.getServiceCodes().stream()
                             .forEach(patientSessionServiceLineEntity -> {
-                                PaymentServiceLine paymentServiceLine = constructServiceLine(patientSessionServiceLineEntity, patientSessionEntity);
+                                PaymentServiceLine paymentServiceLine = constructServiceLine(patientSessionServiceLineEntity,
+                                        patientSessionEntity);
                                 response.add(paymentServiceLine);
                             });
                 });
         return response;
     }
 
-    private PaymentServiceLine constructServiceLine(PatientSessionServiceLineEntity serviceLine, PatientSessionEntity session) {
+    private PaymentServiceLine constructServiceLine(PatientSessionServiceLineEntity serviceLine, PatientSessionEntity patientSession) {
         return PaymentServiceLine.builder()
-                .sessionId(session.getId())
+                .sessionId(patientSession.getId())
                 .ServiceCodeId(serviceLine.getId())
-                .dateOfService(session.getServiceDate())
+                .dateOfService(patientSession.getServiceDate())
                 .cpt(serviceLine.getCptCode().getServiceCode() + "." + serviceLine.getCptCode().getModifier())
                 .billedValue(serviceLine.getCptCode().getCharge())
                 .previousPayments(0.0)
                 .balance(serviceLine.getCptCode().getCharge())
-                .provider(session.getDoctorInfo().getDoctorLastName() + "," + session.getDoctorInfo().getDoctorFirstName())
+                .provider(patientSession.getDoctorInfo().getDoctorLastName() + ',' + patientSession.getDoctorInfo().getDoctorFirstName())
                 .build();
     }
 

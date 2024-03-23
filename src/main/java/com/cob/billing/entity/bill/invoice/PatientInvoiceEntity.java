@@ -3,14 +3,26 @@ package com.cob.billing.entity.bill.invoice;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
+import com.cob.billing.enums.SessionAction;
+import com.cob.billing.enums.SubmissionStatus;
+import com.cob.billing.model.bill.invoice.tmp.InvoiceInsuranceCompanyInformation;
+import com.cob.billing.model.clinical.patient.CaseDiagnosis;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "patient_invoice")
+@TypeDefs({
+        @TypeDef(name = "json", typeClass = JsonStringType.class)
+})
 @Setter
 @Getter
 public class PatientInvoiceEntity {
@@ -22,6 +34,8 @@ public class PatientInvoiceEntity {
     @OneToOne
     @JoinColumn(name = "patient_id", referencedColumnName = "id")
     private PatientEntity patient;
+    @OneToMany(mappedBy="patientInvoice")
+    List<PatientInvoiceDetailsEntity> invoiceDetails;
 
     @Column(name = "is_one_date_service_per_claim")
     private Boolean isOneDateServicePerClaim;
@@ -29,22 +43,20 @@ public class PatientInvoiceEntity {
     @Column(name = "delayed_reason")
     private String delayedReason;
 
-    @OneToOne
-    @JoinColumn(name = "service_line_id")
-    private PatientSessionServiceLineEntity serviceLine;
-
-    @ManyToOne
-    @JoinColumn(name = "patient_session_id")
-    private PatientSessionEntity patientSession;
 
     @Column(name = "created_at")
     private Long createdAt;
 
-    @Column(name = "insurance_company_id")
-    private Long insuranceCompanyId;
+    @Column(name = "insurance_company", columnDefinition = "json")
+    @Type(type = "json")
+    private InvoiceInsuranceCompanyInformation insuranceCompany;
 
     @Column(name = "submission_id")
     private Long submissionId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "submission_status")
+    private SubmissionStatus submissionStatus;
 
     @PrePersist
     private void setCreatedDate() {

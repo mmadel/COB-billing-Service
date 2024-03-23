@@ -1,69 +1,83 @@
 package com.cob.billing.usecases.bill.history;
 
+import com.cob.billing.entity.admin.ClinicEntity;
+import com.cob.billing.entity.bill.invoice.PatientInvoiceDetailsEntity;
+import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.enums.SubmissionStatus;
 import com.cob.billing.enums.SubmissionType;
 import com.cob.billing.model.history.SessionHistory;
+import com.cob.billing.model.history.SessionHistoryCount;
 import com.cob.billing.model.response.SessionHistoryResponse;
+import com.cob.billing.repositories.bill.invoice.PatientInvoiceRepository;
 import com.cob.billing.util.PaginationUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Component
 public class FindSessionHistoryUseCase {
-    public SessionHistoryResponse find(int offset, int limit) {
+    @Autowired
+    PatientInvoiceRepository patientInvoiceRepository;
+
+    public SessionHistoryResponse find(Pageable paging) {
         List<SessionHistory> result = new ArrayList<>();
-        result.add(
-                SessionHistory.builder()
-                        .submissionId(30303L)
-                        .provider("ahmed mohamed")
-                        .client("wael")
-                        .insuranceCompany("Axa")
-                        .dateOfService(1713045600000L)
-                        .submitDate(1717189200000L)
-                        .numberOfServiceLines(3)
-                        .submissionStatus(SubmissionStatus.Submit)
-                        .submissionType(SubmissionType.Print)
-                        .build());
-        result.add(
-                SessionHistory.builder()
-                        .submissionId(3839L)
-                        .provider("Samy")
-                        .client("hany")
-                        .dateOfService(1713045600000L)
-                        .submitDate(1717189200000L)
-                        .numberOfServiceLines(5)
-                        .submissionType(SubmissionType.Print)
-                        .submissionStatus(SubmissionStatus.Submit)
-                        .insuranceCompany("MetLife").build());
-        result.add(
-                SessionHistory.builder()
-                        .submissionId(3839L)
-                        .provider("Samy")
-                        .client("hany")
-                        .dateOfService(1707861600000L)
-                        .submitDate(1719781200000L)
-                        .numberOfServiceLines(2)
-                        .submissionType(SubmissionType.Print)
-                        .submissionStatus(SubmissionStatus.error)
-                        .insuranceCompany("MetLife").build());
-        result.add(
-                SessionHistory.builder()
-                        .submissionId(3839L)
-                        .provider("Samy")
-                        .client("hany")
-                        .dateOfService(1707861600000L)
-                        .submitDate(1719781200000L)
-                        .numberOfServiceLines(2)
-                        .submissionType(SubmissionType.Electronic)
-                        .submissionStatus(SubmissionStatus.acknowledge)
-                        .insuranceCompany("MetLife").build());
-        List<SessionHistory> records = PaginationUtil.paginate(result, offset, limit);
+        Page<PatientInvoiceEntity> pages = patientInvoiceRepository.findAll(paging);
+        List<PatientInvoiceEntity> invoiceEntities = pages.getContent();
+        long total = (pages).getTotalElements();
+        invoiceEntities.stream()
+                .filter(patientInvoice -> patientInvoice.getSubmissionId() != null)
+                .collect(Collectors.toList());
+        // Submissions
+        invoiceEntities.stream()
+                .filter(patientInvoice -> patientInvoice.getInvoiceDetails().size() > 0)
+                //Group By Sessions
+                .forEach(patientInvoice -> {
+                    Map<Long, List<PatientInvoiceDetailsEntity>> invoiceDetailsMapper = patientInvoice.getInvoiceDetails().stream()
+                            .filter(patientInvoiceDetails -> patientInvoiceDetails.getPatientSession() != null)
+                            .collect(Collectors.groupingBy(patientInvoiceDetails -> patientInvoiceDetails.getPatientSession().getId()));
+
+                    patientInvoice.getInvoiceDetails().stream()
+                            .filter(patientInvoiceDetails -> patientInvoiceDetails.getPatientSession() != null)
+                            .filter(patientInvoiceDetails -> patientInvoiceDetails.getPatientSession().getDoctorInfo() != null)
+                            .collect(Collectors.groupingBy(patientInvoiceDetails -> patientInvoiceDetails.getPatientSession().getDoctorInfo().getDoctorNPI()));
+                    //Create Submission History Record
+                    SessionHistory sessionHistory = new SessionHistory();
+                    sessionHistory.setSubmissionType(SubmissionType.Print);
+                    sessionHistory.setSubmitDate(patientInvoice.getCreatedAt());
+                    sessionHistory.setSubmissionId(patientInvoice.getSubmissionId());
+                    sessionHistory.setInsuranceCompany(patientInvoice.getInsuranceCompany().getName());
+                    sessionHistory.setSubmissionStatus(SubmissionStatus.Success);
+                    sessionHistory.setClient(patientInvoice.getPatient().getLastName() + ',' + patientInvoice.getPatient().getFirstName());
+                    List<SessionHistoryCount> counts = new ArrayList<>();
+                    // Create Session Counter
+                    for (Long submissionId : invoiceDetailsMapper.keySet()) {
+                        List<PatientInvoiceDetailsEntity> lines = invoiceDetailsMapper.get(submissionId);
+                        PatientInvoiceDetailsEntity lineDetail = lines.stream().findFirst().get();
+                        SessionHistoryCount count = new SessionHistoryCount();
+                        count.setSessionId(submissionId);
+                        count.setDateOfService(lineDetail.getPatientSession().getServiceDate());
+                        sessionHistory.setProvider(lineDetail.getPatientSession().getDoctorInfo().getDoctorLastName()
+                                + ','
+                                + lineDetail.getPatientSession().getDoctorInfo().getDoctorFirstName());
+                        count.setServiceLines(lines.size());
+                        counts.add(count);
+                    }
+                    sessionHistory.setSessionCounts(counts);
+                    result.add(sessionHistory);
+                });
         return SessionHistoryResponse.builder()
-                .number_of_records(records.size())
-                .number_of_matching_records((int) result.size())
-                .records(records)
+                .number_of_records((int)total)
+                .number_of_matching_records((int) invoiceEntities.size())
+                .records(result)
                 .build();
     }
 }

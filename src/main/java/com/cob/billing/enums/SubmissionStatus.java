@@ -1,8 +1,8 @@
 package com.cob.billing.enums;
 
 public enum SubmissionStatus {
-    Submit,
-    Pending,
+    Success,
     acknowledge,
+    Pending,
     error
 }

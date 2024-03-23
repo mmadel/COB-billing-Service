@@ -6,17 +6,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 @Getter
-@Builder
 public class SessionHistory {
     private Long submissionId;
     private String insuranceCompany;
     private Long submitDate;
     private String client;
     private String provider;
-    private Long dateOfService;
-    private Integer numberOfServiceLines;
     private SubmissionStatus submissionStatus;
     private SubmissionType submissionType;
+    private List<SessionHistoryCount> sessionCounts;
 }
