@@ -3,9 +3,11 @@ package com.cob.billing.usecases.bill.history;
 import com.cob.billing.entity.admin.ClinicEntity;
 import com.cob.billing.entity.bill.invoice.PatientInvoiceDetailsEntity;
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
+import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.enums.SubmissionStatus;
 import com.cob.billing.enums.SubmissionType;
+import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.model.clinical.patient.session.PatientSessionServiceLine;
 import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.model.history.SessionHistory;
@@ -59,7 +61,7 @@ public class FindSessionHistoryUseCase {
                     sessionHistory.setSubmissionId(patientInvoice.getSubmissionId());
                     sessionHistory.setInsuranceCompany(patientInvoice.getInsuranceCompany().getName());
                     sessionHistory.setSubmissionStatus(SubmissionStatus.Success);
-                    sessionHistory.setClient(patientInvoice.getPatient().getLastName() + ',' + patientInvoice.getPatient().getFirstName());
+                    sessionHistory.setClient(mapPatient(patientInvoice.getPatient()));
                     List<SessionHistoryCount> counts = new ArrayList<>();
                     // Create Session Counter
                     for (Long submissionId : invoiceDetailsMapper.keySet()) {
@@ -95,5 +97,13 @@ public class FindSessionHistoryUseCase {
             serviceLines.add(line);
         });
         return serviceLines;
+    }
+    private Patient mapPatient(PatientEntity entity){
+        Patient patient = new Patient();
+        patient.setId(entity.getId());
+        patient.setBirthDate(entity.getBirthDate());
+        patient.setFirstName(entity.getFirstName());
+        patient.setLastName(entity.getLastName());
+        return patient;
     }
 }

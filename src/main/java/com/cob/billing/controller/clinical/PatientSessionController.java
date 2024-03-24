@@ -54,7 +54,7 @@ public class PatientSessionController {
     @GetMapping("/find/id/{sessionId}")
     public ResponseEntity<Object> findById(@PathVariable Long sessionId) {
         return ResponseHandler
-                .generateResponse("Successfully updated Patient Session",
+                .generateResponse("Successfully getting Patient Session",
                         HttpStatus.OK, findSessionUseCase.findById(sessionId));
     }
 
