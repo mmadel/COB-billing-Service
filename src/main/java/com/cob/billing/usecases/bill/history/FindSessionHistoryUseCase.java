@@ -3,8 +3,11 @@ package com.cob.billing.usecases.bill.history;
 import com.cob.billing.entity.admin.ClinicEntity;
 import com.cob.billing.entity.bill.invoice.PatientInvoiceDetailsEntity;
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
+import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.enums.SubmissionStatus;
 import com.cob.billing.enums.SubmissionType;
+import com.cob.billing.model.clinical.patient.session.PatientSessionServiceLine;
+import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.model.history.SessionHistory;
 import com.cob.billing.model.history.SessionHistoryCount;
 import com.cob.billing.model.response.SessionHistoryResponse;
@@ -69,6 +72,7 @@ public class FindSessionHistoryUseCase {
                                 + ','
                                 + lineDetail.getPatientSession().getDoctorInfo().getDoctorFirstName());
                         count.setServiceLines(lines.size());
+                        count.setServiceLine(mapPatientSessionServiceLine((lines)));
                         counts.add(count);
                     }
                     sessionHistory.setSessionCounts(counts);
@@ -79,5 +83,17 @@ public class FindSessionHistoryUseCase {
                 .number_of_matching_records((int) invoiceEntities.size())
                 .records(result)
                 .build();
+    }
+    private List<ServiceLine> mapPatientSessionServiceLine(List<PatientInvoiceDetailsEntity> detailsEntities){
+        List<ServiceLine> serviceLines = new ArrayList<>();
+        detailsEntities.forEach(patientInvoiceDetails -> {
+            PatientSessionServiceLineEntity serviceLine = patientInvoiceDetails.getServiceLine();
+            ServiceLine line = new ServiceLine();
+            line.setType(serviceLine.getType());
+            line.setCptCode(serviceLine.getCptCode());
+            line.setDiagnoses(serviceLine.getDiagnoses());
+            serviceLines.add(line);
+        });
+        return serviceLines;
     }
 }

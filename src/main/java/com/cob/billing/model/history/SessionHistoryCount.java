@@ -1,8 +1,11 @@
 package com.cob.billing.model.history;
 
+import com.cob.billing.model.clinical.patient.session.PatientSessionServiceLine;
+import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Objects;
 
 @Setter
@@ -10,6 +13,7 @@ import java.util.Objects;
 public class SessionHistoryCount {
     private Long sessionId;
     private Integer serviceLines;
+    private List<ServiceLine> serviceLine;
     private Long dateOfService;
 
     @Override
