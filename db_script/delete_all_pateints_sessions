@@ -1,0 +1,6 @@
+DELETE FROM billing.patient_invoice_internal_company;
+DELETE FROM patient_invoice_external_company;
+DELETE FROM billing.patient_invoice_details;
+DELETE  FROM billing.patient_invoice;
+DELETE FROM billing.patient_session_service_line;
+DELETE  FROM billing.patient_session;
