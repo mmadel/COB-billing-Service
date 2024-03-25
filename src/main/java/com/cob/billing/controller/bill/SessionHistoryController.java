@@ -27,13 +27,14 @@ public class SessionHistoryController {
         Pageable paging = PageRequest.of(offset, limit, Sort.by("createdAt").descending());
         return new ResponseEntity<>(findSessionHistoryUseCase.find(paging), HttpStatus.OK);
     }
+
     @PostMapping("/search")
     public ResponseEntity<Object> search(@RequestParam(name = "offset") int offset,
-                                                       @RequestParam(name = "limit") int limit
+                                         @RequestParam(name = "limit") int limit
             , @RequestBody SessionHistoryCriteria sessionHistoryCriteria) {
         return ResponseHandler
-                .generateResponse("Successfully find clients with not submitted sessions",
+                .generateResponse("Successfully find sessions history",
                         HttpStatus.OK,
-                        searchSessionHistoryUseCase.search(offset,limit,sessionHistoryCriteria));
+                        searchSessionHistoryUseCase.search(offset + 1, limit, sessionHistoryCriteria));
     }
 }
