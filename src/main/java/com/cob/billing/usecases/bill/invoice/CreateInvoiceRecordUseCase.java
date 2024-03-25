@@ -40,7 +40,8 @@ public class CreateInvoiceRecordUseCase {
     @Autowired
     ModelMapper mapper;
 
-    public void createRecord(InvoiceRequest invoiceRequest) {
+    public List<Long> createRecord(InvoiceRequest invoiceRequest) {
+        List<Long> createdRecordsId = new ArrayList<>();
         Map<String, List<SelectedSessionServiceLine>> dd = invoiceRequest.getSelectedSessionServiceLine().stream()
                 .collect(Collectors.groupingBy(serviceLine -> serviceLine.getSessionId().getDoctorInfo().getDoctorNPI()));
         PatientEntity patient = patientRepository.findById(invoiceRequest.getPatientInformation().getId()).get();
@@ -48,6 +49,7 @@ public class CreateInvoiceRecordUseCase {
         if (dd.size() > 1) {
             for (String npi : dd.keySet()) {
                 PatientInvoiceEntity createdPatientInvoice = createPatientInvoice(patient, invoiceRequest.getInvoiceRequestConfiguration(), invoiceRequest.getInvoiceInsuranceCompanyInformation());
+                createdRecordsId.add(createdPatientInvoice.getId());
                 List<SelectedSessionServiceLine> serviceLines = dd.get(npi);
                 List<PatientInvoiceDetailsEntity> detailsEntities = new ArrayList<>();
                 serviceLines.forEach(serviceLine -> {
@@ -57,12 +59,14 @@ public class CreateInvoiceRecordUseCase {
             }
         } else {
             PatientInvoiceEntity createdPatientInvoice = createPatientInvoice(patient, invoiceRequest.getInvoiceRequestConfiguration(), invoiceRequest.getInvoiceInsuranceCompanyInformation());
+            createdRecordsId.add(createdPatientInvoice.getId());
             List<PatientInvoiceDetailsEntity> detailsEntities = new ArrayList<>();
             invoiceRequest.getSelectedSessionServiceLine().forEach(serviceLine -> {
                 detailsEntities.add(createPatientInvoiceDetails(serviceLine.getSessionId(), serviceLine.getServiceLine(), createdPatientInvoice));
             });
             patientInvoiceDetailsRepository.saveAll(detailsEntities);
         }
+        return createdRecordsId;
     }
 
     private PatientInvoiceEntity createPatientInvoice(PatientEntity patient,

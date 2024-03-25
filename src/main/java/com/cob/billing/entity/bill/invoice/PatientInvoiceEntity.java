@@ -34,7 +34,7 @@ public class PatientInvoiceEntity {
     @OneToOne
     @JoinColumn(name = "patient_id", referencedColumnName = "id")
     private PatientEntity patient;
-    @OneToMany(mappedBy="patientInvoice")
+    @OneToMany(mappedBy = "patientInvoice")
     List<PatientInvoiceDetailsEntity> invoiceDetails;
 
     @Column(name = "is_one_date_service_per_claim")
@@ -57,6 +57,9 @@ public class PatientInvoiceEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "submission_status")
     private SubmissionStatus submissionStatus;
+
+    @Column(name = "document", length = 100000)
+    private byte[] cmsDocument;
 
     @PrePersist
     private void setCreatedDate() {

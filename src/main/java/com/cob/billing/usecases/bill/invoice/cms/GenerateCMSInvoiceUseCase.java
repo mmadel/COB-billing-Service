@@ -1,6 +1,7 @@
 package com.cob.billing.usecases.bill.invoice.cms;
 
 import com.cob.billing.exception.business.AuthorizationException;
+import com.cob.billing.model.bill.invoice.InvoiceGenerationResponse;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.cob.billing.usecases.bill.invoice.ChangeSessionStatusUseCase;
 import com.cob.billing.usecases.bill.invoice.CreateInvoiceRecordUseCase;
@@ -25,15 +26,19 @@ public class GenerateCMSInvoiceUseCase {
     PatientAuthorizationCheckerUseCase patientAuthorizationCheckerUseCase;
 
     @Transactional
-    public List<String> generate(InvoiceRequest invoiceRequest) throws IOException, IllegalAccessException, AuthorizationException {
+    public InvoiceGenerationResponse generate(InvoiceRequest invoiceRequest) throws IOException, IllegalAccessException, AuthorizationException {
 
-        createInvoiceRecordUseCase.createRecord(invoiceRequest);
+        List<Long> records = createInvoiceRecordUseCase.createRecord(invoiceRequest);
 
         patientAuthorizationCheckerUseCase.check(invoiceRequest);
 
         changeSessionStatusUseCase.change(invoiceRequest.getSelectedSessionServiceLine());
 
-        return createCMSDocumentUseCase.createCMSDocument(invoiceRequest);
+        List<String> files = createCMSDocumentUseCase.createCMSDocument(invoiceRequest);
+        return InvoiceGenerationResponse.builder()
+                .files(files)
+                .records(records)
+                .build();
     }
 
 }
