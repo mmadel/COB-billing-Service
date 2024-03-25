@@ -10,7 +10,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public interface PatientInvoiceRepository extends PagingAndSortingRepository<PatientInvoiceEntity,Long> {
+public interface PatientInvoiceRepository extends PagingAndSortingRepository<PatientInvoiceEntity, Long> {
     Optional<PatientInvoiceEntity> findBySubmissionId(Long submissionId);
+
+    List<PatientInvoiceEntity> search(@Param("insuranceCompany") String insuranceCompany
+            , @Param("client") String client
+            , @Param("provider") String provider
+            , @Param("dosStart") Long dosStart
+            , @Param("dosEnd") Long dosEnd
+            , @Param("submitStart") Long submitStart
+            , @Param("submitEnd") Long submitEnd);
 
 }
