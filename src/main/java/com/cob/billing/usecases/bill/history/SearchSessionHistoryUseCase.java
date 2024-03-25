@@ -14,8 +14,15 @@ import java.util.List;
 public class SearchSessionHistoryUseCase {
     @Autowired
     PatientInvoiceRepository patientInvoiceRepository;
-    public void search(int offset, int limit, SessionHistoryCriteria sessionHistoryCriteria) {
 
+    public void search(int offset, int limit, SessionHistoryCriteria sessionHistoryCriteria) {
+        patientInvoiceRepository.search(sessionHistoryCriteria.getInsuranceCompany() != null ? sessionHistoryCriteria.getInsuranceCompany().toUpperCase().trim() : null
+                , sessionHistoryCriteria.getClient() != null ? sessionHistoryCriteria.getClient().toUpperCase().trim() : null
+                , sessionHistoryCriteria.getProvider() != null ? sessionHistoryCriteria.getProvider().toUpperCase().trim() : null
+                , sessionHistoryCriteria.getDosStart() != null ? sessionHistoryCriteria.getDosStart() : null
+                , sessionHistoryCriteria.getDosEnd() != null ? sessionHistoryCriteria.getDosEnd() : null
+                , sessionHistoryCriteria.getSubmitStart() != null ? sessionHistoryCriteria.getSubmitStart() : null
+                , sessionHistoryCriteria.getSubmitEnd() != null ? sessionHistoryCriteria.getSubmitEnd() : null);
     }
 
     private SessionHistoryResponse constructSessionHistoryResponse(int offset, int limit) {
