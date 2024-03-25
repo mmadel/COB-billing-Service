@@ -16,10 +16,8 @@ public interface PatientInvoiceRepository extends PagingAndSortingRepository<Pat
     @Query("SELECT DISTINCT pi FROM PatientInvoiceEntity pi INNER JOIN FETCH  pi.invoiceDetails pid " +
             "WHERE (:dosStart is null or pid.patientSession.serviceDate >= :dosStart) " +
             "AND (:dosEnd is null or pid.patientSession.serviceDate <= :dosEnd) " +
-            "AND (:client is null or upper(pi.patient.firstName) LIKE CONCAT('%',:client,'%')) " +
-            "AND (:client is null or upper(pi.patient.lastName) LIKE CONCAT('%',:client,'%')) " +
-            "AND ((:provider is null or upper(JSON_EXTRACT(pid.patientSession.doctorInfo, '$.doctorFirstName')) LIKE CONCAT('%',:provider,'%'))" +
-            "OR ((:provider is null or upper(JSON_EXTRACT(pid.patientSession.doctorInfo, '$.doctorLastName')) LIKE CONCAT('%',:provider,'%'))) ) " +
+            "AND ((:client is null or upper(pi.patient.firstName) LIKE CONCAT('%',:client,'%')) OR (:client is null or upper(pi.patient.lastName) LIKE CONCAT('%',:client,'%'))) " +
+            "AND ((:provider is null or upper(JSON_EXTRACT(pid.patientSession.doctorInfo, '$.doctorFirstName')) LIKE CONCAT('%',:provider,'%') OR (:provider is null or upper(JSON_EXTRACT(pid.patientSession.doctorInfo, '$.doctorLastName')) LIKE CONCAT('%',:provider,'%'))))" +
             "AND (:submitStart is null or pi.createdAt >= :submitStart) " +
             "AND (:submitEnd is null or pi.createdAt <= :submitEnd)  " +
             "AND (:insuranceCompany is null or upper(JSON_EXTRACT(pi.insuranceCompany, '$.name')) LIKE CONCAT('%',:insuranceCompany,'%'))")

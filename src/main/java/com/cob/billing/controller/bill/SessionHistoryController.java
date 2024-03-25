@@ -4,6 +4,7 @@ import com.cob.billing.model.bill.invoice.search.SessionHistoryCriteria;
 import com.cob.billing.model.clinical.patient.session.filter.PatientSessionSearchCriteria;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.history.FindSessionHistoryUseCase;
+import com.cob.billing.usecases.bill.history.SearchSessionHistoryUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 public class SessionHistoryController {
     @Autowired
     FindSessionHistoryUseCase findSessionHistoryUseCase;
+    @Autowired
+    SearchSessionHistoryUseCase searchSessionHistoryUseCase;
 
     @GetMapping("/find")
     public ResponseEntity<Object> find(@RequestParam(name = "offset") int offset,
@@ -30,6 +33,7 @@ public class SessionHistoryController {
             , @RequestBody SessionHistoryCriteria sessionHistoryCriteria) {
         return ResponseHandler
                 .generateResponse("Successfully find clients with not submitted sessions",
-                        HttpStatus.OK,null);
+                        HttpStatus.OK,
+                        searchSessionHistoryUseCase.search(offset,limit,sessionHistoryCriteria));
     }
 }

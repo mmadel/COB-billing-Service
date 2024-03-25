@@ -1,5 +1,6 @@
 package com.cob.billing.usecases.bill.history;
 
+import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.model.bill.invoice.search.SessionHistoryCriteria;
 import com.cob.billing.model.clinical.patient.session.PatientSessionServiceLine;
 import com.cob.billing.model.response.SessionHistoryResponse;
@@ -15,14 +16,16 @@ public class SearchSessionHistoryUseCase {
     @Autowired
     PatientInvoiceRepository patientInvoiceRepository;
 
-    public void search(int offset, int limit, SessionHistoryCriteria sessionHistoryCriteria) {
-        patientInvoiceRepository.search(sessionHistoryCriteria.getInsuranceCompany() != null ? sessionHistoryCriteria.getInsuranceCompany().toUpperCase().trim() : null
+    public int search(int offset, int limit, SessionHistoryCriteria sessionHistoryCriteria) {
+        List<PatientInvoiceEntity> invoiceEntities = patientInvoiceRepository.search(sessionHistoryCriteria.getInsuranceCompany() != null ? sessionHistoryCriteria.getInsuranceCompany().toUpperCase().trim() : null
                 , sessionHistoryCriteria.getClient() != null ? sessionHistoryCriteria.getClient().toUpperCase().trim() : null
                 , sessionHistoryCriteria.getProvider() != null ? sessionHistoryCriteria.getProvider().toUpperCase().trim() : null
                 , sessionHistoryCriteria.getDosStart() != null ? sessionHistoryCriteria.getDosStart() : null
                 , sessionHistoryCriteria.getDosEnd() != null ? sessionHistoryCriteria.getDosEnd() : null
                 , sessionHistoryCriteria.getSubmitStart() != null ? sessionHistoryCriteria.getSubmitStart() : null
                 , sessionHistoryCriteria.getSubmitEnd() != null ? sessionHistoryCriteria.getSubmitEnd() : null);
+        System.out.println();
+        return 1;
     }
 
     private SessionHistoryResponse constructSessionHistoryResponse(int offset, int limit) {
