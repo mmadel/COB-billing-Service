@@ -3,6 +3,8 @@ package com.cob.billing.model.bill.invoice.search;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 @Getter
 public class SessionHistoryCriteria {
@@ -14,4 +16,5 @@ public class SessionHistoryCriteria {
     private Long dosEnd;
     private Long submitStart;
     private Long submitEnd;
+    private List<String> selectedStatus;
 }
