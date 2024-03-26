@@ -25,7 +25,7 @@ public class FeeScheduleLineEntity {
     @Column(name = "charge_amount")
     private Float chargeAmount;
     @ManyToOne
-    @JoinColumn(name="fee_schedule_id", nullable=false)
+    @JoinColumn(name="fee_schedule_id")
     private FeeScheduleEntity feeSchedule;
 
 }

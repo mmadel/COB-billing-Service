@@ -23,7 +23,7 @@ public class FeeScheduleEntity {
     @Column(name = "default_fee")
     private Boolean defaultFee;
 
-    @OneToMany(mappedBy = "feeSchedule")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "feeSchedule")
     private List<FeeScheduleLineEntity> feeLines;
 
     @PrePersist
