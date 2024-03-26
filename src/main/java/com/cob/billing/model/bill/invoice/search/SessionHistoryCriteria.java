@@ -1,5 +1,6 @@
 package com.cob.billing.model.bill.invoice.search;
 
+import com.cob.billing.enums.SubmissionStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,5 +17,5 @@ public class SessionHistoryCriteria {
     private Long dosEnd;
     private Long submitStart;
     private Long submitEnd;
-    private List<String> selectedStatus;
+    private List<SubmissionStatus> selectedStatus;
 }
