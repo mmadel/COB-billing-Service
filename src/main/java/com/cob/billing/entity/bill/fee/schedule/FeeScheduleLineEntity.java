@@ -1,7 +1,6 @@
 package com.cob.billing.entity.bill.fee.schedule;
 
 import com.cob.billing.enums.RateType;
-import com.cob.billing.enums.SubmissionStatus;
 import lombok.Getter;
 import lombok.Setter;
 
