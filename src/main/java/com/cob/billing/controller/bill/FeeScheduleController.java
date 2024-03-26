@@ -26,4 +26,8 @@ public class FeeScheduleController {
     public ResponseEntity find() {
         return new ResponseEntity(findFeeSchedulesUseCase.find(), HttpStatus.OK);
     }
+    @GetMapping("/find/id/{id}")
+    public ResponseEntity find(@PathVariable Long id) {
+        return new ResponseEntity(findFeeSchedulesUseCase.findById(id), HttpStatus.OK);
+    }
 }

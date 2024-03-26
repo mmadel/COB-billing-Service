@@ -21,4 +21,7 @@ public class FindFeeSchedulesUseCase {
         return StreamSupport.stream(feeScheduleRepository.findAll().spliterator(), false)
                 .map(feeScheduleEntity -> mapper.map(feeScheduleEntity, FeeScheduleModel.class)).collect(Collectors.toList());
     }
+    public FeeScheduleModel findById(Long id){
+        return mapper.map(feeScheduleRepository.findById(id).get(),FeeScheduleModel.class);
+    }
 }
