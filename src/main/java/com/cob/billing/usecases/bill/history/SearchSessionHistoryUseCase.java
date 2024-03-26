@@ -29,7 +29,6 @@ public class SearchSessionHistoryUseCase {
                 , sessionHistoryCriteria.getDosEnd() != null ? sessionHistoryCriteria.getDosEnd() : null
                 , sessionHistoryCriteria.getSubmitStart() != null ? sessionHistoryCriteria.getSubmitStart() : null
                 , sessionHistoryCriteria.getSubmitEnd() != null ? sessionHistoryCriteria.getSubmitEnd() : null);
-        System.out.println();
         return constructSessionHistoryResponse(offset, limit, invoiceEntities);
     }
 
