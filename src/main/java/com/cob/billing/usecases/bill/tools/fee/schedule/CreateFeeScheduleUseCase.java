@@ -16,10 +16,19 @@ public class CreateFeeScheduleUseCase {
     FeeScheduleLineRepository feeScheduleLineRepository;
     @Autowired
     ModelMapper mapper;
+    @Autowired
+    RemoveFeeSchedulesUseCase removeFeeSchedulesUseCase;
+
     public Long createFeeSchedule(FeeScheduleModel model) {
-        FeeScheduleEntity feeSchedule = mapper.map(model , FeeScheduleEntity.class);
+        if (model.getId() != null)
+            removeFeeSchedulesUseCase.remove(model.getId());
+        FeeScheduleEntity feeSchedule = mapper.map(model, FeeScheduleEntity.class);
+        feeSchedule.setId(null);
         FeeScheduleEntity created = feeScheduleRepository.save(feeSchedule);
-        feeSchedule.getFeeLines().forEach(feeScheduleLineEntity -> feeScheduleLineEntity.setFeeSchedule(created));
+        feeSchedule.getFeeLines().forEach(feeScheduleLineEntity -> {
+            feeScheduleLineEntity.setId(null);
+            feeScheduleLineEntity.setFeeSchedule(created);
+        });
         feeScheduleLineRepository.saveAll(feeSchedule.getFeeLines());
         return feeSchedule.getId();
     }

@@ -38,4 +38,12 @@ public class FeeScheduleController {
     public ResponseEntity delete(@PathVariable Long id) {
         return new ResponseEntity(removeFeeSchedulesUseCase.remove(id), HttpStatus.OK);
     }
+
+    @PutMapping("/update")
+    public ResponseEntity update(@RequestBody FeeScheduleModel model) {
+        /*todo
+            remove logic to remove then update
+         */
+        return new ResponseEntity(createFeeScheduleUseCase.createFeeSchedule(model), HttpStatus.OK);
+    }
 }
