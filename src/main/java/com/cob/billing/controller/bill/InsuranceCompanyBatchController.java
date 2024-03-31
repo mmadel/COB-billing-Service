@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/posting")
-public class PostingController {
+public class InsuranceCompanyBatchController {
     @Autowired
     FindSubmittedSessionsByPatientUseCase findSubmittedSessionsByPatientUseCase;
     @Autowired
