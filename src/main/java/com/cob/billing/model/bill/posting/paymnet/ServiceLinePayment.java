@@ -22,5 +22,4 @@ public class ServiceLinePayment {
 
     private Long serviceLineId;
 
-
 }
