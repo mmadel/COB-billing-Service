@@ -7,10 +7,10 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "patient_session_service_line_payment_detail")
+@Table(name = "patient_session_service_line_payment_Info")
 @Setter
 @Getter
-public class PatientSessionServiceLinePaymentDetailsEntity {
+public class PatientSessionServiceLinePaymentInfoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -34,8 +34,4 @@ public class PatientSessionServiceLinePaymentDetailsEntity {
     private Long depositDate;
     @Column(name = "insurance_company")
     private String insuranceCompany;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "payment_id")
-    private PatientSessionServiceLinePaymentEntity patientSessionServiceLinePayment;
 }

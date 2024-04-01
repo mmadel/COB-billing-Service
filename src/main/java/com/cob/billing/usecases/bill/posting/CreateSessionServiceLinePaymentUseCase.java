@@ -1,9 +1,11 @@
 package com.cob.billing.usecases.bill.posting;
 
 import com.cob.billing.entity.bill.payment.PatientSessionServiceLinePaymentEntity;
+import com.cob.billing.entity.bill.payment.PatientSessionServiceLinePaymentInfoEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.model.bill.posting.paymnet.ServiceLinePayment;
 import com.cob.billing.model.bill.posting.paymnet.ServiceLinePaymentRequest;
+import com.cob.billing.repositories.bill.posting.PatientSessionServiceLinePaymentInfoRepository;
 import com.cob.billing.repositories.bill.posting.PatientSessionServiceLinePaymentRepository;
 import com.cob.billing.repositories.clinical.session.ServiceLineRepository;
 import org.modelmapper.ModelMapper;
@@ -23,6 +25,8 @@ public class CreateSessionServiceLinePaymentUseCase {
     @Autowired
     PatientSessionServiceLinePaymentRepository patientSessionServiceLinePaymentRepository;
     @Autowired
+    PatientSessionServiceLinePaymentInfoRepository patientSessionServiceLinePaymentDetailsEntityRepository;
+    @Autowired
     ServiceLineRepository serviceLineRepository;
     private Map<Long, PatientSessionServiceLineEntity> serviceLineCache;
 
@@ -32,16 +36,18 @@ public class CreateSessionServiceLinePaymentUseCase {
         Save Service Line Details and assign to it created service Lines
       */
         cacheServiceLines(serviceLinePaymentRequest.getServiceLinePayments());
+        PatientSessionServiceLinePaymentInfoEntity paymentInfo = createPaymentInfo(serviceLinePaymentRequest);
         List<PatientSessionServiceLinePaymentEntity> entities = serviceLinePaymentRequest.getServiceLinePayments()
                 .stream()
-                .map(serviceLinePayment -> mapServiceLinePayment(serviceLinePayment)).collect(Collectors.toList());
+                .map(serviceLinePayment -> mapServiceLinePayment(serviceLinePayment, paymentInfo)).collect(Collectors.toList());
         patientSessionServiceLinePaymentRepository.saveAll(entities);
     }
 
-    private PatientSessionServiceLinePaymentEntity mapServiceLinePayment(ServiceLinePayment serviceLinePayment) {
+    private PatientSessionServiceLinePaymentEntity mapServiceLinePayment(ServiceLinePayment serviceLinePayment, PatientSessionServiceLinePaymentInfoEntity paymentInfo) {
 
         PatientSessionServiceLinePaymentEntity patientSessionServiceLinePayment = mapper.map(serviceLinePayment, PatientSessionServiceLinePaymentEntity.class);
         patientSessionServiceLinePayment.setServiceLine(serviceLineCache.get(serviceLinePayment.getServiceLineId()));
+        patientSessionServiceLinePayment.setPatientSessionServiceLinePaymentInfoEntity(paymentInfo);
         return patientSessionServiceLinePayment;
     }
 
@@ -53,5 +59,10 @@ public class CreateSessionServiceLinePaymentUseCase {
                 .forEach(patientSessionServiceLineEntity -> {
                     serviceLineCache.put(patientSessionServiceLineEntity.getId(), patientSessionServiceLineEntity);
                 });
+    }
+
+    private PatientSessionServiceLinePaymentInfoEntity createPaymentInfo(ServiceLinePaymentRequest serviceLinePaymentRequest) {
+        PatientSessionServiceLinePaymentInfoEntity paymentInfo = mapper.map(serviceLinePaymentRequest, PatientSessionServiceLinePaymentInfoEntity.class);
+        return patientSessionServiceLinePaymentDetailsEntityRepository.save(paymentInfo);
     }
 }

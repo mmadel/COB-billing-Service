@@ -35,4 +35,8 @@ public class PatientSessionServiceLinePaymentEntity {
     @JoinColumn(name = "service_Line", referencedColumnName = "id")
     private PatientSessionServiceLineEntity serviceLine;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_Info_id")
+    PatientSessionServiceLinePaymentInfoEntity patientSessionServiceLinePaymentInfoEntity;
+
 }
