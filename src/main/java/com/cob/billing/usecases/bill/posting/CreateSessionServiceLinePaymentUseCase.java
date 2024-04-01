@@ -11,6 +11,7 @@ import com.cob.billing.repositories.clinical.session.ServiceLineRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,15 +22,21 @@ import java.util.stream.StreamSupport;
 @Component
 public class CreateSessionServiceLinePaymentUseCase {
     @Autowired
-    ModelMapper mapper;
+    private ModelMapper mapper;
     @Autowired
-    PatientSessionServiceLinePaymentRepository patientSessionServiceLinePaymentRepository;
+    private PatientSessionServiceLinePaymentRepository patientSessionServiceLinePaymentRepository;
     @Autowired
-    PatientSessionServiceLinePaymentInfoRepository patientSessionServiceLinePaymentDetailsEntityRepository;
+    private PatientSessionServiceLinePaymentInfoRepository patientSessionServiceLinePaymentDetailsEntityRepository;
     @Autowired
-    ServiceLineRepository serviceLineRepository;
+    private ServiceLineRepository serviceLineRepository;
+    @Autowired
+    UpdateServiceLinesStatusUseCase updateServiceLinesStatusUseCase;
+    @Autowired
+    UpdateSessionStatusUseCase updateSessionStatusUseCase;
+
     private Map<Long, PatientSessionServiceLineEntity> serviceLineCache;
 
+    @Transactional
     public void create(ServiceLinePaymentRequest serviceLinePaymentRequest) {
      /*
         Save Service Line Payment and assign to it catching service line by its id
@@ -41,6 +48,9 @@ public class CreateSessionServiceLinePaymentUseCase {
                 .stream()
                 .map(serviceLinePayment -> mapServiceLinePayment(serviceLinePayment, paymentInfo)).collect(Collectors.toList());
         patientSessionServiceLinePaymentRepository.saveAll(entities);
+
+        updateServiceLinesStatusUseCase.update(serviceLinePaymentRequest.getServiceLinePayments());
+        updateSessionStatusUseCase.update(serviceLinePaymentRequest.getServiceLinePayments());
     }
 
     private PatientSessionServiceLinePaymentEntity mapServiceLinePayment(ServiceLinePayment serviceLinePayment, PatientSessionServiceLinePaymentInfoEntity paymentInfo) {
