@@ -10,11 +10,12 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ServiceLinePayment {
 
-    public ServiceLinePayment(double balance, double payment, double adjust , Long serviceLineId) {
+    public ServiceLinePayment(double balance, double payment, double adjust , Long serviceLineId,Long createdAt) {
         this.balance = balance;
         this.payment = payment;
         this.adjust = adjust;
         this.serviceLineId = serviceLineId;
+        this.createdAt = createdAt;
     }
 
     private Long id;
@@ -28,5 +29,6 @@ public class ServiceLinePayment {
     private ServiceLinePaymentAction serviceLinePaymentAction;
 
     private Long serviceLineId;
+    private Long createdAt;
 
 }

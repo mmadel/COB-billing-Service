@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "patient_session_service_line_payment")
@@ -26,6 +27,9 @@ public class PatientSessionServiceLinePaymentEntity {
     @Column(name = "adjust")
     private double adjust;
 
+    @Column(name = "created_at")
+    private Long createdAt;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_action")
     private ServiceLinePaymentAction serviceLinePaymentAction;
@@ -38,5 +42,10 @@ public class PatientSessionServiceLinePaymentEntity {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "payment_Info_id")
     PatientSessionServiceLinePaymentInfoEntity patientSessionServiceLinePaymentInfoEntity;
+
+    @PrePersist
+    private void setCreatedDate() {
+        createdAt = new Date().getTime();
+    }
 
 }
