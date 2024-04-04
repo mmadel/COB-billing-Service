@@ -15,6 +15,7 @@ public class PatientSessionServiceLine {
     private String cpt;
     private Integer unit;
     private double charge;
+    private double payments;
     private PatientSession data;
     private Long cptId;
     private ServiceLine serviceCode;
