@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-public class PaymentServiceLine {
+public class BatchServiceLinePayment {
 
     private Long sessionId;
     private Long ServiceCodeId;

@@ -1,6 +1,6 @@
 package com.cob.billing.controller.bill;
 
-import com.cob.billing.model.bill.posting.PaymentServiceLine;
+import com.cob.billing.model.bill.posting.BatchServiceLinePayment;
 import com.cob.billing.model.bill.posting.filter.PostingSearchCriteria;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.invoice.FindSubmittedSessionsByPatientUseCase;
@@ -47,14 +47,14 @@ public class InsuranceCompanyBatchController {
     }
 
     @PostMapping("/create/payments/clientId/{clientId}")
-    public ResponseEntity create(@RequestBody List<PaymentServiceLine> payments
+    public ResponseEntity create(@RequestBody List<BatchServiceLinePayment> payments
             , @PathVariable Long clientId) {
         createServiceLinesPaymentUseCase.create(payments, clientId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/create/payments/insurance/company")
-    public ResponseEntity create(@RequestBody Map<Long, List<PaymentServiceLine>> payments) {
+    public ResponseEntity create(@RequestBody Map<Long, List<BatchServiceLinePayment>> payments) {
         createServiceLinesPaymentUseCase.create(payments);
         return new ResponseEntity(HttpStatus.OK);
     }

@@ -3,11 +3,9 @@ package com.cob.billing.usecases.clinical.patient;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.insurance.PatientInsuranceEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
-import com.cob.billing.model.bill.posting.paymnet.ServiceLinePayment;
 import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsurance;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
-import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.repositories.clinical.PatientInsuranceRepository;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import com.cob.billing.usecases.bill.posting.FindSessionPaymentUseCase;
@@ -17,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Component

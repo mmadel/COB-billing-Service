@@ -2,7 +2,7 @@ package com.cob.billing.usecases.bill.invoice;
 
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
-import com.cob.billing.model.bill.posting.PaymentServiceLine;
+import com.cob.billing.model.bill.posting.BatchServiceLinePayment;
 import com.cob.billing.model.bill.posting.filter.PostingSearchCriteria;
 import com.cob.billing.model.response.ClientPostingPaymentResponse;
 import com.cob.billing.repositories.bill.invoice.PatientInvoiceDetailsRepository;
@@ -37,8 +37,8 @@ public class FindSubmittedSessionsByPatientUseCase {
 
     public ClientPostingPaymentResponse find(int offset, int limit, Long clientId) {
         List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findSubmittedSessionsByPatient(clientId);
-        List<PaymentServiceLine> response = createPaymentServiceLineResponse(patientSessionEntities);
-        List<PaymentServiceLine> records = PaginationUtil.paginate(response, offset, limit);
+        List<BatchServiceLinePayment> response = createPaymentServiceLineResponse(patientSessionEntities);
+        List<BatchServiceLinePayment> records = PaginationUtil.paginate(response, offset, limit);
         return ClientPostingPaymentResponse.builder()
                 .number_of_records(response.size())
                 .number_of_matching_records((int) records.size())
@@ -48,8 +48,8 @@ public class FindSubmittedSessionsByPatientUseCase {
 
     public ClientPostingPaymentResponse find(int offset, int limit, PostingSearchCriteria postingSearchCriteria) {
         List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findSubmittedSessionsByPatientFiltered(postingSearchCriteria.getEntityId(), postingSearchCriteria.getStartDate(), postingSearchCriteria.getEndDate());
-        List<PaymentServiceLine> response = createPaymentServiceLineResponse(patientSessionEntities);
-        List<PaymentServiceLine> records = PaginationUtil.paginate(response, offset, limit);
+        List<BatchServiceLinePayment> response = createPaymentServiceLineResponse(patientSessionEntities);
+        List<BatchServiceLinePayment> records = PaginationUtil.paginate(response, offset, limit);
         return ClientPostingPaymentResponse.builder()
                 .number_of_records(response.size())
                 .number_of_matching_records((int) records.size())
@@ -57,8 +57,8 @@ public class FindSubmittedSessionsByPatientUseCase {
                 .build();
     }
 
-    public Map<String, List<PaymentServiceLine>> findInsuranceCompany(Long insuranceCompanyId) {
-        Map<String, List<PaymentServiceLine>> paymentServiceLinePatientMap = new HashMap<>();
+    public Map<String, List<BatchServiceLinePayment>> findInsuranceCompany(Long insuranceCompanyId) {
+        Map<String, List<BatchServiceLinePayment>> paymentServiceLinePatientMap = new HashMap<>();
 
         patientInvoiceDetailsRepository.findBySessionSubmittedByInsuranceCompany(insuranceCompanyId).stream()
                 .forEach(patientInvoiceDetails -> {
@@ -66,12 +66,12 @@ public class FindSubmittedSessionsByPatientUseCase {
                             + patientInvoiceDetails.getPatientInvoice().getPatient().getFirstName() + ","
                             + patientInvoiceDetails.getPatientInvoice().getPatient().getId();
                     if (paymentServiceLinePatientMap.get(patient) == null) {
-                        List<PaymentServiceLine> records = new ArrayList<>();
+                        List<BatchServiceLinePayment> records = new ArrayList<>();
                         records.add(constructServiceLine(patientInvoiceDetails.getServiceLine(),
                                 patientInvoiceDetails.getPatientSession()));
                         paymentServiceLinePatientMap.put(patient, records);
                     } else {
-                        List<PaymentServiceLine> records = paymentServiceLinePatientMap.get(patient);
+                        List<BatchServiceLinePayment> records = paymentServiceLinePatientMap.get(patient);
                         records.add(constructServiceLine(patientInvoiceDetails.getServiceLine(), patientInvoiceDetails.getPatientSession()));
                     }
                 });
@@ -79,22 +79,22 @@ public class FindSubmittedSessionsByPatientUseCase {
         return paymentServiceLinePatientMap;
     }
 
-    private List<PaymentServiceLine> createPaymentServiceLineResponse(List<PatientSessionEntity> patientSessionEntities) {
-        List<PaymentServiceLine> response = new ArrayList<>();
+    private List<BatchServiceLinePayment> createPaymentServiceLineResponse(List<PatientSessionEntity> patientSessionEntities) {
+        List<BatchServiceLinePayment> response = new ArrayList<>();
         patientSessionEntities.stream()
                 .forEach(patientSessionEntity -> {
                     patientSessionEntity.getServiceCodes().stream()
                             .forEach(patientSessionServiceLineEntity -> {
-                                PaymentServiceLine paymentServiceLine = constructServiceLine(patientSessionServiceLineEntity,
+                                BatchServiceLinePayment batchServiceLinePayment = constructServiceLine(patientSessionServiceLineEntity,
                                         patientSessionEntity);
-                                response.add(paymentServiceLine);
+                                response.add(batchServiceLinePayment);
                             });
                 });
         return response;
     }
 
-    private PaymentServiceLine constructServiceLine(PatientSessionServiceLineEntity serviceLine, PatientSessionEntity patientSession) {
-        return PaymentServiceLine.builder()
+    private BatchServiceLinePayment constructServiceLine(PatientSessionServiceLineEntity serviceLine, PatientSessionEntity patientSession) {
+        return BatchServiceLinePayment.builder()
                 .sessionId(patientSession.getId())
                 .ServiceCodeId(serviceLine.getId())
                 .dateOfService(patientSession.getServiceDate())

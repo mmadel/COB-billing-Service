@@ -1,6 +1,6 @@
 package com.cob.billing.usecases.clinical.patient;
 
-import com.cob.billing.model.bill.posting.paymnet.ServiceLinePayment;
+import com.cob.billing.model.bill.posting.paymnet.SessionServiceLinePayment;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.usecases.bill.posting.FindSessionPaymentUseCase;
@@ -19,15 +19,15 @@ public class EnrichServiceLineWithPaymentUseCase {
         List<Long> serviceLinesIds = patientSession.getServiceCodes().stream()
                 .map(ServiceLine::getId)
                 .collect(Collectors.toList());
-        List<ServiceLinePayment> serviceLinePayments = findSessionPaymentUseCase.findByServiceLines(serviceLinesIds);
+        List<SessionServiceLinePayment> sessionServiceLinePayments = findSessionPaymentUseCase.findByServiceLines(serviceLinesIds);
         patientSession.getServiceCodes().stream()
                 .forEach(serviceLine -> {
-                    serviceLine.setPayments(calculateServiceLinePayment(serviceLinePayments, serviceLine.getId()));
+                    serviceLine.setPayments(calculateServiceLinePayment(sessionServiceLinePayments, serviceLine.getId()));
                 });
     }
-    private double calculateServiceLinePayment(List<ServiceLinePayment> serviceLinePayments, Long serviceLineId) {
+    private double calculateServiceLinePayment(List<SessionServiceLinePayment> sessionServiceLinePayments, Long serviceLineId) {
         AtomicReference<Double> payments = new AtomicReference<>((double) 0);
-        serviceLinePayments.forEach(serviceLinePayment -> {
+        sessionServiceLinePayments.forEach(serviceLinePayment -> {
             if (serviceLinePayment.getServiceLineId().equals(serviceLineId)) {
                 payments.set(payments.get() + serviceLinePayment.getPayment());
             }

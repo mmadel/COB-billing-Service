@@ -6,7 +6,7 @@ import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.enums.PatientSessionStatus;
 import com.cob.billing.enums.SessionAction;
-import com.cob.billing.model.bill.posting.PaymentServiceLine;
+import com.cob.billing.model.bill.posting.BatchServiceLinePayment;
 import com.cob.billing.repositories.bill.posting.PatientPaymentServiceLineRepository;
 import com.cob.billing.repositories.clinical.PatientRepository;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
@@ -36,7 +36,7 @@ public class CreateServiceLinesPaymentUseCase {
     ModelMapper mapper;
 
     @Transactional
-    public void create(List<PaymentServiceLine> payments, Long patientId) {
+    public void create(List<BatchServiceLinePayment> payments, Long patientId) {
         PatientEntity patient = patientRepository.findById(patientId).get();
         List<PatientPaymentServiceLineEntity> serviceLineEntities = payments.stream()
                 .map(paymentServiceLine -> {
@@ -46,10 +46,10 @@ public class CreateServiceLinesPaymentUseCase {
                 })
                 .collect(Collectors.toList());
         patientPaymentServiceLineRepository.saveAll(serviceLineEntities);
-        Map<Long, List<PaymentServiceLine>> groupedSessions = payments.stream()
-                .collect(Collectors.groupingBy(PaymentServiceLine::getSessionId));
+        Map<Long, List<BatchServiceLinePayment>> groupedSessions = payments.stream()
+                .collect(Collectors.groupingBy(BatchServiceLinePayment::getSessionId));
         List<Long> sessionId = new ArrayList<>();
-        List<PaymentServiceLine> serviceLines = new ArrayList<>();
+        List<BatchServiceLinePayment> serviceLines = new ArrayList<>();
         groupedSessions.entrySet().stream()
                 .forEach(sessionGroup -> {
                     sessionId.add(sessionGroup.getKey());
@@ -59,13 +59,13 @@ public class CreateServiceLinesPaymentUseCase {
         evaluateSessionStatus(sessionId);
     }
 
-    public void create(Map<Long, List<PaymentServiceLine>> payments) {
+    public void create(Map<Long, List<BatchServiceLinePayment>> payments) {
         payments.forEach((patientId, paymentsServiceLines) -> {
             create(paymentsServiceLines, patientId);
         });
     }
 
-    private void evaluateServiceLinesStatus(List<PaymentServiceLine> payments) {
+    private void evaluateServiceLinesStatus(List<BatchServiceLinePayment> payments) {
         List<Long> resubmittedServiceLines = new ArrayList<>();
         List<Long> closedServiceLines = new ArrayList<>();
         payments.forEach(paymentServiceLine -> {

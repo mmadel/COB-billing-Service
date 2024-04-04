@@ -3,7 +3,7 @@ package com.cob.billing.usecases.bill.posting;
 
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.enums.PatientSessionStatus;
-import com.cob.billing.model.bill.posting.paymnet.ServiceLinePayment;
+import com.cob.billing.model.bill.posting.paymnet.SessionServiceLinePayment;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,10 +17,10 @@ public class UpdateSessionStatusUseCase {
     @Autowired
     PatientSessionRepository patientSessionRepository;
 
-    public void update(List<ServiceLinePayment> serviceLinePayments) {
+    public void update(List<SessionServiceLinePayment> sessionServiceLinePayments) {
         List<PatientSessionEntity> submitSessions = new ArrayList<>();
         List<PatientSessionEntity> partialSessions = new ArrayList<>();
-        List<Long> serviceLinesIds = serviceLinePayments.stream().map(serviceLinePayment -> serviceLinePayment.getServiceLineId())
+        List<Long> serviceLinesIds = sessionServiceLinePayments.stream().map(serviceLinePayment -> serviceLinePayment.getServiceLineId())
                 .collect(Collectors.toList());
         List<PatientSessionEntity> sessions = patientSessionRepository.findSessionByServiceCodeIds(serviceLinesIds);
         sessions.stream()

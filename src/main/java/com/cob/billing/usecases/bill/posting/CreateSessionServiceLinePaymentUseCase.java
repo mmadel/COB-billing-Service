@@ -3,7 +3,7 @@ package com.cob.billing.usecases.bill.posting;
 import com.cob.billing.entity.bill.payment.PatientSessionServiceLinePaymentEntity;
 import com.cob.billing.entity.bill.payment.PatientSessionServiceLinePaymentInfoEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
-import com.cob.billing.model.bill.posting.paymnet.ServiceLinePayment;
+import com.cob.billing.model.bill.posting.paymnet.SessionServiceLinePayment;
 import com.cob.billing.model.bill.posting.paymnet.ServiceLinePaymentRequest;
 import com.cob.billing.repositories.bill.posting.PatientSessionServiceLinePaymentInfoRepository;
 import com.cob.billing.repositories.bill.posting.PatientSessionServiceLinePaymentRepository;
@@ -42,27 +42,27 @@ public class CreateSessionServiceLinePaymentUseCase {
         Save Service Line Payment and assign to it catching service line by its id
         Save Service Line Details and assign to it created service Lines
       */
-        cacheServiceLines(serviceLinePaymentRequest.getServiceLinePayments());
+        cacheServiceLines(serviceLinePaymentRequest.getSessionServiceLinePayments());
         PatientSessionServiceLinePaymentInfoEntity paymentInfo = createPaymentInfo(serviceLinePaymentRequest);
-        List<PatientSessionServiceLinePaymentEntity> entities = serviceLinePaymentRequest.getServiceLinePayments()
+        List<PatientSessionServiceLinePaymentEntity> entities = serviceLinePaymentRequest.getSessionServiceLinePayments()
                 .stream()
                 .map(serviceLinePayment -> mapServiceLinePayment(serviceLinePayment, paymentInfo)).collect(Collectors.toList());
         patientSessionServiceLinePaymentRepository.saveAll(entities);
 
-        updateServiceLinesStatusUseCase.update(serviceLinePaymentRequest.getServiceLinePayments());
-        updateSessionStatusUseCase.update(serviceLinePaymentRequest.getServiceLinePayments());
+        updateServiceLinesStatusUseCase.update(serviceLinePaymentRequest.getSessionServiceLinePayments());
+        updateSessionStatusUseCase.update(serviceLinePaymentRequest.getSessionServiceLinePayments());
     }
 
-    private PatientSessionServiceLinePaymentEntity mapServiceLinePayment(ServiceLinePayment serviceLinePayment, PatientSessionServiceLinePaymentInfoEntity paymentInfo) {
+    private PatientSessionServiceLinePaymentEntity mapServiceLinePayment(SessionServiceLinePayment sessionServiceLinePayment, PatientSessionServiceLinePaymentInfoEntity paymentInfo) {
 
-        PatientSessionServiceLinePaymentEntity patientSessionServiceLinePayment = mapper.map(serviceLinePayment, PatientSessionServiceLinePaymentEntity.class);
-        patientSessionServiceLinePayment.setServiceLine(serviceLineCache.get(serviceLinePayment.getServiceLineId()));
+        PatientSessionServiceLinePaymentEntity patientSessionServiceLinePayment = mapper.map(sessionServiceLinePayment, PatientSessionServiceLinePaymentEntity.class);
+        patientSessionServiceLinePayment.setServiceLine(serviceLineCache.get(sessionServiceLinePayment.getServiceLineId()));
         patientSessionServiceLinePayment.setPatientSessionServiceLinePaymentInfoEntity(paymentInfo);
         return patientSessionServiceLinePayment;
     }
 
-    private void cacheServiceLines(List<ServiceLinePayment> serviceLinePayments) {
-        List<Long> serviceLinesIds = serviceLinePayments.stream().map(serviceLinePayment -> serviceLinePayment.getServiceLineId())
+    private void cacheServiceLines(List<SessionServiceLinePayment> sessionServiceLinePayments) {
+        List<Long> serviceLinesIds = sessionServiceLinePayments.stream().map(serviceLinePayment -> serviceLinePayment.getServiceLineId())
                 .collect(Collectors.toList());
         serviceLineCache = new HashMap();
         StreamSupport.stream(serviceLineRepository.findAllById(serviceLinesIds).spliterator(), false)

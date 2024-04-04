@@ -28,6 +28,6 @@ public class ServiceLinePaymentRequest {
 
     private String insuranceCompany;
 
-    private List<ServiceLinePayment> serviceLinePayments;
+    private List<SessionServiceLinePayment> sessionServiceLinePayments;
 
 }

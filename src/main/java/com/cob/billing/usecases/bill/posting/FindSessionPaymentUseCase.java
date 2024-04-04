@@ -1,6 +1,6 @@
 package com.cob.billing.usecases.bill.posting;
 
-import com.cob.billing.model.bill.posting.paymnet.ServiceLinePayment;
+import com.cob.billing.model.bill.posting.paymnet.SessionServiceLinePayment;
 import com.cob.billing.repositories.bill.posting.PatientSessionServiceLinePaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,16 +18,16 @@ public class FindSessionPaymentUseCase {
     private PatientSessionServiceLinePaymentRepository patientSessionServiceLinePaymentRepository;
 
 
-    public List<ServiceLinePayment> findByServiceLines(List<Long> serviceLinesIds) {
-        List<ServiceLinePayment> result = new ArrayList<>();
-        List<ServiceLinePayment> list =patientSessionServiceLinePaymentRepository.findByServiceLines(serviceLinesIds).get();
-        Map<Long, List<ServiceLinePayment>> groupingByServiceId = list.stream()
-                .collect(Collectors.groupingBy(ServiceLinePayment::getServiceLineId));
+    public List<SessionServiceLinePayment> findByServiceLines(List<Long> serviceLinesIds) {
+        List<SessionServiceLinePayment> result = new ArrayList<>();
+        List<SessionServiceLinePayment> list =patientSessionServiceLinePaymentRepository.findByServiceLines(serviceLinesIds).get();
+        Map<Long, List<SessionServiceLinePayment>> groupingByServiceId = list.stream()
+                .collect(Collectors.groupingBy(SessionServiceLinePayment::getServiceLineId));
         for (Long key : groupingByServiceId.keySet()) {
-            List<ServiceLinePayment> groupingServiceLines =groupingByServiceId.get(key);
+            List<SessionServiceLinePayment> groupingServiceLines =groupingByServiceId.get(key);
             if(groupingServiceLines.size()>1){
-                ServiceLinePayment mostServiceLinePayment = groupingServiceLines.stream()
-                        .max(Comparator.comparingLong(ServiceLinePayment::getCreatedAt))
+                SessionServiceLinePayment mostSessionServiceLinePayment = groupingServiceLines.stream()
+                        .max(Comparator.comparingLong(SessionServiceLinePayment::getCreatedAt))
                         .orElse(null);
                 AtomicReference<Double> payment = new AtomicReference<>((double) 0);
                 AtomicReference<Double> adjust = new AtomicReference<>((double) 0);
@@ -35,8 +35,8 @@ public class FindSessionPaymentUseCase {
                     payment.set(payment.get() + serviceLinePayment.getPayment());
                     adjust.set(adjust.get() + serviceLinePayment.getAdjust());
                 });
-                ServiceLinePayment latestServiceLine = list.stream()
-                        .filter(serviceLinePayment -> serviceLinePayment.equals(mostServiceLinePayment))
+                SessionServiceLinePayment latestServiceLine = list.stream()
+                        .filter(serviceLinePayment -> serviceLinePayment.equals(mostSessionServiceLinePayment))
                                 .findFirst().get();
                 latestServiceLine.setPayment(payment.get());
                 latestServiceLine.setAdjust(adjust.get());

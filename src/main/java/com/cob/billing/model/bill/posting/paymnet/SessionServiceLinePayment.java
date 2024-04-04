@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ServiceLinePayment {
+public class SessionServiceLinePayment {
 
-    public ServiceLinePayment(double balance, double payment, double adjust , Long serviceLineId,Long createdAt) {
+    public SessionServiceLinePayment(double balance, double payment, double adjust , Long serviceLineId, Long createdAt) {
         this.balance = balance;
         this.payment = payment;
         this.adjust = adjust;
