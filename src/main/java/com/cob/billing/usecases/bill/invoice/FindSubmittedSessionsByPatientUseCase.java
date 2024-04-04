@@ -10,6 +10,7 @@ import com.cob.billing.repositories.bill.invoice.PatientInvoiceRepository;
 import com.cob.billing.repositories.bill.payer.PayerRepository;
 import com.cob.billing.repositories.clinical.PatientRepository;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
+import com.cob.billing.usecases.bill.posting.CreateBatchServiceLinePaymentUseCase;
 import com.cob.billing.util.PaginationUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ public class FindSubmittedSessionsByPatientUseCase {
     @Autowired
     PatientInvoiceDetailsRepository patientInvoiceDetailsRepository;
 
+    @Autowired
+    CreateBatchServiceLinePaymentUseCase createBatchServiceLinePaymentUseCase;
     public ClientPostingPaymentResponse find(int offset, int limit, Long clientId) {
         List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findSubmittedSessionsByPatient(clientId);
         List<BatchServiceLinePayment> response = createPaymentServiceLineResponse(patientSessionEntities);
@@ -83,12 +86,7 @@ public class FindSubmittedSessionsByPatientUseCase {
         List<BatchServiceLinePayment> response = new ArrayList<>();
         patientSessionEntities.stream()
                 .forEach(patientSessionEntity -> {
-                    patientSessionEntity.getServiceCodes().stream()
-                            .forEach(patientSessionServiceLineEntity -> {
-                                BatchServiceLinePayment batchServiceLinePayment = constructServiceLine(patientSessionServiceLineEntity,
-                                        patientSessionEntity);
-                                response.add(batchServiceLinePayment);
-                            });
+                    response.addAll(createBatchServiceLinePaymentUseCase.create(patientSessionEntity));
                 });
         return response;
     }
