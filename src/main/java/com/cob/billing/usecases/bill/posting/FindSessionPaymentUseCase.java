@@ -24,7 +24,6 @@ public class FindSessionPaymentUseCase {
         Map<Long, List<ServiceLinePayment>> groupingByServiceId = list.stream()
                 .collect(Collectors.groupingBy(ServiceLinePayment::getServiceLineId));
         for (Long key : groupingByServiceId.keySet()) {
-            System.out.println(key + ":" + groupingByServiceId.get(key));
             List<ServiceLinePayment> groupingServiceLines =groupingByServiceId.get(key);
             if(groupingServiceLines.size()>1){
                 ServiceLinePayment mostServiceLinePayment = groupingServiceLines.stream()
