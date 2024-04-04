@@ -16,4 +16,5 @@ public class ServiceLine {
     private List<String> diagnoses;
     private Boolean isCorrect;
     private String lineNote;
+    private double payments;
 }

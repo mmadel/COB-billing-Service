@@ -7,6 +7,7 @@ import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.model.clinical.patient.session.filter.PatientSessionSearchCriteria;
 import com.cob.billing.model.response.PatientSessionServiceLineResponse;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
+import com.cob.billing.usecases.clinical.patient.EnrichServiceLineWithPaymentUseCase;
 import com.cob.billing.util.PaginationUtil;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -21,7 +22,8 @@ import java.util.stream.Collectors;
 public class FindNotSubmittedSessionsByPatientUseCase {
     @Autowired
     PatientSessionRepository patientSessionRepository;
-
+    @Autowired
+    EnrichServiceLineWithPaymentUseCase enrichServiceLineWithPaymentUseCase;
     public PatientSessionServiceLineResponse find(int offset, int limit, Long patientId) {
         List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findPrepareAndPartialSessionsByPatient(patientId);
         return createPatientSessionServiceLineResponse(offset, limit, patientSessionEntities);
@@ -49,6 +51,7 @@ public class FindNotSubmittedSessionsByPatientUseCase {
                 .map(patientSessionEntity -> {
                     PatientSession patientSession = mapper.map(patientSessionEntity, PatientSession.class);
                     patientSession.setPatientName(patientSessionEntity.getPatient().getLastName() + ',' + patientSessionEntity.getPatient().getFirstName());
+                    enrichServiceLineWithPaymentUseCase.enrichPayment(patientSession);
                     return patientSession;
                 }).collect(Collectors.toList());
         List<PatientSessionServiceLine> patientSessionServiceLines = constructPatientSessionServiceLines(response);
@@ -76,6 +79,7 @@ public class FindNotSubmittedSessionsByPatientUseCase {
                                 .cpt(serviceCode.getCptCode().getServiceCode())
                                 .unit(serviceCode.getCptCode().getUnit())
                                 .charge(serviceCode.getCptCode().getCharge())
+                                .payments(serviceCode.getPayments())
                                 .cptId(serviceCode.getId())
                                 .serviceCode(serviceCode)
                                 .isCorrect(serviceCode.getIsCorrect())

@@ -20,6 +20,9 @@ public interface PatientSessionRepository extends PagingAndSortingRepository<Pat
     @Query("SELECT  ps FROM PatientSessionEntity ps  JOIN ps.serviceCodes serviceCode WHERE serviceCode.id =:serviceCodeId")
     PatientSessionEntity findSessionByServiceCodeId(@Param("serviceCodeId") Long serviceCodeId);
 
+    @Query("SELECT  ps FROM PatientSessionEntity ps  JOIN ps.serviceCodes serviceCode WHERE serviceCode.id  IN :serviceCodeIds")
+    List<PatientSessionEntity> findSessionByServiceCodeIds(@Param("serviceCodeIds") List<Long> ids);
+
     @Query("SELECT DISTINCT s , sc FROM PatientSessionEntity s INNER JOIN FETCH s.serviceCodes sc " +
             "WHERE (s.status = 'Prepare' OR s.status = 'Partial')" +
             "AND sc.type NOT IN ('Invoice', 'Cancel','Close')")

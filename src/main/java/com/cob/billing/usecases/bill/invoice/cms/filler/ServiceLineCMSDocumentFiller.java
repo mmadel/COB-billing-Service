@@ -20,6 +20,7 @@ public class ServiceLineCMSDocumentFiller {
         this.cmsForm = cmsForm;
         int counter = 1;
         double totalCharge = 0.0;
+        double totalPayments = 0.0;
         DecimalFormat df = new DecimalFormat("#.00");
         for (SelectedSessionServiceLine sessionServiceLine : patientInvoices) {
             String[] dateOfService = DateConstructor.construct(sessionServiceLine.getSessionId().getServiceDate());
@@ -76,10 +77,13 @@ public class ServiceLineCMSDocumentFiller {
             }
             counter = counter + 1;
             totalCharge = totalCharge + sessionServiceLine.getServiceLine().getCptCode().getCharge();
+            totalPayments = totalPayments + sessionServiceLine.getServiceLine().getPayments();
         }
         df.format(totalCharge);
+        df.format(totalPayments);
         getSessionDiagnosis(patientInvoices);
         cmsForm.getField("t_charge").setValue(String.valueOf(totalCharge), df.format(totalCharge).replace(".", " "));
+        cmsForm.getField("amt_paid").setValue(String.valueOf(totalPayments), df.format(totalPayments).replace(".", " "));
         cmsForm.getField("99icd").setFontSize(10.0f);
         cmsForm.getField("99icd").setValue("0");
         cmsForm.getField("prior_auth").setValue(patientInvoices.stream().findFirst().get().getSessionId().getAuthorizationNumber());
