@@ -1,5 +1,6 @@
 package com.cob.billing.model.bill.posting;
 
+import com.cob.billing.enums.ServiceLinePaymentAction;
 import com.cob.billing.enums.SessionAction;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import lombok.Setter;
 public class BatchServiceLinePayment {
 
     private Long sessionId;
-    private Long ServiceCodeId;
+    private Long serviceLineId;
     private Long dateOfService;
     private String cpt;
     private String provider;
@@ -20,8 +21,5 @@ public class BatchServiceLinePayment {
     private Double payment;
     private Double adjust;
     private double balance;
-    private SessionAction sessionAction;
-
-    private PaymentBatch paymentBatch;
-
+    private ServiceLinePaymentAction serviceLinePaymentAction;
 }

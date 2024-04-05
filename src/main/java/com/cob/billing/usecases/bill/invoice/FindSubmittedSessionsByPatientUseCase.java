@@ -94,7 +94,7 @@ public class FindSubmittedSessionsByPatientUseCase {
     private BatchServiceLinePayment constructServiceLine(PatientSessionServiceLineEntity serviceLine, PatientSessionEntity patientSession) {
         return BatchServiceLinePayment.builder()
                 .sessionId(patientSession.getId())
-                .ServiceCodeId(serviceLine.getId())
+                .serviceLineId(serviceLine.getId())
                 .dateOfService(patientSession.getServiceDate())
                 .cpt(serviceLine.getCptCode().getServiceCode() + "." + serviceLine.getCptCode().getModifier())
                 .billedValue(serviceLine.getCptCode().getCharge())
