@@ -19,7 +19,7 @@ public class EnrichServiceLineWithPaymentUseCase {
         List<Long> serviceLinesIds = patientSession.getServiceCodes().stream()
                 .map(ServiceLine::getId)
                 .collect(Collectors.toList());
-        List<SessionServiceLinePayment> sessionServiceLinePayments = findSessionPaymentUseCase.findByServiceLines(serviceLinesIds);
+        List<SessionServiceLinePayment> sessionServiceLinePayments = findSessionPaymentUseCase.find(serviceLinesIds);
         patientSession.getServiceCodes().stream()
                 .forEach(serviceLine -> {
                     serviceLine.setPayments(calculateServiceLinePayment(sessionServiceLinePayments, serviceLine.getId()));
