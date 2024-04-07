@@ -48,7 +48,7 @@ public class ConstructBatchServiceLinesPaymentsUseCase {
         if (!payments.isEmpty()) {
             result.add(buildServiceLinePayment(session, serviceLine, payments.stream().findFirst().get()));
         }else{
-            result.add(buildServiceLinePayment(session, serviceLine));
+            result.add(buildServiceLinePayment(session, serviceLine,null));
         }
         return result;
     }
