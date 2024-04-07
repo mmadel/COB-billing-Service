@@ -13,6 +13,7 @@ public class ServiceLinePaymentRequest {
 
     private ServiceLinePaymentType serviceLinePaymentType;
 
+    private Long paymentEntityId;
 
     private Long totalAmount;
 
