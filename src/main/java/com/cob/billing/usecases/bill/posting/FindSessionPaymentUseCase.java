@@ -18,7 +18,7 @@ public class FindSessionPaymentUseCase {
     private PatientSessionServiceLinePaymentRepository patientSessionServiceLinePaymentRepository;
 
 
-    public List<SessionServiceLinePayment> findByServiceLines(List<Long> serviceLinesIds) {
+    public List<SessionServiceLinePayment> find(List<Long> serviceLinesIds) {
         List<SessionServiceLinePayment> result = new ArrayList<>();
         List<SessionServiceLinePayment> list =patientSessionServiceLinePaymentRepository.findByServiceLines(serviceLinesIds).get();
         Map<Long, List<SessionServiceLinePayment>> groupingByServiceId = list.stream()

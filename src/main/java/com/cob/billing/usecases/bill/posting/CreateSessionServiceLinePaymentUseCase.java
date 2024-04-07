@@ -42,15 +42,15 @@ public class CreateSessionServiceLinePaymentUseCase {
         Save Service Line Payment and assign to it catching service line by its id
         Save Service Line Details and assign to it created service Lines
       */
-        cacheServiceLines(serviceLinePaymentRequest.getSessionServiceLinePayments());
+        cacheServiceLines(serviceLinePaymentRequest.getServiceLinePayments());
         PatientSessionServiceLinePaymentInfoEntity paymentInfo = createPaymentInfo(serviceLinePaymentRequest);
-        List<PatientSessionServiceLinePaymentEntity> entities = serviceLinePaymentRequest.getSessionServiceLinePayments()
+        List<PatientSessionServiceLinePaymentEntity> entities = serviceLinePaymentRequest.getServiceLinePayments()
                 .stream()
                 .map(serviceLinePayment -> mapServiceLinePayment(serviceLinePayment, paymentInfo)).collect(Collectors.toList());
         patientSessionServiceLinePaymentRepository.saveAll(entities);
 
-        updateServiceLinesStatusUseCase.update(serviceLinePaymentRequest.getSessionServiceLinePayments());
-        updateSessionStatusUseCase.update(serviceLinePaymentRequest.getSessionServiceLinePayments());
+        updateServiceLinesStatusUseCase.update(serviceLinePaymentRequest.getServiceLinePayments());
+        updateSessionStatusUseCase.update(serviceLinePaymentRequest.getServiceLinePayments());
     }
 
     private PatientSessionServiceLinePaymentEntity mapServiceLinePayment(SessionServiceLinePayment sessionServiceLinePayment, PatientSessionServiceLinePaymentInfoEntity paymentInfo) {

@@ -1,6 +1,7 @@
 package com.cob.billing.repositories.clinical.session;
 
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
+import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.entity.clinical.referring.provider.ReferringProviderEntity;
 import com.cob.billing.enums.PatientSessionStatus;
 import org.springframework.data.domain.Page;
@@ -73,4 +74,8 @@ public interface PatientSessionRepository extends PagingAndSortingRepository<Pat
     @Modifying
     @Query("update PatientSessionEntity ps set ps.patientAuthorization = null where ps.patient.id = :patientId")
     void unAssignAuthorization(@Param("patientId") Long patientId);
+
+    @Query("SELECT s.serviceCodes from PatientSessionEntity s  INNER JOIN  s.serviceCodes sc " +
+            "where sc.id IN :serviceLinesIds")
+    Optional<List<PatientSessionServiceLineEntity>> findByServiceLines(@Param("serviceLinesIds") List<Long> serviceLinesIds);
 }

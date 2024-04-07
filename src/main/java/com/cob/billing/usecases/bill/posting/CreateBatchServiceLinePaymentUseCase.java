@@ -23,7 +23,7 @@ public class CreateBatchServiceLinePaymentUseCase {
                 .map(PatientSessionServiceLineEntity::getId)
                 .collect(Collectors.toList());
 
-        List<SessionServiceLinePayment> sessionServiceLinePayments = findSessionPaymentUseCase.findByServiceLines(serviceLinesIds);
+        List<SessionServiceLinePayment> sessionServiceLinePayments = findSessionPaymentUseCase.find(serviceLinesIds);
         patientSession.getServiceCodes().stream()
                 .forEach(patientSessionServiceLineEntity -> {
                     BatchServiceLinePayment batchServiceLinePayment = constructBatchServiceLinePayment(patientSessionServiceLineEntity,
@@ -38,7 +38,7 @@ public class CreateBatchServiceLinePaymentUseCase {
             , List<SessionServiceLinePayment> sessionServiceLinePayments) {
         return BatchServiceLinePayment.builder()
                 .sessionId(patientSession.getId())
-                .ServiceCodeId(serviceLine.getId())
+                .serviceLineId(serviceLine.getId())
                 .dateOfService(patientSession.getServiceDate())
                 .cpt(serviceLine.getCptCode().getServiceCode() + "." + serviceLine.getCptCode().getModifier())
                 .billedValue(serviceLine.getCptCode().getCharge())

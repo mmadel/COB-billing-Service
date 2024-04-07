@@ -28,6 +28,7 @@ public class SessionServiceLinePayment {
 
     private ServiceLinePaymentAction serviceLinePaymentAction;
 
+    private BatchServiceLineData batchServiceLineData;
     private Long serviceLineId;
     private Long createdAt;
 

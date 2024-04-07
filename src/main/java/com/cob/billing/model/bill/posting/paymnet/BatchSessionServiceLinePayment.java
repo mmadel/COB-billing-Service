@@ -1,25 +1,22 @@
-package com.cob.billing.model.bill.posting;
+package com.cob.billing.model.bill.posting.paymnet;
 
 import com.cob.billing.enums.ServiceLinePaymentAction;
-import com.cob.billing.enums.SessionAction;
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-@Builder
-public class BatchServiceLinePayment {
-
-    private Long sessionId;
+public class BatchSessionServiceLinePayment {
     private Long serviceLineId;
-    private Long dateOfService;
+    private Long dos;
     private String cpt;
     private String provider;
-    private double billedValue;
-    private double previousPayments;
+    private double balance;
     private Double payment;
     private Double adjust;
-    private double balance;
+    private double previousPayment;
+    private double charge;
     private ServiceLinePaymentAction serviceLinePaymentAction;
+    private Long createdAt;
 }

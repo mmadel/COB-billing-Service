@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface InsuranceCompanyExternalRepository extends JpaRepository<InsuranceCompanyExternalEntity,Long> {
     @Query("SELECT eic FROM InsuranceCompanyExternalEntity eic where " +
             "(:name is null or upper(eic.name) LIKE CONCAT('%',:name,'%'))")
-    Optional<InsuranceCompanyExternalEntity> findByInsuranceCompanyName(@Param("name") String name);
+    Optional<List<InsuranceCompanyExternalEntity>> findByInsuranceCompanyName(@Param("name") String name);
 }

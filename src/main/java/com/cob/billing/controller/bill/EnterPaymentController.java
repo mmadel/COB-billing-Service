@@ -1,6 +1,7 @@
 package com.cob.billing.controller.bill;
 
 import com.cob.billing.model.bill.posting.paymnet.ServiceLinePaymentRequest;
+import com.cob.billing.usecases.bill.posting.ConstructServiceLinesPaymentsUseCase;
 import com.cob.billing.usecases.bill.posting.CreateSessionServiceLinePaymentUseCase;
 import com.cob.billing.usecases.bill.posting.FindSessionPaymentUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +17,16 @@ public class EnterPaymentController {
     @Autowired
     CreateSessionServiceLinePaymentUseCase createSessionServiceLinePaymentUseCase;
     @Autowired
-    FindSessionPaymentUseCase findSessionPaymentUseCase;
+    ConstructServiceLinesPaymentsUseCase constructServiceLinesPaymentsUseCase;
 
     @PostMapping("/create")
     public ResponseEntity create(@RequestBody ServiceLinePaymentRequest model) {
         createSessionServiceLinePaymentUseCase.create(model);
         return new ResponseEntity(HttpStatus.OK);
     }
+
     @GetMapping("/find/{serviceLinesIds}")
-    public ResponseEntity find(@PathVariable Long[] serviceLinesIds){
-        return new ResponseEntity(findSessionPaymentUseCase.findByServiceLines(Arrays.asList(serviceLinesIds)),HttpStatus.OK);
+    public ResponseEntity find(@PathVariable Long[] serviceLinesIds) {
+        return new ResponseEntity(constructServiceLinesPaymentsUseCase.construct(Arrays.asList(serviceLinesIds)), HttpStatus.OK);
     }
 }

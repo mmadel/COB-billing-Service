@@ -19,7 +19,8 @@ public class PatientSessionServiceLinePaymentInfoEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_type")
     private ServiceLinePaymentType serviceLinePaymentType;
-
+    @Column(name = "payment_entity_id")
+    private Long paymentEntityId;
     @Column(name = "total_amount")
     private Long totalAmount;
     @Column(name = "payment_method")

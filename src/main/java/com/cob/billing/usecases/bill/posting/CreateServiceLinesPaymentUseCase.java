@@ -69,12 +69,12 @@ public class CreateServiceLinesPaymentUseCase {
         List<Long> resubmittedServiceLines = new ArrayList<>();
         List<Long> closedServiceLines = new ArrayList<>();
         payments.forEach(paymentServiceLine -> {
-            if (paymentServiceLine.getSessionAction() != null) {
-                if (paymentServiceLine.getSessionAction().equals(SessionAction.Resubmit)) {
-                    resubmittedServiceLines.add(paymentServiceLine.getServiceCodeId());
+            if (paymentServiceLine.getServiceLinePaymentAction() != null) {
+                if (paymentServiceLine.getServiceLinePaymentAction().equals(SessionAction.Resubmit)) {
+                    resubmittedServiceLines.add(paymentServiceLine.getServiceLineId());
                 }
-                if (paymentServiceLine.getSessionAction().equals(SessionAction.Close)) {
-                    closedServiceLines.add(paymentServiceLine.getServiceCodeId());
+                if (paymentServiceLine.getServiceLinePaymentAction().equals(SessionAction.Close)) {
+                    closedServiceLines.add(paymentServiceLine.getServiceLineId());
                 }
             }
         });

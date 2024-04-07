@@ -13,6 +13,7 @@ public class ServiceLinePaymentRequest {
 
     private ServiceLinePaymentType serviceLinePaymentType;
 
+    private Long paymentEntityId;
 
     private Long totalAmount;
 
@@ -28,6 +29,6 @@ public class ServiceLinePaymentRequest {
 
     private String insuranceCompany;
 
-    private List<SessionServiceLinePayment> sessionServiceLinePayments;
+    private List<SessionServiceLinePayment> serviceLinePayments;
 
 }
