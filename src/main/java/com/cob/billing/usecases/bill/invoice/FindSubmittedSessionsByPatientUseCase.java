@@ -4,13 +4,14 @@ import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.model.bill.posting.BatchServiceLinePayment;
 import com.cob.billing.model.bill.posting.filter.PostingSearchCriteria;
-import com.cob.billing.model.response.ClientPostingPaymentResponse;
+import com.cob.billing.model.bill.posting.paymnet.BatchSessionServiceLinePayment;
+import com.cob.billing.model.response.SessionServiceLinePaymentResponse;
 import com.cob.billing.repositories.bill.invoice.PatientInvoiceDetailsRepository;
 import com.cob.billing.repositories.bill.invoice.PatientInvoiceRepository;
 import com.cob.billing.repositories.bill.payer.PayerRepository;
 import com.cob.billing.repositories.clinical.PatientRepository;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
-import com.cob.billing.usecases.bill.posting.CreateBatchServiceLinePaymentUseCase;
+import com.cob.billing.usecases.bill.posting.ConstructBatchServiceLinesPaymentsUseCase;
 import com.cob.billing.util.PaginationUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,61 +36,51 @@ public class FindSubmittedSessionsByPatientUseCase {
     PatientSessionRepository patientSessionRepository;
     @Autowired
     PatientInvoiceDetailsRepository patientInvoiceDetailsRepository;
-
     @Autowired
-    CreateBatchServiceLinePaymentUseCase createBatchServiceLinePaymentUseCase;
-    public ClientPostingPaymentResponse find(int offset, int limit, Long clientId) {
+    ConstructBatchServiceLinesPaymentsUseCase constructBatchServiceLinesPaymentsUseCase;
+
+    public SessionServiceLinePaymentResponse find(int offset, int limit, Long clientId) {
         List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findSubmittedSessionsByPatient(clientId);
-        List<BatchServiceLinePayment> response = createPaymentServiceLineResponse(patientSessionEntities);
-        List<BatchServiceLinePayment> records = PaginationUtil.paginate(response, offset, limit);
-        return ClientPostingPaymentResponse.builder()
+        List<BatchSessionServiceLinePayment> response = constructBatchServiceLinesPaymentsUseCase.construct(patientSessionEntities);
+        List<BatchSessionServiceLinePayment> records = PaginationUtil.paginate(response, offset, limit);
+        return SessionServiceLinePaymentResponse.builder()
                 .number_of_records(response.size())
                 .number_of_matching_records((int) records.size())
-                .records(records)
+                .records(response)
                 .build();
     }
 
-    public ClientPostingPaymentResponse find(int offset, int limit, PostingSearchCriteria postingSearchCriteria) {
+    public SessionServiceLinePaymentResponse find(int offset, int limit, PostingSearchCriteria postingSearchCriteria) {
         List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findSubmittedSessionsByPatientFiltered(postingSearchCriteria.getEntityId(), postingSearchCriteria.getStartDate(), postingSearchCriteria.getEndDate());
-        List<BatchServiceLinePayment> response = createPaymentServiceLineResponse(patientSessionEntities);
-        List<BatchServiceLinePayment> records = PaginationUtil.paginate(response, offset, limit);
-        return ClientPostingPaymentResponse.builder()
+        List<BatchSessionServiceLinePayment> response = constructBatchServiceLinesPaymentsUseCase.construct(patientSessionEntities);
+        List<BatchSessionServiceLinePayment> records = PaginationUtil.paginate(response, offset, limit);
+        return SessionServiceLinePaymentResponse.builder()
                 .number_of_records(response.size())
                 .number_of_matching_records((int) records.size())
-                .records(records)
+                .records(response)
                 .build();
     }
 
-    public Map<String, List<BatchServiceLinePayment>> findInsuranceCompany(Long insuranceCompanyId) {
-        Map<String, List<BatchServiceLinePayment>> paymentServiceLinePatientMap = new HashMap<>();
-
+    public Map<String, List<BatchSessionServiceLinePayment>> findInsuranceCompany(Long insuranceCompanyId) {
+        Map<String, List<BatchSessionServiceLinePayment>> paymentServiceLinePatientMap = new HashMap<>();
         patientInvoiceDetailsRepository.findBySessionSubmittedByInsuranceCompany(insuranceCompanyId).stream()
                 .forEach(patientInvoiceDetails -> {
                     String patient = patientInvoiceDetails.getPatientInvoice().getPatient().getLastName() + ","
                             + patientInvoiceDetails.getPatientInvoice().getPatient().getFirstName() + ","
                             + patientInvoiceDetails.getPatientInvoice().getPatient().getId();
                     if (paymentServiceLinePatientMap.get(patient) == null) {
-                        List<BatchServiceLinePayment> records = new ArrayList<>();
-                        records.add(constructServiceLine(patientInvoiceDetails.getServiceLine(),
-                                patientInvoiceDetails.getPatientSession()));
+                        List<BatchSessionServiceLinePayment> records = new ArrayList<>();
+                        records.addAll(constructBatchServiceLinesPaymentsUseCase.construct(patientInvoiceDetails.getPatientSession(), patientInvoiceDetails.getServiceLine()));
                         paymentServiceLinePatientMap.put(patient, records);
                     } else {
-                        List<BatchServiceLinePayment> records = paymentServiceLinePatientMap.get(patient);
-                        records.add(constructServiceLine(patientInvoiceDetails.getServiceLine(), patientInvoiceDetails.getPatientSession()));
+                        List<BatchSessionServiceLinePayment> records = paymentServiceLinePatientMap.get(patient);
+                        records.addAll(constructBatchServiceLinesPaymentsUseCase.construct(patientInvoiceDetails.getPatientSession(), patientInvoiceDetails.getServiceLine()));
                     }
                 });
 
         return paymentServiceLinePatientMap;
     }
 
-    private List<BatchServiceLinePayment> createPaymentServiceLineResponse(List<PatientSessionEntity> patientSessionEntities) {
-        List<BatchServiceLinePayment> response = new ArrayList<>();
-        patientSessionEntities.stream()
-                .forEach(patientSessionEntity -> {
-                    response.addAll(createBatchServiceLinePaymentUseCase.create(patientSessionEntity));
-                });
-        return response;
-    }
 
     private BatchServiceLinePayment constructServiceLine(PatientSessionServiceLineEntity serviceLine, PatientSessionEntity patientSession) {
         return BatchServiceLinePayment.builder()
