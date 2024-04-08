@@ -1,6 +1,6 @@
 package com.cob.billing.controller.bill;
 
-import com.cob.billing.model.bill.posting.balance.FindClientPendingServiceLinesUseCase;
+import com.cob.billing.usecases.bill.posting.balance.FindClientPendingServiceLinesUseCase;
 import com.cob.billing.model.clinical.patient.session.filter.PatientSessionSearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
