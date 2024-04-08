@@ -12,14 +12,14 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class FindClientPendingServiceLinesUseCase {
+public class FindFinalizedServiceLinesUseCase {
     @Autowired
     PatientSessionRepository patientSessionRepository;
     @Autowired
     ConstructClientBalanceStatementsUseCase constructClientBalanceStatementsUseCase;
 
     public ClientBalanceResponse find(int offset, int limit, Long patientId, PatientSessionSearchCriteria patientSessionSearchCriteria) {
-        List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findClientPendingSessions(patientId
+        List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findClientFinalizedSessions(patientId
                 , patientSessionSearchCriteria.getStartDate()
                 , patientSessionSearchCriteria.getEndDate());
         List<ClientBalance> clientStatements = constructClientBalanceStatementsUseCase.construct(patientSessionEntities);
@@ -31,6 +31,4 @@ public class FindClientPendingServiceLinesUseCase {
                 .records(records) //records
                 .build();
     }
-
-
 }
