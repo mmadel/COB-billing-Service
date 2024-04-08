@@ -6,8 +6,11 @@ import com.cob.billing.enums.ServiceLinePaymentType;
 import com.cob.billing.model.bill.posting.balance.ClientBalance;
 import com.cob.billing.model.bill.posting.paymnet.SessionServiceLinePayment;
 import com.cob.billing.model.clinical.patient.session.filter.PatientSessionSearchCriteria;
+import com.cob.billing.model.response.ClientBalanceResponse;
+import com.cob.billing.model.response.SessionHistoryResponse;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import com.cob.billing.usecases.bill.posting.FindSessionPaymentUseCase;
+import com.cob.billing.util.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +25,7 @@ public class FindClientPendingServiceLinesUseCase {
     @Autowired
     FindSessionPaymentUseCase findSessionPaymentUseCase;
 
-    public List<ClientBalance> find(Long patientId, PatientSessionSearchCriteria patientSessionSearchCriteria) {
+    public ClientBalanceResponse find(int offset, int limit, Long patientId, PatientSessionSearchCriteria patientSessionSearchCriteria) {
         List<ClientBalance> clientStatements = new ArrayList<>();
         List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findClientPendingSessions(patientId
                 , patientSessionSearchCriteria.getStartDate()
@@ -38,7 +41,12 @@ public class FindClientPendingServiceLinesUseCase {
                     clientStatements.addAll(clientStatement);
                 });
 
-        return clientStatements;
+        List<ClientBalance> records = PaginationUtil.paginate(clientStatements, offset, limit);
+        return ClientBalanceResponse.builder()
+                .number_of_records(clientStatements.size())
+                .number_of_matching_records(records.size())
+                .records(records) //records
+                .build();
     }
 
     private List<ClientBalance> createClientStatement(List<PatientSessionServiceLineEntity> serviceLines, List<SessionServiceLinePayment> payments, PatientSessionEntity session) {

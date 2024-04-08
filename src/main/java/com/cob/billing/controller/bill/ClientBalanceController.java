@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.*;
 public class ClientBalanceController {
     @Autowired
     FindClientPendingServiceLinesUseCase findClientPendingServiceLinesUseCase;
+
     @PostMapping("/find/awaiting/patient/{patientId}")
-    public ResponseEntity findAwaiting(@PathVariable(name = "patientId") Long patientId
+    public ResponseEntity findAwaiting(@RequestParam(name = "offset") int offset,
+                                       @RequestParam(name = "limit") int limit,
+                                       @PathVariable(name = "patientId") Long patientId
             , @RequestBody PatientSessionSearchCriteria patientSessionSearchCriteria) {
-        return new ResponseEntity(findClientPendingServiceLinesUseCase.find(patientId,patientSessionSearchCriteria), HttpStatus.OK);
+        return new ResponseEntity(findClientPendingServiceLinesUseCase.find(offset, limit, patientId, patientSessionSearchCriteria), HttpStatus.OK);
     }
 
     @PostMapping("/find/Finalized/patient/{patientId}")
