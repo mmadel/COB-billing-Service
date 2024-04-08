@@ -42,7 +42,7 @@ public class ConstructServiceLinesPaymentsUseCase {
             , List<SessionServiceLinePayment> sessionServiceLinePayments) {
         sessionServiceLines.forEach(patientSessionServiceLineEntity -> {
             SessionServiceLinePayment sessionServiceLinePayment = new SessionServiceLinePayment(patientSessionServiceLineEntity.getCptCode().getCharge()
-                    , 0.0, 0.0, patientSessionServiceLineEntity.getId(), null);
+                    , 0.0, 0.0, patientSessionServiceLineEntity.getId(), null,null);
             sessionServiceLinePayments.add(sessionServiceLinePayment);
 
         });
