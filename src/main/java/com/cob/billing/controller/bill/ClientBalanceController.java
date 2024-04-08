@@ -24,7 +24,7 @@ public class ClientBalanceController {
         return new ResponseEntity(findClientPendingServiceLinesUseCase.find(offset + 1, limit, patientId, patientSessionSearchCriteria), HttpStatus.OK);
     }
 
-    @PostMapping("/find/Finalized/patient/{patientId}")
+    @PostMapping("/find/finalized/patient/{patientId}")
     public ResponseEntity findFinalized(@RequestParam(name = "offset") int offset,
                                         @RequestParam(name = "limit") int limit,
                                         @PathVariable(name = "patientId") Long patientId
