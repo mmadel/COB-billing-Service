@@ -18,7 +18,7 @@ public class ClientBalanceController {
                                        @RequestParam(name = "limit") int limit,
                                        @PathVariable(name = "patientId") Long patientId
             , @RequestBody PatientSessionSearchCriteria patientSessionSearchCriteria) {
-        return new ResponseEntity(findClientPendingServiceLinesUseCase.find(offset, limit, patientId, patientSessionSearchCriteria), HttpStatus.OK);
+        return new ResponseEntity(findClientPendingServiceLinesUseCase.find(offset + 1, limit, patientId, patientSessionSearchCriteria), HttpStatus.OK);
     }
 
     @PostMapping("/find/Finalized/patient/{patientId}")
