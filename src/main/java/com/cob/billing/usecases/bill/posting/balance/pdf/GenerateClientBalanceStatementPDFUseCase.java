@@ -1,5 +1,6 @@
 package com.cob.billing.usecases.bill.posting.balance.pdf;
 
+import com.cob.billing.usecases.bill.posting.balance.pdf.generator.ClientBalanceWarning;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.PageHeader;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.LineSeparatorCreator;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.PageTitle;
@@ -47,20 +48,7 @@ public class GenerateClientBalanceStatementPDFUseCase {
 
         PageTitle.createTitle(document);
 
-        document.add(new Paragraph("\n"));
-        Paragraph warning = new Paragraph(new Text("This form should not be saved after processing. Please cross-shred or otherwise destroy this form to protect the privacy of your patients").setFont(normalText).setTextAlignment(TextAlignment.CENTER))
-                .setFontSize(7)
-                .setTextAlignment(TextAlignment.CENTER)
-                .setWidth(UnitValue.createPercentValue(100))
-                .setMarginTop(5);
-        document.add(warning);
-
-        SolidLine dd = new SolidLine();
-        dd.setLineWidth(0.3f);
-        dd.setColor(ColorConstants.BLACK);
-        document.add(new LineSeparator(dd)
-                .setWidth(UnitValue.createPercentValue(100))
-                .setMarginTop(5));
+        ClientBalanceWarning.createWarning(document);
 
         Table clientData = new Table(3);
         clientData.addCell(getCell(getClientName(), TextAlignment.LEFT));
