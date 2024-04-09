@@ -1,5 +1,8 @@
 package com.cob.billing.usecases.bill.posting.balance.pdf;
 
+import com.cob.billing.usecases.bill.posting.balance.pdf.generator.PageHeader;
+import com.cob.billing.usecases.bill.posting.balance.pdf.generator.LineSeparatorCreator;
+import com.cob.billing.usecases.bill.posting.balance.pdf.generator.PageTitle;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.colors.DeviceRgb;
@@ -34,60 +37,15 @@ public class GenerateClientBalanceStatementPDFUseCase {
         PdfFont normalText = PdfFontFactory.createFont(StandardFonts.HELVETICA);
         PdfFont boldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
 
-        Paragraph paragraph = new Paragraph()
-                .setFontSize(9);
-        paragraph.add(new Text("CITYPT \n").setFont(boldFont));
-        paragraph.add(new Text("8746 20th ave 1L \n").setFont(normalText));
-        paragraph.add(new Text("Brooklyn, NY, 11214").setFont(normalText));
+        PageHeader.create(document);
 
-        Table tableq = new Table(3).setWidth(UnitValue.createPercentValue(100));
-        ;
-
-
-        tableq.addCell(new Cell().add(getInvoiceDateParagraph()));
-        tableq.addCell(new Cell().add(getInvoiceNumberParagraph()));
-        tableq.addCell(new Cell().add(getBalanceParagraph()).setBackgroundColor(new DeviceRgb(255, 255, 204)));
-
-        Table table = new Table(3).setWidth(UnitValue.createPercentValue(100));
-
-        table.addCell(getCell(paragraph, TextAlignment.LEFT));
-        table.addCell(getCell(new Paragraph().setWidth(30), TextAlignment.CENTER));
-        table.addCell(getCell(tableq, TextAlignment.RIGHT));
-        document.add(table);
-        document.add(new Paragraph("\n"));
-        SolidLine line = new SolidLine();
-        line.setColor(ColorConstants.LIGHT_GRAY);
-        LineSeparator lineSeparator = new LineSeparator(line);
-        lineSeparator.setWidth(UnitValue.createPercentValue(50));
-        lineSeparator.setMarginTop(5);
-        document.add(lineSeparator);
-        document.add(new Paragraph("\n"));
-
-        Paragraph to = new Paragraph()
-                .setFontSize(10)
-                .setTextAlignment(TextAlignment.LEFT)
-                .setWidth(UnitValue.createPercentValue(50))
-                .setMarginTop(5);
-        to.add(new Text("To : ").setFont(boldFont));
-        to.add(new Text("  wael ahmed \n").setFont(boldFont));
-        to.add(new Text("3311 Shore PKWY, APT FF, Brooklyn, NY, \n").setFont(normalText));
-        to.add(new Text("Brooklyn, NY 11235").setFont(normalText));
-        document.add(to);
+        LineSeparatorCreator.create(document);
 
         document.add(new Paragraph("\n"));
 
+        document.add(new Paragraph("\n"));
 
-        Paragraph toProvider = new Paragraph()
-                .setFontSize(10)
-                .setTextAlignment(TextAlignment.RIGHT)
-                .setWidth(UnitValue.createPercentValue(90))
-                .setMarginTop(5);
-        toProvider.add(new Text("Please Remit To : ").setFont(boldFont).setTextAlignment(TextAlignment.LEFT));
-        toProvider.add(new Text("CITYPT \n " +
-                "8746 20th ave 1L \n " +
-                "Brooklyn, NY, 11214").setFont(normalText).setTextAlignment(TextAlignment.LEFT));
-
-        document.add(toProvider);
+        PageTitle.createTitle(document);
 
         document.add(new Paragraph("\n"));
         Paragraph warning = new Paragraph(new Text("This form should not be saved after processing. Please cross-shred or otherwise destroy this form to protect the privacy of your patients").setFont(normalText).setTextAlignment(TextAlignment.CENTER))
@@ -172,7 +130,7 @@ public class GenerateClientBalanceStatementPDFUseCase {
         finalizeDailog.add(new Text("Below are balances that are due. Each line shows a service performed. The balance is the original charge amount minus payments\n" +
                 "and adjustments applied to that service.").setFont(normalText).setTextAlignment(TextAlignment.LEFT));
         document.add(finalizeDailog);
-        float[] columnWidths = {10, 5, 5,5,15,5,5,5,5,5,5 };
+        float[] columnWidths = {10, 5, 5, 5, 15, 5, 5, 5, 5, 5, 5};
         Table finalizeTable = new Table(UnitValue.createPercentArray(columnWidths));
         finalizeTable.setWidth(UnitValue.createPercentValue(100));
         Cell DOsHeader = new Cell().add(new Paragraph("DOS")
