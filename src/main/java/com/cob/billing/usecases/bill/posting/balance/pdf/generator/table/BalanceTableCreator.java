@@ -18,7 +18,7 @@ public class BalanceTableCreator extends TableCreator {
                 DateFormat format = new SimpleDateFormat(
                         "MMM dd yyyy");
                 table.addCell(createCell(format.format(data.get(i).getDos())));
-                table.addCell(createCell("1"));
+                table.addCell(createCell(data.get(i).getLoc()));
                 table.addCell(createCell(data.get(i).getPlaceOfCode().split("_")[1]));
                 table.addCell(createCell(data.get(i).getServiceCode()));
                 table.addCell(createCell(data.get(i).getUnits().toString()));

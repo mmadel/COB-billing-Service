@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class CollectClientBalanceAccount {
+public class CollectClientBalanceAccountUseCase {
     public List<ClientBalanceAccount> collect(ClientBalanceInvoice clientBalanceInvoice) {
         List<ClientBalancePayment> paymentsCollections = new ArrayList<>();
         paymentsCollections.addAll(clientBalanceInvoice.getFinalizedClientBalance());
         paymentsCollections.addAll(clientBalanceInvoice.getPendingClientBalance());
-        return paymentsCollections.stream()
+        List<ClientBalanceAccount> clientBalanceAccounts = paymentsCollections.stream()
                 .map(ClientBalancePayment::getClientBalanceAccount)
                 .collect(Collectors.groupingBy(ClientBalanceAccount::getSessionId))
                 .values()
@@ -23,5 +23,11 @@ public class CollectClientBalanceAccount {
                 .map(list -> list.get(0))
                 .distinct()
                 .collect(Collectors.toList());
+        int counter = 0;
+        for (int i = 0; i < clientBalanceAccounts.size(); i++) {
+            counter = counter + 1;
+            clientBalanceAccounts.get(i).setLoc(counter + "");
+        }
+        return clientBalanceAccounts;
     }
 }

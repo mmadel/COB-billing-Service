@@ -101,8 +101,6 @@ public class Main {
         List<List<Integer>> groupedLists = IntStream.range(0, (list.size() + chunkSize - 1) / chunkSize)
                 .mapToObj(i -> list.subList(i * chunkSize, Math.min((i + 1) * chunkSize, list.size())))
                 .collect(Collectors.toList());
-        System.out.println();
-
     }
 
     //    private static void nestedList() {

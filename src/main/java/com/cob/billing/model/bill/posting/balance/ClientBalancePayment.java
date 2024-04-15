@@ -19,4 +19,6 @@ public class ClientBalancePayment {
     private String placeOfCode;
     private Integer units;
     private ClientBalanceAccount clientBalanceAccount;
+    private Long sessionId;
+    private String loc;
 }

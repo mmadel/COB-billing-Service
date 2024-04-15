@@ -10,6 +10,7 @@ import java.util.Objects;
 @Getter
 @Builder
 public class ClientBalanceAccount {
+    private String loc;
     private String facilityName;
     private String facilityAddress;
     private String clientName;

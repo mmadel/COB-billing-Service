@@ -37,9 +37,7 @@ public class UploadCMSFileUseCase {
         }
         merger.close();
         byte[] originalFile = outputStream.toByteArray();
-        System.out.println(originalFile.length);
         byte[] compressedFile = compress(originalFile);
-        System.out.println(compressedFile.length);
         List<PatientInvoiceEntity> toBeUpdated = new ArrayList<>();
         records.forEach(id -> {
             PatientInvoiceEntity entity = patientInvoiceRepository.findById(id).get();

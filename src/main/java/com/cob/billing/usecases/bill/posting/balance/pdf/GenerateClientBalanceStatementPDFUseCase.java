@@ -1,7 +1,9 @@
 package com.cob.billing.usecases.bill.posting.balance.pdf;
 
+import com.cob.billing.model.bill.posting.balance.ClientBalanceAccount;
 import com.cob.billing.model.bill.posting.balance.ClientBalanceInvoice;
-import com.cob.billing.usecases.bill.posting.balance.CollectClientBalanceAccount;
+import com.cob.billing.usecases.bill.posting.balance.CollectClientBalanceAccountUseCase;
+import com.cob.billing.usecases.bill.posting.balance.EnrichClientBalancePaymentUSeCase;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.*;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.table.BalanceTableCreator;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.table.ClientTableCreator;
@@ -16,19 +18,24 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class GenerateClientBalanceStatementPDFUseCase {
 
     @Autowired
-    CollectClientBalanceAccount collectClientBalanceAccount;
+    CollectClientBalanceAccountUseCase collectClientBalanceAccountUseCase;
+    @Autowired
+    EnrichClientBalancePaymentUSeCase enrichClientBalancePaymentUSeCase;
+
     public byte[] generate(ClientBalanceInvoice clientBalanceInvoice) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PdfWriter writer = new PdfWriter(outputStream);
 
         PdfDocument pdfDoc = new PdfDocument(writer);
         PageSize pageSize = PageSize.A4;
-        Document document = new Document(pdfDoc,pageSize);
+        Document document = new Document(pdfDoc, pageSize);
         PageHeader.create(document);
 
         LineSeparatorCreator.create(document);
@@ -42,9 +49,9 @@ public class GenerateClientBalanceStatementPDFUseCase {
         ClientBalanceWarning.createWarning(document);
 
         document.add(new Paragraph("\n"));
-
+        List<ClientBalanceAccount> clientBalanceAccounts = collectClientBalanceAccountUseCase.collect(clientBalanceInvoice);
         ClientTableCreator clientTableCreator = new ClientTableCreator();
-        clientTableCreator.build(collectClientBalanceAccount.collect(clientBalanceInvoice));
+        clientTableCreator.build(clientBalanceAccounts);
         document.add(clientTableCreator.table);
         String[] paragraphInputs = {"Finalized Charges - ",
                 "Below are balances that are due. Each line shows a service performed. The balance is the original charge amount minus payments and adjustments applied to that service."};
@@ -52,7 +59,9 @@ public class GenerateClientBalanceStatementPDFUseCase {
         CustomParagraph.create(paragraphInputs, standardFonts, document);
 
 
+
         BalanceTableCreator balanceTableCreator = new BalanceTableCreator();
+        enrichClientBalancePaymentUSeCase.enrichWithLOC(clientBalanceAccounts,clientBalanceInvoice.getFinalizedClientBalance());
         balanceTableCreator.build(clientBalanceInvoice.getFinalizedClientBalance());
         document.add(balanceTableCreator.table);
 
@@ -62,12 +71,10 @@ public class GenerateClientBalanceStatementPDFUseCase {
         String[] pendingStandardFonts = {StandardFonts.HELVETICA_BOLD, StandardFonts.HELVETICA};
         CustomParagraph.create(pendingParagraphInputs, pendingStandardFonts, document);
 
+        enrichClientBalancePaymentUSeCase.enrichWithLOC(clientBalanceAccounts,clientBalanceInvoice.getPendingClientBalance());
         balanceTableCreator.build(clientBalanceInvoice.getPendingClientBalance());
         document.add(balanceTableCreator.table);
         document.close();
         return outputStream.toByteArray();
     }
-
-
-
 }

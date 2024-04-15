@@ -70,6 +70,7 @@ public class ConstructClientBalanceStatementsUseCase {
                 .units(serviceLine.getCptCode().getUnit())
                 .placeOfCode(session.getPlaceOfCode())
                 .clientBalanceAccount(createClientBalanceAccount(session, serviceLine.getId()))
+                .sessionId(session.getId())
                 .build();
     }
 
