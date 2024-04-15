@@ -21,7 +21,7 @@ import java.io.IOException;
 public class GenerateClientBalanceStatementPDFUseCase {
 
     @Autowired
-    CollectClientBalanceAccount clientBalanceAccount;
+    CollectClientBalanceAccount collectClientBalanceAccount;
     public byte[] generate(ClientBalanceInvoice clientBalanceInvoice) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PdfWriter writer = new PdfWriter(outputStream);
@@ -44,7 +44,7 @@ public class GenerateClientBalanceStatementPDFUseCase {
         document.add(new Paragraph("\n"));
 
         ClientTableCreator clientTableCreator = new ClientTableCreator();
-        clientTableCreator.build(clientBalanceAccount.collect(clientBalanceInvoice));
+        clientTableCreator.build(collectClientBalanceAccount.collect(clientBalanceInvoice));
         document.add(clientTableCreator.table);
         String[] paragraphInputs = {"Finalized Charges - ",
                 "Below are balances that are due. Each line shows a service performed. The balance is the original charge amount minus payments and adjustments applied to that service."};

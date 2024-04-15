@@ -20,7 +20,7 @@ public class ConstructClientBalanceStatementsUseCase {
     @Autowired
     private FindSessionPaymentUseCase findSessionPaymentUseCase;
 
-    public List<ClientBalancePayment> construct(List<PatientSessionEntity> patientSessionEntities) {
+    public List<ClientBalancePayment> constructStatement(List<PatientSessionEntity> patientSessionEntities) {
         List<ClientBalancePayment> clientBalancePayments = new ArrayList<>();
         patientSessionEntities.stream()
                 .forEach(patientSession -> {
@@ -28,7 +28,7 @@ public class ConstructClientBalanceStatementsUseCase {
                             .map(PatientSessionServiceLineEntity::getId)
                             .collect(Collectors.toList());
                     List<SessionServiceLinePayment> payments = findSessionPaymentUseCase.find(serviceLinesIds);
-                    List<ClientBalancePayment> clientStatement = createClientStatement(patientSession.getServiceCodes(), payments, patientSession);
+                    List<ClientBalancePayment> clientStatement = createClientPayments(patientSession.getServiceCodes(), payments, patientSession);
                     clientBalancePayments.addAll(clientStatement);
                 });
 
@@ -36,11 +36,11 @@ public class ConstructClientBalanceStatementsUseCase {
 
     }
 
-    private List<ClientBalancePayment> createClientStatement(List<PatientSessionServiceLineEntity> serviceLines, List<SessionServiceLinePayment> payments, PatientSessionEntity session) {
+    private List<ClientBalancePayment> createClientPayments(List<PatientSessionServiceLineEntity> serviceLines, List<SessionServiceLinePayment> payments, PatientSessionEntity session) {
         List<ClientBalancePayment> clientStatement = new ArrayList<>();
         serviceLines.forEach(serviceLine -> {
             SessionServiceLinePayment sessionServiceLinePayment = findMatchPayment(payments, serviceLine.getId());
-            ClientBalancePayment clientBalance = createClientBalance(sessionServiceLinePayment, serviceLine, session);
+            ClientBalancePayment clientBalance = createClientBalancePayment(sessionServiceLinePayment, serviceLine, session);
             clientStatement.add(clientBalance);
         });
         return clientStatement;
@@ -57,7 +57,7 @@ public class ConstructClientBalanceStatementsUseCase {
         return matchPayment;
     }
 
-    private ClientBalancePayment createClientBalance(SessionServiceLinePayment payment, PatientSessionServiceLineEntity serviceLine, PatientSessionEntity session) {
+    private ClientBalancePayment createClientBalancePayment(SessionServiceLinePayment payment, PatientSessionServiceLineEntity serviceLine, PatientSessionEntity session) {
         return ClientBalancePayment.builder()
                 .dos(session.getServiceDate())
                 .serviceCode(serviceLine.getCptCode().getServiceCode() + '.' + serviceLine.getCptCode().getModifier())

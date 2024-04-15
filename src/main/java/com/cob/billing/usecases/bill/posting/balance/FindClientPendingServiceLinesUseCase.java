@@ -22,7 +22,7 @@ public class FindClientPendingServiceLinesUseCase {
         List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findClientPendingSessions(patientId
                 , patientSessionSearchCriteria.getStartDate()
                 , patientSessionSearchCriteria.getEndDate());
-        List<ClientBalancePayment> clientBalanceStatements = constructClientBalanceStatementsUseCase.construct(patientSessionEntities);
+        List<ClientBalancePayment> clientBalanceStatements = constructClientBalanceStatementsUseCase.constructStatement(patientSessionEntities);
 
         List<ClientBalancePayment> records = PaginationUtil.paginate(clientBalanceStatements, offset, limit);
         return ClientBalanceResponse.builder()
