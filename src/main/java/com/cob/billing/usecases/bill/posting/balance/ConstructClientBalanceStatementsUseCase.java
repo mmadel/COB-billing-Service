@@ -7,6 +7,7 @@ import com.cob.billing.model.admin.clinic.ClinicData;
 import com.cob.billing.model.bill.posting.balance.ClientBalanceAccount;
 import com.cob.billing.model.bill.posting.balance.ClientBalancePayment;
 import com.cob.billing.model.bill.posting.paymnet.SessionServiceLinePayment;
+import com.cob.billing.model.common.Address;
 import com.cob.billing.usecases.bill.posting.FindSessionPaymentUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -82,6 +83,7 @@ public class ConstructClientBalanceStatementsUseCase {
                 .icdCodes(patientSession.getServiceCodes().stream()
                         .map(serviceLine -> String.join(",", serviceLine.getDiagnoses())).findFirst().get())
                 .clientName(patientSession.getPatient().getLastName() + ',' + patientSession.getPatient().getFirstName())
+                .clientAddress(getClientAddress(patientSession.getPatient().getAddress()))
                 .sessionId(patientSession.getId())
                 .serviceLineId(serviceLineId)
                 .build();
@@ -89,5 +91,10 @@ public class ConstructClientBalanceStatementsUseCase {
 
     private String getFacilityAddress(ClinicData clinicData) {
         return clinicData.getAddress() + ',' + clinicData.getCity() + ',' + clinicData.getState() + ',' + clinicData.getZipCode();
+    }
+
+    private String getClientAddress(Address address) {
+        return address.getFirst() + ',' + address.getCity() + ',' + address.getState()
+                + ",\n" + address.getCity() + ',' + address.getState() + ',' + address.getZipCode();
     }
 }

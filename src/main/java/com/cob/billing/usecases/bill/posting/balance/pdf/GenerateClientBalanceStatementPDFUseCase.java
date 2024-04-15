@@ -38,18 +38,19 @@ public class GenerateClientBalanceStatementPDFUseCase {
         Document document = new Document(pdfDoc, pageSize);
         PageHeader.create(document);
 
+        List<ClientBalanceAccount> clientBalanceAccounts = collectClientBalanceAccountUseCase.collect(clientBalanceInvoice);
         LineSeparatorCreator.create(document);
 
         document.add(new Paragraph("\n"));
 
         document.add(new Paragraph("\n"));
 
-        PageTitle.createTitle(document);
+        PageTitle.createTitle(document,clientBalanceAccounts.stream().findFirst().get());
 
         ClientBalanceWarning.createWarning(document);
 
         document.add(new Paragraph("\n"));
-        List<ClientBalanceAccount> clientBalanceAccounts = collectClientBalanceAccountUseCase.collect(clientBalanceInvoice);
+
         ClientTableCreator clientTableCreator = new ClientTableCreator();
         clientTableCreator.build(clientBalanceAccounts);
         document.add(clientTableCreator.table);
@@ -59,9 +60,8 @@ public class GenerateClientBalanceStatementPDFUseCase {
         CustomParagraph.create(paragraphInputs, standardFonts, document);
 
 
-
         BalanceTableCreator balanceTableCreator = new BalanceTableCreator();
-        enrichClientBalancePaymentUSeCase.enrichWithLOC(clientBalanceAccounts,clientBalanceInvoice.getFinalizedClientBalance());
+        enrichClientBalancePaymentUSeCase.enrichWithLOC(clientBalanceAccounts, clientBalanceInvoice.getFinalizedClientBalance());
         balanceTableCreator.build(clientBalanceInvoice.getFinalizedClientBalance());
         document.add(balanceTableCreator.table);
 
@@ -71,7 +71,7 @@ public class GenerateClientBalanceStatementPDFUseCase {
         String[] pendingStandardFonts = {StandardFonts.HELVETICA_BOLD, StandardFonts.HELVETICA};
         CustomParagraph.create(pendingParagraphInputs, pendingStandardFonts, document);
 
-        enrichClientBalancePaymentUSeCase.enrichWithLOC(clientBalanceAccounts,clientBalanceInvoice.getPendingClientBalance());
+        enrichClientBalancePaymentUSeCase.enrichWithLOC(clientBalanceAccounts, clientBalanceInvoice.getPendingClientBalance());
         balanceTableCreator.build(clientBalanceInvoice.getPendingClientBalance());
         document.add(balanceTableCreator.table);
         document.close();

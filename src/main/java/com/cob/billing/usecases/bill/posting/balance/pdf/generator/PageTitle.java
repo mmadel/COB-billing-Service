@@ -1,5 +1,6 @@
 package com.cob.billing.usecases.bill.posting.balance.pdf.generator;
 
+import com.cob.billing.model.bill.posting.balance.ClientBalanceAccount;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.Document;
@@ -11,16 +12,15 @@ import com.itextpdf.layout.properties.UnitValue;
 import java.io.IOException;
 
 public class PageTitle {
-    public static void createTitle(Document document) throws IOException {
+    public static Paragraph createTitle(Document document, ClientBalanceAccount clientBalanceAccount) throws IOException {
         Paragraph toClient = new Paragraph()
                 .setFontSize(10)
                 .setTextAlignment(TextAlignment.LEFT)
                 .setWidth(UnitValue.createPercentValue(50))
                 .setMarginTop(5);
         toClient.add(new Text("To : ").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)));
-        toClient.add(new Text("  wael ahmed \n").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)));
-        toClient.add(new Text("3311 Shore PKWY, APT FF, Brooklyn, NY, \n").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA)));
-        toClient.add(new Text("Brooklyn, NY 11235").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA)));
+        toClient.add(new Text(clientBalanceAccount.getClientName() + "\n").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)));
+        toClient.add(new Text(clientBalanceAccount.getClientAddress()).setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA)));
         document.add(toClient);
         document.add(new Paragraph("\n"));
 
@@ -33,6 +33,6 @@ public class PageTitle {
         toProvider.add(new Text("CITYPT \n " +
                 "8746 20th ave 1L \n " +
                 "Brooklyn, NY, 11214").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA)).setTextAlignment(TextAlignment.LEFT));
-        document.add(toProvider);
+        return toProvider;
     }
 }

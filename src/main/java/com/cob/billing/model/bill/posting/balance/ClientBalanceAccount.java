@@ -14,6 +14,7 @@ public class ClientBalanceAccount {
     private String facilityName;
     private String facilityAddress;
     private String clientName;
+    private String clientAddress;
     private String caseTitle;
     private String icdCodes;
     private Long sessionId;
