@@ -1,11 +1,22 @@
 package com.cob.billing.usecases.bill.posting.balance;
 
 import com.cob.billing.entity.bill.balance.PatientBalanceAccountSettings;
+import com.cob.billing.entity.bill.balance.PatientBalanceSettingsEntity;
+import com.cob.billing.model.bill.posting.balance.PatientBalanceSettings;
+import com.cob.billing.repositories.bill.balance.ClientBalanceSettingsRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CreateOrUpdateClientBalanceSettingsUseCase {
-    public void create(PatientBalanceAccountSettings model){
+    @Autowired
+    ClientBalanceSettingsRepository clientBalanceSettingsRepository;
+    @Autowired
+    ModelMapper mapper;
 
+    public Long create(PatientBalanceSettings model) {
+        PatientBalanceSettingsEntity toBeCreated = mapper.map(model, PatientBalanceSettingsEntity.class);
+        return clientBalanceSettingsRepository.save(toBeCreated).getId();
     }
 }
