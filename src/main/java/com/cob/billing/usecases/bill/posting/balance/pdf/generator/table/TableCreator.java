@@ -1,6 +1,5 @@
 package com.cob.billing.usecases.bill.posting.balance.pdf.generator.table;
 
-import com.cob.billing.model.bill.posting.balance.ClientBalancePayment;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.colors.DeviceRgb;
@@ -12,7 +11,6 @@ import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 
 import java.io.IOException;
-import java.util.List;
 
 public abstract class TableCreator {
     public Table table;

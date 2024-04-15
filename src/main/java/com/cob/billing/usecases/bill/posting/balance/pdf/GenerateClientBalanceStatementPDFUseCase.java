@@ -2,11 +2,12 @@ package com.cob.billing.usecases.bill.posting.balance.pdf;
 
 import com.cob.billing.model.bill.posting.balance.ClientBalanceAccount;
 import com.cob.billing.model.bill.posting.balance.ClientBalanceInvoice;
+import com.cob.billing.model.bill.posting.balance.enums.LocationTableStructure;
 import com.cob.billing.usecases.bill.posting.balance.CollectClientBalanceAccountUseCase;
 import com.cob.billing.usecases.bill.posting.balance.EnrichClientBalancePaymentUSeCase;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.*;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.table.BalanceTableCreator;
-import com.cob.billing.usecases.bill.posting.balance.pdf.generator.table.ClientTableCreator;
+import com.cob.billing.usecases.bill.posting.balance.pdf.generator.table.LocationTableCreator;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class GenerateClientBalanceStatementPDFUseCase {
@@ -45,22 +45,23 @@ public class GenerateClientBalanceStatementPDFUseCase {
 
         document.add(new Paragraph("\n"));
 
-        PageTitle.createTitle(document,clientBalanceAccounts.stream().findFirst().get());
+        PageTitle.createTitle(document, clientBalanceAccounts.stream().findFirst().get());
 
         ClientBalanceWarning.createWarning(document);
 
         document.add(new Paragraph("\n"));
 
-        ClientTableCreator clientTableCreator = new ClientTableCreator();
-        clientTableCreator.build(clientBalanceAccounts);
-        document.add(clientTableCreator.table);
+        LocationTableCreator locationTableCreator = new LocationTableCreator(LocationTableStructure.Full);
+        locationTableCreator.build(clientBalanceAccounts);
+        document.add(locationTableCreator.table);
+
         String[] paragraphInputs = {"Finalized Charges - ",
                 "Below are balances that are due. Each line shows a service performed. The balance is the original charge amount minus payments and adjustments applied to that service."};
         String[] standardFonts = {StandardFonts.HELVETICA_BOLD, StandardFonts.HELVETICA};
         CustomParagraph.create(paragraphInputs, standardFonts, document);
 
 
-        BalanceTableCreator balanceTableCreator = new BalanceTableCreator();
+        BalanceTableCreator balanceTableCreator = new BalanceTableCreator(new String[]{"PRO"});
         enrichClientBalancePaymentUSeCase.enrichWithLOC(clientBalanceAccounts, clientBalanceInvoice.getFinalizedClientBalance());
         balanceTableCreator.build(clientBalanceInvoice.getFinalizedClientBalance());
         document.add(balanceTableCreator.table);
