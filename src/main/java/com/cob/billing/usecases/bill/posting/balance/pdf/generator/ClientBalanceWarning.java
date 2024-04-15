@@ -17,8 +17,8 @@ public class ClientBalanceWarning {
     public static void createWarning(Document document) throws IOException {
         document.add(new Paragraph("\n"));
         Paragraph warning = new Paragraph(new Text("This form should not be saved after processing. Please cross-shred or otherwise destroy this form to protect the privacy of your patients")
-                .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)).setTextAlignment(TextAlignment.CENTER))
-                .setFontSize(7)
+                .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA)).setTextAlignment(TextAlignment.CENTER))
+                .setFontSize(8)
                 .setTextAlignment(TextAlignment.CENTER)
                 .setWidth(UnitValue.createPercentValue(100))
                 .setMarginTop(5);

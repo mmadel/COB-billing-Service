@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-public class ClientBalance {
+public class ClientBalancePayment {
     private Long dos;
     private String serviceCode;
     private String provider;
@@ -16,4 +16,7 @@ public class ClientBalance {
     private Double clientPayment;
     private Double adjustPayment;
     private Double balance;
+    private String placeOfCode;
+    private Integer units;
+    private ClientBalanceAccount clientBalanceAccount;
 }

@@ -1,8 +1,9 @@
 package com.cob.billing.controller.bill;
 
+
 import com.cob.billing.model.bill.posting.balance.ClientBalanceInvoice;
-import com.cob.billing.usecases.bill.posting.balance.FindClientPendingServiceLinesUseCase;
 import com.cob.billing.model.clinical.patient.session.filter.PatientSessionSearchCriteria;
+import com.cob.billing.usecases.bill.posting.balance.FindClientPendingServiceLinesUseCase;
 import com.cob.billing.usecases.bill.posting.balance.FindFinalizedServiceLinesUseCase;
 import com.cob.billing.usecases.bill.posting.balance.pdf.GenerateClientBalanceStatementPDFUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Base64;
 
 @RestController
 @RequestMapping(value = "/client/balance")
@@ -47,7 +47,7 @@ public class ClientBalanceController {
         response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
         response.setHeader("Pragma", "public");
         response.setContentType("application/pdf");
-        byte[] byteArray = generateClientBalanceStatementPDFUseCase.generate();
+        byte[] byteArray = generateClientBalanceStatementPDFUseCase.generate(clientBalanceInvoice);
         response.setContentLength(byteArray.length);
         OutputStream os = response.getOutputStream();
         os.write(byteArray);

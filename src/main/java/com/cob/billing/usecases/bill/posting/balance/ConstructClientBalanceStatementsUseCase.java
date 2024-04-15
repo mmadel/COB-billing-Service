@@ -3,11 +3,11 @@ package com.cob.billing.usecases.bill.posting.balance;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.enums.ServiceLinePaymentType;
-import com.cob.billing.model.bill.posting.balance.ClientBalance;
+import com.cob.billing.model.admin.clinic.ClinicData;
+import com.cob.billing.model.bill.posting.balance.ClientBalanceAccount;
+import com.cob.billing.model.bill.posting.balance.ClientBalancePayment;
 import com.cob.billing.model.bill.posting.paymnet.SessionServiceLinePayment;
-import com.cob.billing.model.response.ClientBalanceResponse;
 import com.cob.billing.usecases.bill.posting.FindSessionPaymentUseCase;
-import com.cob.billing.util.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,26 +20,27 @@ public class ConstructClientBalanceStatementsUseCase {
     @Autowired
     private FindSessionPaymentUseCase findSessionPaymentUseCase;
 
-    public List<ClientBalance> construct(List<PatientSessionEntity> patientSessionEntities) {
-        List<ClientBalance> clientStatements = new ArrayList<>();
+    public List<ClientBalancePayment> construct(List<PatientSessionEntity> patientSessionEntities) {
+        List<ClientBalancePayment> clientBalancePayments = new ArrayList<>();
         patientSessionEntities.stream()
                 .forEach(patientSession -> {
                     List<Long> serviceLinesIds = patientSession.getServiceCodes().stream()
                             .map(PatientSessionServiceLineEntity::getId)
                             .collect(Collectors.toList());
                     List<SessionServiceLinePayment> payments = findSessionPaymentUseCase.find(serviceLinesIds);
-                    List<ClientBalance> clientStatement = createClientStatement(patientSession.getServiceCodes(), payments, patientSession);
-                    clientStatements.addAll(clientStatement);
+                    List<ClientBalancePayment> clientStatement = createClientStatement(patientSession.getServiceCodes(), payments, patientSession);
+                    clientBalancePayments.addAll(clientStatement);
                 });
-        return clientStatements;
+
+        return clientBalancePayments;
 
     }
 
-    private List<ClientBalance> createClientStatement(List<PatientSessionServiceLineEntity> serviceLines, List<SessionServiceLinePayment> payments, PatientSessionEntity session) {
-        List<ClientBalance> clientStatement = new ArrayList<>();
+    private List<ClientBalancePayment> createClientStatement(List<PatientSessionServiceLineEntity> serviceLines, List<SessionServiceLinePayment> payments, PatientSessionEntity session) {
+        List<ClientBalancePayment> clientStatement = new ArrayList<>();
         serviceLines.forEach(serviceLine -> {
             SessionServiceLinePayment sessionServiceLinePayment = findMatchPayment(payments, serviceLine.getId());
-            ClientBalance clientBalance = createClientBalance(sessionServiceLinePayment, serviceLine, session);
+            ClientBalancePayment clientBalance = createClientBalance(sessionServiceLinePayment, serviceLine, session);
             clientStatement.add(clientBalance);
         });
         return clientStatement;
@@ -56,8 +57,8 @@ public class ConstructClientBalanceStatementsUseCase {
         return matchPayment;
     }
 
-    private ClientBalance createClientBalance(SessionServiceLinePayment payment, PatientSessionServiceLineEntity serviceLine, PatientSessionEntity session) {
-        return ClientBalance.builder()
+    private ClientBalancePayment createClientBalance(SessionServiceLinePayment payment, PatientSessionServiceLineEntity serviceLine, PatientSessionEntity session) {
+        return ClientBalancePayment.builder()
                 .dos(session.getServiceDate())
                 .serviceCode(serviceLine.getCptCode().getServiceCode() + '.' + serviceLine.getCptCode().getModifier())
                 .provider(session.getDoctorInfo().getDoctorLastName() + ',' + session.getDoctorInfo().getDoctorFirstName())
@@ -66,6 +67,26 @@ public class ConstructClientBalanceStatementsUseCase {
                 .clientPayment((payment != null && payment.getServiceLinePaymentType() != null && payment.getServiceLinePaymentType().equals(ServiceLinePaymentType.Client)) ? payment.getPayment() : 0)
                 .adjustPayment(payment != null ? payment.getAdjust() : 0.0)
                 .balance(payment != null ? payment.getBalance() : 0.0)
+                .units(serviceLine.getCptCode().getUnit())
+                .placeOfCode(session.getPlaceOfCode())
+                .clientBalanceAccount(createClientBalanceAccount(session, serviceLine.getId()))
                 .build();
+    }
+
+    private ClientBalanceAccount createClientBalanceAccount(PatientSessionEntity patientSession, Long serviceLineId) {
+        return ClientBalanceAccount.builder()
+                .facilityName(patientSession.getClinic().getTitle())
+                .facilityAddress(getFacilityAddress(patientSession.getClinic().getClinicdata()))
+                .caseTitle(patientSession.getCaseTitle())
+                .icdCodes(patientSession.getServiceCodes().stream()
+                        .map(serviceLine -> String.join(",", serviceLine.getDiagnoses())).findFirst().get())
+                .clientName(patientSession.getPatient().getLastName() + ',' + patientSession.getPatient().getFirstName())
+                .sessionId(patientSession.getId())
+                .serviceLineId(serviceLineId)
+                .build();
+    }
+
+    private String getFacilityAddress(ClinicData clinicData) {
+        return clinicData.getAddress() + ',' + clinicData.getCity() + ',' + clinicData.getState() + ',' + clinicData.getZipCode();
     }
 }

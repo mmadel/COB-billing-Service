@@ -1,7 +1,7 @@
 package com.cob.billing.usecases.bill.posting.balance;
 
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
-import com.cob.billing.model.bill.posting.balance.ClientBalance;
+import com.cob.billing.model.bill.posting.balance.ClientBalancePayment;
 import com.cob.billing.model.clinical.patient.session.filter.PatientSessionSearchCriteria;
 import com.cob.billing.model.response.ClientBalanceResponse;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
@@ -22,11 +22,11 @@ public class FindClientPendingServiceLinesUseCase {
         List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findClientPendingSessions(patientId
                 , patientSessionSearchCriteria.getStartDate()
                 , patientSessionSearchCriteria.getEndDate());
-        List<ClientBalance> clientStatements = constructClientBalanceStatementsUseCase.construct(patientSessionEntities);
+        List<ClientBalancePayment> clientBalanceStatements = constructClientBalanceStatementsUseCase.construct(patientSessionEntities);
 
-        List<ClientBalance> records = PaginationUtil.paginate(clientStatements, offset, limit);
+        List<ClientBalancePayment> records = PaginationUtil.paginate(clientBalanceStatements, offset, limit);
         return ClientBalanceResponse.builder()
-                .number_of_records(clientStatements.size())
+                .number_of_records(clientBalanceStatements.size())
                 .number_of_matching_records(records.size())
                 .records(records) //records
                 .build();

@@ -13,7 +13,7 @@ public class CustomParagraph {
 
     public static void create(String[] paragraphInputs, String[] standardFonts, Document document) throws IOException {
         Paragraph paragraph = new Paragraph()
-                .setFontSize(7)
+                .setFontSize(9)
                 .setTextAlignment(TextAlignment.LEFT)
                 .setWidth(UnitValue.createPercentValue(100))
                 .setMarginTop(5);
