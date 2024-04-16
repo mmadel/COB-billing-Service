@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-public class ClientBalancePayment {
+public class ClientBalancePayment extends ClientBalanceModel{
     private Long dos;
     private String serviceCode;
     private String provider;

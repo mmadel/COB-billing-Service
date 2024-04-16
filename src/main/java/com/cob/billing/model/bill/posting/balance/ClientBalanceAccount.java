@@ -9,7 +9,7 @@ import java.util.Objects;
 @Setter
 @Getter
 @Builder
-public class ClientBalanceAccount {
+public class ClientBalanceAccount extends ClientBalanceModel{
     private String loc;
     private String facilityName;
     private String facilityAddress;

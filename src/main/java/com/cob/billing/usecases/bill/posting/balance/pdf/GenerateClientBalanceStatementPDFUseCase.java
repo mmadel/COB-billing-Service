@@ -2,9 +2,11 @@ package com.cob.billing.usecases.bill.posting.balance.pdf;
 
 import com.cob.billing.model.bill.posting.balance.ClientBalanceAccount;
 import com.cob.billing.model.bill.posting.balance.ClientBalanceInvoice;
+import com.cob.billing.model.bill.posting.balance.PatientBalanceSettings;
 import com.cob.billing.model.bill.posting.balance.enums.LocationTableStructure;
 import com.cob.billing.usecases.bill.posting.balance.CollectClientBalanceAccountUseCase;
 import com.cob.billing.usecases.bill.posting.balance.EnrichClientBalancePaymentUSeCase;
+import com.cob.billing.usecases.bill.posting.balance.RetrieveClientBalanceSettingsUseCase;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.*;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.table.BalanceTableCreator;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.table.LocationTableCreator;
@@ -17,6 +19,7 @@ import com.itextpdf.layout.element.Paragraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -27,9 +30,13 @@ public class GenerateClientBalanceStatementPDFUseCase {
     @Autowired
     CollectClientBalanceAccountUseCase collectClientBalanceAccountUseCase;
     @Autowired
-    EnrichClientBalancePaymentUSeCase enrichClientBalancePaymentUSeCase;
+    GenerateBalanceTablesUseCase generateBalanceTablesUseCase;
+    @Autowired
+    RetrieveClientBalanceSettingsUseCase retrieveClientBalanceSettingsUseCase;
+    PatientBalanceSettings patientBalanceSettings;
 
     public byte[] generate(ClientBalanceInvoice clientBalanceInvoice) throws IOException {
+        patientBalanceSettings = retrieveClientBalanceSettingsUseCase.retrieve();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PdfWriter writer = new PdfWriter(outputStream);
 
@@ -51,30 +58,15 @@ public class GenerateClientBalanceStatementPDFUseCase {
 
         document.add(new Paragraph("\n"));
 
-        LocationTableCreator locationTableCreator = new LocationTableCreator(LocationTableStructure.Full);
-        locationTableCreator.build(clientBalanceAccounts);
+        LocationTableCreator locationTableCreator = new LocationTableCreator(clientBalanceAccounts);
+        boolean[] settings = new boolean[]{patientBalanceSettings.getPatientBalanceAccountSettings().isIcdCodes()};
+        locationTableCreator.setTableSettings(settings);
+        locationTableCreator.create();
         document.add(locationTableCreator.table);
 
-        String[] paragraphInputs = {"Finalized Charges - ",
-                "Below are balances that are due. Each line shows a service performed. The balance is the original charge amount minus payments and adjustments applied to that service."};
-        String[] standardFonts = {StandardFonts.HELVETICA_BOLD, StandardFonts.HELVETICA};
-        CustomParagraph.create(paragraphInputs, standardFonts, document);
-
-
-        BalanceTableCreator balanceTableCreator = new BalanceTableCreator(new String[]{"PRO"});
-        enrichClientBalancePaymentUSeCase.enrichWithLOC(clientBalanceAccounts, clientBalanceInvoice.getFinalizedClientBalance());
-        balanceTableCreator.build(clientBalanceInvoice.getFinalizedClientBalance());
-        document.add(balanceTableCreator.table);
-
-
-        String[] pendingParagraphInputs = {"Pending Insurance - ",
-                "CHARGES NOT DUE AT THIS TIME Below are services that are still pending insurance. These balances are not reflected in your total balance due, however, once your insurance has adjudicated these claims, some or all of the balance may become due"};
-        String[] pendingStandardFonts = {StandardFonts.HELVETICA_BOLD, StandardFonts.HELVETICA};
-        CustomParagraph.create(pendingParagraphInputs, pendingStandardFonts, document);
-
-        enrichClientBalancePaymentUSeCase.enrichWithLOC(clientBalanceAccounts, clientBalanceInvoice.getPendingClientBalance());
-        balanceTableCreator.build(clientBalanceInvoice.getPendingClientBalance());
-        document.add(balanceTableCreator.table);
+        generateBalanceTablesUseCase.setDocument(document);
+        generateBalanceTablesUseCase.setBalanceAccountSettings(patientBalanceSettings.getPatientBalanceAccountSettings());
+        generateBalanceTablesUseCase.createTables(clientBalanceInvoice, clientBalanceAccounts);
         document.close();
         return outputStream.toByteArray();
     }
