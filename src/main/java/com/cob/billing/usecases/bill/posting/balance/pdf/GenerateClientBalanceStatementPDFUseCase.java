@@ -52,7 +52,7 @@ public class GenerateClientBalanceStatementPDFUseCase {
 
         document.add(new Paragraph("\n"));
 
-        PageTitle.createTitle(document, clientBalanceAccounts.stream().findFirst().get());
+        PageTitle.createTitle(document, clientBalanceAccounts.stream().findFirst().get(), patientBalanceSettings.getPatientBalanceBillingProviderSettings());
 
         ClientBalanceWarning.createWarning(document);
 
