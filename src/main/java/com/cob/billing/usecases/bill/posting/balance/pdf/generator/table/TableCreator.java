@@ -1,7 +1,6 @@
 package com.cob.billing.usecases.bill.posting.balance.pdf.generator.table;
 
 import com.cob.billing.model.bill.posting.balance.ClientBalanceModel;
-import com.cob.billing.model.bill.posting.balance.ClientBalancePayment;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.colors.DeviceRgb;
@@ -26,13 +25,14 @@ public abstract class TableCreator<T extends ClientBalanceModel> {
     }
 
     public void setTableSettings(boolean[] settings) {
-        if(settings == null)
+        if (settings == null)
             throw new IllegalArgumentException("Settings can't be null");
         this.settings = settings;
     }
 
     private void createTableStructure() throws IOException {
-        float[] columnWidths =  ColumnRuleEngine.returnColumnsWidth(settings);;
+        float[] columnWidths = ColumnRuleEngine.returnColumnsWidth(settings);
+        ;
         String[] columnNames = ColumnRuleEngine.returnColumnsName(settings);
         table = new Table(UnitValue.createPercentArray(columnWidths));
         for (int i = 0; i < columnWidths.length; i++) {
@@ -62,6 +62,17 @@ public abstract class TableCreator<T extends ClientBalanceModel> {
                         .setFontColor(ColorConstants.BLACK))
                 .setStrokeWidth(30)
                 .setPadding(0);
+        return cell;
+    }
+
+    Cell createCell(int colSpan, String data) throws IOException {
+        Cell cell = new Cell(1, colSpan).add(new Paragraph(data)
+                        .setTextAlignment(TextAlignment.RIGHT)
+                        .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
+                        .setFontSize(9)
+                        .setFontColor(ColorConstants.BLACK))
+                .setStrokeWidth(30)
+                .setPadding(1);
         return cell;
     }
 }
