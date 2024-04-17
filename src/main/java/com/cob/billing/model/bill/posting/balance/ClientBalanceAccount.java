@@ -19,6 +19,9 @@ public class ClientBalanceAccount extends ClientBalanceModel{
     private String icdCodes;
     private Long sessionId;
     private Long serviceLineId;
+    private String provider;
+    private String providerNPI;
+    private String providerLicenseNumber;
 
     @Override
     public boolean equals(Object o) {

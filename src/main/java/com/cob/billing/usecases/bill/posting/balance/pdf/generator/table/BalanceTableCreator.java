@@ -12,9 +12,11 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class BalanceTableCreator extends TableCreator<ClientBalancePayment> {
-
-    public BalanceTableCreator(List<ClientBalancePayment> data) {
+    boolean[] settings;
+    public BalanceTableCreator(List<ClientBalancePayment> data,boolean[] settings) {
+        super(ColumnRuleEngine.returnColumnsWidth(settings),ColumnRuleEngine.returnColumnsName(settings));
         this.data = data;
+        this.settings = settings;
     }
 
     @Override

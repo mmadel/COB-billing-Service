@@ -7,9 +7,12 @@ import java.io.IOException;
 import java.util.List;
 
 public class LocationTableCreator extends TableCreator<ClientBalanceAccount> {
+    boolean[] settings;
 
-    public LocationTableCreator(List<ClientBalanceAccount> data) {
+    public LocationTableCreator(List<ClientBalanceAccount> data, boolean[] settings) {
+        super(ColumnRuleEngine.returnColumnsWidth(settings), ColumnRuleEngine.returnColumnsName(settings));
         this.data = data;
+        this.settings = settings;
     }
 
     @Override

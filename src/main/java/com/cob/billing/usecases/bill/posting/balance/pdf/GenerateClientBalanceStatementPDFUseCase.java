@@ -11,6 +11,7 @@ import com.cob.billing.usecases.bill.posting.balance.pdf.generator.LineSeparator
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.PageHeader;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.PageTitle;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.table.LocationTableCreator;
+import com.cob.billing.usecases.bill.posting.balance.pdf.generator.table.ProviderTableCreator;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -29,9 +30,11 @@ public class GenerateClientBalanceStatementPDFUseCase {
     @Autowired
     CollectClientBalanceAccountUseCase collectClientBalanceAccountUseCase;
     @Autowired
-    GenerateBalanceTablesUseCase generateBalanceTablesUseCase;
+    CreateBalanceTablesUseCase createBalanceTablesUseCase;
     @Autowired
     RetrieveClientBalanceSettingsUseCase retrieveClientBalanceSettingsUseCase;
+    @Autowired
+    CreateProviderTableUseCase createProviderTableUseCase;
     PatientBalanceSettings patientBalanceSettings;
 
     public byte[] generate(ClientBalanceInvoice clientBalanceInvoice) throws IOException {
@@ -47,7 +50,7 @@ public class GenerateClientBalanceStatementPDFUseCase {
         double totalBalance = clientBalanceInvoice.getFinalizedClientBalance().stream()
                 .mapToDouble(ClientBalancePayment::getBalance)
                 .sum();
-        PageHeader.create(document, totalBalance,patientBalanceSettings.getPatientBalanceBillingProviderSettings());
+        PageHeader.create(document, totalBalance, patientBalanceSettings.getPatientBalanceBillingProviderSettings());
 
         LineSeparatorCreator.create(document);
 
@@ -61,15 +64,23 @@ public class GenerateClientBalanceStatementPDFUseCase {
 
         document.add(new Paragraph("\n"));
 
-        LocationTableCreator locationTableCreator = new LocationTableCreator(clientBalanceAccounts);
         boolean[] settings = new boolean[]{patientBalanceSettings.getPatientBalanceAccountSettings().isIcdCodes()};
-        locationTableCreator.setTableSettings(settings);
+        LocationTableCreator locationTableCreator = new LocationTableCreator(clientBalanceAccounts, settings);
         locationTableCreator.create();
         document.add(locationTableCreator.table);
 
-        generateBalanceTablesUseCase.setDocument(document);
-        generateBalanceTablesUseCase.setBalanceAccountSettings(patientBalanceSettings.getPatientBalanceAccountSettings());
-        generateBalanceTablesUseCase.createTables(clientBalanceInvoice, clientBalanceAccounts);
+        createBalanceTablesUseCase.setDocument(document);
+        createBalanceTablesUseCase.setBalanceAccountSettings(patientBalanceSettings.getPatientBalanceAccountSettings());
+        createBalanceTablesUseCase.createTables(clientBalanceInvoice, clientBalanceAccounts);
+
+        document.add(new Paragraph("\n"));
+        document.add(new Paragraph("\n"));
+
+        if (patientBalanceSettings.getPatientBalanceAccountSettings().isRenderingProvider()) {
+            createProviderTableUseCase.setDocument(document);
+            createProviderTableUseCase.createTable(clientBalanceInvoice);
+        }
+
         document.close();
         return outputStream.toByteArray();
     }

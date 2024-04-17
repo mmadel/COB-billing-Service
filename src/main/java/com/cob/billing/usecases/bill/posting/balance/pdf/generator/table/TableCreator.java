@@ -17,23 +17,20 @@ import java.util.List;
 public abstract class TableCreator<T extends ClientBalanceModel> {
     public Table table;
     protected List<T> data;
-    protected boolean[] settings;
+    protected float[] columnWidths;
+    protected String[] columnNames;
+
+    TableCreator(float[] columnWidths, String[] columnNames) {
+        this.columnWidths = columnWidths;
+        this.columnNames = columnNames;
+    }
 
     public void create() throws IOException {
         createTableStructure();
         fillTableData();
     }
 
-    public void setTableSettings(boolean[] settings) {
-        if (settings == null)
-            throw new IllegalArgumentException("Settings can't be null");
-        this.settings = settings;
-    }
-
     private void createTableStructure() throws IOException {
-        float[] columnWidths = ColumnRuleEngine.returnColumnsWidth(settings);
-        ;
-        String[] columnNames = ColumnRuleEngine.returnColumnsName(settings);
         table = new Table(UnitValue.createPercentArray(columnWidths));
         for (int i = 0; i < columnWidths.length; i++) {
             Cell header = new Cell().add(new Paragraph(columnNames[i])
