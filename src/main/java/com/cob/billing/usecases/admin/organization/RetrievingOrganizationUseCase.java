@@ -6,6 +6,7 @@ import com.cob.billing.model.admin.Organization;
 import com.cob.billing.repositories.admin.OrganizationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,6 +16,7 @@ public class RetrievingOrganizationUseCase {
     @Autowired
     ModelMapper mapper;
 
+    @Cacheable("default-billing-provider")
     public Organization findDefault() {
         OrganizationEntity entity = organizationRepository.findByType(OrganizationType.Default)
                 .orElseThrow(() -> new IllegalArgumentException("Organization not found"));

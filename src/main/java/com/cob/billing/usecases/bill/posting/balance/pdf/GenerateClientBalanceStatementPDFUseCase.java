@@ -1,15 +1,14 @@
 package com.cob.billing.usecases.bill.posting.balance.pdf;
 
+import com.cob.billing.model.admin.Organization;
 import com.cob.billing.model.bill.posting.balance.ClientBalanceAccount;
 import com.cob.billing.model.bill.posting.balance.ClientBalanceInvoice;
 import com.cob.billing.model.bill.posting.balance.ClientBalancePayment;
 import com.cob.billing.model.bill.posting.balance.PatientBalanceSettings;
+import com.cob.billing.usecases.admin.organization.RetrievingOrganizationUseCase;
 import com.cob.billing.usecases.bill.posting.balance.CollectClientBalanceAccountUseCase;
 import com.cob.billing.usecases.bill.posting.balance.RetrieveClientBalanceSettingsUseCase;
-import com.cob.billing.usecases.bill.posting.balance.pdf.generator.ClientBalanceWarning;
-import com.cob.billing.usecases.bill.posting.balance.pdf.generator.LineSeparatorCreator;
-import com.cob.billing.usecases.bill.posting.balance.pdf.generator.PageHeader;
-import com.cob.billing.usecases.bill.posting.balance.pdf.generator.PageTitle;
+import com.cob.billing.usecases.bill.posting.balance.pdf.generator.*;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.table.LocationTableCreator;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.table.ProviderTableCreator;
 import com.itextpdf.kernel.geom.PageSize;
@@ -35,10 +34,13 @@ public class GenerateClientBalanceStatementPDFUseCase {
     RetrieveClientBalanceSettingsUseCase retrieveClientBalanceSettingsUseCase;
     @Autowired
     CreateProviderTableUseCase createProviderTableUseCase;
+    @Autowired
+    RetrievingOrganizationUseCase retrievingOrganizationUseCase;
     PatientBalanceSettings patientBalanceSettings;
 
     public byte[] generate(ClientBalanceInvoice clientBalanceInvoice) throws IOException {
         patientBalanceSettings = retrieveClientBalanceSettingsUseCase.retrieve();
+        Organization billingProvider = retrievingOrganizationUseCase.findDefault();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PdfWriter writer = new PdfWriter(outputStream);
 
@@ -50,6 +52,7 @@ public class GenerateClientBalanceStatementPDFUseCase {
         double totalBalance = clientBalanceInvoice.getFinalizedClientBalance().stream()
                 .mapToDouble(ClientBalancePayment::getBalance)
                 .sum();
+        //Create Page Header
         PageHeader.create(document, totalBalance, patientBalanceSettings.getPatientBalanceBillingProviderSettings());
 
         LineSeparatorCreator.create(document);
@@ -58,17 +61,25 @@ public class GenerateClientBalanceStatementPDFUseCase {
 
         document.add(new Paragraph("\n"));
 
+        //Create Page Title
         PageTitle.createTitle(document, clientBalanceAccounts.stream().findFirst().get(), patientBalanceSettings.getPatientBalanceBillingProviderSettings());
 
+        //Create Warning
         ClientBalanceWarning.createWarning(document);
 
-        document.add(new Paragraph("\n"));
+        //Create Billing Provider Paragraph
+        PageBillingProviderParagraph.createParagraph(document,
+                billingProvider,
+                patientBalanceSettings.getPatientBalanceAccountSettings());
 
+
+        //Create Location Table
         boolean[] settings = new boolean[]{patientBalanceSettings.getPatientBalanceAccountSettings().isIcdCodes()};
         LocationTableCreator locationTableCreator = new LocationTableCreator(clientBalanceAccounts, settings);
         locationTableCreator.create();
         document.add(locationTableCreator.table);
 
+        //Create Balance Tables <Finalized And Pending>
         createBalanceTablesUseCase.setDocument(document);
         createBalanceTablesUseCase.setBalanceAccountSettings(patientBalanceSettings.getPatientBalanceAccountSettings());
         createBalanceTablesUseCase.createTables(clientBalanceInvoice, clientBalanceAccounts);
@@ -76,6 +87,7 @@ public class GenerateClientBalanceStatementPDFUseCase {
         document.add(new Paragraph("\n"));
         document.add(new Paragraph("\n"));
 
+        //Create Provider Table
         if (patientBalanceSettings.getPatientBalanceAccountSettings().isRenderingProvider()) {
             createProviderTableUseCase.setDocument(document);
             createProviderTableUseCase.createTable(clientBalanceInvoice);
