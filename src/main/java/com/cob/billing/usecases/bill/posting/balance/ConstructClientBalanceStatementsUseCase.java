@@ -7,8 +7,11 @@ import com.cob.billing.model.admin.clinic.ClinicData;
 import com.cob.billing.model.bill.posting.balance.ClientBalanceAccount;
 import com.cob.billing.model.bill.posting.balance.ClientBalancePayment;
 import com.cob.billing.model.bill.posting.paymnet.SessionServiceLinePayment;
+import com.cob.billing.model.clinical.patient.session.PatientSession;
+import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.model.common.Address;
 import com.cob.billing.usecases.bill.posting.FindSessionPaymentUseCase;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +24,8 @@ public class ConstructClientBalanceStatementsUseCase {
     @Autowired
     private FindSessionPaymentUseCase findSessionPaymentUseCase;
 
+    @Autowired
+    ModelMapper mapper;
     public List<ClientBalancePayment> constructStatement(List<PatientSessionEntity> patientSessionEntities) {
         List<ClientBalancePayment> clientBalancePayments = new ArrayList<>();
         patientSessionEntities.stream()
@@ -71,6 +76,7 @@ public class ConstructClientBalanceStatementsUseCase {
                 .units(serviceLine.getCptCode().getUnit())
                 .placeOfCode(session.getPlaceOfCode())
                 .clientBalanceAccount(createClientBalanceAccount(session, serviceLine.getId()))
+                .patientSession(map(session))
                 .sessionId(session.getId())
                 .build();
     }
@@ -85,7 +91,7 @@ public class ConstructClientBalanceStatementsUseCase {
                 .clientName(patientSession.getPatient().getLastName() + ',' + patientSession.getPatient().getFirstName())
                 .clientAddress(getClientAddress(patientSession.getPatient().getAddress()))
                 .clientDOS(patientSession.getPatient().getBirthDate())
-                .provider(patientSession.getDoctorInfo().getDoctorLastName()+','+patientSession.getDoctorInfo().getDoctorFirstName())
+                .provider(patientSession.getDoctorInfo().getDoctorLastName() + ',' + patientSession.getDoctorInfo().getDoctorFirstName())
                 .providerNPI(patientSession.getDoctorInfo().getDoctorNPI())
                 .providerLicenseNumber("3033303")
                 .sessionId(patientSession.getId())
@@ -100,5 +106,15 @@ public class ConstructClientBalanceStatementsUseCase {
     private String getClientAddress(Address address) {
         return address.getFirst() + ',' + address.getCity() + ',' + address.getState()
                 + ",\n" + address.getCity() + ',' + address.getState() + ',' + address.getZipCode();
+    }
+    private PatientSession map(PatientSessionEntity entity){
+        PatientSession patientSession = new PatientSession();
+        patientSession.setPatientName(entity.getPatient().getLastName()+','+entity.getPatient().getFirstName());
+        patientSession.setDoctorInfo(entity.getDoctorInfo());
+        patientSession.setCaseDiagnosis(entity.getCaseDiagnosis());
+        patientSession.setServiceDate(entity.getServiceDate());
+        patientSession.setServiceCodes(entity.getServiceCodes().stream()
+                .map(serviceLine -> mapper.map(serviceLine , ServiceLine.class)).collect(Collectors.toList()));
+        return patientSession;
     }
 }

@@ -1,5 +1,6 @@
 package com.cob.billing.model.bill.posting.balance;
 
+import com.cob.billing.model.clinical.patient.session.PatientSession;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,5 +21,6 @@ public class ClientBalancePayment extends ClientBalanceModel{
     private Integer units;
     private ClientBalanceAccount clientBalanceAccount;
     private Long sessionId;
+    private PatientSession patientSession;
     private String loc;
 }
