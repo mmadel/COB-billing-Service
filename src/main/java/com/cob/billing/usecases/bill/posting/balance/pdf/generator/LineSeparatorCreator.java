@@ -11,7 +11,7 @@ public class LineSeparatorCreator {
         SolidLine line = new SolidLine();
         line.setColor(ColorConstants.LIGHT_GRAY);
         LineSeparator lineSeparator = new LineSeparator(line);
-        lineSeparator.setWidth(UnitValue.createPercentValue(50));
+        lineSeparator.setWidth(UnitValue.createPercentValue(35));
         lineSeparator.setMarginTop(5);
         document.add(lineSeparator);
     }

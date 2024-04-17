@@ -53,7 +53,7 @@ public class GenerateClientBalanceStatementPDFUseCase {
                 .mapToDouble(ClientBalancePayment::getBalance)
                 .sum();
         //Create Page Header
-        PageHeader.create(document, totalBalance, patientBalanceSettings.getPatientBalanceBillingProviderSettings());
+        PageHeader.createHeader(document, totalBalance, patientBalanceSettings.getPatientBalanceBillingProviderSettings());
 
         LineSeparatorCreator.create(document);
 
@@ -62,7 +62,10 @@ public class GenerateClientBalanceStatementPDFUseCase {
         document.add(new Paragraph("\n"));
 
         //Create Page Title
-        PageTitle.createTitle(document, clientBalanceAccounts.stream().findFirst().get(), patientBalanceSettings.getPatientBalanceBillingProviderSettings());
+        PageTitle.createTitle(document,
+                clientBalanceAccounts.stream().findFirst().get(),
+                patientBalanceSettings.getPatientBalanceBillingProviderSettings(),
+                patientBalanceSettings.getPatientBalanceAccountSettings().isPatientDOB());
 
         //Create Warning
         ClientBalanceWarning.createWarning(document);

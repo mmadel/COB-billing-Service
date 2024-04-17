@@ -29,7 +29,7 @@ public class BalanceTableCreator extends TableCreator<ClientBalancePayment> {
         if (data != null)
             for (int i = 0; i < data.size(); i++) {
                 DateFormat format = new SimpleDateFormat(
-                        "MMM dd yyyy");
+                        "MM/dd/YYYY");
                 table.addCell(createCell(format.format(data.get(i).getDos())).setBorder(Border.NO_BORDER)
                         .setBorderLeft(new SolidBorder(1)));
                 if (settings[1])

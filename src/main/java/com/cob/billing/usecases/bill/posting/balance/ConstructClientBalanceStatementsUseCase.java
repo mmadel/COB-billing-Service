@@ -84,6 +84,7 @@ public class ConstructClientBalanceStatementsUseCase {
                         .map(serviceLine -> String.join(",", serviceLine.getDiagnoses())).findFirst().get())
                 .clientName(patientSession.getPatient().getLastName() + ',' + patientSession.getPatient().getFirstName())
                 .clientAddress(getClientAddress(patientSession.getPatient().getAddress()))
+                .clientDOS(patientSession.getPatient().getBirthDate())
                 .provider(patientSession.getDoctorInfo().getDoctorLastName()+','+patientSession.getDoctorInfo().getDoctorFirstName())
                 .providerNPI(patientSession.getDoctorInfo().getDoctorNPI())
                 .providerLicenseNumber("3033303")

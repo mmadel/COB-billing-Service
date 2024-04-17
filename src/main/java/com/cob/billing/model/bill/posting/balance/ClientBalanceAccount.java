@@ -14,6 +14,7 @@ public class ClientBalanceAccount extends ClientBalanceModel{
     private String facilityName;
     private String facilityAddress;
     private String clientName;
+    private Long clientDOS;
     private String clientAddress;
     private String caseTitle;
     private String icdCodes;

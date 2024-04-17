@@ -20,7 +20,7 @@ import java.util.Random;
 public class PageHeader {
     private static double total;
 
-    public static void create(Document document,
+    public static void createHeader(Document document,
                               double totalBalance,
                               PatientBalanceBillingProviderSettings patientBalanceBillingProviderSettings
     ) throws IOException {
@@ -54,24 +54,24 @@ public class PageHeader {
     private static Paragraph getInvoiceDateParagraph() throws IOException {
         Paragraph paragraph = new Paragraph();
         paragraph.setTextAlignment(TextAlignment.LEFT);
-        paragraph.add(new Text("Invoice date: \n").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)).setFontSize(6));
-        paragraph.add(new Text(getInvoiceDate()).setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)).setFontSize(10));
+        paragraph.add(new Text("Invoice date: \n").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)).setFontSize(8));
+        paragraph.add(new Text(getInvoiceDate()).setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)).setFontSize(11));
         return paragraph;
     }
 
     private static Paragraph getInvoiceNumberParagraph() throws IOException {
         Paragraph paragraph = new Paragraph();
         paragraph.setTextAlignment(TextAlignment.LEFT);
-        paragraph.add(new Text("Invoice Number: \n").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)).setFontSize(6));
-        paragraph.add(new Text("S" + getInvoiceNumber()).setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)).setFontSize(10));
+        paragraph.add(new Text("Invoice Number: \n").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)).setFontSize(8));
+        paragraph.add(new Text("S" + getInvoiceNumber()).setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)).setFontSize(11));
         return paragraph;
     }
 
     private static Paragraph getBalanceParagraph() throws IOException {
         Paragraph paragraph = new Paragraph();
         paragraph.setTextAlignment(TextAlignment.LEFT);
-        paragraph.add(new Text("balance due: \n").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)).setFontSize(6));
-        paragraph.add(new Text("$" + total).setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)).setFontSize(10));
+        paragraph.add(new Text("balance due: \n").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)).setFontSize(8));
+        paragraph.add(new Text("$" + total).setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)).setFontSize(11));
         return paragraph;
     }
 
