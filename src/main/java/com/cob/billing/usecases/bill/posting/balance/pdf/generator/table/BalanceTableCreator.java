@@ -2,8 +2,6 @@ package com.cob.billing.usecases.bill.posting.balance.pdf.generator.table;
 
 
 import com.cob.billing.model.bill.posting.balance.ClientBalancePayment;
-import com.itextpdf.io.font.constants.StandardFonts;
-import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
