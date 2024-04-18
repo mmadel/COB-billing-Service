@@ -1,7 +1,6 @@
 package com.cob.billing.usecases.bill.posting.balance.pdf;
 
 import com.cob.billing.entity.bill.balance.PatientBalanceAccountSettings;
-import com.cob.billing.model.bill.posting.balance.ClientBalanceAccount;
 import com.cob.billing.model.bill.posting.balance.ClientBalanceInvoice;
 import com.cob.billing.model.bill.posting.balance.ClientBalanceLocation;
 import com.cob.billing.usecases.bill.posting.balance.EnrichClientBalancePaymentUSeCase;
@@ -29,9 +28,9 @@ public class CreateBalanceTablesUseCase {
         this.clientBalanceLocations = clientBalanceLocations;
         boolean[] settings = new boolean[]{patientBalanceAccountSettings.isRenderingProvider()
                 , patientBalanceAccountSettings.isLocation(), patientBalanceAccountSettings.isPoc()};
-        if (clientBalanceInvoice.getFinalizedClientBalance() != null)
+        if (clientBalanceInvoice.getFinalizedClientBalance() != null && !clientBalanceInvoice.getFinalizedClientBalance().isEmpty())
             createFinalizeTable(settings);
-        if (clientBalanceInvoice.getPendingClientBalance() != null)
+        if (clientBalanceInvoice.getPendingClientBalance() != null && !clientBalanceInvoice.getPendingClientBalance().isEmpty())
             createPendingTable(settings);
     }
 
