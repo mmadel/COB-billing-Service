@@ -34,8 +34,10 @@ public class CreateProviderTableUseCase {
 
     private List<ClientBalanceProvider> findProviders(ClientBalanceInvoice clientBalanceInvoice) {
         List<ClientBalancePayment> paymentsCollections = new ArrayList<>();
-        paymentsCollections.addAll(clientBalanceInvoice.getFinalizedClientBalance());
-        paymentsCollections.addAll(clientBalanceInvoice.getPendingClientBalance());
+        if (clientBalanceInvoice.getFinalizedClientBalance() != null)
+            paymentsCollections.addAll(clientBalanceInvoice.getFinalizedClientBalance());
+        if (clientBalanceInvoice.getPendingClientBalance() != null)
+            paymentsCollections.addAll(clientBalanceInvoice.getPendingClientBalance());
         return paymentsCollections.stream()
                 .map(ClientBalancePayment::getClientBalanceAccount)
                 .collect(Collectors.groupingBy(ClientBalanceAccount::getProviderNPI))

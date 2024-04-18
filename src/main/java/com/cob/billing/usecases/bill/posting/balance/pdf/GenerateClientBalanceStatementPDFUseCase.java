@@ -47,10 +47,11 @@ public class GenerateClientBalanceStatementPDFUseCase {
         PageSize pageSize = PageSize.A4;
         Document document = new Document(pdfDoc, pageSize);
         List<ClientBalanceAccount> clientBalanceAccounts = collectClientBalanceAccountUseCase.collect(clientBalanceInvoice);
-
-        double totalBalance = clientBalanceInvoice.getFinalizedClientBalance().stream()
-                .mapToDouble(ClientBalancePayment::getBalance)
-                .sum();
+        double totalBalance = 0.0;
+        if (clientBalanceInvoice.getFinalizedClientBalance() != null)
+            totalBalance = clientBalanceInvoice.getFinalizedClientBalance().stream()
+                    .mapToDouble(ClientBalancePayment::getBalance)
+                    .sum();
         //Create Page Header
         PageHeader.createHeader(document, totalBalance, patientBalanceSettings.getPatientBalanceBillingProviderSettings());
 
@@ -75,8 +76,7 @@ public class GenerateClientBalanceStatementPDFUseCase {
                 patientBalanceSettings.getPatientBalanceAccountSettings());
 
 
-
-        List<ClientBalanceLocation> clientBalanceLocations = createLocationTableUseCase.createTable(document,clientBalanceInvoice,patientBalanceSettings);
+        List<ClientBalanceLocation> clientBalanceLocations = createLocationTableUseCase.createTable(document, clientBalanceInvoice, patientBalanceSettings);
 
         //Create Balance Tables <Finalized And Pending>
         createBalanceTablesUseCase.setDocument(document);

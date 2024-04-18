@@ -29,8 +29,10 @@ public class CreateBalanceTablesUseCase {
         this.clientBalanceLocations = clientBalanceLocations;
         boolean[] settings = new boolean[]{patientBalanceAccountSettings.isRenderingProvider()
                 , patientBalanceAccountSettings.isLocation(), patientBalanceAccountSettings.isPoc()};
-        createFinalizeTable(settings);
-        createPendingTable(settings);
+        if (clientBalanceInvoice.getFinalizedClientBalance() != null)
+            createFinalizeTable(settings);
+        if (clientBalanceInvoice.getPendingClientBalance() != null)
+            createPendingTable(settings);
     }
 
     public void setDocument(Document document) {

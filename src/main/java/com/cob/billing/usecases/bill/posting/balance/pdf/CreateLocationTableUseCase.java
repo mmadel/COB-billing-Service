@@ -29,8 +29,10 @@ public class CreateLocationTableUseCase {
 
     private List<ClientBalanceLocation> createLocationsRecords(ClientBalanceInvoice clientBalanceInvoice) {
         List<ClientBalancePayment> paymentsCollections = new ArrayList<>();
-        paymentsCollections.addAll(clientBalanceInvoice.getFinalizedClientBalance());
-        paymentsCollections.addAll(clientBalanceInvoice.getPendingClientBalance());
+        if (clientBalanceInvoice.getFinalizedClientBalance() != null)
+            paymentsCollections.addAll(clientBalanceInvoice.getFinalizedClientBalance());
+        if (clientBalanceInvoice.getPendingClientBalance() != null)
+            paymentsCollections.addAll(clientBalanceInvoice.getPendingClientBalance());
         List<ClientBalanceAccount> clientBalanceAccounts = paymentsCollections.stream()
                 .map(ClientBalancePayment::getClientBalanceAccount)
                 .collect(Collectors.groupingBy(ClientBalanceAccount::getFacilityName))
