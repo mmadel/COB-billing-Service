@@ -12,4 +12,5 @@ public interface ClientBalanceSettingsConstants {
 
     boolean EnableICDCodes = true;
     boolean DisableICDCodes = false;
+
 }

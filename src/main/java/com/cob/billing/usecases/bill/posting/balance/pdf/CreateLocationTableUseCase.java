@@ -13,13 +13,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Component
-public class CreateBalanceTableUseCase {
+public class CreateLocationTableUseCase {
     public List<ClientBalanceLocation> createTable(Document document,
                                                    ClientBalanceInvoice clientBalanceInvoice,
                                                    PatientBalanceSettings patientBalanceSettings) throws IOException {
         List<ClientBalanceLocation> clientBalanceLocations = createLocationsRecords(clientBalanceInvoice);
 
-        boolean[] settings = new boolean[]{patientBalanceSettings.getPatientBalanceAccountSettings().isIcdCodes()};
+        boolean[] settings = new boolean[]{patientBalanceSettings.getPatientBalanceAccountSettings().isLocation()
+                , patientBalanceSettings.getPatientBalanceAccountSettings().isIcdCodes()};
         LocationTableCreator locationTableCreator = new LocationTableCreator(clientBalanceLocations, settings);
         locationTableCreator.create();
         document.add(locationTableCreator.table);

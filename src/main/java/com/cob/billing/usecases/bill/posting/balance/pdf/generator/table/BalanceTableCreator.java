@@ -2,6 +2,7 @@ package com.cob.billing.usecases.bill.posting.balance.pdf.generator.table;
 
 
 import com.cob.billing.model.bill.posting.balance.ClientBalancePayment;
+import com.cob.billing.usecases.bill.posting.balance.pdf.generator.table.cloumn.balance.BalanceTableColumnRule;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
@@ -15,7 +16,7 @@ public class BalanceTableCreator extends TableCreator<ClientBalancePayment> {
     boolean[] settings;
 
     public BalanceTableCreator(List<ClientBalancePayment> data, boolean[] settings) {
-        super(ColumnRuleEngine.returnColumnsWidth(settings), ColumnRuleEngine.returnColumnsName(settings));
+        super(BalanceTableColumnRule.returnColumnsWidth(settings), BalanceTableColumnRule.returnColumnsName(settings));
         this.data = data;
         this.settings = settings;
     }

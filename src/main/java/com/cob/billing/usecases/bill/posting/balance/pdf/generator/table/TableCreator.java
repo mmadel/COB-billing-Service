@@ -32,6 +32,8 @@ public abstract class TableCreator<T extends ClientBalanceModel> {
 
     private void createTableStructure() throws IOException {
         table = new Table(UnitValue.createPercentArray(columnWidths));
+        table.setWidth(UnitValue.createPercentValue(100));
+        table.setFixedLayout();
         for (int i = 0; i < columnWidths.length; i++) {
             Cell header = new Cell().add(new Paragraph(columnNames[i])
                             .setTextAlignment(TextAlignment.CENTER)

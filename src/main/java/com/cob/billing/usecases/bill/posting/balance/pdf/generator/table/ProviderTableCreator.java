@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ProviderTableCreator extends TableCreator<ClientBalanceProvider> {
     public ProviderTableCreator(List<ClientBalanceProvider> data) {
-        super(new float[]{10, 80, 10, 10}, new String[]{"ID", "ProviderName", "NPI", "License #"});
+        super(new float[]{10, 50, 20, 20}, new String[]{"ID", "ProviderName", "NPI", "License #"});
         this.data = data;
     }
 

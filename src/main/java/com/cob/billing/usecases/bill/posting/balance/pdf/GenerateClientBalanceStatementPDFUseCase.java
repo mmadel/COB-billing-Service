@@ -6,8 +6,6 @@ import com.cob.billing.usecases.admin.organization.RetrievingOrganizationUseCase
 import com.cob.billing.usecases.bill.posting.balance.CollectClientBalanceAccountUseCase;
 import com.cob.billing.usecases.bill.posting.balance.RetrieveClientBalanceSettingsUseCase;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.*;
-import com.cob.billing.usecases.bill.posting.balance.pdf.generator.table.LocationTableCreator;
-import com.cob.billing.usecases.bill.posting.balance.pdf.generator.table.ProviderTableCreator;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -35,7 +33,7 @@ public class GenerateClientBalanceStatementPDFUseCase {
     RetrievingOrganizationUseCase retrievingOrganizationUseCase;
 
     @Autowired
-    CreateBalanceTableUseCase createBalanceTableUseCase;
+    CreateLocationTableUseCase createLocationTableUseCase;
 
     PatientBalanceSettings patientBalanceSettings;
 
@@ -78,7 +76,7 @@ public class GenerateClientBalanceStatementPDFUseCase {
 
 
 
-        List<ClientBalanceLocation> clientBalanceLocations = createBalanceTableUseCase.createTable(document,clientBalanceInvoice,patientBalanceSettings);
+        List<ClientBalanceLocation> clientBalanceLocations = createLocationTableUseCase.createTable(document,clientBalanceInvoice,patientBalanceSettings);
 
         //Create Balance Tables <Finalized And Pending>
         createBalanceTablesUseCase.setDocument(document);
