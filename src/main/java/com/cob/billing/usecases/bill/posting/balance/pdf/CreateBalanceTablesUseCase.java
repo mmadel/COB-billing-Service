@@ -3,6 +3,7 @@ package com.cob.billing.usecases.bill.posting.balance.pdf;
 import com.cob.billing.entity.bill.balance.PatientBalanceAccountSettings;
 import com.cob.billing.model.bill.posting.balance.ClientBalanceAccount;
 import com.cob.billing.model.bill.posting.balance.ClientBalanceInvoice;
+import com.cob.billing.model.bill.posting.balance.ClientBalanceLocation;
 import com.cob.billing.usecases.bill.posting.balance.EnrichClientBalancePaymentUSeCase;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.CustomParagraph;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.table.BalanceTableCreator;
@@ -19,13 +20,13 @@ public class CreateBalanceTablesUseCase {
     @Autowired
     private EnrichClientBalancePaymentUSeCase enrichClientBalancePaymentUSeCase;
     private ClientBalanceInvoice clientBalanceInvoice;
-    private List<ClientBalanceAccount> clientBalanceAccounts;
+    List<ClientBalanceLocation> clientBalanceLocations;
     private Document document;
     private PatientBalanceAccountSettings patientBalanceAccountSettings;
 
-    public void createTables(ClientBalanceInvoice clientBalanceInvoice, List<ClientBalanceAccount> clientBalanceAccounts) throws IOException {
+    public void createTables(ClientBalanceInvoice clientBalanceInvoice, List<ClientBalanceLocation> clientBalanceLocations) throws IOException {
         this.clientBalanceInvoice = clientBalanceInvoice;
-        this.clientBalanceAccounts = clientBalanceAccounts;
+        this.clientBalanceLocations = clientBalanceLocations;
         boolean[] settings = new boolean[]{patientBalanceAccountSettings.isRenderingProvider()
                 , patientBalanceAccountSettings.isLocation(), patientBalanceAccountSettings.isPoc()};
         createFinalizeTable(settings);
@@ -53,7 +54,7 @@ public class CreateBalanceTablesUseCase {
 
 
         balanceTableCreator = new BalanceTableCreator(clientBalanceInvoice.getFinalizedClientBalance(), settings);
-        enrichClientBalancePaymentUSeCase.enrichWithLOC(clientBalanceAccounts, clientBalanceInvoice.getFinalizedClientBalance());
+        enrichClientBalancePaymentUSeCase.enrichWithLOC(clientBalanceLocations, clientBalanceInvoice.getFinalizedClientBalance());
 
         balanceTableCreator.create();
         document.add(balanceTableCreator.table);
@@ -68,7 +69,7 @@ public class CreateBalanceTablesUseCase {
         CustomParagraph.create(pendingParagraphInputs, pendingStandardFonts, document);
 
         balanceTableCreator = new BalanceTableCreator(clientBalanceInvoice.getPendingClientBalance(), settings);
-        enrichClientBalancePaymentUSeCase.enrichWithLOC(clientBalanceAccounts, clientBalanceInvoice.getPendingClientBalance());
+        enrichClientBalancePaymentUSeCase.enrichWithLOC(clientBalanceLocations, clientBalanceInvoice.getPendingClientBalance());
         balanceTableCreator.create();
         document.add(balanceTableCreator.table);
 

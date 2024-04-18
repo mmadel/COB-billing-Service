@@ -1,10 +1,7 @@
 package com.cob.billing.usecases.bill.posting.balance.pdf;
 
 import com.cob.billing.model.admin.Organization;
-import com.cob.billing.model.bill.posting.balance.ClientBalanceAccount;
-import com.cob.billing.model.bill.posting.balance.ClientBalanceInvoice;
-import com.cob.billing.model.bill.posting.balance.ClientBalancePayment;
-import com.cob.billing.model.bill.posting.balance.PatientBalanceSettings;
+import com.cob.billing.model.bill.posting.balance.*;
 import com.cob.billing.usecases.admin.organization.RetrievingOrganizationUseCase;
 import com.cob.billing.usecases.bill.posting.balance.CollectClientBalanceAccountUseCase;
 import com.cob.billing.usecases.bill.posting.balance.RetrieveClientBalanceSettingsUseCase;
@@ -36,6 +33,10 @@ public class GenerateClientBalanceStatementPDFUseCase {
     CreateProviderTableUseCase createProviderTableUseCase;
     @Autowired
     RetrievingOrganizationUseCase retrievingOrganizationUseCase;
+
+    @Autowired
+    CreateBalanceTableUseCase createBalanceTableUseCase;
+
     PatientBalanceSettings patientBalanceSettings;
 
     public byte[] generate(ClientBalanceInvoice clientBalanceInvoice) throws IOException {
@@ -76,16 +77,13 @@ public class GenerateClientBalanceStatementPDFUseCase {
                 patientBalanceSettings.getPatientBalanceAccountSettings());
 
 
-        //Create Location Table
-        boolean[] settings = new boolean[]{patientBalanceSettings.getPatientBalanceAccountSettings().isIcdCodes()};
-        LocationTableCreator locationTableCreator = new LocationTableCreator(clientBalanceAccounts, settings);
-        locationTableCreator.create();
-        document.add(locationTableCreator.table);
+
+        List<ClientBalanceLocation> clientBalanceLocations = createBalanceTableUseCase.createTable(document,clientBalanceInvoice,patientBalanceSettings);
 
         //Create Balance Tables <Finalized And Pending>
         createBalanceTablesUseCase.setDocument(document);
         createBalanceTablesUseCase.setBalanceAccountSettings(patientBalanceSettings.getPatientBalanceAccountSettings());
-        createBalanceTablesUseCase.createTables(clientBalanceInvoice, clientBalanceAccounts);
+        createBalanceTablesUseCase.createTables(clientBalanceInvoice, clientBalanceLocations);
 
         document.add(new Paragraph("\n"));
         document.add(new Paragraph("\n"));
