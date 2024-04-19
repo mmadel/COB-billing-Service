@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,7 +57,7 @@ public class FindNotSubmittedSessionsByPatientUseCase {
                 }).collect(Collectors.toList());
         List<PatientSessionServiceLine> patientSessionServiceLines = constructPatientSessionServiceLines(response);
         List<PatientSessionServiceLine> records = PaginationUtil.paginate(patientSessionServiceLines, offset, limit);
-
+        records.sort(Comparator.comparingLong(PatientSessionServiceLine::getDos).reversed());
         return PatientSessionServiceLineResponse.builder()
                 .number_of_records(patientSessionServiceLines.size())
                 .number_of_matching_records(records.size())

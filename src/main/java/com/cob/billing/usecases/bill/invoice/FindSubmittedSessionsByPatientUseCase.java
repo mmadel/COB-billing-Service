@@ -17,10 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class FindSubmittedSessionsByPatientUseCase {
@@ -53,11 +50,12 @@ public class FindSubmittedSessionsByPatientUseCase {
     public SessionServiceLinePaymentResponse find(int offset, int limit, PostingSearchCriteria postingSearchCriteria) {
         List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findSubmittedSessionsByPatientFiltered(postingSearchCriteria.getEntityId(), postingSearchCriteria.getStartDate(), postingSearchCriteria.getEndDate());
         List<BatchSessionServiceLinePayment> response = constructBatchServiceLinesPaymentsUseCase.construct(patientSessionEntities);
+        response.sort(Comparator.comparingLong(BatchSessionServiceLinePayment::getDos).reversed());
         List<BatchSessionServiceLinePayment> records = PaginationUtil.paginate(response, offset, limit);
         return SessionServiceLinePaymentResponse.builder()
                 .number_of_records(response.size())
                 .number_of_matching_records((int) records.size())
-                .records(response)
+                .records(records)
                 .build();
     }
 

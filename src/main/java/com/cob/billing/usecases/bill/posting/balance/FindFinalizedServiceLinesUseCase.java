@@ -9,6 +9,7 @@ import com.cob.billing.util.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -23,7 +24,7 @@ public class FindFinalizedServiceLinesUseCase {
                 , patientSessionSearchCriteria.getStartDate()
                 , patientSessionSearchCriteria.getEndDate());
         List<ClientBalancePayment> clientBalanceStatements = constructClientBalanceStatementsUseCase.constructStatement(patientSessionEntities);
-
+        clientBalanceStatements.sort(Comparator.comparingLong(ClientBalancePayment::getDos).reversed());
         List<ClientBalancePayment> records = PaginationUtil.paginate(clientBalanceStatements, offset, limit);
         return ClientBalanceResponse.builder()
                 .number_of_records(records.size())
