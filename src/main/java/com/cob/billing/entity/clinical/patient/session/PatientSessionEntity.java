@@ -38,9 +38,6 @@ public class PatientSessionEntity {
     @Type(type = "json")
     private DoctorInfo doctorInfo;
 
-    @Column(name = "clinic_info", columnDefinition = "json")
-    @Type(type = "json")
-    private ClinicInfo clinicInfo;
     @OneToOne
     @JoinColumn(name = "clinic_id", referencedColumnName = "id")
     ClinicEntity clinic;

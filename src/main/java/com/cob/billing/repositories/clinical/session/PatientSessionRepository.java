@@ -49,6 +49,24 @@ public interface PatientSessionRepository extends PagingAndSortingRepository<Pat
             , @Param("provider") String provider
             , @Param("caseTitle") String caseTitle);
 
+    @Query("SELECT DISTINCT s FROM PatientSessionEntity s INNER JOIN FETCH s.serviceCodes sc " +
+            "WHERE (s.status = 'Prepare' OR s.status = 'Partial')" +
+            "AND sc.type NOT IN ('Cancel','Close')" +
+            "AND s.patient.id= :patientId " +
+            "AND (:dateFrom is null or s.serviceDate >= :dateFrom) " +
+            "AND (:dateTo is null or s.serviceDate <= :dateTo)")
+    List<PatientSessionEntity> findClientPendingSessions(@Param("patientId") Long patientId, @Param("dateFrom") Long dateFrom
+            , @Param("dateTo") Long dateTo);
+
+    @Query("SELECT DISTINCT s FROM PatientSessionEntity s INNER JOIN FETCH s.serviceCodes sc " +
+            "WHERE (s.status = 'Submit' OR s.status = 'Partial')" +
+            "AND sc.type  IN ('Close')" +
+            "AND s.patient.id= :patientId " +
+            "AND (:dateFrom is null or s.serviceDate >= :dateFrom) " +
+            "AND (:dateTo is null or s.serviceDate <= :dateTo)")
+    List<PatientSessionEntity> findClientFinalizedSessions(@Param("patientId") Long patientId, @Param("dateFrom") Long dateFrom
+            , @Param("dateTo") Long dateTo);
+
 
     @Query("SELECT  DISTINCT s FROM PatientSessionEntity s INNER JOIN  s.serviceCodes sc " +
             "WHERE (s.status = 'Submit' OR s.status = 'Partial')" +

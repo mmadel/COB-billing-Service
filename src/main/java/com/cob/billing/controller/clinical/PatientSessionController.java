@@ -8,9 +8,12 @@ import com.cob.billing.usecases.clinical.patient.session.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/session")
@@ -43,11 +46,12 @@ public class PatientSessionController {
                 .generateResponse("Successfully updated Patient Session",
                         HttpStatus.OK, updatePatientSessionUseCase.update(patientSession));
     }
+
     @PutMapping("/update/items/serviceLineId/{serviceLineId}")
-    public ResponseEntity<Object> updateItems(@PathVariable Long serviceLineId , @RequestBody CPTCode cptCode) {
+    public ResponseEntity<Object> updateItems(@PathVariable Long serviceLineId, @RequestBody CPTCode cptCode) {
         return ResponseHandler
                 .generateResponse("Successfully updated Patient Session",
-                        HttpStatus.OK, updatePatientSessionItemUseCase.update(serviceLineId,cptCode));
+                        HttpStatus.OK, updatePatientSessionItemUseCase.update(serviceLineId, cptCode));
     }
 
 
@@ -60,9 +64,20 @@ public class PatientSessionController {
 
     @GetMapping("/find/patientId/{patientId}")
     public ResponseEntity<Object> find(@RequestParam(name = "offset") String offset,
-                                       @RequestParam(name = "limit") String limit
+                                       @RequestParam(name = "limit") String limit,
+                                       @RequestParam(name = "sort") Optional<String> sort
             , @PathVariable Long patientId) {
-        Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
+        String sortField = "serviceDate";
+        String sortType = "desc";
+        if (!sort.isEmpty()) {
+            String[] parsedSortParam = sort.get().split("%");
+            sortType = parsedSortParam[1];
+        }
+        Pageable paging;
+        if (sortType == "desc")
+             paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit), Sort.by(sortField).descending());
+        else
+            paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit), Sort.by(sortField).ascending());
         return ResponseHandler
                 .generateResponse("Successfully finding Patient Session",
                         HttpStatus.OK, null, findSessionByPatientUseCase.find(paging, patientId));

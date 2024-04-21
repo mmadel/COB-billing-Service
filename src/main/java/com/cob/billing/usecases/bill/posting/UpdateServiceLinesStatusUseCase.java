@@ -19,6 +19,7 @@ public class UpdateServiceLinesStatusUseCase {
     public void update(List<SessionServiceLinePayment> sessionServiceLinePayments) {
         List<Long> resubmittedServiceLines = new ArrayList<>();
         List<Long> closedServiceLines = new ArrayList<>();
+        List<Long> reOpenServiceLines = new ArrayList<>();
         sessionServiceLinePayments.forEach(paymentServiceLine -> {
             switch (paymentServiceLine.getServiceLinePaymentAction()) {
                 case Resubmit:
@@ -27,11 +28,16 @@ public class UpdateServiceLinesStatusUseCase {
                 case Close:
                     closedServiceLines.add(paymentServiceLine.getServiceLineId());
                     break;
+                case Reopen:
+                    reOpenServiceLines.add(paymentServiceLine.getServiceLineId());
+                    break;
             }
             if (!resubmittedServiceLines.isEmpty())
                 updateServiceLineStatus(resubmittedServiceLines, "Initial");
             if (!closedServiceLines.isEmpty())
                 updateServiceLineStatus(closedServiceLines, "Close");
+            if(!reOpenServiceLines.isEmpty())
+                updateServiceLineStatus(reOpenServiceLines, "Invoice");
         });
     }
 

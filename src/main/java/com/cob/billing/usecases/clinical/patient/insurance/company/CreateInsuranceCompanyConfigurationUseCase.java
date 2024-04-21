@@ -43,7 +43,6 @@ public class CreateInsuranceCompanyConfigurationUseCase {
                 InsuranceCompanyExternalEntity externalInsuranceCompany = new InsuranceCompanyExternalEntity();
                 externalInsuranceCompany.setId(model.getId());
                 toBeCreated.setExternalInsuranceCompany(externalInsuranceCompany);
-                System.out.println();
                 break;
         }
         insuranceCompanyConfigurationRepository.save(toBeCreated);

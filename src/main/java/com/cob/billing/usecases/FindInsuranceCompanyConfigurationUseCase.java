@@ -40,12 +40,10 @@ public class FindInsuranceCompanyConfigurationUseCase {
         InsuranceCompanyConfigurationEntity configuration = null;
         switch (insuranceCompanyVisibility) {
             case Internal:
-                System.out.println();
                 configuration = insuranceCompanyConfigurationRepository.findByInternalInsuranceCompany_Id(id).get();
                 break;
             case External:
                 configuration = insuranceCompanyConfigurationRepository.findByExternalInsuranceCompany_Id(id).get();
-                System.out.println();
                 break;
         }
         return configuration;
