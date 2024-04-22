@@ -20,7 +20,7 @@ public class FeeScheduleController {
     @Autowired
     RemoveFeeSchedulesUseCase removeFeeSchedulesUseCase;
     @Autowired
-    FindDefaultFeeScheduleUseCase findDefaultFeeScheduleUseCase;
+    FindDefaultFeeScheduleByCPTCodeUseCase findDefaultFeeScheduleByCPTCodeUseCase;
 
 
 
@@ -38,9 +38,9 @@ public class FeeScheduleController {
     public ResponseEntity find(@PathVariable Long id) {
         return new ResponseEntity(findFeeSchedulesUseCase.findById(id), HttpStatus.OK);
     }
-    @GetMapping("/find/default")
-    public ResponseEntity findDefault(){
-        return new ResponseEntity(findDefaultFeeScheduleUseCase.find(), HttpStatus.OK);
+    @GetMapping("/find/cpt/{cptCode}")
+    public ResponseEntity findByCPTCode(@PathVariable String cptCode){
+        return new ResponseEntity(findDefaultFeeScheduleByCPTCodeUseCase.find(cptCode), HttpStatus.OK);
 
     }
     @GetMapping("/find/lines/fee/{id}")
