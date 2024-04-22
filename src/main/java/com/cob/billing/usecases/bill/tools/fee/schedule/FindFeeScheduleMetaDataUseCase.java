@@ -19,9 +19,10 @@ public class FindFeeScheduleMetaDataUseCase {
 
     public FeeScheduleMetaData find() {
         FeeScheduleMetaData data = new FeeScheduleMetaData();
-        data.setProviderList(findProvidersUseCase.findAll().stream()
+        data.setProviders(findProvidersUseCase.findAll().stream()
                 .map(provider -> {
                     SimpleProvider simpleProvider = new SimpleProvider();
+                    simpleProvider.setId(provider.getId());
                     simpleProvider.setFirstName(provider.getFirstName());
                     simpleProvider.setLastName(provider.getLastName());
                     simpleProvider.setNpi(provider.getNpi());

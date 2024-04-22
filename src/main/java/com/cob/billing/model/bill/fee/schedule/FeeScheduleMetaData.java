@@ -10,6 +10,6 @@ import java.util.List;
 @Setter
 @Getter
 public class FeeScheduleMetaData {
-    List<SimpleProvider> providerList;
+    List<SimpleProvider> providers;
     List<InsuranceCompanyHolder> insurances;
 }
