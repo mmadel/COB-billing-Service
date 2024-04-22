@@ -26,6 +26,8 @@ public class FeeScheduleEntity {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "fee_Schedule_name")
+    private String name;
     @Column(name = "created_at")
     private Long createdAt;
 

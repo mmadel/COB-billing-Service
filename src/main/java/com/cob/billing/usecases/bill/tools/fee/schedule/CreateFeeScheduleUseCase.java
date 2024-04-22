@@ -22,16 +22,7 @@ public class CreateFeeScheduleUseCase {
 
     @CacheEvict(value="Fee-schedule", allEntries=true)
     public Long createFeeSchedule(FeeScheduleModel model) {
-        feeScheduleRepository.findAll().spliterator();
-        List<FeeScheduleEntity> feeScheduleEntities =
-                StreamSupport.stream(feeScheduleRepository.findAll().spliterator(), false)
-                        .filter(feeScheduleEntity -> feeScheduleEntity.getDefaultFee())
-                        .collect(Collectors.toList());
         FeeScheduleEntity feeSchedule = mapper.map(model, FeeScheduleEntity.class);
-        if(feeScheduleEntities.isEmpty())
-            feeSchedule.setDefaultFee(true);
-        else
-            feeSchedule.setDefaultFee(false);
         FeeScheduleEntity created = feeScheduleRepository.save(feeSchedule);
         return created.getId();
     }

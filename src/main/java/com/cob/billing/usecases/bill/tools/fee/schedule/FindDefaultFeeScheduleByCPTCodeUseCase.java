@@ -19,6 +19,7 @@ public class FindDefaultFeeScheduleByCPTCodeUseCase {
 
     @Cacheable("Fee-schedule")
     public FeeScheduleLineModel find(String cpt) {
+        System.out.println("Find Fee-schedule");
         FeeScheduleEntity feeSchedule = feeScheduleRepository.findDefaultFee().get();
         Optional<FeeScheduleLineModel> lineModelOptional = feeSchedule.getFeeLines()
                 .stream()
