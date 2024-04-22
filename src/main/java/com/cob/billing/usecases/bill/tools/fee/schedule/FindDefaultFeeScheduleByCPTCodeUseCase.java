@@ -17,7 +17,7 @@ public class FindDefaultFeeScheduleByCPTCodeUseCase {
     @Autowired
     ModelMapper mapper;
 
-    @Cacheable("Fee-schedule")
+    
     public FeeScheduleLineModel find(String npi, String cpt) {
         System.out.println("Find Fee-schedule");
         FeeScheduleEntity feeSchedule = findFee(npi);
