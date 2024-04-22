@@ -36,6 +36,9 @@ public class FeeScheduleEntity {
     @Column(name = "default_fee")
     private Boolean defaultFee;
 
+    @Column(name = "active")
+    private Boolean active;
+
     @Column(name = "fee_schedule_line", columnDefinition = "json")
     @Type(type = "json")
     private List<FeeScheduleLineModel> feeLines;
