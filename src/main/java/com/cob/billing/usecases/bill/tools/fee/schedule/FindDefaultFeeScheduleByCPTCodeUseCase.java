@@ -18,9 +18,9 @@ public class FindDefaultFeeScheduleByCPTCodeUseCase {
     ModelMapper mapper;
 
     @Cacheable("Fee-schedule")
-    public FeeScheduleLineModel find(String cpt) {
+    public FeeScheduleLineModel find(String npi, String cpt) {
         System.out.println("Find Fee-schedule");
-        FeeScheduleEntity feeSchedule = feeScheduleRepository.findDefaultFee().get();
+        FeeScheduleEntity feeSchedule = findFee(npi);
         Optional<FeeScheduleLineModel> lineModelOptional = feeSchedule.getFeeLines()
                 .stream()
                 .filter(feeScheduleLineModel -> feeScheduleLineModel.getCptCode().equals(cpt))
@@ -29,5 +29,13 @@ public class FindDefaultFeeScheduleByCPTCodeUseCase {
             return lineModelOptional.get();
         else
             return new FeeScheduleLineModel();
+    }
+
+    private FeeScheduleEntity findFee(String npi) {
+        Optional<FeeScheduleEntity> providerFeeSchedule = feeScheduleRepository.findFeeScheduleByProvider(npi);
+        if (providerFeeSchedule.isPresent())
+            return providerFeeSchedule.get();
+        else
+            return feeScheduleRepository.findDefaultFee().get();
     }
 }

@@ -39,11 +39,13 @@ public class FeeScheduleController {
     public ResponseEntity find(@PathVariable Long id) {
         return new ResponseEntity(findFeeSchedulesUseCase.findById(id), HttpStatus.OK);
     }
-    @GetMapping("/find/cpt/{cptCode}")
-    public ResponseEntity findByCPTCode(@PathVariable String cptCode){
-        return new ResponseEntity(findDefaultFeeScheduleByCPTCodeUseCase.find(cptCode), HttpStatus.OK);
+
+    @GetMapping("/find/npi/{npi}/cpt/{cptCode}")
+    public ResponseEntity findByCPTCode(@PathVariable String npi, @PathVariable String cptCode) {
+        return new ResponseEntity(findDefaultFeeScheduleByCPTCodeUseCase.find(npi, cptCode), HttpStatus.OK);
 
     }
+
     @GetMapping("/find/lines/fee/{id}")
     public ResponseEntity findLines(@PathVariable Long id) {
         return new ResponseEntity(findFeeSchedulesLinesUseCase.findLines(id), HttpStatus.OK);
@@ -55,7 +57,7 @@ public class FeeScheduleController {
     }
 
     @GetMapping("/find/meta-data")
-    public ResponseEntity findMetaData(){
+    public ResponseEntity findMetaData() {
         return new ResponseEntity(findFeeScheduleMetaData.find(), HttpStatus.OK);
     }
 
