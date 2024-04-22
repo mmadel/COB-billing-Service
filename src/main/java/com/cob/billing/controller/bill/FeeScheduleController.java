@@ -21,7 +21,8 @@ public class FeeScheduleController {
     RemoveFeeSchedulesUseCase removeFeeSchedulesUseCase;
     @Autowired
     FindDefaultFeeScheduleByCPTCodeUseCase findDefaultFeeScheduleByCPTCodeUseCase;
-
+    @Autowired
+    FindFeeScheduleMetaDataUseCase findFeeScheduleMetaData;
 
 
     @PostMapping("/create")
@@ -51,6 +52,11 @@ public class FeeScheduleController {
     @DeleteMapping("/delete/id/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         return new ResponseEntity(removeFeeSchedulesUseCase.remove(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/find/meta-data")
+    public ResponseEntity findMetaData(){
+        return new ResponseEntity(findFeeScheduleMetaData.find(), HttpStatus.OK);
     }
 
 }
