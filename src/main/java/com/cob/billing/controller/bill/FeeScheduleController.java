@@ -1,10 +1,7 @@
 package com.cob.billing.controller.bill;
 
 import com.cob.billing.model.bill.fee.schedule.FeeScheduleModel;
-import com.cob.billing.usecases.bill.tools.fee.schedule.CreateFeeScheduleUseCase;
-import com.cob.billing.usecases.bill.tools.fee.schedule.FindFeeSchedulesLinesUseCase;
-import com.cob.billing.usecases.bill.tools.fee.schedule.FindFeeSchedulesUseCase;
-import com.cob.billing.usecases.bill.tools.fee.schedule.RemoveFeeSchedulesUseCase;
+import com.cob.billing.usecases.bill.tools.fee.schedule.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +19,8 @@ public class FeeScheduleController {
     FindFeeSchedulesLinesUseCase findFeeSchedulesLinesUseCase;
     @Autowired
     RemoveFeeSchedulesUseCase removeFeeSchedulesUseCase;
+    @Autowired
+    FindDefaultFeeScheduleUseCase findDefaultFeeScheduleUseCase;
 
 
 
@@ -38,6 +37,11 @@ public class FeeScheduleController {
     @GetMapping("/find/id/{id}")
     public ResponseEntity find(@PathVariable Long id) {
         return new ResponseEntity(findFeeSchedulesUseCase.findById(id), HttpStatus.OK);
+    }
+    @GetMapping("/find/default")
+    public ResponseEntity findDefault(){
+        return new ResponseEntity(findDefaultFeeScheduleUseCase.find(), HttpStatus.OK);
+
     }
     @GetMapping("/find/lines/fee/{id}")
     public ResponseEntity findLines(@PathVariable Long id) {
