@@ -28,6 +28,8 @@ public class InvoiceModifierRuleUseCase {
         Optional<ModifierRuleEntity> rule = modifierRuleRepository.findByInsurance(insuranceId);
         if (rule.isPresent())
             modifierRule = rule.get();
+        else
+            modifierRule = null;
     }
 
     private void change(List<CPTCode> cptCode) {
