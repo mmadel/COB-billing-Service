@@ -12,4 +12,7 @@ public interface ModifierRuleRepository extends CrudRepository<ModifierRuleEntit
             "where JSON_EXTRACT(mr.insurance, '$.id') =:id " +
             "AND mr.active = true")
     Optional<ModifierRuleEntity> findByInsurance(@Param("id") Long id);
+
+    @Query("Select mr from ModifierRuleEntity mr where mr.defaultRule =true")
+    Optional<ModifierRuleEntity> findDefault();
 }

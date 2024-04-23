@@ -2,22 +2,40 @@ package com.cob.billing.usecases.bill.invoice;
 
 import com.cob.billing.entity.bill.modifier.rule.ModifierRuleEntity;
 import com.cob.billing.model.clinical.patient.CPTCode;
+import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.repositories.bill.ModifierRuleRepository;
 import com.cob.billing.usecases.bill.tools.modifier.rule.util.ListShiftUtil;
+import com.cob.billing.usecases.clinical.patient.session.UpdatePatientSessionServiceLineUseCase;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class InvoiceModifierRuleUseCase {
     @Autowired
     ModifierRuleRepository modifierRuleRepository;
     ModifierRuleEntity modifierRule;
+    @Autowired
+    UpdatePatientSessionServiceLineUseCase updatePatientSessionServiceLineUseCase;
+
+    @Transactional
+    public List<ServiceLine> checkDefault(List<ServiceLine> models) {
+        Optional<ModifierRuleEntity> rule = modifierRuleRepository.findDefault();
+        if (rule.isPresent())
+            modifierRule = rule.get();
+        List<CPTCode> cptCodes = models.stream()
+                        .map(ServiceLine::getCptCode).collect(Collectors.toList());
+        change(cptCodes);
+        updatePatientSessionServiceLineUseCase.update(models);
+        return models;
+    }
 
     public void check(List<CPTCode> cptCode, Long insuranceId) {
         findModifierRule(insuranceId);

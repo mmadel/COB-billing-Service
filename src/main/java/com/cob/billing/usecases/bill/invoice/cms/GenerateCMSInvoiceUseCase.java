@@ -39,6 +39,7 @@ public class GenerateCMSInvoiceUseCase {
                 .map(serviceLine -> serviceLine.getServiceLine().getCptCode())
                 .collect(Collectors.toList());
         invoiceFeeScheduleChargeUseCase.check(cptCodes, invoiceRequest.getInvoiceInsuranceCompanyInformation().getId());
+
         invoiceModifierRuleUseCase.check(cptCodes, invoiceRequest.getInvoiceInsuranceCompanyInformation().getId());
         List<Long> records = createInvoiceRecordUseCase.createRecord(invoiceRequest);
 
