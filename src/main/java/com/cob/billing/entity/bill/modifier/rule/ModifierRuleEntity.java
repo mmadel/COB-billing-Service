@@ -23,6 +23,13 @@ public class ModifierRuleEntity {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "name")
+    private String name;
+    @Column(name = "default_rule")
+    private Boolean defaultRule;
+    @Column(name = "active")
+    private Boolean active;
+
     @Column(name = "modifier")
     private String modifier;
 

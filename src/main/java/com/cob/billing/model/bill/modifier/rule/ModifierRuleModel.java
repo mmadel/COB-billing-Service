@@ -10,6 +10,10 @@ import lombok.Setter;
 public class ModifierRuleModel {
     private Long id;
 
+    private String name;
+    private Boolean defaultRule;
+    private Boolean active;
+
     private String modifier;
 
     private String cptCode;
