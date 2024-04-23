@@ -56,8 +56,8 @@ public class FindNotSubmittedSessionsByPatientUseCase {
                     return patientSession;
                 }).collect(Collectors.toList());
         List<PatientSessionServiceLine> patientSessionServiceLines = constructPatientSessionServiceLines(response);
+        patientSessionServiceLines.sort(Comparator.comparingLong(PatientSessionServiceLine::getDos));
         List<PatientSessionServiceLine> records = PaginationUtil.paginate(patientSessionServiceLines, offset, limit);
-        records.sort(Comparator.comparingLong(PatientSessionServiceLine::getDos).reversed());
         return PatientSessionServiceLineResponse.builder()
                 .number_of_records(patientSessionServiceLines.size())
                 .number_of_matching_records(records.size())

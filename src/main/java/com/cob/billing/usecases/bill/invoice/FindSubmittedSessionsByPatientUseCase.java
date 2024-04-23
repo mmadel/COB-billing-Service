@@ -50,7 +50,7 @@ public class FindSubmittedSessionsByPatientUseCase {
     public SessionServiceLinePaymentResponse find(int offset, int limit, PostingSearchCriteria postingSearchCriteria) {
         List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findSubmittedSessionsByPatientFiltered(postingSearchCriteria.getEntityId(), postingSearchCriteria.getStartDate(), postingSearchCriteria.getEndDate());
         List<BatchSessionServiceLinePayment> response = constructBatchServiceLinesPaymentsUseCase.construct(patientSessionEntities);
-        response.sort(Comparator.comparingLong(BatchSessionServiceLinePayment::getDos).reversed());
+        response.sort(Comparator.comparingLong(BatchSessionServiceLinePayment::getDos));
         List<BatchSessionServiceLinePayment> records = PaginationUtil.paginate(response, offset, limit);
         return SessionServiceLinePaymentResponse.builder()
                 .number_of_records(response.size())
