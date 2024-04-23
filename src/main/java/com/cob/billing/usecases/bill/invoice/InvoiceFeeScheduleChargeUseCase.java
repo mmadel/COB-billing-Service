@@ -34,11 +34,9 @@ public class InvoiceFeeScheduleChargeUseCase {
                 if (scheduleLine != null) {
                     switch (scheduleLine.getRateType()) {
                         case Per_Unit:
-                            cpt.setCharge(scheduleLine.getPerUnit() * scheduleLine.getChargeAmount());
-                            cpt.setUnit(scheduleLine.getPerUnit());
+                            cpt.setCharge(cpt.getUnit() * scheduleLine.getChargeAmount());
                             break;
                         case Fixed:
-                            cpt.setUnit(scheduleLine.getPerUnit());
                             cpt.setCharge(scheduleLine.getChargeAmount());
                             break;
                     }
