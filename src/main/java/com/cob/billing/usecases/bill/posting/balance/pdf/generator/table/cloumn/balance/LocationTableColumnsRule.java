@@ -13,18 +13,18 @@ public class LocationTableColumnsRule {
     private static Map<List<Boolean>, String[]> column_name_rules = new HashMap<>();
 
     static {
-        column_width_rules.put(ColumnRuleKeysCreator.key(EnableLOC, EnableICDCodes), new float[]{5, 45, 30, 30, 25});
-        column_width_rules.put(ColumnRuleKeysCreator.key(DisableLOC, DisableICDCodes), new float[]{50, 50});
+        column_width_rules.put(ColumnRuleKeysCreator.key(EnableLOC, EnableICDCodes), new float[]{20, 55, 30, 30});
+        column_width_rules.put(ColumnRuleKeysCreator.key(DisableLOC, DisableICDCodes), new float[]{100});
 
-        column_width_rules.put(ColumnRuleKeysCreator.key(DisableLOC, EnableICDCodes), new float[]{20, 60, 40});
-        column_width_rules.put(ColumnRuleKeysCreator.key(EnableLOC, DisableICDCodes), new float[]{20, 40, 10, 20});
+        column_width_rules.put(ColumnRuleKeysCreator.key(DisableLOC, EnableICDCodes), new float[]{70, 50});
+        column_width_rules.put(ColumnRuleKeysCreator.key(EnableLOC, DisableICDCodes), new float[]{25, 45, 20});
 
 
-        column_name_rules.put(ColumnRuleKeysCreator.key(EnableLOC, EnableICDCodes), new String[]{"LOC", "Service Facility", "Name", "Case", "ICD"});
-        column_name_rules.put(ColumnRuleKeysCreator.key(DisableLOC, DisableICDCodes), new String[]{"Name", "Case"});
+        column_name_rules.put(ColumnRuleKeysCreator.key(EnableLOC, EnableICDCodes), new String[]{"LOC", "Service Facility", "Case", "ICD"});
+        column_name_rules.put(ColumnRuleKeysCreator.key(DisableLOC, DisableICDCodes), new String[]{ "Case"});
 
-        column_name_rules.put(ColumnRuleKeysCreator.key(DisableLOC, EnableICDCodes), new String[]{"Name", "Case", "ICD"});
-        column_name_rules.put(ColumnRuleKeysCreator.key(EnableLOC, DisableICDCodes), new String[]{"LOC", "Service Facility", "Name", "Case"});
+        column_name_rules.put(ColumnRuleKeysCreator.key(DisableLOC, EnableICDCodes), new String[]{"Case", "ICD"});
+        column_name_rules.put(ColumnRuleKeysCreator.key(EnableLOC, DisableICDCodes), new String[]{"LOC", "Service Facility", "Case"});
     }
 
     public static float[] returnColumnsWidth(boolean[] configuration) {

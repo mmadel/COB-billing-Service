@@ -6,11 +6,14 @@ import com.cob.billing.usecases.admin.organization.RetrievingOrganizationUseCase
 import com.cob.billing.usecases.bill.posting.balance.CollectClientBalanceAccountUseCase;
 import com.cob.billing.usecases.bill.posting.balance.RetrieveClientBalanceSettingsUseCase;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.*;
+import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Text;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -76,6 +79,16 @@ public class GenerateClientBalanceStatementPDFUseCase {
                 patientBalanceSettings.getPatientBalanceAccountSettings());
 
 
+        //Client Name
+        String clientName=clientBalanceInvoice.getPendingClientBalance().stream()
+                .findFirst().get().getClientBalanceAccount().getClientName();
+        Paragraph clientNameParagraph = new Paragraph()
+                .setFontSize(9);
+        clientNameParagraph.add(new Text("Client Name: ").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)));
+        clientNameParagraph.add(new Text( clientName+ "\n").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA)));
+        document.add(clientNameParagraph);
+
+        //Location Table
         List<ClientBalanceLocation> clientBalanceLocations = createLocationTableUseCase.createTable(document, clientBalanceInvoice, patientBalanceSettings);
 
         //Create Balance Tables <Finalized And Pending>
