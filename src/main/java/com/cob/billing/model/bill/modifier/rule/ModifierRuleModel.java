@@ -1,6 +1,7 @@
 package com.cob.billing.model.bill.modifier.rule;
 
 import com.cob.billing.entity.bill.modifier.rule.ModifierAppender;
+import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyHolder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,4 +15,6 @@ public class ModifierRuleModel {
     private String cptCode;
 
     private ModifierAppender appender;
+
+    InsuranceCompanyHolder insurance;
 }
