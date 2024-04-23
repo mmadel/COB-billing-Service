@@ -2,6 +2,7 @@ package com.cob.billing.controller.bill;
 
 import com.cob.billing.model.bill.modifier.rule.ModifierRuleModel;
 import com.cob.billing.usecases.bill.tools.modifier.rule.CreateModifierRuleUseCase;
+import com.cob.billing.usecases.bill.tools.modifier.rule.FindModifierRuleMetaDataUseCase;
 import com.cob.billing.usecases.bill.tools.modifier.rule.ModifierRuleFinderUseCase;
 import com.cob.billing.usecases.bill.tools.modifier.rule.RemoveModifierRuleUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ public class ModifierRuleController {
     ModifierRuleFinderUseCase modifierRuleFinderUseCase;
     @Autowired
     RemoveModifierRuleUseCase removeModifierRuleUseCase;
+    @Autowired
+    FindModifierRuleMetaDataUseCase findModifierRuleMetaDataUseCase;
 
     @PostMapping("/create")
     public ResponseEntity create(@RequestBody ModifierRuleModel model) {
@@ -37,5 +40,10 @@ public class ModifierRuleController {
     @DeleteMapping("/delete/id/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         return new ResponseEntity(removeModifierRuleUseCase.removeById(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/meta-data/insurance-companies")
+    public ResponseEntity findMetaDara(){
+        return new ResponseEntity(findModifierRuleMetaDataUseCase.findInsuranceCompany(), HttpStatus.OK);
     }
 }
