@@ -3,6 +3,7 @@ package com.cob.billing.controller.bill;
 import com.cob.billing.model.bill.modifier.rule.ModifierRuleModel;
 import com.cob.billing.usecases.bill.tools.modifier.rule.CreateModifierRuleUseCase;
 import com.cob.billing.usecases.bill.tools.modifier.rule.ModifierRuleFinderUseCase;
+import com.cob.billing.usecases.bill.tools.modifier.rule.RemoveModifierRuleUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,8 @@ public class ModifierRuleController {
     CreateModifierRuleUseCase createModifierRuleUseCase;
     @Autowired
     ModifierRuleFinderUseCase modifierRuleFinderUseCase;
+    @Autowired
+    RemoveModifierRuleUseCase removeModifierRuleUseCase;
 
     @PostMapping("/create")
     public ResponseEntity create(@RequestBody ModifierRuleModel model) {
@@ -28,7 +31,11 @@ public class ModifierRuleController {
     }
     @GetMapping("/find/id/{id}")
     public ResponseEntity findById(@PathVariable Long id) {
-
         return new ResponseEntity(modifierRuleFinderUseCase.findById(id), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/id/{id}")
+    public ResponseEntity delete(@PathVariable Long id) {
+        return new ResponseEntity(removeModifierRuleUseCase.removeById(id), HttpStatus.OK);
     }
 }
