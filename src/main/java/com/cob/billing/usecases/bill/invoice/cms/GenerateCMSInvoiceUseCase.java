@@ -8,6 +8,7 @@ import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.usecases.bill.invoice.ChangeSessionStatusUseCase;
 import com.cob.billing.usecases.bill.invoice.CreateInvoiceRecordUseCase;
 import com.cob.billing.usecases.bill.invoice.InvoiceFeeScheduleChargeUseCase;
+import com.cob.billing.usecases.bill.invoice.InvoiceModifierRuleUseCase;
 import com.cob.billing.usecases.clinical.patient.PatientAuthorizationCheckerUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,14 +31,15 @@ public class GenerateCMSInvoiceUseCase {
     PatientAuthorizationCheckerUseCase patientAuthorizationCheckerUseCase;
     @Autowired
     InvoiceFeeScheduleChargeUseCase invoiceFeeScheduleChargeUseCase;
-
+    @Autowired
+    InvoiceModifierRuleUseCase invoiceModifierRuleUseCase;
     @Transactional
     public InvoiceGenerationResponse generate(InvoiceRequest invoiceRequest) throws IOException, IllegalAccessException, AuthorizationException {
         List<CPTCode> cptCodes = invoiceRequest.getSelectedSessionServiceLine().stream()
                 .map(serviceLine -> serviceLine.getServiceLine().getCptCode())
                 .collect(Collectors.toList());
         invoiceFeeScheduleChargeUseCase.check(cptCodes, invoiceRequest.getInvoiceInsuranceCompanyInformation().getId());
-        System.out.println();
+        invoiceModifierRuleUseCase.check(cptCodes, invoiceRequest.getInvoiceInsuranceCompanyInformation().getId());
         List<Long> records = createInvoiceRecordUseCase.createRecord(invoiceRequest);
 
         patientAuthorizationCheckerUseCase.check(invoiceRequest);
