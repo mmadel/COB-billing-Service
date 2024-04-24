@@ -18,7 +18,8 @@ public class CreateModifierRuleUseCase {
     @Transactional
     public Long create(ModifierRuleModel model) {
         ModifierRuleEntity toBeCreated = mapper.map(model, ModifierRuleEntity.class);
-        toBeCreated.setDefaultRule(false);
+        if (!toBeCreated.getDefaultRule())
+            toBeCreated.setDefaultRule(false);
         return modifierRuleRepository.save(toBeCreated).getId();
     }
 }
