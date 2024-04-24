@@ -15,9 +15,11 @@ public class CreateFeeScheduleUseCase {
     @Autowired
     ModelMapper mapper;
 
-    @CacheEvict(value="Fee-schedule", allEntries=true)
+    @CacheEvict(value = "Fee-schedule", allEntries = true)
     public Long createFeeSchedule(FeeScheduleModel model) {
         FeeScheduleEntity feeSchedule = mapper.map(model, FeeScheduleEntity.class);
+        if (!feeSchedule.getDefaultFee())
+            feeSchedule.setDefaultFee(false);
         FeeScheduleEntity created = feeScheduleRepository.save(feeSchedule);
         return created.getId();
     }
