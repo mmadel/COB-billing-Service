@@ -31,7 +31,7 @@ public class InvoiceModifierRuleUseCase {
         if (rule.isPresent())
             modifierRule = rule.get();
         List<CPTCode> cptCodes = models.stream()
-                        .map(ServiceLine::getCptCode).collect(Collectors.toList());
+                .map(ServiceLine::getCptCode).collect(Collectors.toList());
         change(cptCodes);
         updatePatientSessionServiceLineUseCase.update(models);
         return models;
@@ -73,10 +73,16 @@ public class InvoiceModifierRuleUseCase {
                 replaceModifier(code, modifierRule.getModifier());
                 break;
             case front:
-                code.setModifier(shiftModifierLeft(originalModifier, modifiedModifier));
+                boolean forntContains = modifiedModifier.stream()
+                        .anyMatch(originalModifier::contains);
+                if (!forntContains)
+                    code.setModifier(shiftModifierLeft(originalModifier, modifiedModifier));
                 break;
             case end:
-                code.setModifier(shiftModifierRight(originalModifier, modifiedModifier));
+                boolean endContains = modifiedModifier.stream()
+                        .anyMatch(originalModifier::contains);
+                if (!endContains)
+                    code.setModifier(shiftModifierRight(originalModifier, modifiedModifier));
                 break;
         }
     }
