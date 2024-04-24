@@ -20,6 +20,8 @@ public class CreateFeeScheduleUseCase {
         FeeScheduleEntity feeSchedule = mapper.map(model, FeeScheduleEntity.class);
         if (!feeSchedule.getDefaultFee())
             feeSchedule.setDefaultFee(false);
+        else
+            feeSchedule.setName("Default");
         FeeScheduleEntity created = feeScheduleRepository.save(feeSchedule);
         return created.getId();
     }
