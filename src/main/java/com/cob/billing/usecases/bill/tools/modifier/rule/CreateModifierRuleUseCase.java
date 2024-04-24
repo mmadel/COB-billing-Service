@@ -20,6 +20,10 @@ public class CreateModifierRuleUseCase {
         ModifierRuleEntity toBeCreated = mapper.map(model, ModifierRuleEntity.class);
         if (!toBeCreated.getDefaultRule())
             toBeCreated.setDefaultRule(false);
+        else{
+            toBeCreated.setName("Default");
+            toBeCreated.setActive(true);
+        }
         return modifierRuleRepository.save(toBeCreated).getId();
     }
 }
