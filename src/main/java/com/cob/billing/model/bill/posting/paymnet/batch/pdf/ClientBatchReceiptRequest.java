@@ -11,5 +11,6 @@ public class ClientBatchReceiptRequest {
     private ClientBatchReceiptPatientInfo clientBatchReceiptPatientInfo;
     private ClientBatchReceiptPaymentInfo clientBatchReceiptPaymentInfo;
     private List<ClientBatchReceiptDetailsPaymentInfo> paymentDetails;
+    private List<ClientBatchReceiptLocationInfo> clientBatchReceiptLocationInfo;
 
 }

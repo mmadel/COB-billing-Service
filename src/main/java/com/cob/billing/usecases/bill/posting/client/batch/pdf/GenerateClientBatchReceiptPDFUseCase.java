@@ -91,7 +91,7 @@ public class GenerateClientBatchReceiptPDFUseCase {
         locationParagraph.add(new Text("Location Information").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)).setFontSize(13));
         document.add(locationParagraph);
 
-        LocationInformationTableCreator locationInformationTableCreator  = new LocationInformationTableCreator();
+        LocationInformationTableCreator locationInformationTableCreator  = new LocationInformationTableCreator(clientBatchReceiptRequest.getClientBatchReceiptLocationInfo());
         document.add(locationInformationTableCreator.table);
 
         document.close();
