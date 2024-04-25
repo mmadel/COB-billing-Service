@@ -19,4 +19,5 @@ public class BatchSessionServiceLinePayment {
     private double charge;
     private ServiceLinePaymentAction serviceLinePaymentAction;
     private Long createdAt;
+    private Long sessionId;
 }

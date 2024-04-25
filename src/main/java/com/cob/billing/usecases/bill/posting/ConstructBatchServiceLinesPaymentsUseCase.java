@@ -64,6 +64,7 @@ public class ConstructBatchServiceLinesPaymentsUseCase {
         sessionServiceLinePayment.setServiceLineId(serviceLine.getId());
         sessionServiceLinePayment.setPreviousPayment(payment != null ? payment.getPayment() : 0.0);
         sessionServiceLinePayment.setBalance(payment != null ? payment.getBalance() : serviceLine.getCptCode().getCharge());
+        sessionServiceLinePayment.setSessionId(patientSession.getId());
         return sessionServiceLinePayment;
     }
 
@@ -76,6 +77,7 @@ public class ConstructBatchServiceLinesPaymentsUseCase {
         sessionServiceLinePayment.setPreviousPayment(0.0);
         sessionServiceLinePayment.setBalance(0.0);
         sessionServiceLinePayment.setServiceLineId(serviceLine.getId());
+        sessionServiceLinePayment.setSessionId(patientSession.getId());
 
         return sessionServiceLinePayment;
     }
