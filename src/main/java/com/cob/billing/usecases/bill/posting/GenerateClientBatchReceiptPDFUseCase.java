@@ -39,7 +39,7 @@ public class GenerateClientBatchReceiptPDFUseCase {
 
         Table receiptPaymentTableHeader = new Table(3)
                 .setWidth(UnitValue.createPercentValue(100))
-                .setFixedLayout().setBorder(new SolidBorder(1));
+                .setBorder(new SolidBorder(1));
 
         Paragraph paragraph = new Paragraph("Payment Receipt")
                 .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
