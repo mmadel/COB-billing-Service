@@ -5,10 +5,7 @@ import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.model.admin.clinic.Clinic;
 import com.cob.billing.model.bill.posting.paymnet.ServiceLinePaymentRequest;
 import com.cob.billing.model.bill.posting.paymnet.SessionServiceLinePayment;
-import com.cob.billing.model.bill.posting.paymnet.batch.pdf.ClientBatchReceiptLocationInfo;
-import com.cob.billing.model.bill.posting.paymnet.batch.pdf.ClientBatchReceiptPatientInfo;
-import com.cob.billing.model.bill.posting.paymnet.batch.pdf.ClientBatchReceiptPaymentInfo;
-import com.cob.billing.model.bill.posting.paymnet.batch.pdf.ClientBatchReceiptRequest;
+import com.cob.billing.model.bill.posting.paymnet.batch.pdf.*;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import com.cob.billing.usecases.bill.posting.CreateSessionServiceLinePaymentUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +24,7 @@ public class CreateBatchClientPaymentUseCase {
     CreateSessionServiceLinePaymentUseCase createSessionServiceLinePaymentUseCase;
     @Autowired
     PatientSessionRepository patientSessionRepository;
+    List<PatientSessionEntity> sessions;
 
     @Transactional
     public ClientBatchReceiptRequest create(ServiceLinePaymentRequest serviceLinePaymentRequest) {
@@ -38,7 +36,7 @@ public class CreateBatchClientPaymentUseCase {
                 .collect(Collectors.groupingBy(SessionServiceLinePayment::getSessionId));
 
 
-        List<PatientSessionEntity> sessions = StreamSupport
+        sessions = StreamSupport
                 .stream(patientSessionRepository.findAllById(paymentsGroupedBySession.keySet()).spliterator(), false)
                 .collect(Collectors.toList());
 
@@ -50,7 +48,9 @@ public class CreateBatchClientPaymentUseCase {
                 serviceLinePaymentRequest.getTotalAmount(),
                 model);
 
-        fillLocation(sessions, model);
+        fillLocation(model);
+
+        fillPaymentDetails(paymentsGroupedBySession, model);
         return model;
     }
 
@@ -73,7 +73,7 @@ public class CreateBatchClientPaymentUseCase {
         model.setClientBatchReceiptPaymentInfo(clientBatchReceiptPaymentInfo);
     }
 
-    private void fillLocation(List<PatientSessionEntity> sessions, ClientBatchReceiptRequest model) {
+    private void fillLocation(ClientBatchReceiptRequest model) {
         List<ClientBatchReceiptLocationInfo> clientBatchReceiptLocationInfo = new ArrayList<>();
         List<PatientSessionEntity> sessionsDistinct = sessions.stream()
                 .collect(Collectors.toMap(
@@ -95,5 +95,35 @@ public class CreateBatchClientPaymentUseCase {
             clientBatchReceiptLocationInfo.add(locationInfo);
         }
         model.setClientBatchReceiptLocationInfo(clientBatchReceiptLocationInfo);
+    }
+
+    private void fillPaymentDetails(Map<Long, List<SessionServiceLinePayment>> groupedPaymentBySession, ClientBatchReceiptRequest model) {
+        List<ClientBatchReceiptDetailsPaymentInfo> paymentDetails = new ArrayList<>();
+        for (Map.Entry<Long, List<SessionServiceLinePayment>> entry : groupedPaymentBySession.entrySet()) {
+            System.out.println(entry.getKey() + ":" + entry.getValue());
+            PatientSessionEntity session = findSession(entry.getKey());
+            Double totalSessionPayment = Double.valueOf(0);
+            for (SessionServiceLinePayment payment : entry.getValue()) {
+                totalSessionPayment = totalSessionPayment + payment.getPayment();
+            }
+            ClientBatchReceiptDetailsPaymentInfo paymentInfo = new ClientBatchReceiptDetailsPaymentInfo();
+            paymentInfo.setDos(session.getServiceDate());
+            paymentInfo.setSessionCase(session.getCaseTitle());
+            paymentInfo.setLocation(session.getClinic().getTitle());
+            paymentInfo.setPmtAmount(totalSessionPayment.floatValue());
+            paymentDetails.add(paymentInfo);
+        }
+        model.setPaymentDetails(paymentDetails);
+    }
+
+    private PatientSessionEntity findSession(Long sessionId) {
+        PatientSessionEntity patientSession = null;
+        for (PatientSessionEntity session : sessions) {
+            if (session.getId().equals(sessionId)) {
+                patientSession = session;
+                break;
+            }
+        }
+        return patientSession;
     }
 }
