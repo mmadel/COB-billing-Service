@@ -2,6 +2,7 @@ package com.cob.billing.usecases.bill.posting.client.batch.pdf;
 
 
 import com.cob.billing.model.admin.Organization;
+import com.cob.billing.model.bill.posting.paymnet.batch.pdf.ClientBatchReceiptRequest;
 import com.cob.billing.usecases.admin.organization.RetrievingOrganizationUseCase;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.CellCreator;
 import com.cob.billing.usecases.bill.posting.batching.pdf.LocationInformationTableCreator;
@@ -32,7 +33,7 @@ public class GenerateClientBatchReceiptPDFUseCase {
     @Autowired
     RetrievingOrganizationUseCase retrievingOrganizationUseCase;
 
-    public byte[] create() throws IOException {
+    public byte[] create(ClientBatchReceiptRequest clientBatchReceiptRequest) throws IOException {
         Organization billingProvider = retrievingOrganizationUseCase.findDefault();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -45,7 +46,7 @@ public class GenerateClientBatchReceiptPDFUseCase {
 
         document.add(new Paragraph("\n"));
 
-        ReceiptClientTitle.createTitle(document);
+        ReceiptClientTitle.createTitle(document,clientBatchReceiptRequest.getClientBatchReceiptPatientInfo());
 
         document.add(new Paragraph("\n"));
 

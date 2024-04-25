@@ -1,6 +1,7 @@
 package com.cob.billing.controller.bill;
 
 import com.cob.billing.model.bill.posting.paymnet.ServiceLinePaymentRequest;
+import com.cob.billing.model.bill.posting.paymnet.batch.pdf.ClientBatchReceiptRequest;
 import com.cob.billing.usecases.bill.posting.CreateSessionServiceLinePaymentUseCase;
 import com.cob.billing.usecases.bill.posting.client.batch.pdf.GenerateClientBatchReceiptPDFUseCase;
 import com.cob.billing.usecases.bill.posting.batching.CreateBatchClientPaymentUseCase;
@@ -37,13 +38,14 @@ public class BatchPaymentController {
         createSessionServiceLinePaymentUseCase.create(model);
         return new ResponseEntity(HttpStatus.OK);
     }
+
     @PostMapping("/client/receipt/pdf")
-    public void exportPdf( HttpServletResponse response) throws IOException {
+    public void exportPdf(@RequestBody ClientBatchReceiptRequest model, HttpServletResponse response) throws IOException {
         response.setHeader("Expires", "0");
         response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
         response.setHeader("Pragma", "public");
         response.setContentType("application/pdf");
-        byte[] pdfAsBytes = generateClientBatchReceiptPDFUseCase.create();
+        byte[] pdfAsBytes = generateClientBatchReceiptPDFUseCase.create(model);
         response.setContentLength(pdfAsBytes.length);
         OutputStream os = response.getOutputStream();
         os.write(pdfAsBytes);
