@@ -77,9 +77,9 @@ public class CreateBatchClientPaymentUseCase {
         List<ClientBatchReceiptLocationInfo> clientBatchReceiptLocationInfo = new ArrayList<>();
         List<PatientSessionEntity> sessionsDistinct = sessions.stream()
                 .collect(Collectors.toMap(
-                        session -> session.getClinic().getId(),  // Key is the clinic id
-                        session -> session,                     // Value is the session entity
-                        (existing, replacement) -> existing     // If duplicates, keep the existing session entity
+                        session -> session.getClinic().getId(),
+                        session -> session,
+                        (existing, replacement) -> existing
                 ))
                 .values()
                 .stream()
