@@ -20,7 +20,7 @@ public abstract class TableCreator<T extends ClientBalanceModel> {
     protected float[] columnWidths;
     protected String[] columnNames;
 
-    TableCreator(float[] columnWidths, String[] columnNames) {
+    public TableCreator(float[] columnWidths, String[] columnNames) {
         this.columnWidths = columnWidths;
         this.columnNames = columnNames;
     }

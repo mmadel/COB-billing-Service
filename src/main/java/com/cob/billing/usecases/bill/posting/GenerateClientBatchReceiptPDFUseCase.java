@@ -2,6 +2,7 @@ package com.cob.billing.usecases.bill.posting;
 
 
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.CellCreator;
+import com.cob.billing.usecases.bill.posting.batching.pdf.TotalPaymentCreator;
 import com.cob.billing.usecases.bill.posting.client.batch.pdf.generator.ReceiptClientTitle;
 import com.cob.billing.usecases.bill.posting.client.batch.pdf.generator.ReceiptHeader;
 import com.itextpdf.io.font.constants.StandardFonts;
@@ -37,6 +38,7 @@ public class GenerateClientBatchReceiptPDFUseCase {
 
         document.add(new Paragraph("\n"));
 
+        //Create Payment Receipt Header
         Table receiptPaymentTableHeader = new Table(3)
                 .setWidth(UnitValue.createPercentValue(100))
                 .setBorder(new SolidBorder(1));
@@ -45,8 +47,19 @@ public class GenerateClientBatchReceiptPDFUseCase {
                 .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
                 .setFontSize(13);
         receiptPaymentTableHeader.addCell(CellCreator.create(paragraph, TextAlignment.CENTER));
-
         document.add(receiptPaymentTableHeader);
+
+        document.add(new Paragraph("\n"));
+
+        //Create Total Payment Received
+        Paragraph totalPaymentParagraph = new Paragraph("Total Payment Received")
+                .setTextAlignment(TextAlignment.LEFT)
+                .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
+                .setFontSize(13);
+        document.add(totalPaymentParagraph);
+
+        TotalPaymentCreator totalPaymentCreator = new TotalPaymentCreator();
+        document.add(totalPaymentCreator.table);
         document.close();
         return outputStream.toByteArray();
     }
