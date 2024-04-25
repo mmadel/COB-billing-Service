@@ -11,7 +11,10 @@ public class ListShiftUtil {
         result.addAll(secondList);
         int remainingSize = 4 - secondList.size();
         result.addAll(firstList.subList(0, Math.min(firstList.size(), remainingSize)));
-        return result.subList(0, 4); // Ensure the list size is 4
+        if(result.size() < 4)
+            return result.subList(0, 3);
+        else
+            return result.subList(0, 4);
     }
 
     public static List<String> rightShift(List<String> firstList, List<String> secondList) {
@@ -19,6 +22,9 @@ public class ListShiftUtil {
         int remainingSize = 4 - secondList.size();
         result.addAll(firstList.subList(Math.max(0, firstList.size() - remainingSize), firstList.size()));
         result.addAll(secondList);
-        return result.subList(0, 4); // Ensure the list size is 4
+        if(result.size() < 4)
+            return result.subList(0, 3);
+        else
+            return result.subList(0, 4);
     }
 }
