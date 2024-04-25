@@ -25,7 +25,7 @@ public class LocationInformationTableCreator {
 
     public LocationInformationTableCreator(List<ClientBatchReceiptLocationInfo> clientBatchReceiptLocationInfo) throws IOException {
         columnWidths = new float[]{30, 70};
-        columnNames = new String[]{"Location Name", "Address"};
+        columnNames = new String[]{"Name", "Address"};
         this.data = clientBatchReceiptLocationInfo;
         createTableStructure();
         fillTableData();
