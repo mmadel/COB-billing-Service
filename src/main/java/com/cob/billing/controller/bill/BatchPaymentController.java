@@ -29,8 +29,7 @@ public class BatchPaymentController {
 
     @PostMapping("/client/create")
     public ResponseEntity create(@RequestBody ServiceLinePaymentRequest model) {
-        createBatchClientPaymentUseCase.create(model);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(createBatchClientPaymentUseCase.create(model), HttpStatus.OK);
     }
 
     @PostMapping("/insurance-company/create")
