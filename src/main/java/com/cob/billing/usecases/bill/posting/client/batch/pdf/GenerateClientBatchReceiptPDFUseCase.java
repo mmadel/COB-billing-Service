@@ -81,7 +81,7 @@ public class GenerateClientBatchReceiptPDFUseCase {
         paymentDetailsParagraph.add(new Text("The total payment received was applied to the following charges.").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA)).setFontSize(9));
         document.add(paymentDetailsParagraph);
 
-        PaymentDetailsTableCreator paymentDetailsTableCreator = new PaymentDetailsTableCreator();
+        PaymentDetailsTableCreator paymentDetailsTableCreator = new PaymentDetailsTableCreator(clientBatchReceiptRequest.getPaymentDetails());
         document.add(paymentDetailsTableCreator.table);
 
         document.add(new Paragraph("\n"));
