@@ -100,12 +100,12 @@ public class CreateBatchClientPaymentUseCase {
     private void fillPaymentDetails(Map<Long, List<SessionServiceLinePayment>> groupedPaymentBySession, ClientBatchReceiptRequest model) {
         List<ClientBatchReceiptDetailsPaymentInfo> paymentDetails = new ArrayList<>();
         for (Map.Entry<Long, List<SessionServiceLinePayment>> entry : groupedPaymentBySession.entrySet()) {
-            System.out.println(entry.getKey() + ":" + entry.getValue());
             PatientSessionEntity session = findSession(entry.getKey());
             Double totalSessionPayment = Double.valueOf(0);
             for (SessionServiceLinePayment payment : entry.getValue()) {
                 totalSessionPayment = totalSessionPayment + payment.getPayment();
             }
+            sout
             ClientBatchReceiptDetailsPaymentInfo paymentInfo = new ClientBatchReceiptDetailsPaymentInfo();
             paymentInfo.setDos(session.getServiceDate());
             paymentInfo.setSessionCase(session.getCaseTitle());
