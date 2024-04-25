@@ -46,16 +46,4 @@ public class InsuranceCompanyBatchController {
                         HttpStatus.OK, findSubmittedSessionsByPatientUseCase.findInsuranceCompany(insuranceCompanyId));
     }
 
-    @PostMapping("/create/payments/clientId/{clientId}")
-    public ResponseEntity create(@RequestBody List<BatchServiceLinePayment> payments
-            , @PathVariable Long clientId) {
-        createServiceLinesPaymentUseCase.create(payments, clientId);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @PostMapping("/create/payments/insurance/company")
-    public ResponseEntity create(@RequestBody Map<Long, List<BatchServiceLinePayment>> payments) {
-        createServiceLinesPaymentUseCase.create(payments);
-        return new ResponseEntity(HttpStatus.OK);
-    }
 }
