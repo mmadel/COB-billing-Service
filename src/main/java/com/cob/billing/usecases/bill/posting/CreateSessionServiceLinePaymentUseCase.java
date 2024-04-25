@@ -3,8 +3,8 @@ package com.cob.billing.usecases.bill.posting;
 import com.cob.billing.entity.bill.payment.PatientSessionServiceLinePaymentEntity;
 import com.cob.billing.entity.bill.payment.PatientSessionServiceLinePaymentInfoEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
-import com.cob.billing.model.bill.posting.paymnet.SessionServiceLinePayment;
 import com.cob.billing.model.bill.posting.paymnet.ServiceLinePaymentRequest;
+import com.cob.billing.model.bill.posting.paymnet.SessionServiceLinePayment;
 import com.cob.billing.repositories.bill.posting.PatientSessionServiceLinePaymentInfoRepository;
 import com.cob.billing.repositories.bill.posting.PatientSessionServiceLinePaymentRepository;
 import com.cob.billing.repositories.clinical.session.ServiceLineRepository;
@@ -38,6 +38,10 @@ public class CreateSessionServiceLinePaymentUseCase {
 
     @Transactional
     public void create(ServiceLinePaymentRequest serviceLinePaymentRequest) {
+        Map<Long, List<SessionServiceLinePayment>> invoiceDetailsMapper =serviceLinePaymentRequest.getServiceLinePayments()
+                .stream()
+                .collect(Collectors.groupingBy(SessionServiceLinePayment::getSessionId));
+        System.out.println();
      /*
         Save Service Line Payment and assign to it catching service line by its id
         Save Service Line Details and assign to it created service Lines

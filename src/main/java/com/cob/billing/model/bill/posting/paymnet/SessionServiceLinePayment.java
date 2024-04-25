@@ -32,6 +32,7 @@ public class SessionServiceLinePayment {
     private ServiceLinePaymentType serviceLinePaymentType;
     private BatchServiceLineData batchServiceLineData;
     private Long serviceLineId;
+    private Long sessionId;
     private Long createdAt;
 
 }
