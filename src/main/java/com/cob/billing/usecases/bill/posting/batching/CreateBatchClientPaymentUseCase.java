@@ -105,7 +105,6 @@ public class CreateBatchClientPaymentUseCase {
             for (SessionServiceLinePayment payment : entry.getValue()) {
                 totalSessionPayment = totalSessionPayment + payment.getPayment();
             }
-            sout
             ClientBatchReceiptDetailsPaymentInfo paymentInfo = new ClientBatchReceiptDetailsPaymentInfo();
             paymentInfo.setDos(session.getServiceDate());
             paymentInfo.setSessionCase(session.getCaseTitle());
