@@ -1,6 +1,8 @@
-package com.cob.billing.usecases.bill.posting;
+package com.cob.billing.usecases.bill.posting.client.batch.pdf;
 
 
+import com.cob.billing.model.admin.Organization;
+import com.cob.billing.usecases.admin.organization.RetrievingOrganizationUseCase;
 import com.cob.billing.usecases.bill.posting.balance.pdf.generator.CellCreator;
 import com.cob.billing.usecases.bill.posting.batching.pdf.LocationInformationTableCreator;
 import com.cob.billing.usecases.bill.posting.batching.pdf.PaymentDetailsTableCreator;
@@ -19,6 +21,7 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
@@ -26,13 +29,18 @@ import java.io.IOException;
 
 @Component
 public class GenerateClientBatchReceiptPDFUseCase {
+    @Autowired
+    RetrievingOrganizationUseCase retrievingOrganizationUseCase;
+
     public byte[] create() throws IOException {
+        Organization billingProvider = retrievingOrganizationUseCase.findDefault();
+
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PdfWriter writer = new PdfWriter(outputStream);
         PdfDocument pdfDoc = new PdfDocument(writer);
         PageSize pageSize = PageSize.A4;
         Document document = new Document(pdfDoc, pageSize);
-        ReceiptHeader.createHeader(document);
+        ReceiptHeader.createHeader(document,billingProvider);
         document.add(new Paragraph("\n"));
 
         document.add(new Paragraph("\n"));

@@ -2,7 +2,7 @@ package com.cob.billing.controller.bill;
 
 import com.cob.billing.model.bill.posting.paymnet.ServiceLinePaymentRequest;
 import com.cob.billing.usecases.bill.posting.CreateSessionServiceLinePaymentUseCase;
-import com.cob.billing.usecases.bill.posting.GenerateClientBatchReceiptPDFUseCase;
+import com.cob.billing.usecases.bill.posting.client.batch.pdf.GenerateClientBatchReceiptPDFUseCase;
 import com.cob.billing.usecases.bill.posting.batching.CreateBatchClientPaymentUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
