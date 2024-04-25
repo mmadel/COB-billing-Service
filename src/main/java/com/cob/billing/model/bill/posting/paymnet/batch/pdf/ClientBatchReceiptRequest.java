@@ -7,5 +7,6 @@ import lombok.Setter;
 @Getter
 public class ClientBatchReceiptRequest {
     private ClientBatchReceiptPatientInfo clientBatchReceiptPatientInfo;
+    private ClientBatchReceiptPaymentInfo clientBatchReceiptPaymentInfo;
 
 }

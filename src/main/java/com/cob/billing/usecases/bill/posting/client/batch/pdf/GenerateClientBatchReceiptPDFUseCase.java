@@ -70,7 +70,7 @@ public class GenerateClientBatchReceiptPDFUseCase {
                 .setFontSize(13);
         document.add(totalPaymentParagraph);
 
-        TotalPaymentTableCreator totalPaymentTableCreator = new TotalPaymentTableCreator();
+        TotalPaymentTableCreator totalPaymentTableCreator = new TotalPaymentTableCreator(clientBatchReceiptRequest.getClientBatchReceiptPaymentInfo());
         document.add(totalPaymentTableCreator.table);
 
         document.add(new Paragraph("\n"));
