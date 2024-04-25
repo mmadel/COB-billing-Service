@@ -2,6 +2,7 @@ package com.cob.billing.controller.bill;
 
 import com.cob.billing.model.bill.posting.paymnet.ServiceLinePaymentRequest;
 import com.cob.billing.usecases.bill.posting.CreateSessionServiceLinePaymentUseCase;
+import com.cob.billing.usecases.bill.posting.batching.CreateBatchClientPaymentUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class BatchPaymentController {
     @Autowired
     CreateSessionServiceLinePaymentUseCase createSessionServiceLinePaymentUseCase;
+    @Autowired
+    CreateBatchClientPaymentUseCase createBatchClientPaymentUseCase;
 
     @PostMapping("/client/create")
     public ResponseEntity create(@RequestBody ServiceLinePaymentRequest model) {
-        createSessionServiceLinePaymentUseCase.create(model);
+        createBatchClientPaymentUseCase.create(model);
         return new ResponseEntity(HttpStatus.OK);
     }
 

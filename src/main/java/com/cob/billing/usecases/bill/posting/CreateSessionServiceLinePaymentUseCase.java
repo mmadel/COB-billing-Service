@@ -38,9 +38,6 @@ public class CreateSessionServiceLinePaymentUseCase {
 
     @Transactional
     public void create(ServiceLinePaymentRequest serviceLinePaymentRequest) {
-        Map<Long, List<SessionServiceLinePayment>> invoiceDetailsMapper =serviceLinePaymentRequest.getServiceLinePayments()
-                .stream()
-                .collect(Collectors.groupingBy(SessionServiceLinePayment::getSessionId));
         System.out.println();
      /*
         Save Service Line Payment and assign to it catching service line by its id
