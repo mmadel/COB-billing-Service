@@ -69,4 +69,9 @@ public class PatientEntity {
     private String ssn;
     @Column(name = "external_id")
     private String externalId;
+
+    @Column(name = "authorization_watching")
+    private Boolean authorizationWatching;
+
+
 }
