@@ -2,10 +2,7 @@ package com.cob.billing.configuration;
 
 
 import com.cob.billing.model.integration.claimmd.Charge;
-import com.cob.billing.usecases.bill.tools.modifier.rule.util.ListShiftUtil;
-import com.cob.billing.util.ListUtils;
 import com.itextpdf.forms.PdfAcroForm;
-import com.itextpdf.forms.fields.PdfFormField;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -13,22 +10,26 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Main {
     static File ddd = new File("C:\\cob\\documents\\billing\\form-cms1500.pdf");
 
     public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        List<String> firstList = List.of("AU", "90");
-        List<String> secondList = List.of("GP", "90","33");
-        List<String> result =ListShiftUtil.leftShift(firstList, secondList);
-        System.out.println(result);
+        CreateRedirectFile.create();
+//        List<String> firstList = List.of("AU", "90");
+//        List<String> secondList = List.of("GP", "90","33");
+//        List<String> result =ListShiftUtil.leftShift(firstList, secondList);
+//        System.out.println(result);
         //reflectionTest();
 //        nestedList();
         //groupList();
-
 
 
 //        PdfReader reader = new PdfReader(ddd);
