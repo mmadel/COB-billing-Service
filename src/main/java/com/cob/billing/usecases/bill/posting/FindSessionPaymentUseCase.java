@@ -52,7 +52,7 @@ public class FindSessionPaymentUseCase {
         Map<Long, List<SessionServiceLinePayment>> groupingByServiceId = groupServiceLines(serviceLinesIds);
         for (Long key : groupingByServiceId.keySet()) {
             List<SessionServiceLinePayment> groupingServiceLines = groupingByServiceId.get(key);
-            if (groupingServiceLines.size() > 1) {
+//            if (groupingServiceLines.size() > 1) {
                 SessionServiceLinePayment mostSessionServiceLinePayment = groupingServiceLines.stream()
                         .max(Comparator.comparingLong(SessionServiceLinePayment::getCreatedAt))
                         .orElse(null);
@@ -76,9 +76,9 @@ public class FindSessionPaymentUseCase {
                 mostSessionServiceLinePayment.setInsuranceCompanyPayment(insurancePayment.get());
                 mostSessionServiceLinePayment.setAdjust(adjust.get());
                 result.add(mostSessionServiceLinePayment);
-            } else {
-                result.addAll(groupingServiceLines);
-            }
+//            } else {
+//                result.addAll(groupingServiceLines);
+//            }
         }
         return result;
     }
