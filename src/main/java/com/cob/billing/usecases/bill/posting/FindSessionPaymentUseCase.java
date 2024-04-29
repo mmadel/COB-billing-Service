@@ -57,10 +57,7 @@ public class FindSessionPaymentUseCase {
                         .max(Comparator.comparingLong(SessionServiceLinePayment::getCreatedAt))
                         .orElse(null);
                 AtomicReference<Double> clientPayment = new AtomicReference<>((double) 0);
-                AtomicReference<Double> clientAdjust = new AtomicReference<>((double) 0);
-
                 AtomicReference<Double> insurancePayment = new AtomicReference<>((double) 0);
-                AtomicReference<Double> insuranceAdjust = new AtomicReference<>((double) 0);
 
                 AtomicReference<Double> adjust = new AtomicReference<>((double) 0);
                 groupingServiceLines.forEach(serviceLinePayment -> {

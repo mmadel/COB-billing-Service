@@ -50,7 +50,7 @@ public interface PatientSessionRepository extends PagingAndSortingRepository<Pat
             , @Param("caseTitle") String caseTitle);
 
     @Query("SELECT DISTINCT s FROM PatientSessionEntity s INNER JOIN FETCH s.serviceCodes sc " +
-            "WHERE sc.type NOT IN ('Cancel','Close')" +
+            "WHERE sc.type NOT IN ('Cancel','Close','Initial')" +
             "AND s.patient.id= :patientId " +
             "AND (:dateFrom is null or s.serviceDate >= :dateFrom) " +
             "AND (:dateTo is null or s.serviceDate <= :dateTo)")

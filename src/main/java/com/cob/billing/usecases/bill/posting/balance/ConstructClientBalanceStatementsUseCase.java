@@ -15,7 +15,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +28,7 @@ public class ConstructClientBalanceStatementsUseCase {
 
     @Autowired
     ModelMapper mapper;
+
     public List<ClientBalancePayment> constructStatement(List<PatientSessionEntity> patientSessionEntities) {
         List<ClientBalancePayment> clientBalancePayments = new ArrayList<>();
         patientSessionEntities.stream()
@@ -46,6 +49,13 @@ public class ConstructClientBalanceStatementsUseCase {
         List<ClientBalancePayment> clientStatement = new ArrayList<>();
         serviceLines.forEach(serviceLine -> {
             SessionServiceLinePayment sessionServiceLinePayment = findMatchPayment(payments, serviceLine.getId());
+            //service line invoiced but didn't have payment
+            if (sessionServiceLinePayment == null) {
+                sessionServiceLinePayment = new SessionServiceLinePayment(serviceLine.getCptCode().getCharge()
+                        , 0, 0, serviceLine.getId(),
+                        new Date().getTime(),
+                        ServiceLinePaymentType.Client);
+            }
             ClientBalancePayment clientBalance = createClientBalancePayment(sessionServiceLinePayment, serviceLine, session);
             clientStatement.add(clientBalance);
         });
@@ -109,14 +119,15 @@ public class ConstructClientBalanceStatementsUseCase {
         return address.getFirst() + ',' + address.getCity() + ',' + address.getState()
                 + ",\n" + address.getCity() + ',' + address.getState() + ',' + address.getZipCode();
     }
-    private PatientSession map(PatientSessionEntity entity){
+
+    private PatientSession map(PatientSessionEntity entity) {
         PatientSession patientSession = new PatientSession();
-        patientSession.setPatientName(entity.getPatient().getLastName()+','+entity.getPatient().getFirstName());
+        patientSession.setPatientName(entity.getPatient().getLastName() + ',' + entity.getPatient().getFirstName());
         patientSession.setDoctorInfo(entity.getDoctorInfo());
         patientSession.setCaseDiagnosis(entity.getCaseDiagnosis());
         patientSession.setServiceDate(entity.getServiceDate());
         patientSession.setServiceCodes(entity.getServiceCodes().stream()
-                .map(serviceLine -> mapper.map(serviceLine , ServiceLine.class)).collect(Collectors.toList()));
+                .map(serviceLine -> mapper.map(serviceLine, ServiceLine.class)).collect(Collectors.toList()));
         return patientSession;
     }
 }

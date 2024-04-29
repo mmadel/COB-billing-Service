@@ -38,7 +38,6 @@ public class CreateSessionServiceLinePaymentUseCase {
 
     @Transactional
     public void create(ServiceLinePaymentRequest serviceLinePaymentRequest) {
-        System.out.println();
      /*
         Save Service Line Payment and assign to it catching service line by its id
         Save Service Line Details and assign to it created service Lines
