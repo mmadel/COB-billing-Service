@@ -75,7 +75,7 @@ public class ConstructBatchServiceLinesPaymentsUseCase {
         sessionServiceLinePayment.setProvider(patientSession.getDoctorInfo().getDoctorLastName() + ',' + patientSession.getDoctorInfo().getDoctorFirstName());
         sessionServiceLinePayment.setCpt(serviceLine.getCptCode().getServiceCode() + '.' + serviceLine.getCptCode().getModifier());
         sessionServiceLinePayment.setPreviousPayment(0.0);
-        sessionServiceLinePayment.setBalance(0.0);
+        sessionServiceLinePayment.setBalance(serviceLine.getCptCode().getCharge());
         sessionServiceLinePayment.setServiceLineId(serviceLine.getId());
         sessionServiceLinePayment.setSessionId(patientSession.getId());
 
