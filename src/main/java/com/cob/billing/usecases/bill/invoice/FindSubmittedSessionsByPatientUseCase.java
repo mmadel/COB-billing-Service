@@ -62,6 +62,7 @@ public class FindSubmittedSessionsByPatientUseCase {
     public Map<String, List<BatchSessionServiceLinePayment>> findInsuranceCompany(Long insuranceCompanyId) {
         Map<String, List<BatchSessionServiceLinePayment>> paymentServiceLinePatientMap = new HashMap<>();
         patientInvoiceDetailsRepository.findBySessionSubmittedByInsuranceCompany(insuranceCompanyId).stream()
+                .distinct()
                 .forEach(patientInvoiceDetails -> {
                     String patient = patientInvoiceDetails.getPatientInvoice().getPatient().getLastName() + ","
                             + patientInvoiceDetails.getPatientInvoice().getPatient().getFirstName() + ","

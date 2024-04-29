@@ -2,6 +2,7 @@ package com.cob.billing.configuration;
 
 
 import com.cob.billing.model.integration.claimmd.Charge;
+import com.cob.billing.usecases.bill.tools.modifier.rule.util.ListShiftUtil;
 import com.cob.billing.util.ListUtils;
 import com.itextpdf.forms.PdfAcroForm;
 import com.itextpdf.forms.fields.PdfFormField;
@@ -20,9 +21,10 @@ public class Main {
     static File ddd = new File("C:\\cob\\documents\\billing\\form-cms1500.pdf");
 
     public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        float[] columnsWidth = {10, 5, 5, 10, 5, 15, 5, 5, 5, 5, 5};
-
-        System.out.println(Arrays.toString(ListUtils.remove(columnsWidth,3)));
+        List<String> firstList = List.of("AU", "90");
+        List<String> secondList = List.of("GP", "90","33");
+        List<String> result =ListShiftUtil.leftShift(firstList, secondList);
+        System.out.println(result);
         //reflectionTest();
 //        nestedList();
         //groupList();

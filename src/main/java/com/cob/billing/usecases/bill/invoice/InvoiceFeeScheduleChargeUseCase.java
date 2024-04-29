@@ -25,6 +25,8 @@ public class InvoiceFeeScheduleChargeUseCase {
         Optional<FeeScheduleEntity> providerFeeSchedule = feeScheduleRepository.findFeeScheduleByInsurance(insuranceId);
         if (providerFeeSchedule.isPresent())
             feeSchedule = providerFeeSchedule.get();
+        else
+            feeSchedule = null;
     }
 
     private void calculate(List<CPTCode> cptCode) {
@@ -53,7 +55,7 @@ public class InvoiceFeeScheduleChargeUseCase {
                 .findFirst();
 
         if (result.isPresent()) {
-            return  result.get();
+            return result.get();
         } else {
             return null;
         }

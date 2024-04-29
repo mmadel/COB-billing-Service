@@ -38,7 +38,7 @@ public class BalanceTableCreator extends TableCreator<ClientBalancePayment> {
                     table.addCell(createCell(data.get(i).getLoc(), 8).setBorder(Border.NO_BORDER));
                 if (settings[2])
                     table.addCell(createCell(data.get(i).getPlaceOfCode().split("_")[1], 8).setBorder(Border.NO_BORDER));
-                table.addCell(createCell(data.get(i).getServiceCode(), 8).setBorder(Border.NO_BORDER));
+                table.addCell(createCell(removeModifierFromServiceCode(data.get(i).getServiceCode()), 8).setBorder(Border.NO_BORDER));
                 table.addCell(createCell(data.get(i).getUnits().toString(), 8).setBorder(Border.NO_BORDER));
                 if (settings[0])
                     table.addCell(createCell(data.get(i).getProvider(), 8).setBorder(Border.NO_BORDER));
@@ -92,6 +92,10 @@ public class BalanceTableCreator extends TableCreator<ClientBalancePayment> {
                         .setBorderBottom(new SolidBorder(1))
                         .setBorderTop(new SolidBorder(1)))
                 .setBorderRight(new SolidBorder(1));
+    }
+
+    private String removeModifierFromServiceCode(String code) {
+        return code.split("\\.")[0];
     }
 
 }

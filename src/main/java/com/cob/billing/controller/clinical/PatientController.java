@@ -28,6 +28,8 @@ public class PatientController {
     DeletePatientInsuranceCompanyUseCase deletePatientInsuranceCompanyUseCase;
     @Autowired
     FlagPatientAuthorizationUseCase flagPatientAuthorizationUseCase;
+    @Autowired
+    FindPatientInsuranceCompanyUseCase findPatientInsuranceCompanyUseCase;
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody Patient model) {
@@ -68,10 +70,14 @@ public class PatientController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-        @GetMapping("/auth/on/patientId/{patientId}")
+    @GetMapping("/auth/on/patientId/{patientId}")
     public ResponseEntity turnOnPatientAuthorization(@PathVariable Long patientId) {
         flagPatientAuthorizationUseCase.turnOn(patientId);
         return new ResponseEntity(HttpStatus.OK);
+    }
+    @GetMapping("/insurance-company/patientId/{patientId}")
+    public ResponseEntity findPatientInsuranceCompany(@PathVariable Long patientId){
+        return new ResponseEntity(findPatientInsuranceCompanyUseCase.find(patientId),HttpStatus.OK);
     }
 
 }

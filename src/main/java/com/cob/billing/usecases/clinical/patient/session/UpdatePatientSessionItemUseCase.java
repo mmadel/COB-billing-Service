@@ -14,8 +14,10 @@ public class UpdatePatientSessionItemUseCase {
     public Long update(Long id, CPTCode cptCode) {
         PatientSessionServiceLineEntity patientSessionServiceLineEntity = serviceLineRepository.findById(id).get();
         CPTCode code = patientSessionServiceLineEntity.getCptCode();
-        if (cptCode.getServiceCode() != null)
+        if (cptCode.getServiceCode() != null){
             code.setServiceCode(cptCode.getServiceCode());
+            code.setModifier(cptCode.getModifier());
+        }
         if (cptCode.getUnit() != null)
             code.setUnit(cptCode.getUnit());
         if (cptCode.getCharge() != 0.0)

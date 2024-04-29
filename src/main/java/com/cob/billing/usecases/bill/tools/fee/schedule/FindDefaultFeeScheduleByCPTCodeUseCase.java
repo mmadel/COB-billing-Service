@@ -19,7 +19,6 @@ public class FindDefaultFeeScheduleByCPTCodeUseCase {
 
     
     public FeeScheduleLineModel find(String npi, String cpt) {
-        System.out.println("Find Fee-schedule");
         FeeScheduleEntity feeSchedule = findFee(npi);
         Optional<FeeScheduleLineModel> lineModelOptional = feeSchedule.getFeeLines()
                 .stream()
