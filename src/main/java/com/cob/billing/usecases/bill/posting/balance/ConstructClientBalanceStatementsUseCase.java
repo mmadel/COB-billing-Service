@@ -33,7 +33,7 @@ public class ConstructClientBalanceStatementsUseCase {
                     List<Long> serviceLinesIds = patientSession.getServiceCodes().stream()
                             .map(PatientSessionServiceLineEntity::getId)
                             .collect(Collectors.toList());
-                    List<SessionServiceLinePayment> payments = findSessionPaymentUseCase.find(serviceLinesIds);
+                    List<SessionServiceLinePayment> payments = findSessionPaymentUseCase.findDetails(serviceLinesIds);
                     List<ClientBalancePayment> clientStatement = createClientPayments(patientSession.getServiceCodes(), payments, patientSession);
                     clientBalancePayments.addAll(clientStatement);
                 });
@@ -69,8 +69,10 @@ public class ConstructClientBalanceStatementsUseCase {
                 .serviceCode(serviceLine.getCptCode().getServiceCode() + '.' + serviceLine.getCptCode().getModifier())
                 .provider(session.getDoctorInfo().getDoctorLastName() + ',' + session.getDoctorInfo().getDoctorFirstName())
                 .charge(serviceLine.getCptCode().getCharge())
-                .insCompanyPayment((payment != null && payment.getServiceLinePaymentType() != null && payment.getServiceLinePaymentType().equals(ServiceLinePaymentType.InsuranceCompany)) ? payment.getPayment() : 0)
-                .clientPayment((payment != null && payment.getServiceLinePaymentType() != null && payment.getServiceLinePaymentType().equals(ServiceLinePaymentType.Client)) ? payment.getPayment() : 0)
+//                .insCompanyPayment((payment != null && payment.getServiceLinePaymentType() != null && payment.getServiceLinePaymentType().equals(ServiceLinePaymentType.InsuranceCompany)) ? payment.getPayment() : 0)
+//                .clientPayment((payment != null && payment.getServiceLinePaymentType() != null && payment.getServiceLinePaymentType().equals(ServiceLinePaymentType.Client)) ? payment.getPayment() : 0)
+                .insCompanyPayment(payment.getInsuranceCompanyPayment())
+                .clientPayment(payment.getClientPayment())
                 .adjustPayment(payment != null ? payment.getAdjust() : 0.0)
                 .balance(payment != null ? payment.getBalance() : 0.0)
                 .units(serviceLine.getCptCode().getUnit())

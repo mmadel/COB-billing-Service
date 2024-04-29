@@ -1,25 +1,19 @@
 package com.cob.billing.controller.bill;
 
-import com.cob.billing.model.bill.posting.BatchServiceLinePayment;
 import com.cob.billing.model.bill.posting.filter.PostingSearchCriteria;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.invoice.FindSubmittedSessionsByPatientUseCase;
-import com.cob.billing.usecases.bill.posting.CreateServiceLinesPaymentUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/posting")
 public class InsuranceCompanyBatchController {
     @Autowired
     FindSubmittedSessionsByPatientUseCase findSubmittedSessionsByPatientUseCase;
-    @Autowired
-    CreateServiceLinesPaymentUseCase createServiceLinesPaymentUseCase;
+
 
     @GetMapping("/find/patient/{patientId}")
     public ResponseEntity<Object> findClient(@RequestParam(name = "offset") int offset,

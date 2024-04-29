@@ -20,12 +20,11 @@ public class FindSessionPaymentUseCase {
 
     public List<SessionServiceLinePayment> find(List<Long> serviceLinesIds) {
         List<SessionServiceLinePayment> result = new ArrayList<>();
-        List<SessionServiceLinePayment> list =patientSessionServiceLinePaymentRepository.findByServiceLines(serviceLinesIds).get();
-        Map<Long, List<SessionServiceLinePayment>> groupingByServiceId = list.stream()
-                .collect(Collectors.groupingBy(SessionServiceLinePayment::getServiceLineId));
+
+        Map<Long, List<SessionServiceLinePayment>> groupingByServiceId = groupServiceLines(serviceLinesIds);
         for (Long key : groupingByServiceId.keySet()) {
-            List<SessionServiceLinePayment> groupingServiceLines =groupingByServiceId.get(key);
-            if(groupingServiceLines.size()>1){
+            List<SessionServiceLinePayment> groupingServiceLines = groupingByServiceId.get(key);
+            if (groupingServiceLines.size() > 1) {
                 SessionServiceLinePayment mostSessionServiceLinePayment = groupingServiceLines.stream()
                         .max(Comparator.comparingLong(SessionServiceLinePayment::getCreatedAt))
                         .orElse(null);
@@ -35,16 +34,61 @@ public class FindSessionPaymentUseCase {
                     payment.set(payment.get() + serviceLinePayment.getPayment());
                     adjust.set(adjust.get() + serviceLinePayment.getAdjust());
                 });
-                SessionServiceLinePayment latestServiceLine = list.stream()
-                        .filter(serviceLinePayment -> serviceLinePayment.equals(mostSessionServiceLinePayment))
-                                .findFirst().get();
-                latestServiceLine.setPayment(payment.get());
-                latestServiceLine.setAdjust(adjust.get());
-                result.add(latestServiceLine);
-            }else{
+//                SessionServiceLinePayment latestServiceLine = list.stream()
+//                        .filter(serviceLinePayment -> serviceLinePayment.equals(mostSessionServiceLinePayment))
+//                                .findFirst().get();
+                mostSessionServiceLinePayment.setPayment(payment.get());
+                mostSessionServiceLinePayment.setAdjust(adjust.get());
+                result.add(mostSessionServiceLinePayment);
+            } else {
                 result.addAll(groupingServiceLines);
             }
         }
         return result;
+    }
+
+    public List<SessionServiceLinePayment> findDetails(List<Long> serviceLinesIds) {
+        List<SessionServiceLinePayment> result = new ArrayList<>();
+        Map<Long, List<SessionServiceLinePayment>> groupingByServiceId = groupServiceLines(serviceLinesIds);
+        for (Long key : groupingByServiceId.keySet()) {
+            List<SessionServiceLinePayment> groupingServiceLines = groupingByServiceId.get(key);
+            if (groupingServiceLines.size() > 1) {
+                SessionServiceLinePayment mostSessionServiceLinePayment = groupingServiceLines.stream()
+                        .max(Comparator.comparingLong(SessionServiceLinePayment::getCreatedAt))
+                        .orElse(null);
+                AtomicReference<Double> clientPayment = new AtomicReference<>((double) 0);
+                AtomicReference<Double> clientAdjust = new AtomicReference<>((double) 0);
+
+                AtomicReference<Double> insurancePayment = new AtomicReference<>((double) 0);
+                AtomicReference<Double> insuranceAdjust = new AtomicReference<>((double) 0);
+
+                AtomicReference<Double> adjust = new AtomicReference<>((double) 0);
+                groupingServiceLines.forEach(serviceLinePayment -> {
+                    switch (serviceLinePayment.getServiceLinePaymentType()) {
+                        case Client:
+                            clientPayment.set(clientPayment.get() + serviceLinePayment.getPayment());
+                            break;
+                        case InsuranceCompany:
+                            insurancePayment.set(insurancePayment.get() + serviceLinePayment.getPayment());
+                            break;
+                    }
+                    adjust.set(adjust.get() + serviceLinePayment.getAdjust());
+
+                });
+                mostSessionServiceLinePayment.setClientPayment(clientPayment.get());
+                mostSessionServiceLinePayment.setInsuranceCompanyPayment(insurancePayment.get());
+                mostSessionServiceLinePayment.setAdjust(adjust.get());
+                result.add(mostSessionServiceLinePayment);
+            } else {
+                result.addAll(groupingServiceLines);
+            }
+        }
+        return result;
+    }
+
+    private Map<Long, List<SessionServiceLinePayment>> groupServiceLines(List<Long> serviceLinesIds) {
+        List<SessionServiceLinePayment> list = patientSessionServiceLinePaymentRepository.findByServiceLines(serviceLinesIds).get();
+        return list.stream()
+                .collect(Collectors.groupingBy(SessionServiceLinePayment::getServiceLineId));
     }
 }

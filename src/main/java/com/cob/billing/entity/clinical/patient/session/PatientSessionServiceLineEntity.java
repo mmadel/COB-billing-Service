@@ -11,6 +11,7 @@ import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "patient_session_service_line")
@@ -38,4 +39,17 @@ public class PatientSessionServiceLineEntity {
 
     @Column(name = "line_note")
     private String lineNote;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PatientSessionServiceLineEntity that = (PatientSessionServiceLineEntity) o;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

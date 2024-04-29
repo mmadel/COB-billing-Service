@@ -80,12 +80,11 @@ public class GenerateClientBalanceStatementPDFUseCase {
 
 
         //Client Name
-        String clientName=clientBalanceInvoice.getPendingClientBalance().stream()
-                .findFirst().get().getClientBalanceAccount().getClientName();
+        String clientName =getClientName(clientBalanceInvoice);
         Paragraph clientNameParagraph = new Paragraph()
                 .setFontSize(9);
         clientNameParagraph.add(new Text("Client Name: ").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD)));
-        clientNameParagraph.add(new Text( clientName+ "\n").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA)));
+        clientNameParagraph.add(new Text(clientName + "\n").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA)));
         document.add(clientNameParagraph);
 
         //Location Table
@@ -107,5 +106,15 @@ public class GenerateClientBalanceStatementPDFUseCase {
 
         document.close();
         return outputStream.toByteArray();
+    }
+
+    private String getClientName(ClientBalanceInvoice clientBalanceInvoice) {
+        if (clientBalanceInvoice.getFinalizedClientBalance() != null)
+            return clientBalanceInvoice.getFinalizedClientBalance().stream()
+                    .findFirst().get().getClientBalanceAccount().getClientName();
+        if (clientBalanceInvoice.getPendingClientBalance() != null)
+            return clientBalanceInvoice.getPendingClientBalance().stream()
+                    .findFirst().get().getClientBalanceAccount().getClientName();
+        return "";
     }
 }

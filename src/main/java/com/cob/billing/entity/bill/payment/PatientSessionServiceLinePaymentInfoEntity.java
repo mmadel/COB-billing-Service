@@ -33,6 +33,4 @@ public class PatientSessionServiceLinePaymentInfoEntity {
     private Long checkNumber;
     @Column(name = "deposit_date")
     private Long depositDate;
-    @Column(name = "insurance_company")
-    private String insuranceCompany;
 }

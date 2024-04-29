@@ -29,7 +29,7 @@ public class CreateBatchClientPaymentUseCase {
     @Transactional
     public ClientBatchReceiptRequest create(ServiceLinePaymentRequest serviceLinePaymentRequest) {
         ClientBatchReceiptRequest model = new ClientBatchReceiptRequest();
-        //createSessionServiceLinePaymentUseCase.create(serviceLinePaymentRequest);
+        createSessionServiceLinePaymentUseCase.create(serviceLinePaymentRequest);
 
         Map<Long, List<SessionServiceLinePayment>> paymentsGroupedBySession = serviceLinePaymentRequest.getServiceLinePayments()
                 .stream()

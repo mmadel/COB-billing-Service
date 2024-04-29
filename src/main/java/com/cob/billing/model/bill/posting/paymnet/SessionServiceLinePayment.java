@@ -11,7 +11,7 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SessionServiceLinePayment {
 
-    public SessionServiceLinePayment(double balance, double payment, double adjust , Long serviceLineId, Long createdAt, ServiceLinePaymentType serviceLinePaymentType) {
+    public SessionServiceLinePayment(double balance, double payment, double adjust, Long serviceLineId, Long createdAt, ServiceLinePaymentType serviceLinePaymentType) {
         this.balance = balance;
         this.payment = payment;
         this.adjust = adjust;
@@ -27,6 +27,12 @@ public class SessionServiceLinePayment {
     private double payment;
 
     private double adjust;
+
+    private double clientPayment;
+    private double clientAdjustPayment;
+
+    private double insuranceCompanyPayment;
+    private double insuranceCompanyAdjustPayment;
 
     private ServiceLinePaymentAction serviceLinePaymentAction;
     private ServiceLinePaymentType serviceLinePaymentType;
