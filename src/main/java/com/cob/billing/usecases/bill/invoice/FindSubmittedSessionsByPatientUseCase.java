@@ -11,6 +11,7 @@ import com.cob.billing.repositories.bill.invoice.PatientInvoiceRepository;
 import com.cob.billing.repositories.bill.payer.PayerRepository;
 import com.cob.billing.repositories.clinical.PatientRepository;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
+import com.cob.billing.usecases.bill.BuildSessionServiceLinePayment;
 import com.cob.billing.usecases.bill.posting.ConstructBatchServiceLinesPaymentsUseCase;
 import com.cob.billing.util.PaginationUtil;
 import org.modelmapper.ModelMapper;
@@ -35,28 +36,17 @@ public class FindSubmittedSessionsByPatientUseCase {
     PatientInvoiceDetailsRepository patientInvoiceDetailsRepository;
     @Autowired
     ConstructBatchServiceLinesPaymentsUseCase constructBatchServiceLinesPaymentsUseCase;
+    @Autowired
+    BuildSessionServiceLinePayment sessionServiceLinePayment;
 
     public SessionServiceLinePaymentResponse find(int offset, int limit, Long clientId) {
         List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findSubmittedSessionsByPatient(clientId);
-        List<BatchSessionServiceLinePayment> response = constructBatchServiceLinesPaymentsUseCase.construct(patientSessionEntities);
-        List<BatchSessionServiceLinePayment> records = PaginationUtil.paginate(response, offset, limit);
-        return SessionServiceLinePaymentResponse.builder()
-                .number_of_records(response.size())
-                .number_of_matching_records((int) records.size())
-                .records(response)
-                .build();
+        return sessionServiceLinePayment.build(patientSessionEntities,offset, limit);
     }
 
     public SessionServiceLinePaymentResponse find(int offset, int limit, PostingSearchCriteria postingSearchCriteria) {
         List<PatientSessionEntity> patientSessionEntities = patientSessionRepository.findSubmittedSessionsByPatientFiltered(postingSearchCriteria.getEntityId(), postingSearchCriteria.getStartDate(), postingSearchCriteria.getEndDate());
-        List<BatchSessionServiceLinePayment> response = constructBatchServiceLinesPaymentsUseCase.construct(patientSessionEntities);
-        response.sort(Comparator.comparingLong(BatchSessionServiceLinePayment::getDos));
-        List<BatchSessionServiceLinePayment> records = PaginationUtil.paginate(response, offset, limit);
-        return SessionServiceLinePaymentResponse.builder()
-                .number_of_records(response.size())
-                .number_of_matching_records((int) records.size())
-                .records(records)
-                .build();
+        return sessionServiceLinePayment.build(patientSessionEntities,offset, limit);
     }
 
     public Map<String, List<BatchSessionServiceLinePayment>> findInsuranceCompany(Long insuranceCompanyId) {
