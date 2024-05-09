@@ -27,6 +27,9 @@ public class UserRoleScopeEntity {
     @Column(name = "uuid")
     private String uuid;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "role_scope", columnDefinition = "json")
     @Type(type = "json")
     private List<RoleScope> roleScope;

@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(value = "/user")
 public class UserRoleScopeController {
@@ -24,7 +22,7 @@ public class UserRoleScopeController {
     @Autowired
     FindUserUseCase findUserUseCase;
 
-    @PostMapping("/scope/create")
+    @PostMapping("/create")
     public ResponseEntity create(@RequestBody UserRoleScope model) {
         createUserRoleScopeUseCase.create(model);
         return new ResponseEntity<>(HttpStatus.OK);
