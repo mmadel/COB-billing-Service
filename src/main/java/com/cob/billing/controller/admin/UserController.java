@@ -4,6 +4,7 @@ import com.cob.billing.model.security.UserRoleScope;
 import com.cob.billing.usecases.security.CreateUserRoleScopeUseCase;
 import com.cob.billing.usecases.security.FindUserRolesScopeUseCase;
 import com.cob.billing.usecases.security.UpdateUserRoleScopeUseCase;
+import com.cob.billing.usecases.security.kc.CreateKeycloakUserUseCase;
 import com.cob.billing.usecases.user.FindUserUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/user")
-public class UserRoleScopeController {
+public class UserController {
     @Autowired
     CreateUserRoleScopeUseCase createUserRoleScopeUseCase;
     @Autowired
@@ -21,10 +22,13 @@ public class UserRoleScopeController {
     FindUserRolesScopeUseCase findUserRolesScopeUseCase;
     @Autowired
     FindUserUseCase findUserUseCase;
+    @Autowired
+    CreateKeycloakUserUseCase createKeycloakUserUseCase;
 
     @PostMapping("/create")
     public ResponseEntity create(@RequestBody UserRoleScope model) {
-        createUserRoleScopeUseCase.create(model);
+        createKeycloakUserUseCase.create();
+        //createUserRoleScopeUseCase.create(model);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PutMapping("/scope/update")
