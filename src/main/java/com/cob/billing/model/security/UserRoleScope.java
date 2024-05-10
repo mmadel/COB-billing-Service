@@ -10,5 +10,6 @@ import java.util.List;
 public class UserRoleScope {
     private Long  id ;
     private String uuid;
+    private String name;
     private List<RoleScope> roleScope;
 }

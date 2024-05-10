@@ -19,7 +19,7 @@ public class FindUserUseCase {
                 .map(userRoleScopeEntity -> {
                     User user = new User();
                     user.setUuid(userRoleScopeEntity.getUuid());
-                    user.setName("adel,mohamed");
+                    user.setName(userRoleScopeEntity.getName());
                     return user;
                 }).collect(Collectors.toList());
     }
