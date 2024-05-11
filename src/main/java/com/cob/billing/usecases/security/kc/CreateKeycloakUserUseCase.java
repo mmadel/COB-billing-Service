@@ -15,6 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
 @Component
 @Slf4j
 public class CreateKeycloakUserUseCase {
@@ -28,15 +35,11 @@ public class CreateKeycloakUserUseCase {
 
     @Autowired
     CreateKCUserResourceUseCase createKCUserResourceUseCase;
+    @Autowired
+    CreateUserCredentialsUseCase createUserCredentialsUseCase;
 
-    public void create(UserAccount userAccount) throws UserException {
+    public void create(UserAccount userAccount) throws UserException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         RealmResource realmResource = keycloakService.realm(realm);
-        ClientRepresentation clientRepresentation = null;
-        try {
-            clientRepresentation = realmResource.clients().findByClientId(billingClient).get(0);
-        } catch (javax.ws.rs.NotAuthorizedException exception) {
-            log.warn("admin token is expired");
-        }
         KeyCloakUser keyCloakUser = convertToKeycloakUser(userAccount, realmResource);
         KeyCloakUserValidator validator = KeyCloakUserValidator.register(
                 new UserExistsValidator(),
@@ -45,6 +48,7 @@ public class CreateKeycloakUserUseCase {
         validator.validate(keyCloakUser);
 
         createKCUserResourceUseCase.create(keyCloakUser, realmResource);
+        createUserCredentialsUseCase.create(createKCUserResourceUseCase.getUserUUID(), keyCloakUser.getPassword());
     }
 
     private KeyCloakUser convertToKeycloakUser(UserAccount userAccount, RealmResource realmResource) {
@@ -53,6 +57,7 @@ public class CreateKeycloakUserUseCase {
                 .firstName(userAccount.getName().split(",")[1])
                 .email(userAccount.getEmail())
                 .userName(userAccount.getUserAccount())
+                .password(userAccount.getPassword())
                 .realmResource(realmResource)
                 .roleScope(userAccount.getRoleScope())
                 .build();

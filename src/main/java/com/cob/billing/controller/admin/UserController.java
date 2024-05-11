@@ -13,6 +13,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
 @RestController
 @RequestMapping(value = "/user")
 public class UserController {
@@ -27,7 +34,7 @@ public class UserController {
     CreateUserUseCase createUserUseCase;
 
     @PostMapping("/create")
-    public ResponseEntity create(@RequestBody UserAccount model) throws UserException {
+    public ResponseEntity create(@RequestBody UserAccount model) throws UserException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         createUserUseCase.create(model);
         return new ResponseEntity<>(HttpStatus.OK);
     }

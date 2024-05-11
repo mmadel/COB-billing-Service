@@ -6,6 +6,13 @@ import com.cob.billing.usecases.security.kc.CreateKeycloakUserUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
 @Component
 public class CreateUserUseCase {
     @Autowired
@@ -13,7 +20,7 @@ public class CreateUserUseCase {
     @Autowired
     CreateUserRoleScopeUseCase createUserRoleScopeUseCase;
 
-    public void create(UserAccount userAccount) throws UserException {
+    public void create(UserAccount userAccount) throws UserException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         createKeycloakUserUseCase.create(userAccount);
         createUserRoleScopeUseCase.create(userAccount);
     }

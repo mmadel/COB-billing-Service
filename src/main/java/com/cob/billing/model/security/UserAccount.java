@@ -13,5 +13,6 @@ public class UserAccount {
     private String name;
     private String email;
     private String userAccount;
+    private String password;
     private List<RoleScope> roleScope;
 }
