@@ -2,10 +2,7 @@ package com.cob.billing.controller.admin;
 
 import com.cob.billing.exception.business.UserException;
 import com.cob.billing.model.security.UserAccount;
-import com.cob.billing.usecases.security.CreateUserRoleScopeUseCase;
-import com.cob.billing.usecases.security.CreateUserUseCase;
-import com.cob.billing.usecases.security.FindUserRolesScopeUseCase;
-import com.cob.billing.usecases.security.UpdateUserRoleScopeUseCase;
+import com.cob.billing.usecases.security.*;
 import com.cob.billing.usecases.security.kc.CreateKeycloakUserUseCase;
 import com.cob.billing.usecases.user.FindUserUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +29,8 @@ public class UserController {
     FindUserUseCase findUserUseCase;
     @Autowired
     CreateUserUseCase createUserUseCase;
+    @Autowired
+    FindUserAccountUseCase findUserAccountUseCase;
 
     @PostMapping("/create")
     public ResponseEntity create(@RequestBody UserAccount model) throws UserException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
@@ -54,4 +53,11 @@ public class UserController {
     public ResponseEntity findUsers() {
         return new ResponseEntity(findUserUseCase.find(), HttpStatus.OK);
     }
+
+    @GetMapping("/find/uuid/{uuid}")
+    public ResponseEntity findUser(@PathVariable String uuid) {
+        return new ResponseEntity(findUserAccountUseCase.findAccountUser(uuid), HttpStatus.OK);
+    }
+
+
 }
