@@ -1,7 +1,7 @@
 package com.cob.billing.usecases.security;
 
 import com.cob.billing.entity.security.UserRoleScopeEntity;
-import com.cob.billing.model.security.UserRoleScope;
+import com.cob.billing.model.security.UserAccount;
 import com.cob.billing.repositories.security.UserRoleScopeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +13,8 @@ public class CreateUserRoleScopeUseCase {
     UserRoleScopeRepository userRoleScopeRepository;
     @Autowired
     ModelMapper mapper;
-    public void create(UserRoleScope userRoleScope){
-        UserRoleScopeEntity toBeCreated = mapper.map(userRoleScope , UserRoleScopeEntity.class);
+    public void create(UserAccount userAccount){
+        UserRoleScopeEntity toBeCreated = mapper.map(userAccount, UserRoleScopeEntity.class);
         userRoleScopeRepository.save(toBeCreated);
 
     }
