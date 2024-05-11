@@ -35,6 +35,8 @@ public class CreateKeycloakUserUseCase {
     CreateKCUserResourceUseCase createKCUserResourceUseCase;
     @Autowired
     CreateUserCredentialsUseCase createUserCredentialsUseCase;
+    @Autowired
+    AssignUserRolesUseCase assignUserRolesUseCase;
 
     public void create(UserAccount userAccount) throws UserException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         RealmResource realmResource = keycloakService.realm(realm);
@@ -46,7 +48,10 @@ public class CreateKeycloakUserUseCase {
         validator.validate(keyCloakUser);
 
         createKCUserResourceUseCase.create(keyCloakUser, realmResource);
+
         createUserCredentialsUseCase.create(createKCUserResourceUseCase.getUserUUID(), keyCloakUser.getPassword());
+
+        assignUserRolesUseCase.assign(createKCUserResourceUseCase.getUserUUID(), keyCloakUser.getRoleScope(), realmResource);
     }
 
     private KeyCloakUser convertToKeycloakUser(UserAccount userAccount, RealmResource realmResource) {
