@@ -26,6 +26,9 @@ public class CreateKeycloakUserUseCase {
     @Value("${kc.billing.client}")
     private String billingClient;
 
+    @Autowired
+    CreateKCUserResourceUseCase createKCUserResourceUseCase;
+
     public void create(UserAccount userAccount) throws UserException {
         RealmResource realmResource = keycloakService.realm(realm);
         ClientRepresentation clientRepresentation = null;
@@ -34,13 +37,14 @@ public class CreateKeycloakUserUseCase {
         } catch (javax.ws.rs.NotAuthorizedException exception) {
             log.warn("admin token is expired");
         }
-        UsersResource usersResource = realmResource.users();
         KeyCloakUser keyCloakUser = convertToKeycloakUser(userAccount, realmResource);
         KeyCloakUserValidator validator = KeyCloakUserValidator.register(
                 new UserExistsValidator(),
                 new UserEmailValidator()
         );
         validator.validate(keyCloakUser);
+
+        createKCUserResourceUseCase.create(keyCloakUser, realmResource);
     }
 
     private KeyCloakUser convertToKeycloakUser(UserAccount userAccount, RealmResource realmResource) {
