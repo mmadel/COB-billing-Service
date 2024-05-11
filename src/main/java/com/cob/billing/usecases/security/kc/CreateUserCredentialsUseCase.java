@@ -32,6 +32,8 @@ public class CreateUserCredentialsUseCase {
     @Autowired
     private AuthorizedKeyCloakAdminUseCase authorizedKeyCloakAdminUseCase;
     @Autowired
+    RemoveKeycloakUserUseCase removeKeycloakUserUseCase;
+    @Autowired
     private DecryptPasswordUseCase decryptPasswordUseCase;
     @Value("${kc.url}")
     private String keycloakURL;
@@ -46,6 +48,7 @@ public class CreateUserCredentialsUseCase {
         try {
             restTemplate.put(keycloakURL + "/admin/realms/" + realm + "/users/" + userUUID + "/reset-password", httpEntity);
         } catch (HttpClientErrorException.BadRequest exception) {
+            removeKeycloakUserUseCase.remove(userUUID);
             String message = exception.getMessage().split(":")[4].split("\"")[0];
             throw new UserException(HttpStatus.BAD_REQUEST, UserException.INVALID_PASSWORD, new Object[]{message});
         }
