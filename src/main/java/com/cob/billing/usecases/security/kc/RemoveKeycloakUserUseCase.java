@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RemoveKeycloakUserUseCase {
 
-    @Value("${kc.billing.client}")
+    @Value("${kc.realm}")
     private String realm;
     @Autowired
     private Keycloak keycloakService;

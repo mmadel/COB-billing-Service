@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.BadPaddingException;
@@ -40,18 +41,14 @@ public class CreateUserCredentialsUseCase {
     @Value("${kc.realm}")
     private String realm;
 
+    private final static String RESET_PASSWORD="reset-password";
+    private final static String EXECUTE_ACTIONS_EMAIL="execute-actions-email";
     public void create(String userUUID, String password) throws NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, UserException {
         HttpHeaders requestHeaders = createHHTPHeader();
-        CredentialRepresentation credential = createCredentialRepresentation(password);
-        Gson gson = new Gson();
-        HttpEntity<String> httpEntity = new HttpEntity<>(gson.toJson(credential).toString(), requestHeaders);
-        try {
-            restTemplate.put(keycloakURL + "/admin/realms/" + realm + "/users/" + userUUID + "/reset-password", httpEntity);
-        } catch (HttpClientErrorException.BadRequest exception) {
-            removeKeycloakUserUseCase.remove(userUUID);
-            String message = exception.getMessage().split(":")[4].split("\"")[0];
-            throw new UserException(HttpStatus.BAD_REQUEST, UserException.INVALID_PASSWORD, new Object[]{message});
-        }
+        if (password != null)
+            resetCredentialRepresentation(password, userUUID, requestHeaders);
+        else
+            executeActionCredentialRepresentation(userUUID, requestHeaders);
     }
 
     private HttpHeaders createHHTPHeader() {
@@ -62,13 +59,38 @@ public class CreateUserCredentialsUseCase {
         return headers;
     }
 
-    private CredentialRepresentation createCredentialRepresentation(String password) throws NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    private void resetCredentialRepresentation(String password, String userUUID, HttpHeaders requestHeaders) throws NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, UserException {
+        log.info("resetCredentialRepresentation");
         CredentialRepresentation credential = new CredentialRepresentation();
         credential.setTemporary(true);
         credential.setType(CredentialRepresentation.PASSWORD);
         credential.setValue(decryptPasswordUseCase.decrypt(password));
         Gson gson = new Gson();
         gson.toJson(credential);
-        return credential;
+        createHttpRequest(userUUID, gson.toJson(credential), RESET_PASSWORD, requestHeaders);
+    }
+
+    private void executeActionCredentialRepresentation(String userUUID, HttpHeaders requestHeaders) throws UserException {
+        log.info("executeActionCredentialRepresentation");
+        Gson gson = new Gson();
+        String[] actions = new String[]{"UPDATE_PASSWORD"};
+        createHttpRequest(userUUID, gson.toJson(actions), EXECUTE_ACTIONS_EMAIL, requestHeaders);
+    }
+
+    private void createHttpRequest(String uuid, String body, String action, HttpHeaders requestHeaders) throws UserException {
+        HttpEntity<String> httpEntity = new HttpEntity<>(body, requestHeaders);
+        try {
+            restTemplate.put(keycloakURL + "/admin/realms/" + realm + "/users/" + uuid + "/" + action, httpEntity);
+        } catch (HttpServerErrorException.InternalServerError exception) {
+            removeKeycloakUserUseCase.remove(uuid);
+            String message =exception.getMessage().split("errorMessage\":")[1].replace("}","")
+                    .replace("\"","");
+            throw new UserException(HttpStatus.BAD_REQUEST, UserException.INVALID_PASSWORD, new Object[]{message});
+        }catch (HttpClientErrorException.BadRequest exception){
+            removeKeycloakUserUseCase.remove(uuid);
+            String message =exception.getMessage().split("error\":")[1].replace("}","")
+                    .replace("\"","");
+            throw new UserException(HttpStatus.BAD_REQUEST, UserException.INVALID_PASSWORD, new Object[]{message});
+        }
     }
 }

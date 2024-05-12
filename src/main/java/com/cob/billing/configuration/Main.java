@@ -2,11 +2,17 @@ package com.cob.billing.configuration;
 
 
 import com.cob.billing.model.integration.claimmd.Charge;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.forms.PdfAcroForm;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.nimbusds.jose.shaded.json.JSONObject;
 
+import javax.mail.*;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -14,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -22,6 +29,12 @@ public class Main {
     static File ddd = new File("C:\\cob\\documents\\billing\\form-cms1500.pdf");
 
     public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        String response = "500 Internal Server Error: {\"errorMessage\":\"Failed to send execute actions email\"}";
+        try {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        sendMail();
         //CreateRedirectFile.create();
 //        List<String> firstList = List.of("AU", "90");
 //        List<String> secondList = List.of("GP", "90","33");
@@ -62,6 +75,41 @@ public class Main {
 //        File ss = new File("tmp.pdf");
 //        ss.delete();
 //        pdf.close();
+    }
+
+    private static void sendMail() {
+        final String username = "mohammed.adel.abo.foutouh@gmail.com";
+        final String password = "ffdd eovw ixzr awno";
+        Properties prop = new Properties();
+        prop.put("mail.smtp.host", "smtp.gmail.com");
+        prop.put("mail.smtp.port", "587");
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.starttls.enable", "true"); //TLS
+        Session session = Session.getInstance(prop,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
+        try {
+
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("mohammed.adel.abo.foutouh@gmail.com"));
+            message.setRecipients(
+                    Message.RecipientType.TO,
+                    InternetAddress.parse("mohammed.adel.abo.foutouh@gmail.com")
+            );
+            message.setSubject("Testing Gmail TLS");
+            message.setText("Dear Mail Crawler,"
+                    + "\n\n Please do not spam my email!");
+
+            Transport.send(message);
+
+            System.out.println("Done");
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void createNewDoc() throws IOException {
