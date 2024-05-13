@@ -29,12 +29,6 @@ public class Main {
     static File ddd = new File("C:\\cob\\documents\\billing\\form-cms1500.pdf");
 
     public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        String response = "500 Internal Server Error: {\"errorMessage\":\"Failed to send execute actions email\"}";
-        try {
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-//        sendMail();
         //CreateRedirectFile.create();
 //        List<String> firstList = List.of("AU", "90");
 //        List<String> secondList = List.of("GP", "90","33");
@@ -77,40 +71,7 @@ public class Main {
 //        pdf.close();
     }
 
-    private static void sendMail() {
-        final String username = "mohammed.adel.abo.foutouh@gmail.com";
-        final String password = "ffdd eovw ixzr awno";
-        Properties prop = new Properties();
-        prop.put("mail.smtp.host", "smtp.gmail.com");
-        prop.put("mail.smtp.port", "587");
-        prop.put("mail.smtp.auth", "true");
-        prop.put("mail.smtp.starttls.enable", "true"); //TLS
-        Session session = Session.getInstance(prop,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
-        try {
 
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("mohammed.adel.abo.foutouh@gmail.com"));
-            message.setRecipients(
-                    Message.RecipientType.TO,
-                    InternetAddress.parse("mohammed.adel.abo.foutouh@gmail.com")
-            );
-            message.setSubject("Testing Gmail TLS");
-            message.setText("Dear Mail Crawler,"
-                    + "\n\n Please do not spam my email!");
-
-            Transport.send(message);
-
-            System.out.println("Done");
-
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-    }
 
     public static void createNewDoc() throws IOException {
         //doc.copyPagesTo(1,1,existingPdf,2);
