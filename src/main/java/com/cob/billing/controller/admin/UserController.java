@@ -22,7 +22,7 @@ import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping(value = "/user")
-@PreAuthorize("hasAnyRole('patient-role')")
+@PreAuthorize("hasAnyRole('admin-tool-role')")
 public class UserController {
 
     @Autowired
