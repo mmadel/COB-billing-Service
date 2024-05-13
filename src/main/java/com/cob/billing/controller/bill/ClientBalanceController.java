@@ -9,6 +9,7 @@ import com.cob.billing.usecases.bill.posting.balance.pdf.GenerateClientBalanceSt
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +18,7 @@ import java.io.OutputStream;
 
 @RestController
 @RequestMapping(value = "/client/balance")
+@PreAuthorize("hasAnyRole('payment-role')")
 public class ClientBalanceController {
     @Autowired
     FindClientPendingServiceLinesUseCase findClientPendingServiceLinesUseCase;

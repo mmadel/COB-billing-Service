@@ -8,6 +8,7 @@ import com.cob.billing.usecases.bill.posting.batching.CreateBatchClientPaymentUs
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import java.io.OutputStream;
 
 @RestController
 @RequestMapping(value = "/batch/payment")
+@PreAuthorize("hasAnyRole('payment-role')")
 public class BatchPaymentController {
     @Autowired
     CreateSessionServiceLinePaymentUseCase createSessionServiceLinePaymentUseCase;
