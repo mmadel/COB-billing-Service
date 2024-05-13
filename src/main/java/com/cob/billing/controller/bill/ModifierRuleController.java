@@ -10,12 +10,14 @@ import com.cob.billing.usecases.bill.tools.modifier.rule.RemoveModifierRuleUseCa
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/modifier")
+@PreAuthorize("hasAnyRole('billing-role')")
 public class ModifierRuleController {
     @Autowired
     CreateModifierRuleUseCase createModifierRuleUseCase;
