@@ -2,11 +2,17 @@ package com.cob.billing.configuration;
 
 
 import com.cob.billing.model.integration.claimmd.Charge;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.forms.PdfAcroForm;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.nimbusds.jose.shaded.json.JSONObject;
 
+import javax.mail.*;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -14,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -63,6 +70,8 @@ public class Main {
 //        ss.delete();
 //        pdf.close();
     }
+
+
 
     public static void createNewDoc() throws IOException {
         //doc.copyPagesTo(1,1,existingPdf,2);
