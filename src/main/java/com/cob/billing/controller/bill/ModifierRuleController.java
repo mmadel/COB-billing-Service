@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/modifier")
-@PreAuthorize("hasAnyRole('billing-role')")
+@PreAuthorize("hasAnyRole('billing-role','modifier-rule-billing-role')")
 public class ModifierRuleController {
     @Autowired
     CreateModifierRuleUseCase createModifierRuleUseCase;

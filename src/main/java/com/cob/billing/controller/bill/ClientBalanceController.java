@@ -18,7 +18,7 @@ import java.io.OutputStream;
 
 @RestController
 @RequestMapping(value = "/client/balance")
-@PreAuthorize("hasAnyRole('payment-role')")
+@PreAuthorize("hasAnyRole('payment-role','balance-statement-payment-role')")
 public class ClientBalanceController {
     @Autowired
     FindClientPendingServiceLinesUseCase findClientPendingServiceLinesUseCase;

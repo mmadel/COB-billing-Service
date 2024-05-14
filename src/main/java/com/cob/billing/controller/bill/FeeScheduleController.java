@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/fee/schedule")
-@PreAuthorize("hasAnyRole('billing-role')")
+@PreAuthorize("hasAnyRole('billing-role','fee-schedule-billing-role')")
 public class FeeScheduleController {
     @Autowired
     CreateFeeScheduleUseCase createFeeScheduleUseCase;

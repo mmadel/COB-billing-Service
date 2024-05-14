@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/client/balance/settings")
-@PreAuthorize("hasAnyRole('payment-role')")
+@PreAuthorize("hasAnyRole('payment-role','balance-statement-payment-role')")
 public class ClientBalanceSettingsController {
     @Autowired
     CreateOrUpdateClientBalanceSettingsUseCase createOrUpdateClientBalanceSettingsUseCase;

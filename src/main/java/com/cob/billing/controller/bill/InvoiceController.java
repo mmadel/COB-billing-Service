@@ -35,7 +35,7 @@ import java.util.zip.DataFormatException;
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/invoice")
-@PreAuthorize("hasAnyRole('billing-role')")
+@PreAuthorize("hasAnyRole('billing-role','invoice-billing-role')")
 public class InvoiceController {
     @Autowired
     FindNotSubmittedSessionsGroupByPatientsUseCase findNotSubmittedSessionsGroupByPatientsUseCase;

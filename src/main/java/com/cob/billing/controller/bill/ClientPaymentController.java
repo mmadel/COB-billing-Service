@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/posting/client")
-@PreAuthorize("hasAnyRole('payment-role')")
+@PreAuthorize("hasAnyRole('payment-role','batch-client-payment-role')")
 public class ClientPaymentController {
     @Autowired
     FindClientServiceLinesUseCase findClientServiceLinesUseCase;

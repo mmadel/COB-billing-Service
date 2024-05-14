@@ -23,6 +23,7 @@ public class FindUserAccountUseCase {
         UserAccount userAccount = new UserAccount();
         userAccount.setUuid(entity.getUuid());
         userAccount.setName(entity.getName());
+        userAccount.setRoleScope(entity.getRoleScope());
         return userAccount;
     }
 }

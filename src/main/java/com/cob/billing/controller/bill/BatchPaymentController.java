@@ -20,7 +20,7 @@ import java.io.OutputStream;
 
 @RestController
 @RequestMapping(value = "/batch/payment")
-@PreAuthorize("hasAnyRole('payment-role')")
+@PreAuthorize("hasAnyRole('payment-role','batch-insurance-payment-role')")
 public class BatchPaymentController {
     @Autowired
     CreateSessionServiceLinePaymentUseCase createSessionServiceLinePaymentUseCase;

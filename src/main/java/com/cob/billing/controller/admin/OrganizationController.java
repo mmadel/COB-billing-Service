@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/organization")
-@PreAuthorize("hasAnyRole('admin-tool-role')")
+@PreAuthorize("hasAnyRole('admin-tool-role','group-info-admin-tool-role')")
 public class OrganizationController {
     @Autowired
     CreateOrganizationUseCase createOrganizationUseCase;
@@ -39,7 +39,7 @@ public class OrganizationController {
     }
 
     @GetMapping("/find/default")
-    @PreAuthorize("hasAnyRole('billing-role')")
+    @PreAuthorize("hasAnyRole('billing-role','group-info-admin-tool-role')")
     public ResponseEntity findAll() {
         return new ResponseEntity(retrievingOrganizationUseCase.findDefault(), HttpStatus.OK);
     }

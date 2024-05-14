@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/clinic")
-@PreAuthorize("hasAnyRole('admin-tool-role')")
+@PreAuthorize("hasAnyRole('admin-tool-role','group-info-admin-tool-role')")
 public class ClinicController {
     @Autowired
     CreateClinicUseCase createClinicUseCase;
