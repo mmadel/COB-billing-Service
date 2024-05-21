@@ -2,10 +2,7 @@ package com.cob.billing.controller.admin;
 
 import com.cob.billing.exception.business.UserException;
 import com.cob.billing.model.security.UserAccount;
-import com.cob.billing.usecases.security.CreateUserUseCase;
-import com.cob.billing.usecases.security.FindUserAccountUseCase;
-import com.cob.billing.usecases.security.FindUserRolesScopeUseCase;
-import com.cob.billing.usecases.security.UpdateUserRoleScopeUseCase;
+import com.cob.billing.usecases.security.*;
 import com.cob.billing.usecases.user.FindUserUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +32,8 @@ public class UserController {
     CreateUserUseCase createUserUseCase;
     @Autowired
     FindUserAccountUseCase findUserAccountUseCase;
+    @Autowired
+    DeleteUserUseCase deleteUserUseCase;
 
     @PostMapping("/create")
     public ResponseEntity create(@RequestBody UserAccount model) throws UserException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
@@ -42,6 +41,11 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping("/delete/uuid/{uuid}")
+    public ResponseEntity delete(@PathVariable String uuid) throws UserException {
+        deleteUserUseCase.delete(uuid);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
     @PutMapping("/scope/update")
     public ResponseEntity update(@RequestBody UserAccount model) {
         updateUserRoleScopeUseCase.update(model);
