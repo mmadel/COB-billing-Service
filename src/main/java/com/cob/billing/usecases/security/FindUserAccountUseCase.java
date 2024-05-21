@@ -7,6 +7,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class FindUserAccountUseCase {
     @Autowired
@@ -15,8 +17,11 @@ public class FindUserAccountUseCase {
     ModelMapper mapper;
 
     public UserAccount findAccountUser(String uuid) {
-        UserRoleScopeEntity entity = userRoleScopeRepository.findByUuid(uuid).get();
-        return map(entity);
+        Optional<UserRoleScopeEntity> optional = userRoleScopeRepository.findByUuid(uuid);
+        if (!optional.isEmpty())
+            return map(optional.get());
+        else
+            return new UserAccount();
     }
 
     private UserAccount map(UserRoleScopeEntity entity) {
