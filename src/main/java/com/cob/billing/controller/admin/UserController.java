@@ -34,10 +34,18 @@ public class UserController {
     FindUserAccountUseCase findUserAccountUseCase;
     @Autowired
     DeleteUserUseCase deleteUserUseCase;
+    @Autowired
+    UpdateUserUseCase updateUserUseCase;
 
     @PostMapping("/create")
     public ResponseEntity create(@RequestBody UserAccount model) throws UserException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         createUserUseCase.create(model);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity update(@RequestBody UserAccount model) throws UserException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        updateUserUseCase.update(model);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -46,8 +54,9 @@ public class UserController {
         deleteUserUseCase.delete(uuid);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @PutMapping("/scope/update")
-    public ResponseEntity update(@RequestBody UserAccount model) {
+    public ResponseEntity updateScope(@RequestBody UserAccount model) {
         updateUserRoleScopeUseCase.update(model);
         return new ResponseEntity<>(HttpStatus.OK);
     }

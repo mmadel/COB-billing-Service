@@ -23,13 +23,14 @@ public class UserRoleScopeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-
     @Column(name = "uuid")
     private String uuid;
-
     @Column(name = "name")
     private String name;
-
+    @Column(name = "email")
+    private String email;
+    @Column(name = "user_account")
+    private String userAccount;
     @Column(name = "role_scope", columnDefinition = "json")
     @Type(type = "json")
     private List<RoleScope> roleScope;
