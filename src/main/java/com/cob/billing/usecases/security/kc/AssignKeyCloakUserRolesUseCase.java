@@ -17,7 +17,7 @@ public class AssignKeyCloakUserRolesUseCase {
     @Autowired
     private RetrieveKeyCloakRoleRepresentationUseCase retrieveKeyCloakRoleRepresentationUseCase;
 
-    public void assign(String uuid, List<RoleScope> roles,RealmResource realmResource,ClientRepresentation clientRepresentation) {
+    public void assign(String uuid, List<String> roles,RealmResource realmResource,ClientRepresentation clientRepresentation) {
         List<RoleRepresentation> roleRepresentations = retrieveKeyCloakRoleRepresentationUseCase.find(roles, realmResource, clientRepresentation);
         getUserResource(uuid, realmResource).roles().clientLevel(clientRepresentation.getId()).add(roleRepresentations);
     }

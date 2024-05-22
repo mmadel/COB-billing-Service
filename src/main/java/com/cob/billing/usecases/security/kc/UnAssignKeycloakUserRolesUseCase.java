@@ -18,7 +18,7 @@ public class UnAssignKeycloakUserRolesUseCase {
     @Autowired
     private RetrieveKeyCloakRoleRepresentationUseCase retrieveKeyCloakRoleRepresentationUseCase;
 
-    public void unAssign(String uuid, List<RoleScope> roles, RealmResource realmResource, ClientRepresentation clientRepresentation) {
+    public void unAssign(String uuid, List<String> roles, RealmResource realmResource, ClientRepresentation clientRepresentation) {
         List<RoleRepresentation> roleRepresentations = retrieveKeyCloakRoleRepresentationUseCase.find(roles, realmResource, clientRepresentation);
         getUserResource(uuid, realmResource).roles().clientLevel(clientRepresentation.getId()).remove(roleRepresentations);
     }

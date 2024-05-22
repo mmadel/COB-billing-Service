@@ -1,7 +1,8 @@
 package com.cob.billing.usecases.security.kc;
 
-import com.cob.billing.model.security.RoleScope;
 import com.cob.billing.model.security.UserAccount;
+import com.cob.billing.usecases.security.kc.util.CompositeRolesNamesChecker;
+import com.cob.billing.usecases.security.kc.util.ParentRolesNamesChecker;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.representations.idm.ClientRepresentation;
@@ -29,17 +30,22 @@ public class UpdateKeyCloakUserUseCase {
     public void updateKyCloakUser(UserAccount userAccount) {
         RealmResource realmResource = keycloakService.realm(realm);
         ClientRepresentation clientRepresentation = realmResource.clients().findByClientId(billingClient).get(0);
-        List<RoleScope> removedRolesList = userAccount.getRoleScope().stream()
+
+
+        List<String> removedRoles = userAccount.getRoleScope().stream()
                 .filter(roleScope -> roleScope.getScope().equals("hidden"))
+                .map(roleScope -> roleScope.getRole())
                 .collect(Collectors.toList());
-        if (removedRolesList != null)
-            unAssignKeycloakUserRolesUseCase.unAssign(userAccount.getUuid(), removedRolesList, realmResource, clientRepresentation);
+        removedRoles.addAll(CompositeRolesNamesChecker.check(userAccount.getRoleScope()));
+        removedRoles.addAll(ParentRolesNamesChecker.check(userAccount.getRoleScope()));
+        if (removedRoles != null)
+            unAssignKeycloakUserRolesUseCase.unAssign(userAccount.getUuid(), removedRoles, realmResource, clientRepresentation);
 
-        List<RoleScope> addedRolesList = userAccount.getRoleScope().stream()
+        List<String> addedRoles = userAccount.getRoleScope().stream()
                 .filter(roleScope -> !roleScope.getScope().equals("hidden"))
+                .map(roleScope -> roleScope.getRole())
                 .collect(Collectors.toList());
-        if (addedRolesList != null)
-            assignKeyCloakUserRolesUseCase.assign(userAccount.getUuid(), addedRolesList, realmResource, clientRepresentation);
-
+        if (addedRoles != null)
+            assignKeyCloakUserRolesUseCase.assign(userAccount.getUuid(), addedRoles, realmResource, clientRepresentation);
     }
 }

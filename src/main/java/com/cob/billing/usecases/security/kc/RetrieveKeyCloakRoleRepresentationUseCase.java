@@ -11,12 +11,12 @@ import java.util.List;
 
 @Component
 public class RetrieveKeyCloakRoleRepresentationUseCase {
-    public List<RoleRepresentation> find(List<RoleScope> roles, RealmResource realmResource, ClientRepresentation clientRepresentation){
+    public List<RoleRepresentation> find(List<String> roles, RealmResource realmResource, ClientRepresentation clientRepresentation){
         List<RoleRepresentation> roleRepresentation = new ArrayList<>();
         roles.stream()
                 .forEach(role -> {
                     RoleRepresentation clientRole = realmResource.clients().get(clientRepresentation.getId())
-                            .roles().get(role.getRole()).toRepresentation();
+                            .roles().get(role).toRepresentation();
                     roleRepresentation.add(clientRole);
                 });
         return roleRepresentation;

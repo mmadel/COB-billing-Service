@@ -56,8 +56,9 @@ public class CreateKeycloakUserUseCase {
         userAccount.setUuid(createKCUserResourceUseCase.getUserUUID());
         createUserCredentialsUseCase.create(createKCUserResourceUseCase.getUserUUID(), keyCloakUser.getPassword());
         ClientRepresentation clientRepresentation = realmResource.clients().findByClientId(billingClient).get(0);
-        List<RoleScope> filteredNotHiddenList = keyCloakUser.getRoleScope().stream()
+        List<String> filteredNotHiddenList = keyCloakUser.getRoleScope().stream()
                 .filter(roleScope -> !roleScope.getScope().equals("hidden"))
+                .map(roleScope -> roleScope.getRole())
                 .collect(Collectors.toList());
         assignKeyCloakUserRolesUseCase.assign(createKCUserResourceUseCase.getUserUUID(), filteredNotHiddenList, realmResource, clientRepresentation);
     }
