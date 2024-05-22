@@ -5,6 +5,7 @@ import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.clinical.provider.CreateProviderUseCase;
 import com.cob.billing.usecases.clinical.provider.DeleteProviderUseCase;
 import com.cob.billing.usecases.clinical.provider.FindProvidersUseCase;
+import com.cob.billing.usecases.clinical.provider.UpdateProviderUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,8 @@ public class ProviderController {
     FindProvidersUseCase findProvidersUseCase;
     @Autowired
     DeleteProviderUseCase deleteProviderUseCase;
+    @Autowired
+    UpdateProviderUseCase updateProviderUseCase;
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody Provider provider) {
@@ -32,6 +35,14 @@ public class ProviderController {
                         HttpStatus.OK,
                         createProviderUseCase.create(provider));
     }
+    @PutMapping("/update")
+    public ResponseEntity<Object> update(@RequestBody Provider provider) {
+        return ResponseHandler
+                .generateResponse("Successfully added Provider",
+                        HttpStatus.OK,
+                        updateProviderUseCase.update(provider));
+    }
+
     @DeleteMapping("/delete/id/{id}")
     public ResponseEntity<Object> create(@PathVariable Long id) {
         return ResponseHandler
