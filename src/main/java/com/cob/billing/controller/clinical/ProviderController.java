@@ -3,6 +3,7 @@ package com.cob.billing.controller.clinical;
 import com.cob.billing.model.clinical.provider.Provider;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.clinical.provider.CreateProviderUseCase;
+import com.cob.billing.usecases.clinical.provider.DeleteProviderUseCase;
 import com.cob.billing.usecases.clinical.provider.FindProvidersUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,8 @@ public class ProviderController {
 
     @Autowired
     FindProvidersUseCase findProvidersUseCase;
+    @Autowired
+    DeleteProviderUseCase deleteProviderUseCase;
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody Provider provider) {
@@ -28,6 +31,13 @@ public class ProviderController {
                 .generateResponse("Successfully added Provider",
                         HttpStatus.OK,
                         createProviderUseCase.create(provider));
+    }
+    @DeleteMapping("/delete/id/{id}")
+    public ResponseEntity<Object> create(@PathVariable Long id) {
+        return ResponseHandler
+                .generateResponse("Successfully deleted Provider",
+                        HttpStatus.OK,
+                        deleteProviderUseCase.delete(id));
     }
 
     @GetMapping("/find")
