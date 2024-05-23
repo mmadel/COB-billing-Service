@@ -2,6 +2,7 @@ package com.cob.billing.controller.clinical;
 
 import com.cob.billing.model.bill.InsuranceCompanyConfiguration;
 import com.cob.billing.model.bill.InsuranceCompanyMapper;
+import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyHolder;
 import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibility;
 import com.cob.billing.usecases.clinical.patient.insurance.company.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,19 @@ public class InsuranceCompanyController {
     MapInsuranceCompanyToPayerUseCase mapInsuranceCompanyToPayerUseCase;
     @Autowired
     UpdateInsuranceCompanyConfigurationUseCase updateInsuranceCompanyConfigurationUseCase;
-
+    @Autowired
+    UpdateInternalInsuranceCompanyUseCase updateInternalInsuranceCompanyUseCase;
 
     @PostMapping("/map")
     public ResponseEntity map(@RequestBody InsuranceCompanyMapper model) {
         mapInsuranceCompanyToPayerUseCase.map(model);
         return new ResponseEntity(HttpStatus.OK);
     }
-
+    @PutMapping("/update/internal")
+    public ResponseEntity updateInternalCompany(@RequestBody InsuranceCompanyHolder insuranceCompanyHolder){
+        updateInternalInsuranceCompanyUseCase.update(insuranceCompanyHolder);
+        return new ResponseEntity(HttpStatus.OK);
+    }
     @GetMapping("/find")
     public ResponseEntity findAll() {
         return new ResponseEntity(findInsuranceCompaniesUseCase.find(), HttpStatus.OK);
