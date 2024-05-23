@@ -5,6 +5,7 @@ import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.clinical.referring.provider.CreateReferringProviderUseCase;
 import com.cob.billing.usecases.clinical.referring.provider.DeleteReferringProviderUseCase;
 import com.cob.billing.usecases.clinical.referring.provider.RetrievingAllReferringProvidersUseCase;
+import com.cob.billing.usecases.clinical.referring.provider.UpdateReferringProviderUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,8 @@ public class ReferringProviderController {
     RetrievingAllReferringProvidersUseCase retrievingAllReferringProvidersUseCase;
     @Autowired
     DeleteReferringProviderUseCase deleteReferringProviderUseCase;
+    @Autowired
+    UpdateReferringProviderUseCase updateReferringProviderUseCase;
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody ReferringProvider referringProvider) {
@@ -31,6 +34,13 @@ public class ReferringProviderController {
                 .generateResponse("Successfully added ReferringProvider",
                         HttpStatus.OK,
                         createReferringProviderUseCase.create(referringProvider));
+    }
+    @PutMapping("/update")
+    public ResponseEntity<Object> update(@RequestBody ReferringProvider referringProvider) {
+        return ResponseHandler
+                .generateResponse("Successfully added ReferringProvider",
+                        HttpStatus.OK,
+                        updateReferringProviderUseCase.update(referringProvider));
     }
 
     @GetMapping("/find")

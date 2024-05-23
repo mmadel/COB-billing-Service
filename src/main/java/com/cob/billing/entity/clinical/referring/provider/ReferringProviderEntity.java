@@ -28,6 +28,8 @@ public class ReferringProviderEntity {
     private String referringProviderId;
     @Column(name = "referring_provider_qualifier")
     private String referringProviderIdQualifier;
+    @Column(name = "profession_abbr")
+    private String professionAbbr;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "referringProvider")
     List<PatientEntity> patients = new ArrayList<>();
 }

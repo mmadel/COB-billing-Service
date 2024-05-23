@@ -10,6 +10,7 @@ public class ReferringProvider {
     private String firstName;
     private String lastName;
     private String npi;
+    private String professionAbbr;
     private String referringProviderId;
     private String referringProviderIdQualifier;
 
