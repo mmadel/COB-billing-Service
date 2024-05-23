@@ -3,6 +3,7 @@ package com.cob.billing.controller.clinical;
 import com.cob.billing.model.clinical.referring.provider.ReferringProvider;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.clinical.referring.provider.CreateReferringProviderUseCase;
+import com.cob.billing.usecases.clinical.referring.provider.DeleteReferringProviderUseCase;
 import com.cob.billing.usecases.clinical.referring.provider.RetrievingAllReferringProvidersUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,8 @@ public class ReferringProviderController {
     CreateReferringProviderUseCase createReferringProviderUseCase;
     @Autowired
     RetrievingAllReferringProvidersUseCase retrievingAllReferringProvidersUseCase;
+    @Autowired
+    DeleteReferringProviderUseCase deleteReferringProviderUseCase;
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody ReferringProvider referringProvider) {
@@ -39,8 +42,17 @@ public class ReferringProviderController {
                         HttpStatus.OK, null,
                         retrievingAllReferringProvidersUseCase.findAll(paging));
     }
+
     @GetMapping("/find/all")
-    public ResponseEntity findAll(){
-        return new ResponseEntity(retrievingAllReferringProvidersUseCase.findAll(),HttpStatus.OK);
+    public ResponseEntity findAll() {
+        return new ResponseEntity(retrievingAllReferringProvidersUseCase.findAll(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/id/{id}")
+    public ResponseEntity<Object> delete(@PathVariable Long id) {
+        return ResponseHandler
+                .generateResponse("Successfully added ReferringProvider",
+                        HttpStatus.OK,
+                        deleteReferringProviderUseCase.delete(id));
     }
 }
