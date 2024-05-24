@@ -17,7 +17,8 @@ public class CompositeRolesNamesChecker {
             if (roleScope.getRole().equals("payment-role"))
                 compositeRoles.addAll(Arrays.asList("batch-insurance-payment-role"
                         , "batch-client-payment-role"
-                        , "balance-statement-payment-role"));
+                        , "balance-statement-payment-role"
+                        , "session-payment-role"));
             if (roleScope.getRole().equals("provider-role"))
                 compositeRoles.addAll(Arrays.asList("soild-provider-role"
                         , "referring-provider-role"));

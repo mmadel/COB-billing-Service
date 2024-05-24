@@ -24,7 +24,8 @@ public class ParentRolesNamesChecker {
 
         boolean hasPaymentChild = roles.stream().map(roleScope -> roleScope.getRole()).anyMatch(Arrays.asList("batch-insurance-payment-role"
                 , "batch-client-payment-role"
-                , "balance-statement-payment-role")::contains);
+                , "balance-statement-payment-role"
+                , "session-payment-role")::contains);
         if (hasPaymentChild)
             parentRoles.add("payment-role");
 
