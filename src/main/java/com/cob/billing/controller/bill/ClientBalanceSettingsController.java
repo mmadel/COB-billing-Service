@@ -6,10 +6,12 @@ import com.cob.billing.usecases.bill.posting.balance.RetrieveClientBalanceSettin
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/client/balance/settings")
+@PreAuthorize("hasAnyRole('payment-role','balance-statement-payment-role')")
 public class ClientBalanceSettingsController {
     @Autowired
     CreateOrUpdateClientBalanceSettingsUseCase createOrUpdateClientBalanceSettingsUseCase;

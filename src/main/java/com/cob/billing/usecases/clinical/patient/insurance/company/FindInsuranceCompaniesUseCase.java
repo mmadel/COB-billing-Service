@@ -36,6 +36,7 @@ public class FindInsuranceCompaniesUseCase {
                     internalHolder.setId(insuranceCompany.getId());
                     internalHolder.setName(insuranceCompany.getName());
                     internalHolder.setVisibility(InsuranceCompanyVisibility.Internal);
+                    internalHolder.setAddress(insuranceCompany.getAddress());
                     insuranceCompanyHolder.add(internalHolder);
                 });
         insuranceCompanyExternalRepository.findAll()

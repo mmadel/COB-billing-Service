@@ -8,10 +8,12 @@ import com.cob.billing.usecases.admin.organization.UpdateOrganizationUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/organization")
+@PreAuthorize("hasAnyRole('admin-tool-role','group-info-admin-tool-role')")
 public class OrganizationController {
     @Autowired
     CreateOrganizationUseCase createOrganizationUseCase;
@@ -37,6 +39,7 @@ public class OrganizationController {
     }
 
     @GetMapping("/find/default")
+    @PreAuthorize("hasAnyRole('billing-role','group-info-admin-tool-role')")
     public ResponseEntity findAll() {
         return new ResponseEntity(retrievingOrganizationUseCase.findDefault(), HttpStatus.OK);
     }

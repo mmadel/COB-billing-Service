@@ -22,6 +22,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +35,7 @@ import java.util.zip.DataFormatException;
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/invoice")
+@PreAuthorize("hasAnyRole('billing-role','invoice-billing-role')")
 public class InvoiceController {
     @Autowired
     FindNotSubmittedSessionsGroupByPatientsUseCase findNotSubmittedSessionsGroupByPatientsUseCase;
