@@ -42,8 +42,8 @@ public interface PatientSessionRepository extends PagingAndSortingRepository<Pat
             "AND (:dateFrom is null or s.serviceDate >= :dateFrom) " +
             "AND (:dateTo is null or s.serviceDate <= :dateTo)" +
             "AND (:caseTitle is null or upper(s.caseTitle) LIKE CONCAT('%',:caseTitle,'%'))" +
-            "AND ((:provider is null or upper(JSON_EXTRACT(s.doctorInfo, '$.doctorFirstName')) LIKE CONCAT('%',:provider,'%')) " +
-            "OR ((:provider is null or upper(JSON_EXTRACT(s.doctorInfo, '$.doctorLastName')) LIKE CONCAT('%',:provider,'%'))) ) ")
+            "AND ((:provider is null or upper(FUNCTION('json_extract_path_text',s.doctorInfo, '$.doctorFirstName')) LIKE CONCAT('%',:provider,'%')) " +
+            "OR ((:provider is null or upper(FUNCTION('json_extract_path_text',s.doctorInfo, '$.doctorLastName')) LIKE CONCAT('%',:provider,'%'))) ) ")
     List<PatientSessionEntity> findPrepareAndPartialSessionsByPatientFiltered(@Param("patientId") Long patientId, @Param("dateFrom") Long dateFrom
             , @Param("dateTo") Long dateTo
             , @Param("provider") String provider

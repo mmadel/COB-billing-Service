@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface ModifierRuleRepository extends CrudRepository<ModifierRuleEntity, Long> {
     @Query("Select mr from ModifierRuleEntity mr " +
-            "where JSON_EXTRACT(mr.insurance, '$.id') =:id " +
+            "where FUNCTION('json_extract_path_text',mr.insurance, '$.id') =:id " +
             "AND mr.active = true")
     Optional<ModifierRuleEntity> findByInsurance(@Param("id") Long id);
 
