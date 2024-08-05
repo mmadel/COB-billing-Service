@@ -1,6 +1,7 @@
 package com.cob.billing.entity.security;
 
 import com.cob.billing.model.security.RoleScope;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +15,8 @@ import java.util.List;
 @Entity
 @Table(name = "user_role_scope")
 @TypeDefs({
-        @TypeDef(name = "json", typeClass = JsonStringType.class)
+        @TypeDef(name = "json", typeClass = JsonStringType.class),
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
 @Getter
 @Setter
@@ -32,6 +34,6 @@ public class UserRoleScopeEntity {
     @Column(name = "user_account")
     private String userAccount;
     @Column(name = "role_scope", columnDefinition = "json")
-    @Type(type = "json")
+    @Type(type = "jsonb")
     private List<RoleScope> roleScope;
 }

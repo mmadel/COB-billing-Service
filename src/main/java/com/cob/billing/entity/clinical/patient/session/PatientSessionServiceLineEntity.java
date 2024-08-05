@@ -2,6 +2,7 @@ package com.cob.billing.entity.clinical.patient.session;
 
 import com.cob.billing.model.clinical.patient.CPTCode;
 import com.cob.billing.model.clinical.patient.CaseDiagnosis;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +17,8 @@ import java.util.Objects;
 @Entity
 @Table(name = "patient_session_service_line")
 @TypeDefs({
-        @TypeDef(name = "json", typeClass = JsonStringType.class)
+        @TypeDef(name = "json", typeClass = JsonStringType.class),
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
 @Getter
 @Setter
@@ -26,12 +28,12 @@ public class PatientSessionServiceLineEntity {
     @Column(name = "id")
     private Long id;
     @Column(name = "cpt_code", columnDefinition = "json")
-    @Type(type = "json")
+    @Type(type = "jsonb")
     private CPTCode cptCode;
     @Column(name = "type")
     private String type;
     @Column(name = "diagnoses", columnDefinition = "json")
-    @Type(type = "json")
+    @Type(type = "jsonb")
     private List<String> diagnoses;
 
     @Column(name = "is_correct")

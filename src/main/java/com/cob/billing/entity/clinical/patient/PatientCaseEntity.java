@@ -22,7 +22,7 @@ public class PatientCaseEntity {
     private String title;
 
     @Column(name = "case_diagnosis", columnDefinition = "json")
-    @Type(type = "json")
+    @Type(type = "jsonb")
     private List<CaseDiagnosis> caseDiagnosis;
 
     @ManyToOne

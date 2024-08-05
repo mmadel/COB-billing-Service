@@ -4,6 +4,7 @@ import com.cob.billing.model.bill.fee.schedule.FeeScheduleLineModel;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceInsuranceCompanyInformation;
 import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyHolder;
 import com.cob.billing.model.clinical.provider.SimpleProvider;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,8 @@ import java.util.List;
 @Entity
 @Table(name = "fee_schedule")
 @TypeDefs({
-        @TypeDef(name = "json", typeClass = JsonStringType.class)
+        @TypeDef(name = "json", typeClass = JsonStringType.class),
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
 @Setter
 @Getter
@@ -40,15 +42,15 @@ public class FeeScheduleEntity {
     private Boolean active;
 
     @Column(name = "fee_schedule_line", columnDefinition = "json")
-    @Type(type = "json")
+    @Type(type = "jsonb")
     private List<FeeScheduleLineModel> feeLines;
 
     @Column(name = "provider", columnDefinition = "json")
-    @Type(type = "json")
+    @Type(type = "jsonb")
     private SimpleProvider provider;
 
     @Column(name = "insurance", columnDefinition = "json")
-    @Type(type = "json")
+    @Type(type = "jsonb")
     private InsuranceCompanyHolder insurance;
 
     @PrePersist

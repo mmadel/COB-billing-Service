@@ -7,6 +7,7 @@ import com.cob.billing.enums.Gender;
 import com.cob.billing.enums.MaritalStatus;
 import com.cob.billing.model.clinical.patient.advanced.PatientAdvancedInformation;
 import com.cob.billing.model.common.Address;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +21,8 @@ import java.util.List;
 @Entity
 @Table(name = "patient")
 @TypeDefs({
-        @TypeDef(name = "json", typeClass = JsonStringType.class)
+        @TypeDef(name = "json", typeClass = JsonStringType.class),
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
 @Getter
 @Setter
@@ -52,11 +54,11 @@ public class PatientEntity {
     @Column(name = "copay")
     private String copay;
     @Column(name = "patient_addresses", columnDefinition = "json")
-    @Type(type = "json")
+    @Type(type = "jsonb")
     private Address address;
 
     @Column(name = "patient_advanced_information", columnDefinition = "json")
-    @Type(type = "json")
+    @Type(type = "jsonb")
     private PatientAdvancedInformation patientAdvancedInformation;
     @OneToMany(mappedBy = "patient")
     private List<PatientCaseEntity> cases;

@@ -7,6 +7,7 @@ import com.cob.billing.enums.SessionAction;
 import com.cob.billing.enums.SubmissionStatus;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceInsuranceCompanyInformation;
 import com.cob.billing.model.clinical.patient.CaseDiagnosis;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,8 @@ import java.util.List;
 @Entity
 @Table(name = "patient_invoice")
 @TypeDefs({
-        @TypeDef(name = "json", typeClass = JsonStringType.class)
+        @TypeDef(name = "json", typeClass = JsonStringType.class),
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
 @Setter
 @Getter
@@ -48,7 +50,7 @@ public class PatientInvoiceEntity {
     private Long createdAt;
 
     @Column(name = "insurance_company", columnDefinition = "json")
-    @Type(type = "json")
+    @Type(type = "jsonb")
     private InvoiceInsuranceCompanyInformation insuranceCompany;
 
     @Column(name = "submission_id")

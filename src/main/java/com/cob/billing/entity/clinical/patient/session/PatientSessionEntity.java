@@ -8,6 +8,7 @@ import com.cob.billing.enums.PatientSessionStatus;
 import com.cob.billing.model.clinical.patient.CaseDiagnosis;
 import com.cob.billing.model.clinical.patient.session.ClinicInfo;
 import com.cob.billing.model.clinical.patient.session.DoctorInfo;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +23,8 @@ import java.util.Objects;
 @Entity
 @Table(name = "patient_session")
 @TypeDefs({
-        @TypeDef(name = "json", typeClass = JsonStringType.class)
+        @TypeDef(name = "json", typeClass = JsonStringType.class),
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
 @Getter
 @Setter
@@ -35,7 +37,7 @@ public class PatientSessionEntity {
     @JoinColumn(name = "patient_id")
     private PatientEntity patient;
     @Column(name = "doctor_info", columnDefinition = "json")
-    @Type(type = "json")
+    @Type(type = "jsonb")
     private DoctorInfo doctorInfo;
 
     @OneToOne
@@ -50,7 +52,7 @@ public class PatientSessionEntity {
     @Column(name = "place_of_code")
     private String placeOfCode;
     @Column(name = "case_diagnosis", columnDefinition = "json")
-    @Type(type = "json")
+    @Type(type = "jsonb")
     private List<CaseDiagnosis> caseDiagnosis;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})

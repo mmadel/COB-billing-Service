@@ -1,6 +1,7 @@
 package com.cob.billing.entity.bill.modifier.rule;
 
 import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyHolder;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "modifier_rule")
 @TypeDefs({
-        @TypeDef(name = "json", typeClass = JsonStringType.class)
+        @TypeDef(name = "json", typeClass = JsonStringType.class),
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
 @Setter
 @Getter
@@ -40,6 +42,6 @@ public class ModifierRuleEntity {
     private ModifierAppender appender;
 
     @Column(name = "insurance", columnDefinition = "json")
-    @Type(type = "json")
+    @Type(type = "jsonb")
     private InsuranceCompanyHolder insurance;
 }

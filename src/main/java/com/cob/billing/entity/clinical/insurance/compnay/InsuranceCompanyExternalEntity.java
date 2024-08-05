@@ -33,7 +33,7 @@ public class InsuranceCompanyExternalEntity {
     private String displayName;
 
     @Column(name = "addresses", columnDefinition = "json")
-    @Type(type = "json")
+    @Type(type = "jsonb")
     private BasicAddress address;
 
     @Column(name = "payer_id")

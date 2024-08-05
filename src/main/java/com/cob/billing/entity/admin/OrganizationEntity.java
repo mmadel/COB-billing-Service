@@ -2,6 +2,7 @@ package com.cob.billing.entity.admin;
 
 import com.cob.billing.enums.OrganizationType;
 import com.cob.billing.model.admin.OrganizationData;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +15,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "organization")
 @TypeDefs({
-        @TypeDef(name = "json", typeClass = JsonStringType.class)
+        @TypeDef(name = "json", typeClass = JsonStringType.class),
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
 @Getter
 @Setter
@@ -32,7 +34,7 @@ public class OrganizationEntity {
     @Column(name = "npi")
     private String npi;
     @Column(name = "data", columnDefinition = "json")
-    @Type(type = "json")
+    @Type(type = "jsonb")
     private OrganizationData organizationData;
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
