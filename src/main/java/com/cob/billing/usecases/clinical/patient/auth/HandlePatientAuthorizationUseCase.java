@@ -10,11 +10,9 @@ import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.repositories.clinical.PatientAuthorizationRepository;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import com.cob.billing.usecases.clinical.patient.auth.watching.selection.AuthorizationSelection;
-import com.cob.billing.usecases.clinical.patient.auth.watching.selection.SessionAuthorizationExecutor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
