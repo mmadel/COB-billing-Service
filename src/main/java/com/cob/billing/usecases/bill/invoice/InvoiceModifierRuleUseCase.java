@@ -1,6 +1,7 @@
 package com.cob.billing.usecases.bill.invoice;
 
 import com.cob.billing.entity.bill.modifier.rule.ModifierRuleEntity;
+import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.cob.billing.model.clinical.patient.CPTCode;
 import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.repositories.bill.ModifierRuleRepository;
@@ -37,9 +38,13 @@ public class InvoiceModifierRuleUseCase {
         return models;
     }
 
-    public void check(List<CPTCode> cptCode, Long insuranceId) {
+    public void check(InvoiceRequest invoiceRequest) {
+        List<CPTCode> cptCodes = invoiceRequest.getSelectedSessionServiceLine().stream()
+                .map(serviceLine -> serviceLine.getServiceLine().getCptCode())
+                .collect(Collectors.toList());
+        Long insuranceId = invoiceRequest.getInvoiceInsuranceCompanyInformation().getId();
         findModifierRule(insuranceId);
-        change(cptCode);
+        change(cptCodes);
     }
 
     private void findModifierRule(Long insuranceId) {
