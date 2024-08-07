@@ -22,7 +22,9 @@ public class SecurityConfiguration {
                         new KeycloakJwtRolesConverter());
         httpSecurity.oauth2ResourceServer().jwt().jwtAuthenticationConverter(
                 jwt -> new JwtAuthenticationToken(jwt, authoritiesConverter.convert(jwt)));
-        httpSecurity.authorizeRequests().anyRequest().authenticated();
+        httpSecurity.authorizeRequests()
+                .antMatchers("/init/**").permitAll()
+                .anyRequest().authenticated();
         return httpSecurity.build();
     }
 }
