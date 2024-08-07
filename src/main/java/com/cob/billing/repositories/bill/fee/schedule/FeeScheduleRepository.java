@@ -12,13 +12,13 @@ public interface FeeScheduleRepository extends CrudRepository<FeeScheduleEntity,
     Optional<FeeScheduleEntity> findDefaultFee();
 
     @Query("Select fs from FeeScheduleEntity fs " +
-            "where FUNCTION('json_extract_path_text',fs.provider, '$.npi') = :npi " +
+            "where FUNCTION('jsonb_extract_path_text',fs.provider, '$.npi') = :npi " +
             "AND fs.active = true")
     Optional<FeeScheduleEntity> findFeeScheduleByProvider(@Param("npi") String npi);
 
 
     @Query("Select fs from FeeScheduleEntity fs " +
-            "where FUNCTION('json_extract_path_text',fs.insurance, '$.id') =:id " +
+            "where FUNCTION('jsonb_extract_path_text',fs.insurance, '$.id') =:id " +
             "AND fs.active = true")
-    Optional<FeeScheduleEntity> findFeeScheduleByInsurance(@Param("id") Long id);
+    Optional<FeeScheduleEntity> findFeeScheduleByInsurance(@Param("id") String id);
 }

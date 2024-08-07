@@ -29,7 +29,7 @@ public class InsuranceCompanyEntity {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "addresses", columnDefinition = "json")
+    @Column(name = "addresses", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private BasicAddress address;
 

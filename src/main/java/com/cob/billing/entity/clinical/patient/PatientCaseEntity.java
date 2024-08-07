@@ -21,7 +21,7 @@ public class PatientCaseEntity {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "case_diagnosis", columnDefinition = "json")
+    @Column(name = "case_diagnosis", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private List<CaseDiagnosis> caseDiagnosis;
 

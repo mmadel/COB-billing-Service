@@ -27,12 +27,12 @@ public class PatientSessionServiceLineEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "cpt_code", columnDefinition = "json")
+    @Column(name = "cpt_code", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private CPTCode cptCode;
     @Column(name = "type")
     private String type;
-    @Column(name = "diagnoses", columnDefinition = "json")
+    @Column(name = "diagnoses", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private List<String> diagnoses;
 

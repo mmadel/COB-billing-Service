@@ -36,7 +36,7 @@ public class PatientSessionEntity {
     @ManyToOne
     @JoinColumn(name = "patient_id")
     private PatientEntity patient;
-    @Column(name = "doctor_info", columnDefinition = "json")
+    @Column(name = "doctor_info", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private DoctorInfo doctorInfo;
 
@@ -51,7 +51,7 @@ public class PatientSessionEntity {
     private Long serviceEndTime;
     @Column(name = "place_of_code")
     private String placeOfCode;
-    @Column(name = "case_diagnosis", columnDefinition = "json")
+    @Column(name = "case_diagnosis", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private List<CaseDiagnosis> caseDiagnosis;
 

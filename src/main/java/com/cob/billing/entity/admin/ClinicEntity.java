@@ -29,7 +29,7 @@ public class ClinicEntity {
     private String title;
     @Column(name = "npi")
     private String npi;
-    @Column(name = "data", columnDefinition = "json")
+    @Column(name = "data", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private ClinicData clinicdata;
 }

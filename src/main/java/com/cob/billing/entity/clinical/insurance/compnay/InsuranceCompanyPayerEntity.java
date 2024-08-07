@@ -31,7 +31,7 @@ public class InsuranceCompanyPayerEntity {
 
     @Column(name = "payer_id")
     private Long payerId;
-    @Column(name = "payer_data", columnDefinition = "json")
+    @Column(name = "payer_data", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private Payer payer;
 

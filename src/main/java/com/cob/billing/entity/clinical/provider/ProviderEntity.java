@@ -36,14 +36,14 @@ public class ProviderEntity {
     private String npi;
     @Column(name = "phone")
     private String phone;
-    @Column(name = "address", columnDefinition = "json")
+    @Column(name = "address", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private Address address;
-    @Column(name = "provider_info", columnDefinition = "json")
+    @Column(name = "provider_info", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private ProviderInfo ProviderInfo;
 
-    @Column(name = "legacy_id", columnDefinition = "json")
+    @Column(name = "legacy_id", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private LegacyID legacyID;
 }

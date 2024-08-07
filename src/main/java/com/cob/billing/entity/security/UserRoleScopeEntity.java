@@ -33,7 +33,7 @@ public class UserRoleScopeEntity {
     private String email;
     @Column(name = "user_account")
     private String userAccount;
-    @Column(name = "role_scope", columnDefinition = "json")
+    @Column(name = "role_scope", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private List<RoleScope> roleScope;
 }

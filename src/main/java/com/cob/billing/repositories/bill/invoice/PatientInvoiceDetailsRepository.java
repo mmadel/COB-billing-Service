@@ -13,6 +13,6 @@ public interface PatientInvoiceDetailsRepository extends CrudRepository<PatientI
     @Query(" SELECT pind FROM PatientInvoiceDetailsEntity pind INNER JOIN FETCH pind.patientInvoice pin " +
             "WHERE (pind.patientSession.status='Submit' OR pind.patientSession.status='Partial') " +
             "AND pind.serviceLine.type ='Invoice' " +
-            "AND FUNCTION('json_extract_path_text',pin.insuranceCompany, '$.id') = :insuranceCompany")
-    List<PatientInvoiceDetailsEntity> findBySessionSubmittedByInsuranceCompany(@Param("insuranceCompany") Long insuranceCompany);
+            "AND FUNCTION('jsonb_extract_path_text',pin.insuranceCompany, 'id') = :insuranceCompany")
+    List<PatientInvoiceDetailsEntity> findBySessionSubmittedByInsuranceCompany(@Param("insuranceCompany") String insuranceCompany);
 }

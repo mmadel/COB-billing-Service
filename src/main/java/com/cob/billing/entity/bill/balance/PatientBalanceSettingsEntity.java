@@ -24,11 +24,11 @@ public class PatientBalanceSettingsEntity {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "billing_provider", columnDefinition = "json")
+    @Column(name = "billing_provider", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private PatientBalanceBillingProviderSettings patientBalanceBillingProviderSettings;
 
-    @Column(name = "balance_account", columnDefinition = "json")
+    @Column(name = "balance_account", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private PatientBalanceAccountSettings patientBalanceAccountSettings;
 }

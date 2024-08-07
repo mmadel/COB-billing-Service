@@ -53,11 +53,11 @@ public class PatientEntity {
     private String email;
     @Column(name = "copay")
     private String copay;
-    @Column(name = "patient_addresses", columnDefinition = "json")
+    @Column(name = "patient_addresses", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private Address address;
 
-    @Column(name = "patient_advanced_information", columnDefinition = "json")
+    @Column(name = "patient_advanced_information", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private PatientAdvancedInformation patientAdvancedInformation;
     @OneToMany(mappedBy = "patient")

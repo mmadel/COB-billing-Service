@@ -33,7 +33,7 @@ public class OrganizationEntity {
     private String lastName;
     @Column(name = "npi")
     private String npi;
-    @Column(name = "data", columnDefinition = "json")
+    @Column(name = "data", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private OrganizationData organizationData;
     @Enumerated(EnumType.STRING)

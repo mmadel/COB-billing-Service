@@ -33,19 +33,19 @@ public class PatientInsuranceEntity {
     @Column(name = "relation")
     private String relation;
 
-    @Column(name = "Patient_relation", columnDefinition = "json")
+    @Column(name = "Patient_relation", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private PatientRelation patientRelation;
 
-    @Column(name = "patient_insurance_policy", columnDefinition = "json")
+    @Column(name = "patient_insurance_policy", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private PatientInsurancePolicy patientInsurancePolicy;
 
-    @Column(name = "patient_insurance_advanced", columnDefinition = "json")
+    @Column(name = "patient_insurance_advanced", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private PatientInsuranceAdvanced patientInsuranceAdvanced;
 
-    @Column(name = "insurance_company_address", columnDefinition = "json")
+    @Column(name = "insurance_company_address", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private BasicAddress insuranceCompanyAddress;
 

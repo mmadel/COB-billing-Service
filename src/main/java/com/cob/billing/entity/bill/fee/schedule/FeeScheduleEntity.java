@@ -41,15 +41,15 @@ public class FeeScheduleEntity {
     @Column(name = "active")
     private Boolean active;
 
-    @Column(name = "fee_schedule_line", columnDefinition = "json")
+    @Column(name = "fee_schedule_line", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private List<FeeScheduleLineModel> feeLines;
 
-    @Column(name = "provider", columnDefinition = "json")
+    @Column(name = "provider", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private SimpleProvider provider;
 
-    @Column(name = "insurance", columnDefinition = "json")
+    @Column(name = "insurance", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private InsuranceCompanyHolder insurance;
 

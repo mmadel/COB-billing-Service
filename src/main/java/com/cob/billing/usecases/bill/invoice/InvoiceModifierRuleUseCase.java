@@ -43,7 +43,7 @@ public class InvoiceModifierRuleUseCase {
     }
 
     private void findModifierRule(Long insuranceId) {
-        Optional<ModifierRuleEntity> rule = modifierRuleRepository.findByInsurance(insuranceId);
+        Optional<ModifierRuleEntity> rule = modifierRuleRepository.findByInsurance(insuranceId.toString());
         if (rule.isPresent())
             modifierRule = rule.get();
         else

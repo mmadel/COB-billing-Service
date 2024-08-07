@@ -22,7 +22,7 @@ public class InvoiceFeeScheduleChargeUseCase {
     }
 
     private void findFee(Long insuranceId) {
-        Optional<FeeScheduleEntity> providerFeeSchedule = feeScheduleRepository.findFeeScheduleByInsurance(insuranceId);
+        Optional<FeeScheduleEntity> providerFeeSchedule = feeScheduleRepository.findFeeScheduleByInsurance(insuranceId.toString());
         if (providerFeeSchedule.isPresent())
             feeSchedule = providerFeeSchedule.get();
         else

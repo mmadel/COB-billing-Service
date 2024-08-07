@@ -32,7 +32,7 @@ public class PayerEntity {
     private String displayName;
     @Column(name = "payer_id")
     private Long payerId;
-    @Column(name = "address", columnDefinition = "json")
+    @Column(name = "address", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private BasicAddress address;
 }

@@ -49,7 +49,7 @@ public class PatientInvoiceEntity {
     @Column(name = "created_at")
     private Long createdAt;
 
-    @Column(name = "insurance_company", columnDefinition = "json")
+    @Column(name = "insurance_company", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private InvoiceInsuranceCompanyInformation insuranceCompany;
 
