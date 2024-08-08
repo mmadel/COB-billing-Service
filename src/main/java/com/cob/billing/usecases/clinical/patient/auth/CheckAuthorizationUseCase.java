@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Component
-public class HandlePatientAuthorizationUseCase {
+public class CheckAuthorizationUseCase {
     @Autowired
     AuthorizationSelection authorizationSelection;
     @Autowired
@@ -34,7 +34,7 @@ public class HandlePatientAuthorizationUseCase {
     private List<SelectedSessionServiceLine> invoicesSessionServiceLines;
     private List<SubmissionSession> submissionSessions;
 
-    public void handle(InvoiceRequest invoiceRequest) throws AuthorizationException {
+    public void check(InvoiceRequest invoiceRequest) throws AuthorizationException {
         invoicesSessionServiceLines = invoiceRequest.getSelectedSessionServiceLine();
         submissionSessions = prepareSubmissionSessions(invoiceRequest.getInvoiceInsuranceCompanyInformation().getId(), invoiceRequest.getPatientInformation().getId());
         Map<Long , Integer> authorizationToUpdate = new HashMap<>();

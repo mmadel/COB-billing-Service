@@ -5,8 +5,8 @@ import com.cob.billing.model.bill.invoice.InvoiceGenerationResponse;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.cob.billing.usecases.bill.invoice.ChangeSessionStatusUseCase;
 import com.cob.billing.usecases.bill.invoice.CreateInvoiceRecordUseCase;
-import com.cob.billing.usecases.bill.invoice.InvoiceModifierRuleUseCase;
-import com.cob.billing.usecases.clinical.patient.auth.HandlePatientAuthorizationUseCase;
+import com.cob.billing.usecases.bill.invoice.CheckModifierRuleUseCase;
+import com.cob.billing.usecases.clinical.patient.auth.CheckAuthorizationUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,19 +25,16 @@ public class GenerateCMSInvoiceUseCase {
     CreateCMSDocumentUseCase createCMSDocumentUseCase;
 
     @Autowired
-    HandlePatientAuthorizationUseCase handlePatientAuthorizationUseCase;
+    CheckAuthorizationUseCase checkAuthorizationUseCase;
 
     @Autowired
-    InvoiceModifierRuleUseCase invoiceModifierRuleUseCase;
+    CheckModifierRuleUseCase checkModifierRuleUseCase;
     @Transactional
     public InvoiceGenerationResponse generate(InvoiceRequest invoiceRequest) throws IOException, IllegalAccessException, AuthorizationException {
-        invoiceModifierRuleUseCase.check(invoiceRequest);
+        checkModifierRuleUseCase.check(invoiceRequest);
+        checkAuthorizationUseCase.check(invoiceRequest);
         List<Long> records = createInvoiceRecordUseCase.createRecord(invoiceRequest);
-
-        handlePatientAuthorizationUseCase.handle(invoiceRequest);
-
         changeSessionStatusUseCase.change(invoiceRequest.getSelectedSessionServiceLine());
-
         List<String> files = createCMSDocumentUseCase.createCMSDocument(invoiceRequest);
         return InvoiceGenerationResponse.builder()
                 .files(files)

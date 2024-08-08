@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class InvoiceModifierRuleUseCase {
+public class CheckModifierRuleUseCase {
     @Autowired
     ModifierRuleRepository modifierRuleRepository;
     ModifierRuleEntity modifierRule;
