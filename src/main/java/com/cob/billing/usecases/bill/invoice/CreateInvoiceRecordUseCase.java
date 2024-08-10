@@ -40,7 +40,7 @@ public class CreateInvoiceRecordUseCase {
     @Autowired
     ModelMapper mapper;
 
-    public List<Long> createRecord(InvoiceRequest invoiceRequest) {
+    public void createRecord(InvoiceRequest invoiceRequest) {
         List<Long> createdRecordsId = new ArrayList<>();
         Map<String, List<SelectedSessionServiceLine>> dd = invoiceRequest.getSelectedSessionServiceLine().stream()
                 .collect(Collectors.groupingBy(serviceLine -> serviceLine.getSessionId().getDoctorInfo().getDoctorNPI()));
@@ -66,7 +66,7 @@ public class CreateInvoiceRecordUseCase {
             });
             patientInvoiceDetailsRepository.saveAll(detailsEntities);
         }
-        return createdRecordsId;
+        invoiceRequest.setRecords(createdRecordsId);
     }
 
     private PatientInvoiceEntity createPatientInvoice(PatientEntity patient,
