@@ -1,12 +1,11 @@
-package com.cob.billing.usecases.bill.invoice.cms.finder;
+package com.cob.billing.usecases.bill.invoice;
 
-import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.clinical.patient.session.DoctorInfo;
 
 import java.util.List;
 
-public class ProviderModelFinder {
+public class FindProviderAssignedToServiceLinesUseCase {
     public static DoctorInfo find(List<SelectedSessionServiceLine> patientInvoiceRecords) {
         return patientInvoiceRecords.stream()
                 .findFirst()
