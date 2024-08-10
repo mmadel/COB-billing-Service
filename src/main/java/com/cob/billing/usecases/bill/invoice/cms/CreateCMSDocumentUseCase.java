@@ -10,8 +10,6 @@ import java.util.List;
 
 @Component
 public class CreateCMSDocumentUseCase {
-
-
     public List<String> createCMSDocument(InvoiceRequest invoiceRequest) throws IOException, IllegalAccessException {
         ClaimInitiator claimInitiator = CMSClaimFactory.getInstance(invoiceRequest);
         List<String> fileNames = claimInitiator.create(invoiceRequest);

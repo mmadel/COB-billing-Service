@@ -86,20 +86,7 @@ public class InvoiceController {
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "inline");
         List<String> files;
-        InvoiceGenerationResponse invoiceGenerationResponse = generateCMSInvoiceUseCase.generate(invoiceRequest);
-        PdfWriter writer = new PdfWriter(response.getOutputStream());
-        PdfDocument pdf = new PdfDocument(writer);
-        PdfMerger merger = new PdfMerger(pdf);
-        for (String file : invoiceGenerationResponse.getFiles()) {
-            File tmpFile = new File(file);
-            PdfReader source = new PdfReader(tmpFile);
-            PdfDocument sourceDoc = new PdfDocument(source);
-            merger.merge(sourceDoc, 1, sourceDoc.getNumberOfPages());
-            sourceDoc.close();
-        }
-        merger.close();
-        uploadCMSFileUseCase.persist(invoiceGenerationResponse.getFiles(), invoiceGenerationResponse.getRecords());
-        merger.close();
+        generateCMSInvoiceUseCase.generate(invoiceRequest,response);
         return new ResponseEntity(HttpStatus.OK);
     }
 
