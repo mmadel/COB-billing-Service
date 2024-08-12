@@ -1,20 +1,18 @@
 package com.cob.billing.usecases.bill.invoice.cms.creator.multiple;
 
-import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
-import com.cob.billing.usecases.bill.invoice.cms.creator.models.ClaimMultipleItems;
-import com.cob.billing.usecases.bill.invoice.cms.creator.models.MultipleItemsWrapper;
+import com.cob.billing.usecases.bill.invoice.cms.creator.CMSClaimCreator;
 import com.cob.billing.util.BeanFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
-@Component
-public class CreateMultipleCMSClaimsUseCase {
+@Service
+@Qualifier("MultipleClaimItems")
+public class CreateMultipleCMSClaimsUseCase implements CMSClaimCreator {
     public List<String> create(InvoiceRequest invoiceRequest,Boolean[] flags) throws IOException, IllegalAccessException {
         List<String> fileNames = new ArrayList<>();
         if(flags[0])

@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -29,6 +30,9 @@ public class Main {
     static File ddd = new File("C:\\cob\\documents\\billing\\form-cms1500.pdf");
 
     public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        Random random = new Random();
+        int x = random.nextInt(900) + 100;
+        System.out.println(x);
         //CreateRedirectFile.create();
 //        List<String> firstList = List.of("AU", "90");
 //        List<String> secondList = List.of("GP", "90","33");

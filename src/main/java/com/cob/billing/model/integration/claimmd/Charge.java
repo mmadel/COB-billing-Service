@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Setter
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Charge {
+public class Charge  implements Serializable {
     private String charge;
     private String charge_record_type;
     private String diag_ref;

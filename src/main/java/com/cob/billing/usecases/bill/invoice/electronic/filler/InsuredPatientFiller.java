@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 @Component
 public class InsuredPatientFiller {
     public void fill(InvoicePatientInsuredInformation invoicePatientInsuredInformation, Claim claim) {
+        claim.setAccept_assign("Y");
         claim.setIns_addr_1(invoicePatientInsuredInformation.getAddress().getFirst());
         claim.setIns_city(invoicePatientInsuredInformation.getAddress().getCity());
         claim.setIns_state(invoicePatientInsuredInformation.getAddress().getState());

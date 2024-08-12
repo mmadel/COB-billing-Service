@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Setter
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Claim {
+public class Claim implements Serializable {
     private String accept_assign;
     private String auto_accident;
     private String onset_date;
@@ -91,5 +92,88 @@ public class Claim {
     private String diag_11;
     private String diag_12;
 
-
+    @Override
+    public String toString() {
+        return "Claim{" +
+                "accept_assign='" + accept_assign + '\'' +
+                ", auto_accident='" + auto_accident + '\'' +
+                ", onset_date='" + onset_date + '\'' +
+                ", accident_date='" + accident_date + '\'' +
+                ", info_release='" + info_release + '\'' +
+                ", balance_due='" + balance_due + '\'' +
+                ", bill_addr_1='" + bill_addr_1 + '\'' +
+                ", bill_city='" + bill_city + '\'' +
+                ", bill_name='" + bill_name + '\'' +
+                ", bill_npi='" + bill_npi + '\'' +
+                ", bill_phone='" + bill_phone + '\'' +
+                ", bill_state='" + bill_state + '\'' +
+                ", bill_taxid='" + bill_taxid + '\'' +
+                ", bill_taxid_type='" + bill_taxid_type + '\'' +
+                ", bill_zip='" + bill_zip + '\'' +
+                ", charge=" + charge +
+                ", claim_form='" + claim_form + '\'' +
+                ", employment_related='" + employment_related + '\'' +
+                ", ins_addr_1='" + ins_addr_1 + '\'' +
+                ", ins_city='" + ins_city + '\'' +
+                ", ins_dob='" + ins_dob + '\'' +
+                ", ins_group='" + ins_group + '\'' +
+                ", ins_name_f='" + ins_name_f + '\'' +
+                ", ins_name_l='" + ins_name_l + '\'' +
+                ", ins_number='" + ins_number + '\'' +
+                ", ins_sex='" + ins_sex + '\'' +
+                ", ins_state='" + ins_state + '\'' +
+                ", ins_zip='" + ins_zip + '\'' +
+                ", pat_addr_1='" + pat_addr_1 + '\'' +
+                ", pat_city='" + pat_city + '\'' +
+                ", pat_dob='" + pat_dob + '\'' +
+                ", pat_name_f='" + pat_name_f + '\'' +
+                ", pat_name_l='" + pat_name_l + '\'' +
+                ", pat_rel='" + pat_rel + '\'' +
+                ", pat_sex='" + pat_sex + '\'' +
+                ", pat_state='" + pat_state + '\'' +
+                ", pat_zip='" + pat_zip + '\'' +
+                ", payerid='" + payerid + '\'' +
+                ", payer_addr_1='" + payer_addr_1 + '\'' +
+                ", payer_city='" + payer_city + '\'' +
+                ", payer_name='" + payer_name + '\'' +
+                ", payer_order='" + payer_order + '\'' +
+                ", payer_state='" + payer_state + '\'' +
+                ", payer_zip='" + payer_zip + '\'' +
+                ", pcn='" + pcn + '\'' +
+                ", prov_name_f='" + prov_name_f + '\'' +
+                ", prov_name_l='" + prov_name_l + '\'' +
+                ", prov_name_m='" + prov_name_m + '\'' +
+                ", prov_npi='" + prov_npi + '\'' +
+                ", prov_taxonomy='" + prov_taxonomy + '\'' +
+                ", ref_name_f='" + ref_name_f + '\'' +
+                ", ref_name_l='" + ref_name_l + '\'' +
+                ", ref_name_m='" + ref_name_m + '\'' +
+                ", ref_npi='" + ref_npi + '\'' +
+                ", remote_batchid='" + remote_batchid + '\'' +
+                ", remote_claimid='" + remote_claimid + '\'' +
+                ", remote_fileid='" + remote_fileid + '\'' +
+                ", total_charge='" + total_charge + '\'' +
+                ", clia_number='" + clia_number + '\'' +
+                ", facility_name='" + facility_name + '\'' +
+                ", facility_addr_1='" + facility_addr_1 + '\'' +
+                ", facility_addr_2='" + facility_addr_2 + '\'' +
+                ", facility_city='" + facility_city + '\'' +
+                ", facility_state='" + facility_state + '\'' +
+                ", facility_zip='" + facility_zip + '\'' +
+                ", facility_npi='" + facility_npi + '\'' +
+                ", facility_id='" + facility_id + '\'' +
+                ", diag_1='" + diag_1 + '\'' +
+                ", diag_2='" + diag_2 + '\'' +
+                ", diag_3='" + diag_3 + '\'' +
+                ", diag_4='" + diag_4 + '\'' +
+                ", diag_5='" + diag_5 + '\'' +
+                ", diag_6='" + diag_6 + '\'' +
+                ", diag_7='" + diag_7 + '\'' +
+                ", diag_8='" + diag_8 + '\'' +
+                ", diag_9='" + diag_9 + '\'' +
+                ", diag_10='" + diag_10 + '\'' +
+                ", diag_11='" + diag_11 + '\'' +
+                ", diag_12='" + diag_12 + '\'' +
+                '}';
+    }
 }

@@ -1,23 +1,15 @@
 package com.cob.billing.controller.bill;
 
 import com.cob.billing.exception.business.AuthorizationException;
-import com.cob.billing.model.bill.invoice.InvoiceGenerationResponse;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 import com.cob.billing.model.clinical.patient.session.filter.PatientSessionSearchCriteria;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.invoice.FindNotSubmittedSessionsByPatientUseCase;
 import com.cob.billing.usecases.bill.invoice.FindNotSubmittedSessionsGroupByPatientsUseCase;
+import com.cob.billing.usecases.bill.invoice.GenerateClaimUseCase;
 import com.cob.billing.usecases.bill.invoice.cms.DownLoadCMSUseCase;
-import com.cob.billing.usecases.bill.invoice.cms.GenerateCMSInvoiceUseCase;
 import com.cob.billing.usecases.bill.invoice.cms.UploadCMSFileUseCase;
-import com.cob.billing.usecases.bill.invoice.electronic.GenerateElectronicInvoiceUseCase;
-import com.google.gson.Gson;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfReader;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.utils.PdfMerger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,7 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -42,9 +33,7 @@ public class InvoiceController {
     @Autowired
     FindNotSubmittedSessionsByPatientUseCase findNotSubmittedSessionsByPatientUseCase;
     @Autowired
-    GenerateCMSInvoiceUseCase generateCMSInvoiceUseCase;
-    @Autowired
-    GenerateElectronicInvoiceUseCase generateElectronicInvoiceUseCase;
+    GenerateClaimUseCase generateClaimUseCase;
     @Autowired
     UploadCMSFileUseCase uploadCMSFileUseCase;
     @Autowired
@@ -85,19 +74,16 @@ public class InvoiceController {
                                  HttpServletResponse response) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, AuthorizationException {
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "inline");
-        List<String> files;
-        generateCMSInvoiceUseCase.generate(invoiceRequest,response);
+        generateClaimUseCase.generate(invoiceRequest, response);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/create/electronic")
     public ResponseEntity<Object> createElectronic(@RequestBody InvoiceRequest invoiceRequest,
-                                                   HttpServletResponse response) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+                                                   HttpServletResponse response) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, AuthorizationException, IOException {
         response.setContentType("application/json");
-        response.setHeader("Content-Disposition", "inline");
-        Gson gson = new Gson();
-        String toJson = gson.toJson(generateElectronicInvoiceUseCase.generate(invoiceRequest));
-        return new ResponseEntity<>(toJson, HttpStatus.OK);
+        generateClaimUseCase.generate(invoiceRequest, null);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(value = "/download/cms/invoice/{submissionId}")
