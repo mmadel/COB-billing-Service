@@ -4,6 +4,7 @@ package com.cob.billing.configuration;
 import com.cob.billing.model.integration.claimmd.Charge;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.forms.PdfAcroForm;
+import com.itextpdf.forms.fields.PdfFormField;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -18,10 +19,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -30,9 +28,6 @@ public class Main {
     static File ddd = new File("C:\\cob\\documents\\billing\\form-cms1500.pdf");
 
     public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        Random random = new Random();
-        int x = random.nextInt(900) + 100;
-        System.out.println(x);
         //CreateRedirectFile.create();
 //        List<String> firstList = List.of("AU", "90");
 //        List<String> secondList = List.of("GP", "90","33");
@@ -43,18 +38,16 @@ public class Main {
         //groupList();
 
 
-//        PdfReader reader = new PdfReader(ddd);
-//        PdfDocument existingPdf = new PdfDocument(reader, new PdfWriter("filled-form.pdf"));
-//
-//        PdfAcroForm cmsForm = PdfAcroForm.getAcroForm(existingPdf, true);
-//        existingPdf.removePage(2);
-//        cmsForm.flattenFields();
-//        for (Map.Entry<String, PdfFormField> entry : cmsForm.getAllFormFields().entrySet()) {
-//            entry.getValue().getFontSize();
-//            System.out.println(entry.getKey() + " " + entry.getValue().getDisplayValue());
-//        }
-//        existingPdf.close();
-//        reader.close();
+        PdfReader reader = new PdfReader(ddd);
+        PdfDocument existingPdf = new PdfDocument(reader, new PdfWriter("filled-form.pdf"));
+        PdfAcroForm cmsForm = PdfAcroForm.getAcroForm(existingPdf, true);
+       existingPdf.removePage(2);
+       cmsForm.flattenFields();
+       for (Map.Entry<String, PdfFormField> entry : cmsForm.getAllFormFields().entrySet()) {
+           System.out.println(entry.getKey() + " " + entry.getValue().getDisplayValue());
+       }
+        existingPdf.close();
+       reader.close();
 
 //        PdfDocument pdf = new PdfDocument(new PdfWriter("final.pdf"));
 //        PdfMerger merger = new PdfMerger(pdf);

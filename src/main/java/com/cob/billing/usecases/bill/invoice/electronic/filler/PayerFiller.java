@@ -22,17 +22,51 @@ public class PayerFiller {
                 claim.setAccept_assign("N");
             }
             //payer_order
-        } else {
-            claim.setPayer_name(invoiceInsuranceCompanyInformation.getName());
-            claim.setPayer_addr_1(invoiceInsuranceCompanyInformation.getAddress().getAddress() == null ? "" : invoiceInsuranceCompanyInformation.getAddress().getAddress());
-            claim.setPayer_city(invoiceInsuranceCompanyInformation.getAddress().getCity());
-            claim.setPayer_state(invoiceInsuranceCompanyInformation.getAddress().getState());
-            claim.setPayer_zip(invoiceInsuranceCompanyInformation.getAddress().getZipCode());
-            /*
-                TODO
-                get payer id in case of insurance company is external , so assigned is empty
-             */
-            //claim.setPayerid();
+            invoiceInsuranceCompanyInformation.getInsuranceType();
         }
+        fillInsuranceType(invoiceInsuranceCompanyInformation.getInsuranceType(), claim);
+    }
+
+    private void fillInsuranceType(String insuranceType, Claim claim) {
+        switch (insuranceType) {
+            case "Commercial_Insurance":
+                claim.setOther_claimfilingcode("CI");
+                break;
+            case "Preferred_Provider_Organization":
+                claim.setOther_claimfilingcode("12");
+                break;
+            case "Exclusive_Provider_Organization":
+                claim.setOther_claimfilingcode("14");
+                break;
+            case "Health_Maintenance_Organization":
+                claim.setOther_claimfilingcode("16");
+                break;
+            case "Automobile_Medical":
+                claim.setOther_claimfilingcode("AM");
+                break;
+            case "Champus":
+                claim.setOther_claimfilingcode("CH");
+                break;
+            case "Federal_Employees_Program":
+                claim.setOther_claimfilingcode("FI");
+                break;
+            case "Medicare_Part_A":
+                claim.setOther_claimfilingcode("MA");
+                break;
+            case "Medicare_Part_B":
+                claim.setOther_claimfilingcode("MB");
+                break;
+            case "Medicaid":
+                claim.setOther_claimfilingcode("MC");
+                break;
+            case "Workers_Compensation_Health_Claim":
+                claim.setOther_claimfilingcode("WC");
+                break;
+            case "Not_Known":
+                claim.setOther_claimfilingcode("ZZ");
+                break;
+
+        }
+
     }
 }

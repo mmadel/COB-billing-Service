@@ -91,6 +91,7 @@ public class Claim implements Serializable {
     private String diag_10;
     private String diag_11;
     private String diag_12;
+    private String other_claimfilingcode;
 
     @Override
     public String toString() {
