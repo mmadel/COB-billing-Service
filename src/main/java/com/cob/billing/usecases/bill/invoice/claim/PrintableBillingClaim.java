@@ -35,7 +35,7 @@ public class PrintableBillingClaim extends BillingClaim {
     }
 
     @Override
-    public void prepareClaim() throws IOException, IllegalAccessException {
+    public void createClaim() throws IOException, IllegalAccessException {
         files= cmsClaimCreator.create(invoiceRequest,flags);
     }
 

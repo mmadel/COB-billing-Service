@@ -11,12 +11,12 @@ public abstract class BillingClaim {
     public final void submit(InvoiceRequest invoiceRequest) throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         this.invoiceRequest = invoiceRequest;
         pickClaimProvider();
-        prepareClaim();
+        createClaim();
         submitClaim();
     }
 
     protected abstract void pickClaimProvider();
-    protected abstract void prepareClaim() throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException;
+    protected abstract void createClaim() throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException;
     protected abstract void submitClaim() throws IOException;
 
 }

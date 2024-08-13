@@ -2,29 +2,27 @@ package com.cob.billing.usecases.bill.invoice.claim;
 
 import com.cob.billing.model.integration.claimmd.Claim;
 import com.cob.billing.model.integration.claimmd.ClaimUploadRequest;
+import com.cob.billing.usecases.bill.invoice.MultipleItemsChecker;
 import com.cob.billing.usecases.bill.invoice.electronic.creator.ElectronicClaimCreator;
 import com.cob.billing.usecases.bill.invoice.electronic.creator.multiple.CreateElectronicMultipleClaimUseCase;
 import com.cob.billing.usecases.bill.invoice.electronic.creator.single.CreateElectronicSingleClaimUseCase;
-import com.cob.billing.usecases.bill.invoice.MultipleItemsChecker;
 import com.cob.billing.util.BeanFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.SerializationUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -35,47 +33,63 @@ public class ElectronicBillingClaim extends BillingClaim {
     private RestTemplate restTemplate;
     ElectronicClaimCreator electronicClaimCreator;
     List<Claim> claims;
+    @Value("${claim_md_api_key}")
+    private String apiKey;
+    @Value("${claim_md_submit_url}")
+    private String submitClaimURL;
+
     @Override
     public void pickClaimProvider() {
         Boolean hasMultipleItems = MultipleItemsChecker.check(invoiceRequest);
-        flags= MultipleItemsChecker.getMultipleFlags();
-        if(hasMultipleItems)
+        flags = MultipleItemsChecker.getMultipleFlags();
+        if (hasMultipleItems)
             electronicClaimCreator = BeanFactory.getBean(CreateElectronicMultipleClaimUseCase.class);
         else
             electronicClaimCreator = BeanFactory.getBean(CreateElectronicSingleClaimUseCase.class);
     }
 
     @Override
-    public void prepareClaim() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        claims = electronicClaimCreator.create(invoiceRequest,flags);
+    public void createClaim() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        claims = electronicClaimCreator.create(invoiceRequest, flags);
 
     }
 
     @Override
     public void submitClaim() throws IOException {
         //submit to Clearing House
-        Gson gson = new Gson();
-        ClaimUploadRequest claimUploadRequest = new ClaimUploadRequest();
-        claimUploadRequest.setClaim(claims);
+        ClaimUploadRequest claimUploadRequest = constructClaimRequest();
+        FileSystemResource claimResource = createClaimFile(claimUploadRequest);
+        //send(claimResource);
+        //claimResource.getFile().delete();
+
+    }
+
+    private ClaimUploadRequest constructClaimRequest() {
         Random random = new Random();
-        Integer fileID = random.nextInt(900) + 100;
-        claimUploadRequest.setFileid(fileID.toString());
+        Integer fileId = random.nextInt(900) + 100;
+        return ClaimUploadRequest.builder()
+                .claim(claims)
+                .fileid(fileId.toString())
+                .build();
+    }
+
+    private FileSystemResource createClaimFile(ClaimUploadRequest claimUploadRequest) throws IOException {
+        String fileName = "claim_" + new Date().getTime() + ".json";
+        File file = new File(fileName);
         ObjectMapper objectMapper = new ObjectMapper();
-        File file = new File("claim_upload_request.json");
         objectMapper.writeValue(file, claimUploadRequest);
+        return new FileSystemResource(file);
+    }
+
+    private void send(FileSystemResource fileResource) {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
-        FileSystemResource fileResource = new FileSystemResource(file);
         builder.part("File", fileResource);
-        builder.part("AccountKey", "16355_4HRM#uWBOVXPLZE2qINJbRqz");
+        builder.part("AccountKey", apiKey);
         MultiValueMap<String, HttpEntity<?>> multipartRequest = builder.build();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity =
-                new HttpEntity<>(multipartRequest, headers);
-        String serverUrl = "https://svc.claim.md/services/upload/";
+        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(multipartRequest, headers);
         ResponseEntity<String> response = restTemplate.exchange(
-                serverUrl, HttpMethod.POST, requestEntity, String.class);
-        System.out.println("response ");
+                submitClaimURL, HttpMethod.POST, request, String.class);
     }
 }
