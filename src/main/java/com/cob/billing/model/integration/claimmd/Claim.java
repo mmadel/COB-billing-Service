@@ -36,6 +36,7 @@ public class Claim implements Serializable {
     private String ins_country;
     private String ins_dob;
     private String ins_group;
+    private String ins_plan;
     private String ins_name_f;
     private String ins_name_l;
     private String ins_name_m;
