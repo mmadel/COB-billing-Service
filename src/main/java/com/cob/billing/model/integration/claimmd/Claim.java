@@ -113,6 +113,7 @@ public class Claim implements Serializable {
     private String auto_accident;
     private String auto_accident_state;
     private String other_accident;
+    private String narrative;
 
 
     @Override

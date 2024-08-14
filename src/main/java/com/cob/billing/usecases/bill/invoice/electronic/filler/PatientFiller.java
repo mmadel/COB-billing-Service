@@ -38,12 +38,15 @@ public class PatientFiller {
         }
         claim.setPat_sex(patientInformation.getGender().toString().charAt(0) + "");
         if (patientInformation.getPatientAdvancedInformation() != null)
-            fillAdvancedDates(patientInformation.getPatientAdvancedInformation(), claim);
+            fillAdvancedInformation(patientInformation.getPatientAdvancedInformation(), claim);
         if (patientInformation.getReferringProvider() != null)
             fillReferringProvider(patientInformation.getReferringProvider(), claim);
     }
 
-    private void fillAdvancedDates(PatientAdvancedInformation patientAdvancedInformation, Claim claim) {
+    private void fillAdvancedInformation(PatientAdvancedInformation patientAdvancedInformation, Claim claim) {
+        //Box 19
+        if (patientAdvancedInformation.getAdditionalInformation() != null)
+            claim.setNarrative(patientAdvancedInformation.getAdditionalInformation());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
         //Fix Box14
         if (patientAdvancedInformation.getPatientAdvancedDates().getFirstSymptoms() != null)
