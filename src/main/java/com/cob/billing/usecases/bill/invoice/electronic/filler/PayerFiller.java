@@ -37,6 +37,7 @@ public class PayerFiller {
         }
         fillInsuranceType(invoiceInsuranceCompanyInformation.getInsuranceType(), claim);
         fillOtherInsurance(invoiceInsuranceCompanyInformation ,claim);
+        fillInsuredData(invoiceInsuranceCompanyInformation ,claim);
     }
 
     private void fillInsuranceType(String insuranceType, Claim claim) {
@@ -82,6 +83,7 @@ public class PayerFiller {
 
     }
 
+
     private void fillOtherInsurance(InvoiceInsuranceCompanyInformation invoiceInsuranceCompanyInformation , Claim claim) throws IllegalAccessException {
         OtherPatientInsurance otherPatientInsuranceValues =otherInsuranceSelectionRules.select(invoiceInsuranceCompanyInformation.getOtherInsurances(), invoiceInsuranceCompanyInformation.getPolicyInformation()[2]);
         if(otherPatientInsuranceValues !=null && otherPatientInsuranceValues.getAssigner() !=null){
@@ -92,5 +94,10 @@ public class PayerFiller {
             claim.setOther_payer_name(otherPatientInsuranceValues.getAssigner()[1]);
             claim.setOther_payerid(otherPatientInsuranceValues.getAssigner()[0]);
         }
+    }
+    private void fillInsuredData(InvoiceInsuranceCompanyInformation invoiceInsuranceCompanyInformation , Claim claim){
+        claim.setIns_plan(invoiceInsuranceCompanyInformation.getPolicyInformation()[1]);
+        claim.setIns_group(invoiceInsuranceCompanyInformation.getPolicyInformation()[0]);
+
     }
 }
