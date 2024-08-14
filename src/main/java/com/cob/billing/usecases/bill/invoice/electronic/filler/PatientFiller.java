@@ -2,6 +2,7 @@ package com.cob.billing.usecases.bill.invoice.electronic.filler;
 
 import com.cob.billing.model.bill.invoice.tmp.InvoicePatientInformation;
 import com.cob.billing.model.clinical.patient.advanced.PatientAdvancedInformation;
+import com.cob.billing.model.clinical.referring.provider.ReferringProvider;
 import com.cob.billing.model.integration.claimmd.Claim;
 import org.springframework.stereotype.Component;
 
@@ -38,6 +39,8 @@ public class PatientFiller {
         claim.setPat_sex(patientInformation.getGender().toString().charAt(0) + "");
         if (patientInformation.getPatientAdvancedInformation() != null)
             fillAdvancedDates(patientInformation.getPatientAdvancedInformation(), claim);
+        if (patientInformation.getReferringProvider() != null)
+            fillReferringProvider(patientInformation.getReferringProvider(), claim);
     }
 
     private void fillAdvancedDates(PatientAdvancedInformation patientAdvancedInformation, Claim claim) {
@@ -67,6 +70,12 @@ public class PatientFiller {
             claim.setHosp_from_date(simpleDateFormat.format(patientAdvancedInformation.getHospitalizedStartDate()));
             claim.setHosp_thru_date(simpleDateFormat.format(patientAdvancedInformation.getHospitalizedEndDate()));
         }
+    }
 
+    private void fillReferringProvider(ReferringProvider referringProvider, Claim claim) {
+        claim.setRef_name_l(referringProvider.getLastName());
+        claim.setRef_name_f(referringProvider.getFirstName());
+        claim.setRef_npi(referringProvider.getNpi());
+        claim.setRef_id(referringProvider.getReferringProviderId());
     }
 }

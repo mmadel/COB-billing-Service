@@ -66,6 +66,7 @@ public class Claim implements Serializable {
     private String ref_name_l;
     private String ref_name_m;
     private String ref_npi;
+    private String ref_id;
     private String remote_batchid;
     private String remote_claimid;
     private String remote_fileid;
