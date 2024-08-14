@@ -11,6 +11,7 @@ public class InvoicePatientInsuredInformation {
     private String primaryId;
     private String relationToInsured;
     private String firstName;
+    private String middleName;
     private String lastName;
     private Long dateOfBirth;
     private Gender gender;

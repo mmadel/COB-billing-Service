@@ -16,12 +16,8 @@ public class InsuredPatientFiller {
         claim.setIns_zip(invoicePatientInsuredInformation.getAddress().getZipCode());
         SimpleDateFormat dobFormat = new SimpleDateFormat("MM/dd/yyyy");
         claim.setIns_dob(dobFormat.format(invoicePatientInsuredInformation.getDateOfBirth()));
-        /*
-            TODO
-            set InvoicePatientInsuredInformation Group
-         */
-        //claim.setIns_group(invoicePatientInsuredInformation.getGroup());
         claim.setIns_name_f(invoicePatientInsuredInformation.getFirstName());
+        claim.setIns_name_m(invoicePatientInsuredInformation.getMiddleName());
         claim.setIns_name_l(invoicePatientInsuredInformation.getLastName());
         claim.setIns_number(invoicePatientInsuredInformation.getPhone());
         claim.setIns_sex(invoicePatientInsuredInformation.getGender().getValue());

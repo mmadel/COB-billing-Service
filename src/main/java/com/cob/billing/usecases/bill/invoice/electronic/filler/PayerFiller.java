@@ -23,6 +23,12 @@ public class PayerFiller {
             }
             //payer_order
             invoiceInsuranceCompanyInformation.getInsuranceType();
+        }else {
+            claim.setPayer_name(invoiceInsuranceCompanyInformation.getName());
+            claim.setPayer_addr_1(invoiceInsuranceCompanyInformation.getAddress().getAddress() == null ? "" : invoiceInsuranceCompanyInformation.getAddress().getAddress());
+            claim.setPayer_city(invoiceInsuranceCompanyInformation.getAddress().getCity());
+            claim.setPayer_state(invoiceInsuranceCompanyInformation.getAddress().getState());
+            claim.setPayer_zip(invoiceInsuranceCompanyInformation.getAddress().getZipCode());
         }
         fillInsuranceType(invoiceInsuranceCompanyInformation.getInsuranceType(), claim);
     }
