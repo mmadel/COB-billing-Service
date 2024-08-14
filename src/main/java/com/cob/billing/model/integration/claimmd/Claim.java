@@ -31,11 +31,14 @@ public class Claim implements Serializable {
     private String claim_form;
     private String employment_related;
     private String ins_addr_1;
+    private String ins_addr_2;
     private String ins_city;
+    private String ins_country;
     private String ins_dob;
     private String ins_group;
     private String ins_name_f;
     private String ins_name_l;
+    private String ins_name_m;
     private String ins_number;
     private String ins_sex;
     private String ins_state;
