@@ -33,6 +33,8 @@ public class InsuredPatientFiller {
             return "18";
         if (PatientRelationValue.equals("Spouse"))
             return "01";
+        if(PatientRelationValue.equals("Parent"))
+            return "19";
         if (PatientRelationValue.equals("Other"))
             return "G8";
         return "";
