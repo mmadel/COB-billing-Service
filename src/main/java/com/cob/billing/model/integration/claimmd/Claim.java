@@ -103,6 +103,7 @@ public class Claim implements Serializable {
     private String other_ins_number;
     private String other_payer_name;
     private String other_payerid;
+    private String ins_employer;
 
     @Override
     public String toString() {

@@ -35,13 +35,13 @@ public class PayerFiller {
             claim.setPayer_state(invoiceInsuranceCompanyInformation.getAddress().getState());
             claim.setPayer_zip(invoiceInsuranceCompanyInformation.getAddress().getZipCode());
         }
-        fillInsuranceType(invoiceInsuranceCompanyInformation.getInsuranceType(), claim);
+        fillInsuranceType(invoiceInsuranceCompanyInformation, claim);
         fillOtherInsurance(invoiceInsuranceCompanyInformation ,claim);
         fillInsuredData(invoiceInsuranceCompanyInformation ,claim);
     }
 
-    private void fillInsuranceType(String insuranceType, Claim claim) {
-        switch (insuranceType) {
+    private void fillInsuranceType(InvoiceInsuranceCompanyInformation invoiceInsuranceCompanyInformation, Claim claim) {
+        switch (invoiceInsuranceCompanyInformation.getInsuranceType()) {
             case "Commercial_Insurance":
                 claim.setOther_claimfilingcode("CI");
                 break;
@@ -56,6 +56,7 @@ public class PayerFiller {
                 break;
             case "Automobile_Medical":
                 claim.setOther_claimfilingcode("AM");
+                claim.setIns_employer(invoiceInsuranceCompanyInformation.getPolicyInformation()[4]);
                 break;
             case "Champus":
                 claim.setOther_claimfilingcode("CH");
@@ -74,6 +75,7 @@ public class PayerFiller {
                 break;
             case "Workers_Compensation_Health_Claim":
                 claim.setOther_claimfilingcode("WC");
+                claim.setIns_employer(invoiceInsuranceCompanyInformation.getPolicyInformation()[4]);
                 break;
             case "Not_Known":
                 claim.setOther_claimfilingcode("ZZ");
