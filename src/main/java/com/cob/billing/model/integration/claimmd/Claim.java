@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -13,8 +12,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Claim implements Serializable {
     private String accept_assign;
-    private String auto_accident;
-    private String onset_date;
     private String accident_date;
     private String info_release;
     private String balance_due;
@@ -29,7 +26,6 @@ public class Claim implements Serializable {
     private String bill_zip;
     private List<Charge> charge;
     private String claim_form;
-    private String employment_related;
     private String ins_addr_1;
     private String ins_addr_2;
     private String ins_city;
@@ -104,6 +100,19 @@ public class Claim implements Serializable {
     private String other_payer_name;
     private String other_payerid;
     private String ins_employer;
+    private String cond_date;
+    private String lastseen_date;
+    private String onset_date;
+    private String initial_treatment_date;
+    private String nowork_from_date;
+    private String nowork_to_date;
+    private String hosp_from_date;
+    private String hosp_thru_date;
+    private String employment_related;
+    private String auto_accident;
+    private String auto_accident_state;
+    private String other_accident;
+
 
     @Override
     public String toString() {

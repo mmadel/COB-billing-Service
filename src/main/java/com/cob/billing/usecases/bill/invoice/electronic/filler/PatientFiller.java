@@ -1,6 +1,7 @@
 package com.cob.billing.usecases.bill.invoice.electronic.filler;
 
 import com.cob.billing.model.bill.invoice.tmp.InvoicePatientInformation;
+import com.cob.billing.model.clinical.patient.advanced.PatientAdvancedInformation;
 import com.cob.billing.model.integration.claimmd.Claim;
 import org.springframework.stereotype.Component;
 
@@ -35,5 +36,37 @@ public class PatientFiller {
                 break;
         }
         claim.setPat_sex(patientInformation.getGender().toString().charAt(0) + "");
+        if (patientInformation.getPatientAdvancedInformation() != null)
+            fillAdvancedDates(patientInformation.getPatientAdvancedInformation(), claim);
+    }
+
+    private void fillAdvancedDates(PatientAdvancedInformation patientAdvancedInformation, Claim claim) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        //Fix Box14
+        if (patientAdvancedInformation.getPatientAdvancedDates().getFirstSymptoms() != null)
+            claim.setCond_date(simpleDateFormat.format(patientAdvancedInformation.getPatientAdvancedDates().getFirstSymptoms()));
+        //Fill Box15
+        if (patientAdvancedInformation.getPatientAdvancedDates().getLastSeenByDoctor() != null)
+            claim.setLastseen_date(simpleDateFormat.format(patientAdvancedInformation.getPatientAdvancedDates().getLastSeenByDoctor()));
+        if (patientAdvancedInformation.getPatientAdvancedDates().getAccident() != null) {
+            claim.setOnset_date(simpleDateFormat.format(patientAdvancedInformation.getPatientAdvancedDates().getAccident()));
+            claim.setEmployment_related(patientAdvancedInformation.getPateintAdvancedCondtion().isEmployment() ? "Y" : "N");
+            claim.setAuto_accident(patientAdvancedInformation.getPateintAdvancedCondtion().isAutoAccident() ? "Y" : "N");
+            claim.setAuto_accident_state(patientAdvancedInformation.getPateintAdvancedCondtion().getState());
+            claim.setOther_accident(patientAdvancedInformation.getPateintAdvancedCondtion().isOtherAccident() ? "Y" : "N");
+        }
+        if (patientAdvancedInformation.getPatientAdvancedDates().getFirstTreatment() != null)
+            claim.setInitial_treatment_date(simpleDateFormat.format(patientAdvancedInformation.getPatientAdvancedDates().getFirstTreatment()));
+        //Fix Box16
+        if (patientAdvancedInformation.getUnableToWorkStartDate() != null && patientAdvancedInformation.getUnableToWorkEndDate() != null) {
+            claim.setNowork_from_date(simpleDateFormat.format(patientAdvancedInformation.getUnableToWorkStartDate()));
+            claim.setNowork_to_date(simpleDateFormat.format(patientAdvancedInformation.getUnableToWorkEndDate()));
+        }
+        //Fix Box18
+        if (patientAdvancedInformation.getHospitalizedStartDate() != null && patientAdvancedInformation.getHospitalizedEndDate() != null) {
+            claim.setHosp_from_date(simpleDateFormat.format(patientAdvancedInformation.getHospitalizedStartDate()));
+            claim.setHosp_thru_date(simpleDateFormat.format(patientAdvancedInformation.getHospitalizedEndDate()));
+        }
+
     }
 }
