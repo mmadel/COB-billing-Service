@@ -49,7 +49,7 @@ public class ElectronicBillingClaim extends BillingClaim {
     }
 
     @Override
-    public void createClaim() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+    public void createClaim() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException {
         claims = electronicClaimCreator.create(invoiceRequest, flags);
 
     }

@@ -59,6 +59,7 @@ public class ServiceLinesFiller {
             charges.add(charge);
             totalCharge = totalCharge + sessionServiceLine.getServiceLine().getCptCode().getCharge();
         }
+        claim.setPrior_auth(patientInvoiceRecords.stream().findFirst().get().getSessionId().getAuthorizationNumber());
         getSessionDiagnosis(patientInvoiceRecords, claim);
         claim.setCharge(charges);
         claim.setTotal_charge(totalCharge.toString());

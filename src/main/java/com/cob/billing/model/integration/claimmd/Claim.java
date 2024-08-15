@@ -116,6 +116,7 @@ public class Claim implements Serializable {
     private String narrative;
     private String frequency_code;
     private String icn_dcn_1;
+    private String prior_auth;
 
 
     @Override
