@@ -118,7 +118,6 @@ public class Claim implements Serializable {
     private String icn_dcn_1;
     private String prior_auth;
 
-
     @Override
     public String toString() {
         return "Claim{" +

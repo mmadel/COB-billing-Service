@@ -14,6 +14,7 @@ public class DoctorInfo {
     private String doctorLastName;
     private String doctorNPI;
     private LegacyID legacyID;
+    private String taxonomy;
 
     @Override
     public boolean equals(Object o) {

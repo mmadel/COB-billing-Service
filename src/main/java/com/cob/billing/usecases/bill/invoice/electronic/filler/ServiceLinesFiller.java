@@ -25,9 +25,11 @@ public class ServiceLinesFiller {
             charge.setThru_date(serviceDateFormat.format(sessionServiceLine.getSessionId().getServiceDate()));
             charge.setPlace_of_service(sessionServiceLine.getSessionId().getPlaceOfCode().split("_")[1]);
             charge.setProc_code(sessionServiceLine.getServiceLine().getCptCode().getServiceCode());
-             /*TODO
-                generate id with max 40 length
-             */
+            if (sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderIdQualifier().equals("ZZ"))
+                charge.setChg_prov_taxonomy(sessionServiceLine.getSessionId().getDoctorInfo().getTaxonomy());
+            else
+                charge.setChg_prov_id(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderId());
+            charge.setChg_prov_npi(sessionServiceLine.getSessionId().getDoctorInfo().getDoctorNPI());
             //charge.setRemote_chgid();
             if (sessionServiceLine.getServiceLine().getCptCode().getModifier().length() > 0) {
                 String[] modList = sessionServiceLine.getServiceLine().getCptCode().getModifier().split("\\.");
