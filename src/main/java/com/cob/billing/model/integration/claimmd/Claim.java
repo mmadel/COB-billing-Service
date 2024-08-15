@@ -114,6 +114,8 @@ public class Claim implements Serializable {
     private String auto_accident_state;
     private String other_accident;
     private String narrative;
+    private String frequency_code;
+    private String icn_dcn_1;
 
 
     @Override

@@ -30,6 +30,8 @@ public class CreateElectronicFieldsUseCase {
     private ServiceLinesFiller serviceLinesFiller;
     @Autowired
     FacilityFiller facilityFiller;
+    @Autowired
+    CorrectClaimFiller correctClaimFiller;
 
     public Claim create(InvoiceRequest invoiceRequest) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         return create(invoiceRequest,null,null,null);
@@ -45,6 +47,7 @@ public class CreateElectronicFieldsUseCase {
         payerFiller.fill(invoiceRequest.getInvoiceInsuranceCompanyInformation(), claim);
         //For Multiple Dates of Patient Cases
         serviceLinesFiller.fill(serviceLines == null ? invoiceRequest.getSelectedSessionServiceLine() : serviceLines, claim);
+        correctClaimFiller.fill(invoiceRequest.getCorrectClaimInformation(),claim);
         return claim;
     }
 }
