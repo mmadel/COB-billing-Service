@@ -8,7 +8,6 @@ import com.cob.billing.usecases.bill.invoice.electronic.creator.multiple.CreateE
 import com.cob.billing.usecases.bill.invoice.electronic.creator.single.CreateElectronicSingleClaimUseCase;
 import com.cob.billing.util.BeanFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,8 +34,11 @@ public class ElectronicBillingClaim extends BillingClaim {
     List<Claim> claims;
     @Value("${claim_md_api_key}")
     private String apiKey;
-    @Value("${claim_md_submit_url}")
-    private String submitClaimURL;
+    @Value("${claim_md_bas_url}")
+    private String claimMDcBaseURL;
+
+    @Value("${claim_md_submit}")
+    private String claimMDSubmit;
 
     @Override
     public void pickClaimProvider() {
@@ -82,6 +84,7 @@ public class ElectronicBillingClaim extends BillingClaim {
     }
 
     private void send(FileSystemResource fileResource) {
+        String url = this.claimMDcBaseURL + this.claimMDSubmit;
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("File", fileResource);
         builder.part("AccountKey", apiKey);
@@ -90,6 +93,6 @@ public class ElectronicBillingClaim extends BillingClaim {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(multipartRequest, headers);
         ResponseEntity<String> response = restTemplate.exchange(
-                submitClaimURL, HttpMethod.POST, request, String.class);
+                url, HttpMethod.POST, request, String.class);
     }
 }
