@@ -117,6 +117,7 @@ public class Claim implements Serializable {
     private String frequency_code;
     private String icn_dcn_1;
     private String prior_auth;
+    private Long sessionId;
 
     @Override
     public String toString() {

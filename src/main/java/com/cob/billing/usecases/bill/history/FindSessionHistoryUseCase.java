@@ -45,26 +45,4 @@ public class FindSessionHistoryUseCase {
                 .records(result)
                 .build();
     }
-
-    private List<ServiceLine> mapPatientSessionServiceLine(List<PatientInvoiceDetailsEntity> detailsEntities) {
-        List<ServiceLine> serviceLines = new ArrayList<>();
-        detailsEntities.forEach(patientInvoiceDetails -> {
-            PatientSessionServiceLineEntity serviceLine = patientInvoiceDetails.getServiceLine();
-            ServiceLine line = new ServiceLine();
-            line.setType(serviceLine.getType());
-            line.setCptCode(serviceLine.getCptCode());
-            line.setDiagnoses(serviceLine.getDiagnoses());
-            serviceLines.add(line);
-        });
-        return serviceLines;
-    }
-
-    private Patient mapPatient(PatientEntity entity) {
-        Patient patient = new Patient();
-        patient.setId(entity.getId());
-        patient.setBirthDate(entity.getBirthDate());
-        patient.setFirstName(entity.getFirstName());
-        patient.setLastName(entity.getLastName());
-        return patient;
-    }
 }

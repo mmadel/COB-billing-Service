@@ -1,4 +1,4 @@
-package com.cob.billing.model.integration.claimmd.response.request;
+package com.cob.billing.model.integration.claimmd;
 
 import lombok.Getter;
 import lombok.Setter;

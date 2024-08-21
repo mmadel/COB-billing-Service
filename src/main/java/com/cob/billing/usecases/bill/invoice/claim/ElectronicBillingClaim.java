@@ -1,7 +1,9 @@
 package com.cob.billing.usecases.bill.invoice.claim;
 
 import com.cob.billing.model.integration.claimmd.Claim;
-import com.cob.billing.model.integration.claimmd.ClaimUploadRequest;
+import com.cob.billing.model.integration.claimmd.submit.SubmitRequest;
+import com.cob.billing.model.integration.claimmd.submit.SubmitResponse;
+import com.cob.billing.usecases.bill.invoice.CreateSessionClaimResponseUseCase;
 import com.cob.billing.usecases.bill.invoice.MultipleItemsChecker;
 import com.cob.billing.usecases.bill.invoice.electronic.creator.ElectronicClaimCreator;
 import com.cob.billing.usecases.bill.invoice.electronic.creator.multiple.CreateElectronicMultipleClaimUseCase;
@@ -39,6 +41,8 @@ public class ElectronicBillingClaim extends BillingClaim {
 
     @Value("${claim_md_submit}")
     private String claimMDSubmit;
+    @Autowired
+    CreateSessionClaimResponseUseCase createSessionClaimResponseUseCase;
 
     @Override
     public void pickClaimProvider() {
@@ -59,27 +63,27 @@ public class ElectronicBillingClaim extends BillingClaim {
     @Override
     public void submitClaim() throws IOException {
         //submit to Clearing House
-        ClaimUploadRequest claimUploadRequest = constructClaimRequest();
-        FileSystemResource claimResource = createClaimFile(claimUploadRequest);
-        //send(claimResource);
+        SubmitRequest submitRequest = constructClaimRequest();
+        FileSystemResource claimResource = createClaimFile(submitRequest);
+        send(claimResource);
         //claimResource.getFile().delete();
 
     }
 
-    private ClaimUploadRequest constructClaimRequest() {
+    private SubmitRequest constructClaimRequest() {
         Random random = new Random();
         Integer fileId = random.nextInt(900) + 100;
-        return ClaimUploadRequest.builder()
+        return SubmitRequest.builder()
                 .claim(claims)
                 .fileid(fileId.toString())
                 .build();
     }
 
-    private FileSystemResource createClaimFile(ClaimUploadRequest claimUploadRequest) throws IOException {
+    private FileSystemResource createClaimFile(SubmitRequest submitRequest) throws IOException {
         String fileName = "claim_" + new Date().getTime() + ".json";
         File file = new File(fileName);
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(file, claimUploadRequest);
+        objectMapper.writeValue(file, submitRequest);
         return new FileSystemResource(file);
     }
 
@@ -92,7 +96,9 @@ public class ElectronicBillingClaim extends BillingClaim {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(multipartRequest, headers);
-        ResponseEntity<String> response = restTemplate.exchange(
-                url, HttpMethod.POST, request, String.class);
+        ResponseEntity<SubmitResponse> response = restTemplate.exchange(
+                url, HttpMethod.POST, request, SubmitResponse.class);
+        SubmitResponse submitResponse = response.getBody();
+        createSessionClaimResponseUseCase.create(submitResponse);
     }
 }

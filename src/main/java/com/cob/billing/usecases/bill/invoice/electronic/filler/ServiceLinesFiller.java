@@ -60,6 +60,7 @@ public class ServiceLinesFiller {
             charge.setUnits(sessionServiceLine.getServiceLine().getCptCode().getUnit().toString());
             charges.add(charge);
             totalCharge = totalCharge + sessionServiceLine.getServiceLine().getCptCode().getCharge();
+            claim.setRemote_claimid(sessionServiceLine.getSessionId().getId().toString());
         }
         claim.setPrior_auth(patientInvoiceRecords.stream().findFirst().get().getSessionId().getAuthorizationNumber());
         getSessionDiagnosis(patientInvoiceRecords, claim);

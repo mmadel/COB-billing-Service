@@ -21,16 +21,16 @@ public class CreateElectronicDatesUseCase {
 
     public List<Claim> create(InvoiceRequest invoiceRequest) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         List<Claim> claims = new ArrayList<>();
-        for (Map.Entry<String, List<SelectedSessionServiceLine>> entry : getDates(invoiceRequest).entrySet()) {
+        for (Map.Entry<Long, List<SelectedSessionServiceLine>> entry : getDates(invoiceRequest).entrySet()) {
             claims.add(createElectronicFieldsUseCase.create(invoiceRequest,null,null,entry.getValue()));
         }
         return claims;
     }
 
-    private Map<String, List<SelectedSessionServiceLine>> getDates(InvoiceRequest invoiceRequest){
+    private Map<Long, List<SelectedSessionServiceLine>> getDates(InvoiceRequest invoiceRequest){
         return
                 invoiceRequest.getSelectedSessionServiceLine().stream()
-                        .collect(Collectors.groupingBy(patientInvoice -> patientInvoice.getSessionId().getCaseTitle()));
+                        .collect(Collectors.groupingBy(patientInvoice -> patientInvoice.getSessionId().getServiceDate()));
     }
 
     private boolean isDatePerClaim(InvoiceRequestConfiguration invoiceRequestConfiguration) {
