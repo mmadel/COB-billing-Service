@@ -34,8 +34,8 @@ public class GetClaimsHistoryUseCase {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(multipartRequest, headers);
-        StatusUpdateResponse responseRequest = restTemplate.exchange(
+        StatusUpdateResponse response = restTemplate.exchange(
                 url, HttpMethod.POST, request, StatusUpdateResponse.class).getBody();
-        return responseRequest;
+        return response;
     }
 }

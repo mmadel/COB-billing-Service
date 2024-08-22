@@ -5,6 +5,7 @@ import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.enums.SessionAction;
 import com.cob.billing.enums.SubmissionStatus;
+import com.cob.billing.enums.SubmissionType;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceInsuranceCompanyInformation;
 import com.cob.billing.model.clinical.patient.CaseDiagnosis;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
@@ -60,6 +61,10 @@ public class PatientInvoiceEntity {
     @Column(name = "submission_status")
     private SubmissionStatus submissionStatus;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "submission_type")
+    private SubmissionType submissionType;
+    
     @Column(name = "document", length = 100000)
     private byte[] cmsDocument;
 

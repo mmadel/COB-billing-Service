@@ -6,6 +6,7 @@ import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.enums.SubmissionStatus;
+import com.cob.billing.enums.SubmissionType;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceInsuranceCompanyInformation;
 import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
@@ -48,7 +49,10 @@ public class CreateInvoiceRecordUseCase {
         //create multiple invoice submission in case of sessions with diff provider
         if (dd.size() > 1) {
             for (String npi : dd.keySet()) {
-                PatientInvoiceEntity createdPatientInvoice = createPatientInvoice(patient, invoiceRequest.getInvoiceRequestConfiguration(), invoiceRequest.getInvoiceInsuranceCompanyInformation());
+                PatientInvoiceEntity createdPatientInvoice = createPatientInvoice(patient,
+                        invoiceRequest.getInvoiceRequestConfiguration(),
+                        invoiceRequest.getInvoiceInsuranceCompanyInformation(),
+                        invoiceRequest.getSubmissionType());
                 createdRecordsId.add(createdPatientInvoice.getId());
                 List<SelectedSessionServiceLine> serviceLines = dd.get(npi);
                 List<PatientInvoiceDetailsEntity> detailsEntities = new ArrayList<>();
@@ -58,7 +62,10 @@ public class CreateInvoiceRecordUseCase {
                 patientInvoiceDetailsRepository.saveAll(detailsEntities);
             }
         } else {
-            PatientInvoiceEntity createdPatientInvoice = createPatientInvoice(patient, invoiceRequest.getInvoiceRequestConfiguration(), invoiceRequest.getInvoiceInsuranceCompanyInformation());
+            PatientInvoiceEntity createdPatientInvoice = createPatientInvoice(patient
+                    , invoiceRequest.getInvoiceRequestConfiguration()
+                    , invoiceRequest.getInvoiceInsuranceCompanyInformation()
+                    , invoiceRequest.getSubmissionType());
             createdRecordsId.add(createdPatientInvoice.getId());
             List<PatientInvoiceDetailsEntity> detailsEntities = new ArrayList<>();
             invoiceRequest.getSelectedSessionServiceLine().forEach(serviceLine -> {
@@ -71,7 +78,8 @@ public class CreateInvoiceRecordUseCase {
 
     private PatientInvoiceEntity createPatientInvoice(PatientEntity patient,
                                                       InvoiceRequestConfiguration invoiceRequestConfiguration,
-                                                      InvoiceInsuranceCompanyInformation invoiceInsuranceCompanyInformation) {
+                                                      InvoiceInsuranceCompanyInformation invoiceInsuranceCompanyInformation,
+                                                      SubmissionType submissionType) {
         PatientInvoiceEntity patientInvoice = new PatientInvoiceEntity();
         patientInvoice.setPatient(patient);
         patientInvoice.setDelayedReason(invoiceRequestConfiguration.getDelayedReason());
@@ -81,6 +89,7 @@ public class CreateInvoiceRecordUseCase {
         String submissionId = String.format("%04d", rand.nextInt(10000));
         patientInvoice.setSubmissionId(Long.parseLong(submissionId));
         patientInvoice.setSubmissionStatus(SubmissionStatus.Success);
+        patientInvoice.setSubmissionType(submissionType);
         return patientInvoiceRepository.save(patientInvoice);
     }
 
