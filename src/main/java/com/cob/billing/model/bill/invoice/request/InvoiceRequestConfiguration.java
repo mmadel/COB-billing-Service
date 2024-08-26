@@ -1,4 +1,4 @@
-package com.cob.billing.model.bill.invoice.tmp;
+package com.cob.billing.model.bill.invoice.request;
 
 import lombok.Getter;
 import lombok.Setter;

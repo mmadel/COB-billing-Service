@@ -51,7 +51,7 @@ public abstract class ResponseHandler {
     }
 
     public static ResponseEntity<Object> generateResponse(String message, HttpStatus status,
-                                                          Object responseObj, InvoicePatientSessionResponse response) {
+                                                          Object responseObj, PatientSessionHistoryResponse response) {
         Map<String, Object> map = populateResponseMap(message, status,
                 response.getNumber_of_records(), response.getNumber_of_matching_records());
         map.put("records", response.getRecords());

@@ -1,6 +1,6 @@
 package com.cob.billing.usecases.bill.invoice.cms.creator;
 
-import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
+import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
 
 import java.io.IOException;
 import java.util.List;

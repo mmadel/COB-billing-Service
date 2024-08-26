@@ -35,11 +35,10 @@ public class MapSessionHistoryUseCase {
                             .collect(Collectors.groupingBy(patientInvoiceDetails -> patientInvoiceDetails.getPatientSession().getDoctorInfo().getDoctorNPI()));
                     //Create Submission History Record
                     SessionHistory sessionHistory = new SessionHistory();
-                    sessionHistory.setSubmissionType(SubmissionType.Print);
+                    sessionHistory.setSubmissionType(patientInvoice.getSubmissionType());
                     sessionHistory.setSubmitDate(patientInvoice.getCreatedAt());
                     sessionHistory.setSubmissionId(patientInvoice.getSubmissionId());
                     sessionHistory.setInsuranceCompany(patientInvoice.getInsuranceCompany().getName());
-                    sessionHistory.setSubmissionStatus(SubmissionStatus.Success);
                     sessionHistory.setClient(mapPatient(patientInvoice.getPatient()));
                     List<SessionHistoryCount> counts = new ArrayList<>();
                     // Create Session Counter

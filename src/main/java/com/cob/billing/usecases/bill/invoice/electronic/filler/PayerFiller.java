@@ -1,6 +1,6 @@
 package com.cob.billing.usecases.bill.invoice.electronic.filler;
 
-import com.cob.billing.model.bill.invoice.tmp.InvoiceInsuranceCompanyInformation;
+import com.cob.billing.model.bill.invoice.request.InvoiceInsuranceCompanyInformation;
 import com.cob.billing.model.bill.invoice.tmp.OtherPatientInsurance;
 import com.cob.billing.model.integration.claimmd.Claim;
 import com.cob.billing.usecases.bill.invoice.cms.rules.OtherInsuranceSelectionRules;

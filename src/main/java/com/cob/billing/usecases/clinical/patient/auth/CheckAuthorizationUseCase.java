@@ -5,7 +5,7 @@ import com.cob.billing.exception.business.AuthorizationException;
 import com.cob.billing.model.bill.auth.SubmissionSession;
 import com.cob.billing.model.bill.auth.util.AuthorizationMapper;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
-import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
+import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.repositories.clinical.PatientAuthorizationRepository;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;

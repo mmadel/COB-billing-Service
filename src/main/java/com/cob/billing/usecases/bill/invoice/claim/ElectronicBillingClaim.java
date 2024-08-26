@@ -3,7 +3,7 @@ package com.cob.billing.usecases.bill.invoice.claim;
 import com.cob.billing.model.integration.claimmd.Claim;
 import com.cob.billing.model.integration.claimmd.submit.SubmitRequest;
 import com.cob.billing.model.integration.claimmd.submit.SubmitResponse;
-import com.cob.billing.usecases.bill.invoice.CreateSessionClaimResponseUseCase;
+import com.cob.billing.usecases.bill.invoice.CreateInvoiceResponseUseCase;
 import com.cob.billing.usecases.bill.invoice.MultipleItemsChecker;
 import com.cob.billing.usecases.bill.invoice.electronic.creator.ElectronicClaimCreator;
 import com.cob.billing.usecases.bill.invoice.electronic.creator.multiple.CreateElectronicMultipleClaimUseCase;
@@ -41,8 +41,9 @@ public class ElectronicBillingClaim extends BillingClaim {
 
     @Value("${claim_md_submit}")
     private String claimMDSubmit;
+
     @Autowired
-    CreateSessionClaimResponseUseCase createSessionClaimResponseUseCase;
+    private CreateInvoiceResponseUseCase createInvoiceResponseUseCase;
 
     @Override
     public void pickClaimProvider() {
@@ -99,6 +100,6 @@ public class ElectronicBillingClaim extends BillingClaim {
         ResponseEntity<SubmitResponse> response = restTemplate.exchange(
                 url, HttpMethod.POST, request, SubmitResponse.class);
         SubmitResponse submitResponse = response.getBody();
-        createSessionClaimResponseUseCase.create(submitResponse);
+        createInvoiceResponseUseCase.create(invoiceResponse, submitResponse);
     }
 }

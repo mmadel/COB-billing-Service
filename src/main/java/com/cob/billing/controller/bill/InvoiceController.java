@@ -1,7 +1,7 @@
 package com.cob.billing.controller.bill;
 
 import com.cob.billing.exception.business.AuthorizationException;
-import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
+import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
 import com.cob.billing.model.clinical.patient.session.filter.PatientSessionSearchCriteria;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.invoice.FindNotSubmittedSessionsByPatientUseCase;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 import java.util.zip.DataFormatException;
 
 @CrossOrigin
@@ -74,7 +73,8 @@ public class InvoiceController {
                                  HttpServletResponse response) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, AuthorizationException {
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "inline");
-        generateClaimUseCase.generate(invoiceRequest, response);
+        invoiceRequest.setResponse(response);
+        generateClaimUseCase.generate(invoiceRequest);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -82,7 +82,7 @@ public class InvoiceController {
     public ResponseEntity<Object> createElectronic(@RequestBody InvoiceRequest invoiceRequest,
                                                    HttpServletResponse response) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, AuthorizationException, IOException {
         response.setContentType("application/json");
-        generateClaimUseCase.generate(invoiceRequest, null);
+        generateClaimUseCase.generate(invoiceRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

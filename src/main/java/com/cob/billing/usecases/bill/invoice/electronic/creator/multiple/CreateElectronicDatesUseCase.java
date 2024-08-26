@@ -1,8 +1,8 @@
 package com.cob.billing.usecases.bill.invoice.electronic.creator.multiple;
 
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
-import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
-import com.cob.billing.model.bill.invoice.tmp.InvoiceRequestConfiguration;
+import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
+import com.cob.billing.model.bill.invoice.request.InvoiceRequestConfiguration;
 import com.cob.billing.model.integration.claimmd.Claim;
 import com.cob.billing.usecases.bill.invoice.electronic.creator.CreateElectronicFieldsUseCase;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,6 @@
 package com.cob.billing.usecases.bill.invoice.cms;
 
-import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
-import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;

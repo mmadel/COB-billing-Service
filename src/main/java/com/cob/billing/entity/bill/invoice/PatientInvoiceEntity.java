@@ -1,13 +1,9 @@
 package com.cob.billing.entity.bill.invoice;
 
 import com.cob.billing.entity.clinical.patient.PatientEntity;
-import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
-import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
-import com.cob.billing.enums.SessionAction;
 import com.cob.billing.enums.SubmissionStatus;
 import com.cob.billing.enums.SubmissionType;
-import com.cob.billing.model.bill.invoice.tmp.InvoiceInsuranceCompanyInformation;
-import com.cob.billing.model.clinical.patient.CaseDiagnosis;
+import com.cob.billing.model.bill.invoice.request.InvoiceInsuranceCompanyInformation;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
@@ -56,10 +52,6 @@ public class PatientInvoiceEntity {
 
     @Column(name = "submission_id")
     private Long submissionId;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "submission_status")
-    private SubmissionStatus submissionStatus;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "submission_type")

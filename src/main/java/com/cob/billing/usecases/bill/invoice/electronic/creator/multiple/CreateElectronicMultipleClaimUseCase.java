@@ -1,6 +1,6 @@
 package com.cob.billing.usecases.bill.invoice.electronic.creator.multiple;
 
-import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
+import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
 import com.cob.billing.model.integration.claimmd.Claim;
 import com.cob.billing.usecases.bill.invoice.electronic.creator.ElectronicClaimCreator;
 import com.cob.billing.util.BeanFactory;

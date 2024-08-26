@@ -1,13 +1,12 @@
 package com.cob.billing.usecases.bill.invoice.electronic.filler;
 
-import com.cob.billing.model.bill.invoice.tmp.InvoicePatientInformation;
+import com.cob.billing.model.bill.invoice.request.InvoicePatientInformation;
 import com.cob.billing.model.clinical.patient.advanced.PatientAdvancedInformation;
 import com.cob.billing.model.clinical.referring.provider.ReferringProvider;
 import com.cob.billing.model.integration.claimmd.Claim;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @Component
 public class PatientFiller {

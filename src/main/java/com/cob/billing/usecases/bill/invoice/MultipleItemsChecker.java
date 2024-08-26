@@ -1,6 +1,6 @@
 package com.cob.billing.usecases.bill.invoice;
 
-import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
+import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;

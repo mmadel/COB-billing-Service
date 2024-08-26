@@ -1,13 +1,13 @@
 package com.cob.billing.usecases.bill.invoice.cms.filler;
 
 import com.cob.billing.model.bill.cms.CMSFields;
+import com.cob.billing.model.bill.invoice.request.*;
 import com.cob.billing.model.bill.invoice.tmp.*;
 import com.cob.billing.model.clinical.patient.advanced.PatientAdvancedDates;
 import com.cob.billing.usecases.bill.invoice.cms.rules.OtherInsuranceSelectionRules;
 import com.cob.billing.util.DateConstructor;
 import com.itextpdf.forms.PdfAcroForm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component()

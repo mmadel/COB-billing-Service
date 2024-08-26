@@ -1,6 +1,6 @@
 package com.cob.billing.usecases.bill.invoice.cms.creator.multiple;
 
-import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
+import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
 import com.cob.billing.usecases.bill.invoice.cms.creator.CMSClaimCreator;
 import com.cob.billing.util.BeanFactory;
 import org.springframework.beans.factory.annotation.Qualifier;

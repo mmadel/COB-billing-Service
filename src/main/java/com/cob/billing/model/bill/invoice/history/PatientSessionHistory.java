@@ -1,4 +1,4 @@
-package com.cob.billing.model.bill.invoice.tmp;
+package com.cob.billing.model.bill.invoice.history;
 
 import com.cob.billing.model.clinical.patient.session.PatientSession;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class InvoiceResponse {
+public class PatientSessionHistory {
     private Long patientId;
     private String patientName;
     private List<PatientSession> patientSession;

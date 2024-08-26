@@ -1,4 +1,4 @@
-package com.cob.billing.model.bill.invoice.tmp;
+package com.cob.billing.model.bill.invoice.request;
 
 import com.cob.billing.enums.Gender;
 import com.cob.billing.enums.authorization.AuthorizationWatching;

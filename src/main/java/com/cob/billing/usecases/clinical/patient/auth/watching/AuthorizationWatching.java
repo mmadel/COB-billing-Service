@@ -3,7 +3,7 @@ package com.cob.billing.usecases.clinical.patient.auth.watching;
 import com.cob.billing.exception.business.AuthorizationException;
 import com.cob.billing.model.bill.auth.SubmissionSession;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
-import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
+import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

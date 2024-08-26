@@ -1,7 +1,7 @@
 package com.cob.billing.usecases.bill.invoice;
 
 import com.cob.billing.entity.bill.modifier.rule.ModifierRuleEntity;
-import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
+import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
 import com.cob.billing.model.clinical.patient.CPTCode;
 import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.repositories.bill.ModifierRuleRepository;

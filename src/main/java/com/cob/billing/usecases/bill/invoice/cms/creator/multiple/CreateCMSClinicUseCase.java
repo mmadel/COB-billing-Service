@@ -2,7 +2,7 @@ package com.cob.billing.usecases.bill.invoice.cms.creator.multiple;
 
 import com.cob.billing.model.admin.clinic.Clinic;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
-import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
+import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
 import com.cob.billing.usecases.bill.invoice.cms.CreateCMSPdfDocumentResourceUseCase;
 import com.cob.billing.usecases.bill.invoice.cms.ServiceLineExceedChunkChecker;
 import com.cob.billing.usecases.bill.invoice.cms.filler.LocationCMSDocumentFiller;
@@ -10,7 +10,6 @@ import com.cob.billing.usecases.bill.invoice.cms.filler.NotRepeatableCMSDocument
 import com.cob.billing.usecases.bill.invoice.cms.filler.PhysicianCMSDocumentFiller;
 import com.cob.billing.usecases.bill.invoice.cms.filler.ServiceLineCMSDocumentFiller;
 import com.cob.billing.usecases.bill.invoice.FindProviderAssignedToServiceLinesUseCase;
-import com.cob.billing.usecases.bill.invoice.cms.creator.models.MultipleItemsWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

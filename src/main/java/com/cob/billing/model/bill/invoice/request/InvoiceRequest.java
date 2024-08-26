@@ -1,4 +1,4 @@
-package com.cob.billing.model.bill.invoice.tmp;
+package com.cob.billing.model.bill.invoice.request;
 
 import com.cob.billing.enums.SubmissionType;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;

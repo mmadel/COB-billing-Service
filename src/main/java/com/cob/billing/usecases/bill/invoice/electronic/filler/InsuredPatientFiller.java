@@ -1,6 +1,6 @@
 package com.cob.billing.usecases.bill.invoice.electronic.filler;
 
-import com.cob.billing.model.bill.invoice.tmp.InvoicePatientInsuredInformation;
+import com.cob.billing.model.bill.invoice.request.InvoicePatientInsuredInformation;
 import com.cob.billing.model.integration.claimmd.Claim;
 import org.springframework.stereotype.Component;
 

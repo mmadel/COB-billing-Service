@@ -1,4 +1,4 @@
-package com.cob.billing.model.bill.invoice.tmp.auth;
+package com.cob.billing.model.bill.invoice.auth;
 
 import lombok.Getter;
 import lombok.Setter;

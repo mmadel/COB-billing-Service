@@ -4,6 +4,7 @@ import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.model.integration.claimmd.Charge;
 import com.cob.billing.model.integration.claimmd.Claim;
+import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
@@ -11,6 +12,8 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class ServiceLinesFiller {
     public void fill(List<SelectedSessionServiceLine> patientInvoiceRecords, Claim claim) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
@@ -60,13 +63,19 @@ public class ServiceLinesFiller {
             charge.setUnits(sessionServiceLine.getServiceLine().getCptCode().getUnit().toString());
             charges.add(charge);
             totalCharge = totalCharge + sessionServiceLine.getServiceLine().getCptCode().getCharge();
-            claim.setRemote_claimid(sessionServiceLine.getSessionId().getId().toString());
+
         }
+        claim.setRemote_claimid(patientInvoiceRecords.stream()
+                .map(serviceLine -> serviceLine.getServiceLine().getId())
+                        .collect(Collectors.toList())
+                        .stream().map(String::valueOf)
+                .collect(Collectors.joining(",")));
         claim.setPrior_auth(patientInvoiceRecords.stream().findFirst().get().getSessionId().getAuthorizationNumber());
         getSessionDiagnosis(patientInvoiceRecords, claim);
         claim.setCharge(charges);
         claim.setTotal_charge(totalCharge.toString());
     }
+
     private void getSessionDiagnosis(List<SelectedSessionServiceLine> selectedSessionServiceLines, Claim claim) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         List<PatientSession> sessions = new ArrayList<>();
         for (SelectedSessionServiceLine sessionServiceLine : selectedSessionServiceLines) {
@@ -80,6 +89,7 @@ public class ServiceLinesFiller {
         }
         fillDiagnosis(sessionDiagnosis, claim);
     }
+
     private void fillDiagnosis(List<String> sessionDiagnosis, Claim claim) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         int counter = 1;
         for (String diago : sessionDiagnosis) {
@@ -88,6 +98,7 @@ public class ServiceLinesFiller {
             counter++;
         }
     }
+
     private boolean containsSession(List<PatientSession> list, Long id) {
         return list.stream().anyMatch(p -> p.getId().equals(id));
     }

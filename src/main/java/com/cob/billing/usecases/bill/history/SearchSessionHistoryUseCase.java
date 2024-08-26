@@ -28,8 +28,7 @@ public class SearchSessionHistoryUseCase {
                 , sessionHistoryCriteria.getDosStart() != null ? sessionHistoryCriteria.getDosStart() : null
                 , sessionHistoryCriteria.getDosEnd() != null ? sessionHistoryCriteria.getDosEnd() : null
                 , sessionHistoryCriteria.getSubmitStart() != null ? sessionHistoryCriteria.getSubmitStart() : null
-                , sessionHistoryCriteria.getSubmitEnd() != null ? sessionHistoryCriteria.getSubmitEnd() : null
-                , sessionHistoryCriteria.getSelectedStatus() != null ? sessionHistoryCriteria.getSelectedStatus() : null);
+                , sessionHistoryCriteria.getSubmitEnd() != null ? sessionHistoryCriteria.getSubmitEnd() : null);
         return constructSessionHistoryResponse(offset, limit, invoiceEntities);
     }
 

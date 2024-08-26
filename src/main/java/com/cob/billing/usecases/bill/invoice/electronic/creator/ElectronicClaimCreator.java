@@ -1,6 +1,6 @@
 package com.cob.billing.usecases.bill.invoice.electronic.creator;
 
-import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
+import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
 import com.cob.billing.model.integration.claimmd.Claim;
 
 import java.io.IOException;

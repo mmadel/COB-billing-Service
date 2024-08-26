@@ -1,10 +1,9 @@
 package com.cob.billing.usecases.bill.invoice.cms.creator.multiple;
 
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
-import com.cob.billing.model.bill.invoice.tmp.InvoiceRequest;
+import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
 import com.cob.billing.usecases.bill.invoice.cms.ServiceLineExceedChunkChecker;
 import com.cob.billing.usecases.bill.invoice.cms.creator.CreateCMSBoxesUseCase;
-import com.cob.billing.usecases.bill.invoice.cms.creator.models.MultipleItemsWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
