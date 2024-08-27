@@ -8,7 +8,7 @@ import com.cob.billing.usecases.bill.invoice.FindNotSubmittedSessionsByPatientUs
 import com.cob.billing.usecases.bill.invoice.FindNotSubmittedSessionsGroupByPatientsUseCase;
 import com.cob.billing.usecases.bill.invoice.GenerateClaimUseCase;
 import com.cob.billing.usecases.bill.invoice.cms.DownLoadCMSUseCase;
-import com.cob.billing.usecases.bill.invoice.cms.UploadCMSFileUseCase;
+import com.cob.billing.usecases.bill.invoice.cms.PersistCMSFileUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,7 +34,7 @@ public class InvoiceController {
     @Autowired
     GenerateClaimUseCase generateClaimUseCase;
     @Autowired
-    UploadCMSFileUseCase uploadCMSFileUseCase;
+    PersistCMSFileUseCase persistCMSFileUseCase;
     @Autowired
     DownLoadCMSUseCase downLoadCMSUseCase;
 

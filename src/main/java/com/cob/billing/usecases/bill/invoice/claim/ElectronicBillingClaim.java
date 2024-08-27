@@ -3,6 +3,7 @@ package com.cob.billing.usecases.bill.invoice.claim;
 import com.cob.billing.model.integration.claimmd.Claim;
 import com.cob.billing.model.integration.claimmd.submit.SubmitRequest;
 import com.cob.billing.model.integration.claimmd.submit.SubmitResponse;
+import com.cob.billing.usecases.bill.invoice.CreateCMSFileUseCase;
 import com.cob.billing.usecases.bill.invoice.CreateInvoiceResponseUseCase;
 import com.cob.billing.usecases.bill.invoice.MultipleItemsChecker;
 import com.cob.billing.usecases.bill.invoice.electronic.creator.ElectronicClaimCreator;
@@ -44,6 +45,8 @@ public class ElectronicBillingClaim extends BillingClaim {
 
     @Autowired
     private CreateInvoiceResponseUseCase createInvoiceResponseUseCase;
+    @Autowired
+    CreateCMSFileUseCase createCMSFileUseCase;
 
     @Override
     public void pickClaimProvider() {
@@ -62,7 +65,7 @@ public class ElectronicBillingClaim extends BillingClaim {
     }
 
     @Override
-    public void submitClaim() throws IOException {
+    public void submitClaim() throws IOException, IllegalAccessException {
         //submit to Clearing House
         SubmitRequest submitRequest = constructClaimRequest();
         FileSystemResource claimResource = createClaimFile(submitRequest);
@@ -88,7 +91,7 @@ public class ElectronicBillingClaim extends BillingClaim {
         return new FileSystemResource(file);
     }
 
-    private void send(FileSystemResource fileResource) {
+    private void send(FileSystemResource fileResource) throws IOException, IllegalAccessException {
         String url = this.claimMDcBaseURL + this.claimMDSubmit;
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("File", fileResource);
@@ -101,5 +104,6 @@ public class ElectronicBillingClaim extends BillingClaim {
                 url, HttpMethod.POST, request, SubmitResponse.class);
         SubmitResponse submitResponse = response.getBody();
         createInvoiceResponseUseCase.create(invoiceResponse, submitResponse);
+        createCMSFileUseCase.create(invoiceRequest);
     }
 }

@@ -25,15 +25,17 @@ public class GenerateClaimUseCase {
     private ChangeSessionStatusUseCase changeSessionStatusUseCase;
     @Autowired
     private CreatePatientClaimUseCase createPatientClaimUseCase;
-
+    @Autowired
+    CreateCMSFileUseCase createCMSFileUseCase;
     @Transactional
     public void generate(InvoiceRequest invoiceRequest) throws IOException, IllegalAccessException, AuthorizationException, InvocationTargetException, NoSuchMethodException {
         checkModifierRuleUseCase.check(invoiceRequest);
         checkAuthorizationUseCase.check(invoiceRequest);
-        createInvoiceRecordUseCase.createRecord(invoiceRequest);
-        changeSessionStatusUseCase.change(invoiceRequest.getSelectedSessionServiceLine());
         BillingClaim billingClaim = ClaimCreator.getInstance(invoiceRequest.getSubmissionType());
         billingClaim.submit(invoiceRequest);
+        createInvoiceRecordUseCase.createRecord(invoiceRequest);
+        changeSessionStatusUseCase.change(invoiceRequest.getSelectedSessionServiceLine());
         createPatientClaimUseCase.create(billingClaim.getInvoiceResponse());
+        createCMSFileUseCase.upload(invoiceRequest);
     }
 }

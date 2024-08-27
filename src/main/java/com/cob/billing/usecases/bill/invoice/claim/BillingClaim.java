@@ -20,7 +20,7 @@ public abstract class BillingClaim {
 
     protected abstract void pickClaimProvider();
     protected abstract void createClaim() throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException;
-    protected abstract void submitClaim() throws IOException;
+    protected abstract void submitClaim() throws IOException, IllegalAccessException;
     public InvoiceResponse getInvoiceResponse(){
         return invoiceResponse;
     }

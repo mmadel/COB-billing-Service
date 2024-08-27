@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 @Setter
 @Getter
@@ -21,5 +22,6 @@ public class InvoiceRequest {
     private SubmissionType submissionType;
     private HttpServletResponse response;
     private List<Long> records;
+    private Map<String, List<SelectedSessionServiceLine>> fileNamesServiceLinesMapper;
 
 }
