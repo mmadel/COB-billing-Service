@@ -1,6 +1,7 @@
 package com.cob.billing.entity.bill.invoice;
 
 import com.cob.billing.entity.clinical.patient.PatientEntity;
+import com.cob.billing.entity.clinical.patient.claim.PatientClaimEntity;
 import com.cob.billing.enums.SubmissionStatus;
 import com.cob.billing.enums.SubmissionType;
 import com.cob.billing.model.bill.invoice.request.InvoiceInsuranceCompanyInformation;
@@ -15,6 +16,7 @@ import org.hibernate.annotations.TypeDefs;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "patient_invoice")
@@ -33,8 +35,12 @@ public class PatientInvoiceEntity {
     @OneToOne
     @JoinColumn(name = "patient_id", referencedColumnName = "id")
     private PatientEntity patient;
+
     @OneToMany(mappedBy = "patientInvoice")
-    List<PatientInvoiceDetailsEntity> invoiceDetails;
+    Set<PatientInvoiceDetailsEntity> invoiceDetails;
+
+    @OneToMany(mappedBy = "patientInvoice")
+    Set<PatientClaimEntity> patientClaims;
 
     @Column(name = "is_one_date_service_per_claim")
     private Boolean isOneDateServicePerClaim;

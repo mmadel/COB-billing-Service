@@ -5,7 +5,6 @@ import com.cob.billing.entity.clinical.patient.claim.PatientClaimEntity;
 import com.cob.billing.enums.ClaimResponseStatus;
 import com.cob.billing.enums.SubmissionStatus;
 import com.cob.billing.model.bill.invoice.search.SessionHistoryCriteria;
-import com.cob.billing.model.clinical.patient.session.PatientSessionServiceLine;
 import com.cob.billing.model.history.SessionHistory;
 import com.cob.billing.model.response.SessionHistoryResponse;
 import com.cob.billing.repositories.bill.invoice.PatientClaimRepository;
@@ -38,9 +37,9 @@ public class SearchSessionHistoryUseCase {
                 , sessionHistoryCriteria.getDosStart() != null ? sessionHistoryCriteria.getDosStart() : null
                 , sessionHistoryCriteria.getDosEnd() != null ? sessionHistoryCriteria.getDosEnd() : null
                 , sessionHistoryCriteria.getSubmitStart() != null ? sessionHistoryCriteria.getSubmitStart() : null
-                , sessionHistoryCriteria.getSubmitEnd() != null ? sessionHistoryCriteria.getSubmitEnd() : null);
-        List<PatientInvoiceEntity> filteredByStatus = filterByStatus(sessionHistoryCriteria.getSelectedStatus(), invoiceEntities);
-        return constructSessionHistoryResponse(offset, limit, filteredByStatus);
+                , sessionHistoryCriteria.getSubmitEnd() != null ? sessionHistoryCriteria.getSubmitEnd() : null
+                , sessionHistoryCriteria.getSelectedStatus() != null ? getListClaimResponseStatus(sessionHistoryCriteria.getSelectedStatus()) : null);
+        return constructSessionHistoryResponse(offset, limit, invoiceEntities);
     }
 
     private SessionHistoryResponse constructSessionHistoryResponse(int offset, int limit, List<PatientInvoiceEntity> invoiceEntities) {
@@ -51,18 +50,6 @@ public class SearchSessionHistoryUseCase {
                 .number_of_matching_records(records.size())
                 .records(records) //records
                 .build();
-    }
-
-    private List<PatientInvoiceEntity> filterByStatus(List<SubmissionStatus> selectedStatus, List<PatientInvoiceEntity> invoiceEntities) {
-        List<PatientInvoiceEntity> filteredInvoiceEntities = new ArrayList<>();
-        List<ClaimResponseStatus> claimResponseStatus = getListClaimResponseStatus(selectedStatus);
-        invoiceEntities.forEach(patientInvoiceEntity -> {
-            Optional<PatientClaimEntity> patientClaim = patientClaimRepository.findDistinctByPatientInvoice_Id(patientInvoiceEntity.getId());
-            if (!patientClaim.isEmpty())
-                if (claimResponseStatus.contains(patientClaim.get().getSubmissionStatus()))
-                    filteredInvoiceEntities.add(patientInvoiceEntity);
-        });
-        return filteredInvoiceEntities.isEmpty() ? invoiceEntities : filteredInvoiceEntities;
     }
 
     private List<ClaimResponseStatus> getListClaimResponseStatus(List<SubmissionStatus> selectedStatus) {
