@@ -3,6 +3,7 @@ package com.cob.billing.usecases.bill.history;
 import com.cob.billing.entity.bill.invoice.PatientInvoiceDetailsEntity;
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
+import com.cob.billing.entity.clinical.patient.claim.PatientClaimEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.enums.SubmissionStatus;
 import com.cob.billing.enums.SubmissionType;
@@ -10,15 +11,21 @@ import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.model.history.SessionHistory;
 import com.cob.billing.model.history.SessionHistoryCount;
+import com.cob.billing.repositories.bill.invoice.PatientClaimRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
 public class MapSessionHistoryUseCase {
+    @Autowired
+    PatientClaimRepository patientClaimRepository;
+
     public List<SessionHistory> map(List<PatientInvoiceEntity> invoiceEntities) {
         List<SessionHistory> result = new ArrayList<>();
         invoiceEntities.stream()
@@ -40,6 +47,7 @@ public class MapSessionHistoryUseCase {
                     sessionHistory.setSubmissionId(patientInvoice.getSubmissionId());
                     sessionHistory.setInsuranceCompany(patientInvoice.getInsuranceCompany().getName());
                     sessionHistory.setClient(mapPatient(patientInvoice.getPatient()));
+                    sessionHistory.setSubmissionStatus(findStatus(patientInvoice.getId()));
                     List<SessionHistoryCount> counts = new ArrayList<>();
                     // Create Session Counter
                     for (Long submissionId : invoiceDetailsMapper.keySet()) {
@@ -60,7 +68,8 @@ public class MapSessionHistoryUseCase {
                 });
         return result;
     }
-    private Patient mapPatient(PatientEntity entity){
+
+    private Patient mapPatient(PatientEntity entity) {
         Patient patient = new Patient();
         patient.setId(entity.getId());
         patient.setBirthDate(entity.getBirthDate());
@@ -68,7 +77,8 @@ public class MapSessionHistoryUseCase {
         patient.setLastName(entity.getLastName());
         return patient;
     }
-    private List<ServiceLine> mapPatientSessionServiceLine(List<PatientInvoiceDetailsEntity> detailsEntities){
+
+    private List<ServiceLine> mapPatientSessionServiceLine(List<PatientInvoiceDetailsEntity> detailsEntities) {
         List<ServiceLine> serviceLines = new ArrayList<>();
         detailsEntities.forEach(patientInvoiceDetails -> {
             PatientSessionServiceLineEntity serviceLine = patientInvoiceDetails.getServiceLine();
@@ -79,5 +89,21 @@ public class MapSessionHistoryUseCase {
             serviceLines.add(line);
         });
         return serviceLines;
+    }
+
+    private SubmissionStatus findStatus(Long patientInvoiceId) {
+        Optional<PatientClaimEntity> optionalPatientClaimEntity = patientClaimRepository.findDistinctByPatientInvoice_Id(patientInvoiceId);
+        if (optionalPatientClaimEntity.isPresent()) {
+            PatientClaimEntity patientClaim = optionalPatientClaimEntity.get();
+            switch (patientClaim.getSubmissionStatus()) {
+                case Claim_Acknowledgment:
+                    return SubmissionStatus.Pending;
+                case Claim_Rejection:
+                    return SubmissionStatus.error;
+                default:
+                    return SubmissionStatus.Success;
+            }
+        }
+        return null;
     }
 }

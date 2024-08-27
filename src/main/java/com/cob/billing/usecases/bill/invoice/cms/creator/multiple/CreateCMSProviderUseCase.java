@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,8 +33,9 @@ public class CreateCMSProviderUseCase {
     @Autowired
     private LocationCMSDocumentFiller locationCMSDocumentFiller;
 
-    public List<String> create(InvoiceRequest invoiceRequest) throws IOException, IllegalAccessException {
+    public Map<String,List<SelectedSessionServiceLine>> create(InvoiceRequest invoiceRequest) throws IOException, IllegalAccessException {
         List<String> fileNames = new ArrayList<>();
+        Map<String,List<SelectedSessionServiceLine>> result = new HashMap<>();
         for (Map.Entry<DoctorInfo, List<SelectedSessionServiceLine>> entry : getProviders(invoiceRequest).entrySet()) {
             List<List<SelectedSessionServiceLine>> serviceLinesChunks = ServiceLineExceedChunkChecker.check(entry.getValue());
             for (int i = 0; i < serviceLinesChunks.size(); i++) {
@@ -48,9 +50,10 @@ public class CreateCMSProviderUseCase {
                 createCMSPdfDocumentResourceUseCase.lockForm();
                 createCMSPdfDocumentResourceUseCase.closeResource();
                 fileNames.add(fileName);
+                result.put(fileName,invoicesChunk);
             }
         }
-        return fileNames;
+        return result;
     }
     private Map<DoctorInfo, List<SelectedSessionServiceLine>> getProviders(InvoiceRequest invoiceRequest){
         return invoiceRequest.getSelectedSessionServiceLine().stream()

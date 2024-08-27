@@ -1,6 +1,7 @@
 package com.cob.billing.usecases.bill.invoice;
 
 import com.cob.billing.enums.ClaimResponseStatus;
+import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.bill.invoice.response.ClaimSubmission;
 import com.cob.billing.model.bill.invoice.response.InvoiceResponse;
 import com.cob.billing.model.integration.claimmd.submit.SubmitResponse;
@@ -35,5 +36,15 @@ public class CreateInvoiceResponseUseCase {
                     return claimSubmission;
                 }).collect(Collectors.toList());
         invoiceResponse.setClaimSubmissions(claimSubmissions);
+    }
+    public  void create(List<ClaimSubmission> claimSubmissions , List<SelectedSessionServiceLine> serviceLines){
+        ClaimSubmission claimSubmission = new ClaimSubmission();
+        claimSubmission.setServiceLines(serviceLines.stream()
+                .map(serviceLine -> serviceLine.getServiceLine().getId()).collect(Collectors.toList()));
+        claimSubmission.setMessages(Arrays.asList("Success"));
+        Long claimId = (long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L;
+        claimSubmission.setClaimId(Long.toString(claimId));
+        claimSubmission.setStatus(ClaimResponseStatus.Claim_Success);
+        claimSubmissions.add(claimSubmission);
     }
 }

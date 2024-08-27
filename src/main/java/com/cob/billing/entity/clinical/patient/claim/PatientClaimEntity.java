@@ -2,7 +2,6 @@ package com.cob.billing.entity.clinical.patient.claim;
 
 import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.enums.ClaimResponseStatus;
-import com.cob.billing.enums.SubmissionStatus;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;

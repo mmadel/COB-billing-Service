@@ -28,6 +28,8 @@ public class Main {
     static File ddd = new File("C:\\cob\\documents\\billing\\form-cms15000.pdf");
 
     public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        long number = (long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L;
+        System.out.println(number);
         //CreateRedirectFile.create();
 //        List<String> firstList = List.of("AU", "90");
 //        List<String> secondList = List.of("GP", "90","33");
@@ -38,16 +40,16 @@ public class Main {
         //groupList();
 
 
-        PdfReader reader = new PdfReader(ddd);
-        PdfDocument existingPdf = new PdfDocument(reader, new PdfWriter("filled-form.pdf"));
-        PdfAcroForm cmsForm = PdfAcroForm.getAcroForm(existingPdf, true);
-       existingPdf.removePage(2);
-       cmsForm.flattenFields();
-       for (Map.Entry<String, PdfFormField> entry : cmsForm.getAllFormFields().entrySet()) {
-           System.out.println(entry.getKey() + " " + entry.getValue().getDisplayValue());
-       }
-        existingPdf.close();
-       reader.close();
+//        PdfReader reader = new PdfReader(ddd);
+//        PdfDocument existingPdf = new PdfDocument(reader, new PdfWriter("filled-form.pdf"));
+//        PdfAcroForm cmsForm = PdfAcroForm.getAcroForm(existingPdf, true);
+//       existingPdf.removePage(2);
+//       cmsForm.flattenFields();
+//       for (Map.Entry<String, PdfFormField> entry : cmsForm.getAllFormFields().entrySet()) {
+//           System.out.println(entry.getKey() + " " + entry.getValue().getDisplayValue());
+//       }
+//        existingPdf.close();
+//       reader.close();
 
 //        PdfDocument pdf = new PdfDocument(new PdfWriter("final.pdf"));
 //        PdfMerger merger = new PdfMerger(pdf);

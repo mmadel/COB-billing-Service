@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,8 +18,9 @@ import java.util.stream.Collectors;
 public class CreateCMSDatesUseCase {
     @Autowired
     CreateCMSBoxesUseCase createCMSBoxesUseCase;
-    public List<String> create(InvoiceRequest invoiceRequest) throws IOException, IllegalAccessException {
+    public Map<String,List<SelectedSessionServiceLine>>  create(InvoiceRequest invoiceRequest) throws IOException, IllegalAccessException {
         List<String> fileNames = new ArrayList<>();
+        Map<String,List<SelectedSessionServiceLine>> result = new HashMap<>();
         for (Map.Entry<Long, List<SelectedSessionServiceLine>> entry : getDates(invoiceRequest).entrySet()) {
             List<List<SelectedSessionServiceLine>> serviceLinesChunks = ServiceLineExceedChunkChecker.check(entry.getValue());
             for (int i = 0; i < serviceLinesChunks.size(); i++) {
@@ -26,9 +28,10 @@ public class CreateCMSDatesUseCase {
                 String fileName = "date_" + entry.getKey() + "_" + i;
                 createCMSBoxesUseCase.create(invoiceRequest, fileName, invoicesChunk);
                 fileNames.add(fileName);
+                result.put(fileName,invoicesChunk);
             }
         }
-        return fileNames;
+        return result;
     }
     private Map<Long, List<SelectedSessionServiceLine>> getDates(InvoiceRequest invoiceRequest){
         return invoiceRequest.getSelectedSessionServiceLine().stream()

@@ -11,22 +11,26 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Qualifier("SingleClaimItems")
 public class CreateCMSClaimUseCase implements CMSClaimCreator {
     @Autowired
     CreateCMSBoxesUseCase createCMSBoxesUseCase;
-    public List<String> create(InvoiceRequest invoiceRequest,Boolean[] flags) throws IOException, IllegalAccessException {
+    public Map<String,List<SelectedSessionServiceLine>> create(InvoiceRequest invoiceRequest,Boolean[] flags) throws IOException, IllegalAccessException {
         List<List<SelectedSessionServiceLine>> serviceLinesChunks = ServiceLineExceedChunkChecker.check(invoiceRequest.getSelectedSessionServiceLine());
         List<String> fileNames = new ArrayList<>();
+        Map<String,List<SelectedSessionServiceLine>> result = new HashMap<>();
         for (int i = 0; i < serviceLinesChunks.size(); i++) {
             List<SelectedSessionServiceLine> invoicesChunk = serviceLinesChunks.get(i);
             String fileName = "claim.pdf" + "_" + i;
             createCMSBoxesUseCase.create(invoiceRequest, fileName, invoicesChunk);
             fileNames.add(fileName);
+            result.put(fileName, invoicesChunk);
         }
-        return fileNames;
+        return result;
     }
 }
