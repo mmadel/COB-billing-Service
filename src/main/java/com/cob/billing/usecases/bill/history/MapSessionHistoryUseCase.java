@@ -100,7 +100,7 @@ public class MapSessionHistoryUseCase {
                     return SubmissionStatus.Pending;
                 case Claim_Rejection:
                     return SubmissionStatus.error;
-                default:
+                case Claim_Success:
                     return SubmissionStatus.Success;
             }
         }
