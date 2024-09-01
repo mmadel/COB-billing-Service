@@ -1,6 +1,7 @@
 package com.cob.billing.usecases.bill.invoice.electronic.creator.multiple;
 
 import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
+import com.cob.billing.model.bill.invoice.response.tmp.InvoiceResponse;
 import com.cob.billing.model.integration.claimmd.Claim;
 import com.cob.billing.usecases.bill.invoice.electronic.creator.ElectronicClaimCreator;
 import com.cob.billing.util.BeanFactory;
@@ -17,7 +18,7 @@ import java.util.List;
 public class CreateElectronicMultipleClaimUseCase implements ElectronicClaimCreator {
 
     @Override
-    public List<Claim> create(InvoiceRequest invoiceRequest, Boolean[] flags) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException {
+    public List<Claim> create(InvoiceRequest invoiceRequest, Boolean[] flags, InvoiceResponse invoiceResponse) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException {
         List<Claim> claims = new ArrayList<>();
         if (flags[0])
             claims.addAll(BeanFactory.getBean(CreateElectronicProviderUseCase.class)

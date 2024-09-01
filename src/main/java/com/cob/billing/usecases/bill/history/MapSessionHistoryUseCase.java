@@ -45,7 +45,7 @@ public class MapSessionHistoryUseCase {
                     sessionHistory.setSubmissionType(patientInvoice.getSubmissionType());
                     sessionHistory.setSubmitDate(patientInvoice.getCreatedAt());
                     sessionHistory.setSubmissionId(patientInvoice.getSubmissionId());
-                    sessionHistory.setInsuranceCompany(patientInvoice.getInsuranceCompany().getName());
+                    //sessionHistory.setInsuranceCompany(patientInvoice.getInsuranceCompany().getName());
                     sessionHistory.setClient(mapPatient(patientInvoice.getPatient()));
                     sessionHistory.setSubmissionStatus(findStatus(patientInvoice.getId()));
                     List<SessionHistoryCount> counts = new ArrayList<>();
@@ -59,7 +59,7 @@ public class MapSessionHistoryUseCase {
                         sessionHistory.setProvider(lineDetail.getPatientSession().getDoctorInfo().getDoctorLastName()
                                 + ','
                                 + lineDetail.getPatientSession().getDoctorInfo().getDoctorFirstName());
-                        count.setServiceLines(lines.size());
+                        count.setServiceLines((long) lines.size());
                         count.setServiceLine(mapPatientSessionServiceLine((lines)));
                         counts.add(count);
                     }

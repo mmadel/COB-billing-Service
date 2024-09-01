@@ -26,7 +26,7 @@ public class CreateCMSDatesUseCase {
             for (int i = 0; i < serviceLinesChunks.size(); i++) {
                 List<SelectedSessionServiceLine> invoicesChunk = serviceLinesChunks.get(i);
                 String fileName = "date_" + entry.getKey() + "_" + i;
-                createCMSBoxesUseCase.create(invoiceRequest, fileName, invoicesChunk);
+                //createCMSBoxesUseCase.create(invoiceRequest, fileName, invoicesChunk);
                 fileNames.add(fileName);
                 result.put(fileName,invoicesChunk);
             }

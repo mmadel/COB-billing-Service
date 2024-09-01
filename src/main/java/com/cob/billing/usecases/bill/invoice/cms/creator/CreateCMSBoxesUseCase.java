@@ -2,6 +2,7 @@ package com.cob.billing.usecases.bill.invoice.cms.creator;
 
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
+import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.usecases.bill.invoice.cms.CreateCMSPdfDocumentResourceUseCase;
 import com.cob.billing.usecases.bill.invoice.cms.filler.LocationCMSDocumentFiller;
 import com.cob.billing.usecases.bill.invoice.cms.filler.NotRepeatableCMSDocumentFiller;
@@ -27,12 +28,12 @@ public class CreateCMSBoxesUseCase {
     private PhysicianCMSDocumentFiller physicianCMSDocumentFiller;
     @Autowired
     private LocationCMSDocumentFiller locationCMSDocumentFiller;
-    public void create(InvoiceRequest invoiceRequest , String filename , List<SelectedSessionServiceLine> invoicesChunk) throws IOException, IllegalAccessException {
+    public void create(InvoiceRequest invoiceRequest , String filename , List<SelectedSessionServiceLine> invoicesChunk, PatientSession patientSession) throws IOException, IllegalAccessException {
         createCMSPdfDocumentResourceUseCase.createResource(filename);
         notRepeatableCMSDocumentFiller.fill(invoiceRequest, createCMSPdfDocumentResourceUseCase.getForm());
         serviceLineCMSDocumentFiller.create(invoicesChunk, createCMSPdfDocumentResourceUseCase.getForm());
-        physicianCMSDocumentFiller.create(FindProviderAssignedToServiceLinesUseCase.find(invoicesChunk), createCMSPdfDocumentResourceUseCase.getForm());
-        locationCMSDocumentFiller.create(FindClinicAssignedToServiceLinesUseCase.find(invoicesChunk), createCMSPdfDocumentResourceUseCase.getForm());
+        physicianCMSDocumentFiller.create(patientSession.getDoctorInfo(), createCMSPdfDocumentResourceUseCase.getForm());
+        locationCMSDocumentFiller.create(patientSession.getClinic(), createCMSPdfDocumentResourceUseCase.getForm());
         createCMSPdfDocumentResourceUseCase.lockForm();
         createCMSPdfDocumentResourceUseCase.closeResource();
     }

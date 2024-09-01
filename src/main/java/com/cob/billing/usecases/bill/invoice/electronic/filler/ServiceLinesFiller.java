@@ -65,11 +65,6 @@ public class ServiceLinesFiller {
             totalCharge = totalCharge + sessionServiceLine.getServiceLine().getCptCode().getCharge();
 
         }
-        claim.setRemote_claimid(patientInvoiceRecords.stream()
-                .map(serviceLine -> serviceLine.getServiceLine().getId())
-                        .collect(Collectors.toList())
-                        .stream().map(String::valueOf)
-                .collect(Collectors.joining(",")));
         claim.setPrior_auth(patientInvoiceRecords.stream().findFirst().get().getSessionId().getAuthorizationNumber());
         getSessionDiagnosis(patientInvoiceRecords, claim);
         claim.setCharge(charges);

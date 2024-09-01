@@ -1,6 +1,7 @@
 package com.cob.billing.usecases.bill.invoice.electronic.creator.single;
 
 import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
+import com.cob.billing.model.bill.invoice.response.tmp.InvoiceResponse;
 import com.cob.billing.model.integration.claimmd.Claim;
 import com.cob.billing.usecases.bill.invoice.electronic.creator.CreateElectronicFieldsUseCase;
 import com.cob.billing.usecases.bill.invoice.electronic.creator.ElectronicClaimCreator;
@@ -18,7 +19,7 @@ public class CreateElectronicSingleClaimUseCase implements ElectronicClaimCreato
     @Autowired
     CreateElectronicFieldsUseCase createElectronicFieldsUseCase;
     @Override
-    public List<Claim> create(InvoiceRequest invoiceRequest, Boolean[] flags) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        return Arrays.asList(createElectronicFieldsUseCase.create(invoiceRequest));
+    public List<Claim> create(InvoiceRequest invoiceRequest, Boolean[] flags, InvoiceResponse invoiceResponse) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        return createElectronicFieldsUseCase.create(invoiceRequest,invoiceResponse);
     }
 }

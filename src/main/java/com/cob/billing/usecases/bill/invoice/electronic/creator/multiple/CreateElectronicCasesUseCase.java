@@ -21,7 +21,7 @@ public class CreateElectronicCasesUseCase {
     public List<Claim> create(InvoiceRequest invoiceRequest) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         List<Claim> claims = new ArrayList<>();
         for (Map.Entry<String, List<SelectedSessionServiceLine>> entry : getPatientCases(invoiceRequest).entrySet()) {
-            claims.add(createElectronicFieldsUseCase.create(invoiceRequest,null,null,entry.getValue()));
+           // claims.add(createElectronicFieldsUseCase.create(invoiceRequest,null,null,entry.getValue()));
         }
         return claims;
     }

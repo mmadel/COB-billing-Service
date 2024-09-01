@@ -23,7 +23,7 @@ public class CreateElectronicClinicsUseCase {
         List<Claim> claims = new ArrayList<>();
         for (Map.Entry<Clinic, List<SelectedSessionServiceLine>> entry : getClinics(invoiceRequest).entrySet()) {
             Clinic clinic = entry.getKey();
-            claims.add(createElectronicFieldsUseCase.create(invoiceRequest,null,clinic,null));
+           // claims.add(createElectronicFieldsUseCase.create(invoiceRequest,null,clinic,null));
         }
         return claims;
     }

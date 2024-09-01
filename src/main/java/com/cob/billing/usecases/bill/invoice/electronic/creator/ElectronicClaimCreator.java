@@ -1,6 +1,7 @@
 package com.cob.billing.usecases.bill.invoice.electronic.creator;
 
 import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
+import com.cob.billing.model.bill.invoice.response.tmp.InvoiceResponse;
 import com.cob.billing.model.integration.claimmd.Claim;
 
 import java.io.IOException;
@@ -8,5 +9,5 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public interface ElectronicClaimCreator {
-     List<Claim> create(InvoiceRequest invoiceRequest, Boolean[] flags) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException;
+     List<Claim> create(InvoiceRequest invoiceRequest, Boolean[] flags, InvoiceResponse invoiceResponse) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException;
 }

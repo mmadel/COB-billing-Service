@@ -24,7 +24,7 @@ public class CreateElectronicProviderUseCase {
         List<Claim> claims = new ArrayList<>();
         for (Map.Entry<DoctorInfo, List<SelectedSessionServiceLine>> entry : getProviders(invoiceRequest).entrySet()) {
             DoctorInfo provider = entry.getKey();
-            claims.add(createElectronicFieldsUseCase.create(invoiceRequest,provider,null,null));
+           // claims.add(createElectronicFieldsUseCase.create(invoiceRequest,provider,null,null));
         }
         return claims;
     }

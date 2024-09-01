@@ -22,7 +22,7 @@ public class CreateElectronicDatesUseCase {
     public List<Claim> create(InvoiceRequest invoiceRequest) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         List<Claim> claims = new ArrayList<>();
         for (Map.Entry<Long, List<SelectedSessionServiceLine>> entry : getDates(invoiceRequest).entrySet()) {
-            claims.add(createElectronicFieldsUseCase.create(invoiceRequest,null,null,entry.getValue()));
+           // claims.add(createElectronicFieldsUseCase.create(invoiceRequest,null,null,entry.getValue()));
         }
         return claims;
     }

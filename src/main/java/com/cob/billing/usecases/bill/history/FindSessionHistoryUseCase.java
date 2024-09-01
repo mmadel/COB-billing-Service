@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
+//@Component
 public class FindSessionHistoryUseCase {
-    @Autowired
+    //@Autowired
     PatientInvoiceRepository patientInvoiceRepository;
-    @Autowired
+    //@Autowired
     MapSessionHistoryUseCase mapSessionHistoryUseCase;
 
     public SessionHistoryResponse find(Pageable paging) {

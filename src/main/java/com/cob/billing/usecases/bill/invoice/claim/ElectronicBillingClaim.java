@@ -50,17 +50,12 @@ public class ElectronicBillingClaim extends BillingClaim {
 
     @Override
     public void pickClaimProvider() {
-        Boolean hasMultipleItems = MultipleItemsChecker.check(invoiceRequest);
-        flags = MultipleItemsChecker.getMultipleFlags();
-        if (hasMultipleItems)
-            electronicClaimCreator = BeanFactory.getBean(CreateElectronicMultipleClaimUseCase.class);
-        else
-            electronicClaimCreator = BeanFactory.getBean(CreateElectronicSingleClaimUseCase.class);
+        electronicClaimCreator = BeanFactory.getBean(CreateElectronicSingleClaimUseCase.class);
     }
 
     @Override
     public void createClaim() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException {
-        claims = electronicClaimCreator.create(invoiceRequest, flags);
+        claims = electronicClaimCreator.create(invoiceRequest, flags, invoiceResponse);
 
     }
 
@@ -102,8 +97,11 @@ public class ElectronicBillingClaim extends BillingClaim {
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(multipartRequest, headers);
         ResponseEntity<SubmitResponse> response = restTemplate.exchange(
                 url, HttpMethod.POST, request, SubmitResponse.class);
-        SubmitResponse submitResponse = response.getBody();
-        createInvoiceResponseUseCase.create(invoiceResponse, submitResponse);
-        createCMSFileUseCase.create(invoiceRequest);
+        prepareInvoiceResponse(response.getBody());
+    }
+
+    private void prepareInvoiceResponse(SubmitResponse submitResponse) throws IOException, IllegalAccessException {
+        invoiceResponse.setClearingHouseClaimsResponse(submitResponse);
+        createCMSFileUseCase.createClaim(invoiceRequest,invoiceResponse);
     }
 }
