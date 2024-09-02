@@ -13,6 +13,10 @@ public interface PatientInvoiceRecordRepository extends JpaRepository<PatientInv
     Optional<PatientInvoiceRecord> findBySubmissionId(Long submissionId);
 
     @Query("SELECT DISTINCT pi FROM PatientInvoiceRecord pi INNER JOIN FETCH  pi.claims pc " +
+            "WHERE pc.submissionStatus = :status")
+    List<PatientInvoiceRecord> findBySubmissionStatus(@Param("status") SubmissionStatus status);
+
+    @Query("SELECT DISTINCT pi FROM PatientInvoiceRecord pi INNER JOIN FETCH  pi.claims pc " +
             "WHERE (:dosStart is null or pc.dateOfService >= :dosStart) " +
             "AND (:dosEnd is null or pc.dateOfService <= :dosEnd) " +
             "AND ((:client is null or upper(pi.patientFirstName) LIKE CONCAT('%',:client,'%')) OR (:client is null or upper(pi.patientLastName) LIKE CONCAT('%',:client,'%'))) " +
@@ -30,4 +34,5 @@ public interface PatientInvoiceRecordRepository extends JpaRepository<PatientInv
             , @Param("submitStart") Long submitStart
             , @Param("submitEnd") Long submitEnd
             , @Param("status") List<SubmissionStatus> status);
+
 }

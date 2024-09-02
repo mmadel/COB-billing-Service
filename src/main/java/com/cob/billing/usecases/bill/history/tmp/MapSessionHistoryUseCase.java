@@ -107,11 +107,11 @@ public class MapSessionHistoryUseCase {
         if (!matchingProviderNpiList.isEmpty())
             sessionHistories.add(createHistoryRecord(record, matchingProviderNpiList, matchingProviderNpiList.stream().findFirst().get().getProviderLastName()
                     + ","
-                    + matchingProviderNpiList.stream().findFirst().get().getProviderLastName()));
+                    + matchingProviderNpiList.stream().findFirst().get().getProviderFirstName()));
         if (!differentProviderNpiList.isEmpty())
             sessionHistories.add(createHistoryRecord(record, differentProviderNpiList, differentProviderNpiList.stream().findFirst().get().getProviderLastName()
                     + ","
-                    + differentProviderNpiList.stream().findFirst().get().getProviderLastName()));
+                    + differentProviderNpiList.stream().findFirst().get().getProviderFirstName()));
         return sessionHistories;
     }
 }
