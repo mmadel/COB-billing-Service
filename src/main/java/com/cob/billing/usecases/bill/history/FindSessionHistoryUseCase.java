@@ -26,8 +26,6 @@ import java.util.stream.Collectors;
 public class FindSessionHistoryUseCase {
     //@Autowired
     PatientInvoiceRepository patientInvoiceRepository;
-    //@Autowired
-    MapSessionHistoryUseCase mapSessionHistoryUseCase;
 
     public SessionHistoryResponse find(Pageable paging) {
         List<SessionHistory> result;
@@ -38,11 +36,12 @@ public class FindSessionHistoryUseCase {
                 .filter(patientInvoice -> patientInvoice.getSubmissionId() != null)
                 .collect(Collectors.toList());
         // Submissions
-        result = mapSessionHistoryUseCase.map(invoiceEntities);
-        return SessionHistoryResponse.builder()
-                .number_of_records((int) total)
-                .number_of_matching_records((int) invoiceEntities.size())
-                .records(result)
-                .build();
+//        result = mapSessionHistoryUseCase.map(invoiceEntities);
+//        return SessionHistoryResponse.builder()
+//                .number_of_records((int) total)
+//                .number_of_matching_records((int) invoiceEntities.size())
+//                .records(result)
+//                .build();
+        return null;
     }
 }

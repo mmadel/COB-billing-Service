@@ -1,6 +1,5 @@
 package com.cob.billing.entity.bill.invoice.tmp;
 
-import com.cob.billing.entity.clinical.patient.claim.PatientClaimEntity;
 import com.cob.billing.enums.SubmissionType;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
@@ -27,8 +26,11 @@ public class PatientInvoiceRecord {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "patient_name")
-    private String patientName;
+    @Column(name = "patient_first_name")
+    private String patientFirstName;
+
+    @Column(name = "patient_last_name")
+    private String patientLastName;
 
     @Column(name = "patient_id")
     private Long patientId;

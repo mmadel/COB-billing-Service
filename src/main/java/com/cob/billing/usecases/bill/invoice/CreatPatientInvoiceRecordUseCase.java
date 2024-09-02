@@ -40,7 +40,8 @@ public class CreatPatientInvoiceRecordUseCase {
 
         PatientInvoiceRecord patientInvoiceRecord = new PatientInvoiceRecord();
         String patientName = invoiceRequest.getPatientInformation().getLastName() + "," + invoiceRequest.getPatientInformation().getFirstName();
-        patientInvoiceRecord.setPatientName(patientName);
+        patientInvoiceRecord.setPatientFirstName(invoiceRequest.getPatientInformation().getFirstName());
+        patientInvoiceRecord.setPatientLastName(invoiceRequest.getPatientInformation().getLastName());
         patientInvoiceRecord.setPatientId(invoiceRequest.getPatientInformation().getId());
         patientInvoiceRecord.setInsuranceCompanyName(invoiceRequest.getInvoiceInsuranceCompanyInformation().getName());
         //patientInvoiceRecord.setInsuranceCompanyId();
@@ -58,7 +59,8 @@ public class CreatPatientInvoiceRecordUseCase {
             PatientSession session = entry.getKey();
             List<SelectedSessionServiceLine> serviceLines = entry.getValue();
             PatientSubmittedClaim claim = new PatientSubmittedClaim();
-            claim.setProviderName(session.getDoctorInfo().getDoctorLastName() + "," + session.getDoctorInfo().getDoctorFirstName());
+            claim.setProviderLastName(session.getDoctorInfo().getDoctorLastName());
+            claim.setProviderFirstName(session.getDoctorInfo().getDoctorFirstName());
             claim.setProvider_npi(session.getDoctorInfo().getDoctorNPI());
             claim.setServiceLine(serviceLines.stream()
                     .map(SelectedSessionServiceLine::getServiceLine)

@@ -37,10 +37,9 @@ public class SessionHistoryController {
     public ResponseEntity<Object> search(@RequestParam(name = "offset") int offset,
                                          @RequestParam(name = "limit") int limit
             , @RequestBody SessionHistoryCriteria sessionHistoryCriteria) {
-        /*return ResponseHandler
+        return ResponseHandler
                 .generateResponse("Successfully find sessions history",
                         HttpStatus.OK,
-                        searchSessionHistoryUseCase.search(offset + 1, limit, sessionHistoryCriteria));*/
-        return new ResponseEntity<>(HttpStatus.OK);
+                        searchSessionHistoryUseCase.search(offset + 1, limit, sessionHistoryCriteria));
     }
 }

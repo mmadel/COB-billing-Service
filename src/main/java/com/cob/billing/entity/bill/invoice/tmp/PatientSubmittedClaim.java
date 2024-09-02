@@ -28,8 +28,11 @@ public class PatientSubmittedClaim {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "provider_name")
-    private String providerName;
+    @Column(name = "provider_first_name")
+    private String providerFirstName;
+
+    @Column(name = "provider_last_name")
+    private String providerLastName;
 
     @Column(name = "provider_npi")
     private String provider_npi;
