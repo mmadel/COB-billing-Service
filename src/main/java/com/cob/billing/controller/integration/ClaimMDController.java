@@ -22,7 +22,7 @@ public class ClaimMDController {
     @Autowired
     GetClaimsHistoryUseCase getClaimsHistoryUseCase;
     @Autowired
-    UpdateSubmittedClaimStatus findBySubmissionStatus;
+    UpdateSubmittedClaimStatus updateSubmittedClaimStatus;
     @Autowired
     CacheResponseIdUseCase cacheResponseIdUseCase;
 
@@ -33,7 +33,7 @@ public class ClaimMDController {
 
     @PutMapping("/update")
     public ResponseEntity findByStatus() {
-        findBySubmissionStatus.update();
+        updateSubmittedClaimStatus.update();
         return new ResponseEntity(HttpStatus.OK);
     }
 

@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/session/history")
 @PreAuthorize("hasAnyRole('filing-role')")
 public class SessionHistoryController {
-//    @Autowired
-//    FindSessionHistoryUseCase findSessionHistoryUseCase;
+
     @Autowired
     SearchSessionHistoryUseCase searchSessionHistoryUseCase;
     @Autowired
@@ -29,7 +28,6 @@ public class SessionHistoryController {
     public ResponseEntity<Object> find(@RequestParam(name = "offset") int offset,
                                        @RequestParam(name = "limit") int limit) {
         Pageable paging = PageRequest.of(offset, limit, Sort.by("createdAt").descending());
-        //return new ResponseEntity<>(findSessionHistoryUseCase.find(paging), HttpStatus.OK);
         return new ResponseEntity<>(findSessionHistoryUseCase.find(paging),HttpStatus.OK);
     }
 
