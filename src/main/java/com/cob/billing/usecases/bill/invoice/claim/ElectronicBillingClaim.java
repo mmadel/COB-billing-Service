@@ -9,6 +9,7 @@ import com.cob.billing.usecases.bill.invoice.MultipleItemsChecker;
 import com.cob.billing.usecases.bill.invoice.electronic.creator.ElectronicClaimCreator;
 import com.cob.billing.usecases.bill.invoice.electronic.creator.multiple.CreateElectronicMultipleClaimUseCase;
 import com.cob.billing.usecases.bill.invoice.electronic.creator.single.CreateElectronicSingleClaimUseCase;
+import com.cob.billing.usecases.integration.claim.md.SubmitClaimUseCase;
 import com.cob.billing.util.BeanFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,22 +32,15 @@ import java.util.Random;
 @Service
 @Qualifier("ElectronicBillingClaim")
 public class ElectronicBillingClaim extends BillingClaim {
-    @Autowired
-    private RestTemplate restTemplate;
+
     ElectronicClaimCreator electronicClaimCreator;
     List<Claim> claims;
-    @Value("${claim_md_api_key}")
-    private String apiKey;
-    @Value("${claim_md_bas_url}")
-    private String claimMDcBaseURL;
 
-    @Value("${claim_md_submit}")
-    private String claimMDSubmit;
-
-    @Autowired
-    private CreateInvoiceResponseUseCase createInvoiceResponseUseCase;
     @Autowired
     CreateCMSFileUseCase createCMSFileUseCase;
+
+    @Autowired
+    SubmitClaimUseCase submitClaimUseCase;
 
     @Override
     public void pickClaimProvider() {
@@ -64,7 +58,8 @@ public class ElectronicBillingClaim extends BillingClaim {
         //submit to Clearing House
         SubmitRequest submitRequest = constructClaimRequest();
         FileSystemResource claimResource = createClaimFile(submitRequest);
-        send(claimResource);
+        SubmitResponse response = submitClaimUseCase.submit(claimResource);
+        prepareInvoiceResponse(response);
         //claimResource.getFile().delete();
 
     }
@@ -86,22 +81,9 @@ public class ElectronicBillingClaim extends BillingClaim {
         return new FileSystemResource(file);
     }
 
-    private void send(FileSystemResource fileResource) throws IOException, IllegalAccessException {
-        String url = this.claimMDcBaseURL + this.claimMDSubmit;
-        MultipartBodyBuilder builder = new MultipartBodyBuilder();
-        builder.part("File", fileResource);
-        builder.part("AccountKey", apiKey);
-        MultiValueMap<String, HttpEntity<?>> multipartRequest = builder.build();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(multipartRequest, headers);
-        ResponseEntity<SubmitResponse> response = restTemplate.exchange(
-                url, HttpMethod.POST, request, SubmitResponse.class);
-        prepareInvoiceResponse(response.getBody());
-    }
 
     private void prepareInvoiceResponse(SubmitResponse submitResponse) throws IOException, IllegalAccessException {
         invoiceResponse.setClearingHouseClaimsResponse(submitResponse);
-        createCMSFileUseCase.createClaim(invoiceRequest,invoiceResponse);
+        createCMSFileUseCase.createClaim(invoiceRequest, invoiceResponse);
     }
 }
