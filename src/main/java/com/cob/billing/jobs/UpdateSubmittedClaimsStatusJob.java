@@ -13,6 +13,6 @@ public class UpdateSubmittedClaimsStatusJob {
     @Scheduled(cron = "${update_claim_cron_job}")
     public void callUpdateSubmittedStatus() {
         System.out.println("callUpdateSubmittedStatus ");
-        updateSubmittedClaimStatus.update();
+        //updateSubmittedClaimStatus.update();
     }
 }
