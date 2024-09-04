@@ -13,7 +13,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-public class GetClaimsHistoryUseCase {
+public class RetrieveClaimsHistoryUseCase {
     @Value("${claim_md_api_key}")
     private String apiKey;
     @Value("${claim_md_bas_url}")

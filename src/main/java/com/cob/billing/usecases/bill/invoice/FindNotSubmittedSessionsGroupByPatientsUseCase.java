@@ -45,7 +45,8 @@ public class FindNotSubmittedSessionsGroupByPatientsUseCase {
             patientSessionHistory.setPatientSession(patientSession);
             response.add(patientSessionHistory);
         });
-        List<PatientSessionHistory> records = PaginationUtil.paginate(response, offset, limit);
+        List<PatientSessionHistory> records = PaginationUtil.
+                paginate(response, offset, limit);
         return PatientSessionHistoryResponse.builder()
                 .number_of_records(records.size())
                 .number_of_matching_records((int) response.size())

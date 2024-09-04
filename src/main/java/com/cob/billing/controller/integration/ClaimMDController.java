@@ -1,34 +1,34 @@
 package com.cob.billing.controller.integration;
 
-import com.cob.billing.entity.bill.invoice.tmp.PatientInvoiceRecord;
-import com.cob.billing.entity.bill.invoice.tmp.PatientSubmittedClaim;
-import com.cob.billing.enums.SubmissionStatus;
-import com.cob.billing.repositories.bill.invoice.tmp.PatientInvoiceRecordRepository;
-import com.cob.billing.repositories.bill.invoice.tmp.PatientSubmittedClaimRepository;
+import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.invoice.UpdateSubmittedClaimStatus;
+import com.cob.billing.usecases.bill.posting.era.FetchERAListUseCase;
 import com.cob.billing.usecases.integration.claim.md.CacheResponseIdUseCase;
-import com.cob.billing.usecases.integration.claim.md.GetClaimsHistoryUseCase;
+import com.cob.billing.usecases.integration.claim.md.RetrieveClaimsHistoryUseCase;
+import com.cob.billing.usecases.integration.claim.md.RetrieveERAListUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/ch")
 public class ClaimMDController {
 
     @Autowired
-    GetClaimsHistoryUseCase getClaimsHistoryUseCase;
+    RetrieveClaimsHistoryUseCase retrieveClaimsHistoryUseCase;
     @Autowired
     UpdateSubmittedClaimStatus updateSubmittedClaimStatus;
     @Autowired
     CacheResponseIdUseCase cacheResponseIdUseCase;
+    @Autowired
+    FetchERAListUseCase fetchERAListUseCase;
 
     @GetMapping("/get/responseId/{responseId}")
     public ResponseEntity get(@PathVariable Long responseId) {
-        return new ResponseEntity(getClaimsHistoryUseCase.get(responseId), HttpStatus.OK);
+        return new ResponseEntity(retrieveClaimsHistoryUseCase.get(responseId), HttpStatus.OK);
     }
 
     @PutMapping("/update")
@@ -44,13 +44,23 @@ public class ClaimMDController {
     }
 
     @GetMapping("/get/response")
-    public ResponseEntity get(){
+    public ResponseEntity get() {
         return new ResponseEntity(cacheResponseIdUseCase.getCachedNumber(), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/response")
-    public ResponseEntity delete(){
+    public ResponseEntity delete() {
         cacheResponseIdUseCase.clearCache();
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/era/list")
+    public ResponseEntity getERAList(@RequestParam(name = "offset") String offset,
+                                     @RequestParam(name = "limit") String limit) {
+        Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
+        return ResponseHandler
+                .generateResponse("Successfully find ",
+                        HttpStatus.OK, null,
+                        fetchERAListUseCase.fetch(paging));
     }
 }
