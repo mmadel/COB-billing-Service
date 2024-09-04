@@ -8,10 +8,10 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 public class ERALineTransferModel {
-    private double BillAmount;
+    private double billAmount;
     private double allowedAmount;
     // AdjustAmount = B1illAmount - (paidAmount - (deductAmount + coInsuranceAmount + coPaymentAmount))
-    private double AdjustAmount;
+    private double adjustAmount;
     private double deductAmount;
     private double coInsuranceAmount;
     private double coPaymentAmount;
