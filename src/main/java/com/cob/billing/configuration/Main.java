@@ -28,8 +28,9 @@ public class Main {
     static File ddd = new File("C:\\cob\\documents\\billing\\form-cms15000.pdf");
 
     public static void main(String[] args) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        long number = (long) Math.floor(Math.random() * 9_000_000_000L) + 1_000_000_000L;
-        System.out.println(number);
+        double value = 11.799999999999997;
+        String result = String.format("%.2f",value);
+        System.out.print(result);//  34,767
         //CreateRedirectFile.create();
 //        List<String> firstList = List.of("AU", "90");
 //        List<String> secondList = List.of("GP", "90","33");

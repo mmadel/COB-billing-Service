@@ -2,9 +2,11 @@ package com.cob.billing.controller.integration;
 
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.invoice.UpdateSubmittedClaimStatus;
+import com.cob.billing.usecases.bill.posting.era.FetchERADetailsUseCase;
 import com.cob.billing.usecases.bill.posting.era.FetchERAListUseCase;
 import com.cob.billing.usecases.integration.claim.md.CacheResponseIdUseCase;
 import com.cob.billing.usecases.integration.claim.md.RetrieveClaimsHistoryUseCase;
+import com.cob.billing.usecases.integration.claim.md.RetrieveERADetailsUseCase;
 import com.cob.billing.usecases.integration.claim.md.RetrieveERAListUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +27,8 @@ public class ClaimMDController {
     CacheResponseIdUseCase cacheResponseIdUseCase;
     @Autowired
     FetchERAListUseCase fetchERAListUseCase;
+    @Autowired
+    FetchERADetailsUseCase fetchERADetailsUseCase;
 
     @GetMapping("/get/responseId/{responseId}")
     public ResponseEntity get(@PathVariable Long responseId) {
@@ -62,5 +66,10 @@ public class ClaimMDController {
                 .generateResponse("Successfully find ",
                         HttpStatus.OK, null,
                         fetchERAListUseCase.fetch(paging));
+    }
+
+    @GetMapping("era/detials/{eraid}")
+    public ResponseEntity get(@PathVariable Integer eraid) {
+        return new ResponseEntity(fetchERADetailsUseCase.fetch(eraid), HttpStatus.OK);
     }
 }

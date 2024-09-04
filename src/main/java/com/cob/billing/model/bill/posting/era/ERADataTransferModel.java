@@ -12,9 +12,10 @@ import java.math.BigDecimal;
 public class ERADataTransferModel {
     private Integer eraId;
     private String checkNumber;
-    private Long numbers;
+    private Integer lines;
     private String payerName;
     private String receivedDate;
     private BigDecimal paidAmount;
     private Boolean seen;
+    private ERADataDetailTransferModel eraDetails;
 }
