@@ -27,6 +27,7 @@ public class FetchERAListUseCase {
                         .checkNumber(eraModel.getCheck_number())
                         .paidAmount(new BigDecimal(eraModel.getPaid_amount()))
                         .numbers(null)
+                        .seen(false)
                         .build())
                 .collect(Collectors.toList());
         new ERAListSorterByDate().sortByReceivedDateDesc(eraDataTransferModels);
