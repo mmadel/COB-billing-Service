@@ -31,7 +31,7 @@ public class ERAHistoryEntity {
 
     @Column(name = "era_line", columnDefinition = "jsonb")
     @Type(type = "jsonb")
-    private List<Long> eraLines;
+    private List<Integer> eraLines;
 
     @Column(name = "is_archive")
     private boolean isArchive;

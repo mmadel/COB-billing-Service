@@ -1,4 +1,4 @@
-package com.cob.billing.model.bill.era;
+package com.cob.billing.model.bill.posting.era;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,8 @@ import java.util.List;
 public class ERAHistory {
     private Long id;
     private Integer eraId;
-    private List<Long> eraLines;
+    private List<Integer> eraLines;
     private boolean isArchive;
     private Long createdAt;
+    private ERADataTransferModel era;
 }

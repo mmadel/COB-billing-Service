@@ -1,6 +1,6 @@
 package com.cob.billing.controller.bill;
 
-import com.cob.billing.model.bill.era.ERAHistory;
+import com.cob.billing.model.bill.posting.era.ERAHistory;
 import com.cob.billing.usecases.bill.era.CreateERAHistoryRecordUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

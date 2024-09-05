@@ -29,7 +29,6 @@ public class FetchERAListUseCase {
         List<ERAHistoryEntity> eraHistoryEntityList = getERAHistory();
         List<ERADataTransferModel> eraDataTransferModels = retrieveERAListUseCase.getList(0L).getEra()
                 .stream().map(eraModel -> {
-                    Integer numberOfAppliedLines = getAppliedLines(eraHistoryEntityList, eraModel.getEraid());
                     return ERADataTransferModel.builder()
                             .eraId(eraModel.getEraid())
                             .payerName(eraModel.getPayer_name())
@@ -38,8 +37,6 @@ public class FetchERAListUseCase {
                             .paidAmount(new BigDecimal(eraModel.getPaid_amount()))
                             .payerName(eraModel.getPayer_name())
                             .checkType(eraModel.getCheck_type())
-                            .unAppliedLines(numberOfAppliedLines)
-                            .seen(numberOfAppliedLines == 0 ? false : true)
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -47,9 +44,12 @@ public class FetchERAListUseCase {
 
         List<ERADataTransferModel> records = PaginationUtil.paginate(eraDataTransferModels, paging.getPageNumber() + 1, paging.getPageSize());
         records.stream().forEach(eraDataTransferModel -> {
+            Integer numberOfAppliedLines = getAppliedLines(eraHistoryEntityList, eraDataTransferModel.getEraId());
             ERADataDetailTransferModel eraDataDetail = fetchERADetailsUseCase.fetch(eraDataTransferModel.getEraId());
             eraDataTransferModel.setEraDetails(eraDataDetail);
             eraDataTransferModel.setLines(eraDataDetail.getLines().size());
+            eraDataTransferModel.setUnAppliedLines(numberOfAppliedLines);
+            eraDataTransferModel.setSeen(numberOfAppliedLines == 0 ? false : true);
         });
         return ERAResponse.builder()
                 .number_of_records(eraDataTransferModels.size())

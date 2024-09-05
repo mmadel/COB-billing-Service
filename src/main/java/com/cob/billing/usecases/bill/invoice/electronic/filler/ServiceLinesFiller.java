@@ -28,6 +28,7 @@ public class ServiceLinesFiller {
             charge.setThru_date(serviceDateFormat.format(sessionServiceLine.getSessionId().getServiceDate()));
             charge.setPlace_of_service(sessionServiceLine.getSessionId().getPlaceOfCode().split("_")[1]);
             charge.setProc_code(sessionServiceLine.getServiceLine().getCptCode().getServiceCode());
+            charge.setRemote_chgid(Long.toString(sessionServiceLine.getServiceLine().getId()));
             if (sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderIdQualifier().equals("ZZ"))
                 charge.setChg_prov_taxonomy(sessionServiceLine.getSessionId().getDoctorInfo().getTaxonomy());
             else
