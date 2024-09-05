@@ -1,8 +1,10 @@
 package com.cob.billing.usecases.bill.posting.era;
 
+import com.cob.billing.entity.bill.era.ERAHistoryEntity;
 import com.cob.billing.model.bill.posting.era.ERADataDetailTransferModel;
 import com.cob.billing.model.bill.posting.era.ERADataTransferModel;
 import com.cob.billing.model.response.ERAResponse;
+import com.cob.billing.repositories.bill.era.ERAHistoryRepository;
 import com.cob.billing.usecases.integration.claim.md.RetrieveERAListUseCase;
 import com.cob.billing.util.ERAListSorterByDate;
 import com.cob.billing.util.PaginationUtil;
@@ -20,11 +22,14 @@ public class FetchERAListUseCase {
     RetrieveERAListUseCase retrieveERAListUseCase;
     @Autowired
     FetchERADetailsUseCase fetchERADetailsUseCase;
+    @Autowired
+    ERAHistoryRepository eraHistoryRepository;
 
     public ERAResponse fetch(Pageable paging) {
+        List<ERAHistoryEntity> eraHistoryEntityList = getERAHistory();
         List<ERADataTransferModel> eraDataTransferModels = retrieveERAListUseCase.getList(0L).getEra()
                 .stream().map(eraModel -> {
-
+                    Integer numberOfAppliedLines = getAppliedLines(eraHistoryEntityList, eraModel.getEraid());
                     return ERADataTransferModel.builder()
                             .eraId(eraModel.getEraid())
                             .payerName(eraModel.getPayer_name())
@@ -33,7 +38,8 @@ public class FetchERAListUseCase {
                             .paidAmount(new BigDecimal(eraModel.getPaid_amount()))
                             .payerName(eraModel.getPayer_name())
                             .checkType(eraModel.getCheck_type())
-                            .seen(false)
+                            .unAppliedLines(numberOfAppliedLines)
+                            .seen(numberOfAppliedLines == 0 ? false : true)
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -50,6 +56,25 @@ public class FetchERAListUseCase {
                 .number_of_matching_records((int) records.size())
                 .records(records)
                 .build();
+    }
+
+    private List<ERAHistoryEntity> getERAHistory() {
+        List<Integer> eraIds = retrieveERAListUseCase.getList(0L).getEra()
+                .stream()
+                .map(eraModel -> eraModel.getEraid())
+                .collect(Collectors.toList());
+        return eraHistoryRepository.findErasByERAIds(eraIds);
+    }
+
+    private Integer getAppliedLines(List<ERAHistoryEntity> historyList, Integer eraId) {
+        Integer numberOfAppliedLine = 0;
+        for (ERAHistoryEntity eraHistoryEntity : historyList) {
+            if (eraHistoryEntity.getEraId().equals(eraId)) {
+                numberOfAppliedLine = eraHistoryEntity.getEraLines().size();
+                break;
+            }
+        }
+        return numberOfAppliedLine;
 
     }
 }

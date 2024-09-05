@@ -13,6 +13,7 @@ public class ERADataTransferModel {
     private Integer eraId;
     private String checkNumber;
     private Integer lines;
+    private Integer unAppliedLines;
     private String payerName;
     private String receivedDate;
     private BigDecimal paidAmount;
