@@ -10,7 +10,9 @@ import java.util.List;
 @Getter
 @Builder
 public class ERADataDetailTransferModel {
+    private String payerName;
     private double totalPaidAmount;
+    private String check_number;
     private String paymentMethod;
     List<ERALineTransferModel> lines;
 

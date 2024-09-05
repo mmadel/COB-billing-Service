@@ -31,6 +31,8 @@ public class FetchERAListUseCase {
                             .receivedDate(eraModel.getReceived_time())
                             .checkNumber(eraModel.getCheck_number())
                             .paidAmount(new BigDecimal(eraModel.getPaid_amount()))
+                            .payerName(eraModel.getPayer_name())
+                            .checkType(eraModel.getCheck_type())
                             .seen(false)
                             .build();
                 })
