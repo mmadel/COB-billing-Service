@@ -21,6 +21,7 @@ public class ERALineTransferModel {
     private Integer units;
     private String dos;
     private String claimId;
+    private Integer chargeLineId;
 
 
 }

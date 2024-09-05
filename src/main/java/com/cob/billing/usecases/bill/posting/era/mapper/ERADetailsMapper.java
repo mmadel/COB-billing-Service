@@ -30,6 +30,7 @@ public class ERADetailsMapper {
                         lineTransferModel.setUnits(Integer.parseInt(charge.getUnits()));
                         lineTransferModel.setDos(charge.getFrom_dos());
                         lineTransferModel.setReasons(getReasons(charge.getAdjustment()).toArray(new String[charge.getAdjustment().size()]));
+                        lineTransferModel.setChargeLineId(Integer.parseInt(charge.getChgid()));
                         lines.add(lineTransferModel);
                     }
 
