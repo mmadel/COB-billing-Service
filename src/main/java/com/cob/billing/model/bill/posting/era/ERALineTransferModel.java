@@ -1,5 +1,7 @@
 package com.cob.billing.model.bill.posting.era;
 
+import com.cob.billing.enums.ServiceLinePaymentAction;
+import com.cob.billing.enums.ServiceLinePaymentType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +24,7 @@ public class ERALineTransferModel {
     private String dos;
     private String claimId;
     private Integer chargeLineId;
+    private ServiceLinePaymentAction serviceLinePaymentAction;
 
 
 }

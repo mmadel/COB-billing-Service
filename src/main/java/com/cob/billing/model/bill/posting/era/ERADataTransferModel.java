@@ -16,7 +16,8 @@ public class ERADataTransferModel {
     private Integer unAppliedLines;
     private String payerName;
     private String receivedDate;
-    private BigDecimal paidAmount;
+    private double paidAmount;
+    private String paidDate;
     private Boolean seen;
     private String checkType;
     private ERADataDetailTransferModel eraDetails;

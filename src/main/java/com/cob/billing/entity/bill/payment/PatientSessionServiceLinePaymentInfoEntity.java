@@ -30,7 +30,7 @@ public class PatientSessionServiceLinePaymentInfoEntity {
     @Column(name = "check_date")
     private Long checkDate;
     @Column(name = "check_number")
-    private Long checkNumber;
+    private String checkNumber;
     @Column(name = "deposit_date")
     private Long depositDate;
 }

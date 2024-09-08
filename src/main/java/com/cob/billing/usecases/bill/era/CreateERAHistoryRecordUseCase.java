@@ -2,7 +2,10 @@ package com.cob.billing.usecases.bill.era;
 
 import com.cob.billing.entity.bill.era.ERAHistoryEntity;
 import com.cob.billing.model.bill.posting.era.ERAHistory;
+import com.cob.billing.model.bill.posting.paymnet.ServiceLinePaymentRequest;
 import com.cob.billing.repositories.bill.era.ERAHistoryRepository;
+import com.cob.billing.usecases.bill.era.mapper.ServiceLinePaymentRequestMapper;
+import com.cob.billing.usecases.bill.posting.CreateSessionServiceLinePaymentUseCase;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,7 +19,9 @@ public class CreateERAHistoryRecordUseCase {
     @Autowired
     ModelMapper mapper;
     @Autowired
-    ERAHistoryMapper eraHistoryMapper;
+    ServiceLinePaymentRequestMapper serviceLinePaymentRequestMapper;
+    @Autowired
+    CreateSessionServiceLinePaymentUseCase createSessionServiceLinePaymentUseCase;
 
     public void create(ERAHistory eraHistory) {
         Optional<ERAHistoryEntity> entity = eraHistoryRepository.findByEraId(eraHistory.getEra().getEraId());
@@ -27,8 +32,10 @@ public class CreateERAHistoryRecordUseCase {
             toBeSaved.setEraId(eraHistory.getEra().getEraId());
         }else{
             toBeSaved = entity.get();
-            toBeSaved.getEraLines().addAll(eraHistory.getEraLines());
+            toBeSaved.getHistoryLines().addAll(eraHistory.getHistoryLines());
         }
         eraHistoryRepository.save(toBeSaved);
+        ServiceLinePaymentRequest serviceLinePaymentRequest= serviceLinePaymentRequestMapper.map(eraHistory.getEra(),eraHistory.getHistoryLines());
+        createSessionServiceLinePaymentUseCase.create(serviceLinePaymentRequest);
     }
 }

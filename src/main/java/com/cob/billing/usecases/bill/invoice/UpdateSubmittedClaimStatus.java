@@ -5,7 +5,7 @@ import com.cob.billing.enums.SubmissionStatus;
 import com.cob.billing.model.integration.claimmd.ClaimResponse;
 import com.cob.billing.model.integration.claimmd.status.updates.StatusUpdateResponse;
 import com.cob.billing.repositories.bill.invoice.tmp.PatientSubmittedClaimRepository;
-import com.cob.billing.usecases.integration.claim.md.CacheResponseIdUseCase;
+import com.cob.billing.usecases.integration.claim.md.CacheClaimMDResponseDataUseCase;
 import com.cob.billing.usecases.integration.claim.md.RetrieveClaimsHistoryUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,16 +21,16 @@ public class UpdateSubmittedClaimStatus {
     @Autowired
     PatientSubmittedClaimRepository patientSubmittedClaimRepository;
     @Autowired
-    CacheResponseIdUseCase cacheResponseIdUseCase;
+    CacheClaimMDResponseDataUseCase cacheClaimMDResponseDataUseCase;
 
 
     @Transactional
     public void update() {
         List<Long> updatesClaim = new ArrayList<>();
         List<PatientSubmittedClaim> pendingSubmittedClaims = patientSubmittedClaimRepository.findBySubmissionStatus(SubmissionStatus.Pending);
-        StatusUpdateResponse statusUpdateResponse = retrieveClaimsHistoryUseCase.get(cacheResponseIdUseCase.getCachedNumber());
+        StatusUpdateResponse statusUpdateResponse = retrieveClaimsHistoryUseCase.get(cacheClaimMDResponseDataUseCase.getCachedNumber());
         if (statusUpdateResponse.getLast_responseid() != null)
-            cacheResponseIdUseCase.updateCachedNumber(Long.parseLong(statusUpdateResponse.getLast_responseid()));
+            cacheClaimMDResponseDataUseCase.updateCachedNumber(Long.parseLong(statusUpdateResponse.getLast_responseid()));
         if (pendingSubmittedClaims != null && !pendingSubmittedClaims.isEmpty()) {
             for (PatientSubmittedClaim submittedClaim : pendingSubmittedClaims) {
 

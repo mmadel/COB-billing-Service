@@ -9,8 +9,7 @@ import java.util.List;
 @Getter
 public class ERAHistory {
     private Long id;
-    private Integer eraId;
-    private List<Integer> eraLines;
+    private List<ERALineHistory> historyLines;
     private boolean isArchive;
     private Long createdAt;
     private ERADataTransferModel era;

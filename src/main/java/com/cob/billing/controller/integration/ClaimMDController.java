@@ -4,10 +4,8 @@ import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.invoice.UpdateSubmittedClaimStatus;
 import com.cob.billing.usecases.bill.posting.era.FetchERADetailsUseCase;
 import com.cob.billing.usecases.bill.posting.era.FetchERAListUseCase;
-import com.cob.billing.usecases.integration.claim.md.CacheResponseIdUseCase;
+import com.cob.billing.usecases.integration.claim.md.CacheClaimMDResponseDataUseCase;
 import com.cob.billing.usecases.integration.claim.md.RetrieveClaimsHistoryUseCase;
-import com.cob.billing.usecases.integration.claim.md.RetrieveERADetailsUseCase;
-import com.cob.billing.usecases.integration.claim.md.RetrieveERAListUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +22,7 @@ public class ClaimMDController {
     @Autowired
     UpdateSubmittedClaimStatus updateSubmittedClaimStatus;
     @Autowired
-    CacheResponseIdUseCase cacheResponseIdUseCase;
+    CacheClaimMDResponseDataUseCase cacheClaimMDResponseDataUseCase;
     @Autowired
     FetchERAListUseCase fetchERAListUseCase;
     @Autowired
@@ -43,18 +41,18 @@ public class ClaimMDController {
 
     @PutMapping("/update/response/id/{responseId}")
     public ResponseEntity findByStatus(@PathVariable Long responseId) {
-        cacheResponseIdUseCase.updateCachedNumber(responseId);
+        cacheClaimMDResponseDataUseCase.updateCachedNumber(responseId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/get/response")
     public ResponseEntity get() {
-        return new ResponseEntity(cacheResponseIdUseCase.getCachedNumber(), HttpStatus.OK);
+        return new ResponseEntity(cacheClaimMDResponseDataUseCase.getCachedNumber(), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/response")
     public ResponseEntity delete() {
-        cacheResponseIdUseCase.clearCache();
+        cacheClaimMDResponseDataUseCase.clearCache();
         return new ResponseEntity(HttpStatus.OK);
     }
 

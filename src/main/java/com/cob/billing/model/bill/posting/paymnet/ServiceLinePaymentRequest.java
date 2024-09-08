@@ -23,7 +23,7 @@ public class ServiceLinePaymentRequest {
 
     private Long checkDate;
 
-    private Long checkNumber;
+    private String checkNumber;
 
     private Long depositDate;
 
