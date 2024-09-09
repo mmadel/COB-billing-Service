@@ -4,6 +4,7 @@ import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
+import com.cob.billing.model.clinical.provider.LegacyID;
 import com.cob.billing.util.DateConstructor;
 import com.itextpdf.forms.PdfAcroForm;
 import org.springframework.stereotype.Component;
@@ -50,11 +51,15 @@ public class ServiceLineCMSDocumentFiller {
             }
             cmsForm.getField("local" + counter).setValue(sessionServiceLine.getSessionId().getDoctorInfo().getDoctorNPI());
             if (sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID() != null) {
-                cmsForm.getField("emg" + counter).setValue(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderIdQualifier());
-                if (sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderIdQualifier().equals("ZZ"))
-                    cmsForm.getField("local" + counter + "a").setValue(sessionServiceLine.getSessionId().getDoctorInfo().getTaxonomy());
-                else
-                    cmsForm.getField("local" + counter + "a").setValue(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderId());
+                if (sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderIdQualifier() != null) {
+                    cmsForm.getField("emg" + counter).setValue(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderIdQualifier());
+                    if (sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderIdQualifier().equals("ZZ"))
+                        cmsForm.getField("local" + counter + "a").setValue(sessionServiceLine.getSessionId().getDoctorInfo().getTaxonomy());
+                    else {
+                        if (sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderId() != null)
+                            cmsForm.getField("local" + counter + "a").setValue(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderId());
+                    }
+                }
             }
             if (sessionServiceLine.getServiceLine().getLineNote() != null) {
                 switch (counter) {
@@ -139,4 +144,5 @@ public class ServiceLineCMSDocumentFiller {
     private boolean containsSession(List<PatientSession> list, Long id) {
         return list.stream().anyMatch(p -> p.getId().equals(id));
     }
+
 }
