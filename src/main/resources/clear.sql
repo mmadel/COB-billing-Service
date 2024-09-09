@@ -5,8 +5,8 @@ delete from patient_invoice_record;
 delete from patient_invoice;
 
 delete from patient_authorization;
-delete from patient_session_service_line_payment_info;
 delete from patient_session_service_line_payment;
+delete from patient_session_service_line_payment_info;
 delete from patient_session_service_line;
 delete from patient_session;
 delete from clinic;

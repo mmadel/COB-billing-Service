@@ -21,7 +21,6 @@ public class MapSessionHistoryUseCase {
             } else {
                 SessionHistory sessionHistory = createHistoryRecord(record, null, null);
                 sessionHistories.add(sessionHistory);
-                System.out.println(record.getId() + " has single claim");
             }
         }
         return sessionHistories;

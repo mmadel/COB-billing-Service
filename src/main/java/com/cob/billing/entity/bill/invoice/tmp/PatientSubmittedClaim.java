@@ -1,5 +1,6 @@
 package com.cob.billing.entity.bill.invoice.tmp;
 
+import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.enums.ClaimResponseStatus;
 import com.cob.billing.enums.SubmissionStatus;
 import com.cob.billing.model.clinical.patient.session.ServiceLine;
@@ -13,6 +14,7 @@ import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "patient_submitted_claim")
@@ -61,4 +63,21 @@ public class PatientSubmittedClaim {
     @ManyToOne
     @JoinColumn(name = "patient_invoice_record_id")
     private PatientInvoiceRecord patientInvoiceRecord;
+
+    @OneToOne
+    @JoinColumn(name = "patient_session_id")
+    private PatientSessionEntity patientSession;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PatientSubmittedClaim claim = (PatientSubmittedClaim) o;
+        return patientSession.getId().equals(claim.patientSession.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(patientSession.getId());
+    }
 }

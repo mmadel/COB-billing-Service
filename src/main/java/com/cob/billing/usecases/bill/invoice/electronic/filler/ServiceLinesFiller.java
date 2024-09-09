@@ -29,10 +29,18 @@ public class ServiceLinesFiller {
             charge.setPlace_of_service(sessionServiceLine.getSessionId().getPlaceOfCode().split("_")[1]);
             charge.setProc_code(sessionServiceLine.getServiceLine().getCptCode().getServiceCode());
             charge.setRemote_chgid(Long.toString(sessionServiceLine.getServiceLine().getId()));
-            if (sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderIdQualifier().equals("ZZ"))
-                charge.setChg_prov_taxonomy(sessionServiceLine.getSessionId().getDoctorInfo().getTaxonomy());
-            else
-                charge.setChg_prov_id(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderId());
+            if (sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID() != null) {
+                if (sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderIdQualifier() != null) {
+                    if (sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderIdQualifier().equals("ZZ"))
+                        charge.setChg_prov_taxonomy(sessionServiceLine.getSessionId().getDoctorInfo().getTaxonomy());
+                    else {
+                        if (sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderId() != null)
+                            charge.setChg_prov_id(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderId());
+                    }
+
+                }
+            }
+
             charge.setChg_prov_npi(sessionServiceLine.getSessionId().getDoctorInfo().getDoctorNPI());
             //charge.setRemote_chgid();
             if (sessionServiceLine.getServiceLine().getCptCode().getModifier().length() > 0) {

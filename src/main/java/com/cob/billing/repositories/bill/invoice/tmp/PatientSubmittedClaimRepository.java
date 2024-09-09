@@ -18,4 +18,10 @@ public interface PatientSubmittedClaimRepository extends CrudRepository<PatientS
 
     @Query("select pc  from  PatientSubmittedClaim pc where pc.id IN :ids")
     List<PatientSubmittedClaim> test(@Param("ids") List<Long> ids);
+
+
+    @Query("SELECT psc from PatientSubmittedClaim psc INNER JOIN FETCH psc.patientInvoiceRecord pir " +
+            "WHERE  pir.insuranceCompanyId = :insuranceCompany")
+    List<PatientSubmittedClaim> findBySessionSubmittedByInsuranceCompany(@Param("insuranceCompany") Long insuranceCompany);
+
 }

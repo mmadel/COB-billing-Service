@@ -2,6 +2,7 @@ package com.cob.billing.usecases.bill.invoice;
 
 import com.cob.billing.entity.bill.invoice.tmp.PatientInvoiceRecord;
 import com.cob.billing.entity.bill.invoice.tmp.PatientSubmittedClaim;
+import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.enums.SubmissionStatus;
 import com.cob.billing.enums.SubmissionType;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
@@ -11,6 +12,8 @@ import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.model.integration.claimmd.ClaimResponse;
 import com.cob.billing.repositories.bill.invoice.tmp.PatientInvoiceRecordRepository;
 import com.cob.billing.repositories.bill.invoice.tmp.PatientSubmittedClaimRepository;
+import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +33,8 @@ public class CreatPatientInvoiceRecordUseCase {
     private PatientSubmittedClaimRepository patientSubmittedClaimRepository;
     @Autowired
     CreateCMSFileUseCase createCMSFileUseCase;
+    @Autowired
+    ModelMapper mapper;
 
     public void create(InvoiceRequest invoiceRequest, InvoiceResponse invoiceResponse) throws IOException {
         PatientInvoiceRecord patientInvoiceRecord = createPatientInvoiceRecord(invoiceRequest, invoiceResponse.getClaimsFileNames());
@@ -44,7 +49,7 @@ public class CreatPatientInvoiceRecordUseCase {
         patientInvoiceRecord.setPatientLastName(invoiceRequest.getPatientInformation().getLastName());
         patientInvoiceRecord.setPatientId(invoiceRequest.getPatientInformation().getId());
         patientInvoiceRecord.setInsuranceCompanyName(invoiceRequest.getInvoiceInsuranceCompanyInformation().getName());
-        //patientInvoiceRecord.setInsuranceCompanyId();
+        patientInvoiceRecord.setInsuranceCompanyId(invoiceRequest.getInvoiceInsuranceCompanyInformation().getId());
         patientInvoiceRecord.setSubmissionType(invoiceRequest.getSubmissionType());
         patientInvoiceRecord.setSubmissionId(generateSubmissionId());
         byte[] cmsDocument = createCMSFileUseCase.upload(claimsFileNames);
@@ -65,6 +70,7 @@ public class CreatPatientInvoiceRecordUseCase {
             claim.setServiceLine(serviceLines.stream()
                     .map(SelectedSessionServiceLine::getServiceLine)
                     .collect(Collectors.toList()));
+            claim.setPatientSession(mapper.map(session, PatientSessionEntity.class));
             claim.setPatientInvoiceRecord(patientInvoiceRecord);
             claim.setLocalClaimId(session.getId());
             claim.setDateOfService(serviceLines.stream().findFirst().get().getSessionId().getServiceDate());
@@ -111,4 +117,5 @@ public class CreatPatientInvoiceRecordUseCase {
                 .map(messageResponse -> messageResponse.getMessage())
                 .collect(Collectors.toList());
     }
+
 }
