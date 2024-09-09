@@ -23,7 +23,7 @@ public class SecurityConfiguration {
         httpSecurity.oauth2ResourceServer().jwt().jwtAuthenticationConverter(
                 jwt -> new JwtAuthenticationToken(jwt, authoritiesConverter.convert(jwt)));
         httpSecurity.authorizeRequests()
-                .antMatchers("/init/**").permitAll()
+                .antMatchers("/db/**").permitAll()
                 .anyRequest().authenticated();
         return httpSecurity.build();
     }
