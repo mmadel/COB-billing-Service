@@ -2,11 +2,15 @@ package com.cob.billing.usecases.bill.payer;
 
 import com.cob.billing.entity.bill.payer.PayerEntity;
 import com.cob.billing.model.bill.payer.Payer;
+import com.cob.billing.model.common.BasicAddress;
+import com.cob.billing.model.integration.claimmd.era.PayerClaimMD;
 import com.cob.billing.repositories.bill.payer.PayerRepository;
+import com.cob.billing.usecases.integration.claim.md.RetrievePayerListUseCase;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +20,8 @@ public class AddPayerUseCase {
     PayerRepository repository;
     @Autowired
     ModelMapper mapper;
+    @Autowired
+    RetrievePayerListUseCase retrievePayerListUseCase;
 
     public void add(List<Payer> models) {
         List<PayerEntity> entities = models.stream()
@@ -23,7 +29,18 @@ public class AddPayerUseCase {
                 .collect(Collectors.toList());
         repository.saveAll(entities);
     }
-    public Long add(Payer model){
-        return repository.save(mapper.map(model, PayerEntity.class)).getId();
+    public void add(){
+        List<PayerEntity> entities = new ArrayList<>();
+        List<PayerClaimMD> payersClaimMD = retrievePayerListUseCase.getList().getPayer();
+        payersClaimMD.stream()
+                .forEach(payerClaimMD -> {
+                    PayerEntity payerEntity = new PayerEntity();
+                    payerEntity.setPayerId(payerClaimMD.getPayerid());
+                    payerEntity.setName(payerClaimMD.payer_name);
+                    payerEntity.setDisplayName(payerClaimMD.payer_name.trim());
+                    entities.add(payerEntity);
+
+                });
+        repository.saveAll(entities);
     }
 }

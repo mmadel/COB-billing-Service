@@ -14,7 +14,7 @@ public class Payer {
     private Long id;
     private String name;
     private String displayName;
-    private Long payerId;
+    private String payerId;
     private BasicAddress address;
     private PayerType payerType;
 }

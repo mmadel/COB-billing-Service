@@ -36,7 +36,7 @@ public class UpdateSubmittedClaimStatus {
 
                 for (ClaimResponse claimResponse : statusUpdateResponse.getClaim()) {
                     if (claimResponse.getClaimmd_id().equals(Long.toString(submittedClaim.getRemoteClaimId()))
-                            && claimResponse.getSender_name().equals(submittedClaim.getPatientInvoiceRecord().getInsuranceCompanyName())) {
+                            && claimResponse.getSender_name().toLowerCase().equals(submittedClaim.getPatientInvoiceRecord().getInsuranceCompanyName().toLowerCase())) {
                         updatesClaim.add(submittedClaim.getId());
                     }
                 }

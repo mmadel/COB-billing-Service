@@ -29,9 +29,9 @@ VALUES
 
 
 
-INSERT INTO public.payer(
-    id, address, display_name, name, payer_id)
-VALUES (1,'{"city": "New York", "state": "NY", "address": "PO Box 717", "zipCode": "10108-0717"}', '1199 NATIONAL BENEFIT FUND', '1199 NATIONAL BENEFIT FUND', 13162);
+-- INSERT INTO public.payer(
+--     id, address, display_name, name, payer_id)
+-- VALUES (1,'{"city": "New York", "state": "NY", "address": "PO Box 717", "zipCode": "10108-0717"}', '1199 NATIONAL BENEFIT FUND', '1199 NATIONAL BENEFIT FUND', 13162);
 
 
 INSERT INTO public.patient_balance_settings(
