@@ -1,5 +1,6 @@
 package com.cob.billing.model.bill.modifier.rule;
 
+import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyHolder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,5 +13,7 @@ public class ModifierRule {
     private String name;
     private Boolean defaultRule;
     private Boolean active;
+    private InsuranceCompanyHolder insuranceCompany;
     List<Rule> rules;
+
 }

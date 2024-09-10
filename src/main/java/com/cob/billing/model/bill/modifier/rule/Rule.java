@@ -14,5 +14,4 @@ public class Rule {
     private String modifier;
     private String cptCode;
     private ModifierAppender appender;
-    InsuranceCompanyHolder insurance;
 }
