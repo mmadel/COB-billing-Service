@@ -1,5 +1,6 @@
 package com.cob.billing.usecases.bill.tools.modifier.rule;
 
+import com.cob.billing.model.bill.modifier.rule.ModifierRule;
 import com.cob.billing.model.bill.modifier.rule.Rule;
 import com.cob.billing.repositories.bill.ModifierRuleRepository;
 import org.modelmapper.ModelMapper;
@@ -17,9 +18,9 @@ public class ModifierRuleFinderUseCase {
     @Autowired
     ModelMapper mapper;
 
-    public List<Rule> findAll() {
+    public List<ModifierRule> findAll() {
         return StreamSupport.stream(modifierRuleRepository.findAll().spliterator(), false)
-                .map(modifierRuleEntity -> mapper.map(modifierRuleEntity, Rule.class)).collect(Collectors.toList());
+                .map(modifierRuleEntity -> mapper.map(modifierRuleEntity, ModifierRule.class)).collect(Collectors.toList());
     }
 
     public Rule findById(Long id) {
