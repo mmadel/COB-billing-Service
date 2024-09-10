@@ -5,20 +5,14 @@ import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyHolder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 @Getter
-public class ModifierRuleModel {
+public class Rule {
     private Long id;
-
-    private String name;
-    private Boolean defaultRule;
-    private Boolean active;
-
     private String modifier;
-
     private String cptCode;
-
     private ModifierAppender appender;
-
     InsuranceCompanyHolder insurance;
 }

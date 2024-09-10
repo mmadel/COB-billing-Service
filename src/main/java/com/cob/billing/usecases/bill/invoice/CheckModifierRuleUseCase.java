@@ -48,56 +48,56 @@ public class CheckModifierRuleUseCase {
     }
 
     private void findModifierRule(Long insuranceId) {
-        Optional<ModifierRuleEntity> rule = modifierRuleRepository.findByInsuranceCompanyId(insuranceId);
-        if (rule.isPresent())
-            modifierRule = rule.get();
-        else
-            modifierRule = null;
+//        Optional<ModifierRuleEntity> rule = modifierRuleRepository.findByInsuranceCompanyId(insuranceId);
+//        if (rule.isPresent())
+//            modifierRule = rule.get();
+//        else
+//            modifierRule = null;
     }
 
     private void change(List<CPTCode> cptCode) {
         if (modifierRule != null) {
-            cptCode.forEach(code -> {
-                List<String> originalModifier = code.getModifier().length() != 0 ? new ArrayList<>(Arrays.asList(code.getModifier().split("\\."))) : null;
-                List<String> modifiedModifier = new ArrayList<>(Arrays.asList(modifierRule.getModifier().split("\\.")));
-                if (modifierRule.getCptCode() != null && !(modifierRule.getCptCode().isEmpty())) {
-                    if (code.getServiceCode().equals(modifierRule.getCptCode())) {
-                        execute(code, originalModifier, modifiedModifier);
-                    }
-                } else {
-                    execute(code, originalModifier, modifiedModifier);
-                }
-
-            });
+//            cptCode.forEach(code -> {
+//                List<String> originalModifier = code.getModifier().length() != 0 ? new ArrayList<>(Arrays.asList(code.getModifier().split("\\."))) : null;
+//                List<String> modifiedModifier = new ArrayList<>(Arrays.asList(modifierRule.getModifier().split("\\.")));
+//                if (modifierRule.getCptCode() != null && !(modifierRule.getCptCode().isEmpty())) {
+//                    if (code.getServiceCode().equals(modifierRule.getCptCode())) {
+//                        execute(code, originalModifier, modifiedModifier);
+//                    }
+//                } else {
+//                    execute(code, originalModifier, modifiedModifier);
+//                }
+//
+//            });
         }
     }
 
     private void execute(CPTCode code, List<String> originalModifier, List<String> modifiedModifier) {
-        switch (modifierRule.getAppender()) {
-            case replace:
-                replaceModifier(code, modifierRule.getModifier());
-                break;
-            case front:
-                if (originalModifier == null)
-                    replaceModifier(code, modifierRule.getModifier());
-                else {
-                    boolean frontContains = modifiedModifier.stream()
-                            .anyMatch(originalModifier::contains);
-                    if (!frontContains)
-                        code.setModifier(shiftModifierLeft(originalModifier, modifiedModifier));
-                }
-                break;
-            case end:
-                if (originalModifier == null)
-                    replaceModifier(code, modifierRule.getModifier());
-                else {
-                    boolean endContains = modifiedModifier.stream()
-                            .anyMatch(originalModifier::contains);
-                    if (!endContains)
-                        code.setModifier(shiftModifierRight(originalModifier, modifiedModifier));
-                }
-                break;
-        }
+//        switch (modifierRule.getAppender()) {
+//            case replace:
+//                replaceModifier(code, modifierRule.getModifier());
+//                break;
+//            case front:
+//                if (originalModifier == null)
+//                    replaceModifier(code, modifierRule.getModifier());
+//                else {
+//                    boolean frontContains = modifiedModifier.stream()
+//                            .anyMatch(originalModifier::contains);
+//                    if (!frontContains)
+//                        code.setModifier(shiftModifierLeft(originalModifier, modifiedModifier));
+//                }
+//                break;
+//            case end:
+//                if (originalModifier == null)
+//                    replaceModifier(code, modifierRule.getModifier());
+//                else {
+//                    boolean endContains = modifiedModifier.stream()
+//                            .anyMatch(originalModifier::contains);
+//                    if (!endContains)
+//                        code.setModifier(shiftModifierRight(originalModifier, modifiedModifier));
+//                }
+//                break;
+//        }
     }
 
     private void replaceModifier(CPTCode cptCode, String ruleModifier) {

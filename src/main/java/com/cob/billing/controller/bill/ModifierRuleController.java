@@ -1,6 +1,7 @@
 package com.cob.billing.controller.bill;
 
-import com.cob.billing.model.bill.modifier.rule.ModifierRuleModel;
+import com.cob.billing.model.bill.modifier.rule.ModifierRule;
+import com.cob.billing.model.bill.modifier.rule.Rule;
 import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.usecases.bill.invoice.CheckModifierRuleUseCase;
 import com.cob.billing.usecases.bill.tools.modifier.rule.CreateModifierRuleUseCase;
@@ -31,7 +32,7 @@ public class ModifierRuleController {
     CheckModifierRuleUseCase checkModifierRuleUseCase;
 
     @PostMapping("/create")
-    public ResponseEntity create(@RequestBody ModifierRuleModel model) {
+    public ResponseEntity create(@RequestBody ModifierRule model) {
         return new ResponseEntity(createModifierRuleUseCase.create(model), HttpStatus.OK);
     }
 

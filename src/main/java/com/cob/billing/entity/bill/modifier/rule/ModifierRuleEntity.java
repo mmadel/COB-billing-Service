@@ -1,5 +1,7 @@
 package com.cob.billing.entity.bill.modifier.rule;
 
+import com.cob.billing.model.bill.modifier.rule.Rule;
+import com.cob.billing.model.bill.payer.Payer;
 import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyHolder;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
@@ -10,6 +12,7 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "modifier_rule")
@@ -32,15 +35,9 @@ public class ModifierRuleEntity {
     @Column(name = "active")
     private Boolean active;
 
-    @Column(name = "modifier")
-    private String modifier;
+    @Column(name = "rules", columnDefinition = "jsonb")
+    @Type(type = "jsonb")
+    private List<Rule> rules;
 
-    @Column(name = "cpt_code")
-    private String cptCode;
 
-    @Column(name = "appender")
-    private ModifierAppender appender;
-
-    @Column(name="insurance_company_id")
-    private Long insuranceCompanyId;
 }

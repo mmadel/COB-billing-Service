@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface ModifierRuleRepository extends CrudRepository<ModifierRuleEntity, Long> {
 
-    Optional<ModifierRuleEntity> findByInsuranceCompanyId(@Param("id") Long id);
+//    Optional<ModifierRuleEntity> findByInsuranceCompanyId(@Param("id") Long id);
 
     @Query("Select mr from ModifierRuleEntity mr where mr.defaultRule =true")
     Optional<ModifierRuleEntity> findDefault();
