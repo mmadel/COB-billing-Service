@@ -18,9 +18,11 @@ public class CreateModifierRuleUseCase {
     @Transactional
     public Long create(ModifierRuleModel model) {
         ModifierRuleEntity toBeCreated = mapper.map(model, ModifierRuleEntity.class);
+        if (model.getInsurance() != null)
+            toBeCreated.setInsuranceCompanyId(model.getInsurance().getId());
         if (!toBeCreated.getDefaultRule())
             toBeCreated.setDefaultRule(false);
-        else{
+        else {
             toBeCreated.setName("Default");
             toBeCreated.setActive(true);
         }

@@ -41,7 +41,6 @@ public class ModifierRuleEntity {
     @Column(name = "appender")
     private ModifierAppender appender;
 
-    @Column(name = "insurance", columnDefinition = "jsonb")
-    @Type(type = "jsonb")
-    private InsuranceCompanyHolder insurance;
+    @Column(name="insurance_company_id")
+    private Long insuranceCompanyId;
 }
