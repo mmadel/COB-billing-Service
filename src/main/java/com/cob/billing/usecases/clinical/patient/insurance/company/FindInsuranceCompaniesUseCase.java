@@ -53,7 +53,7 @@ public class FindInsuranceCompaniesUseCase {
 
     public List<InsuranceCompanyHolder> find(String name) {
         List<InsuranceCompanyHolder> insuranceCompanyHolder = new ArrayList<>();
-        insuranceCompanyRepository.findByInsuranceCompanyName(name).get()
+        insuranceCompanyRepository.findByInsuranceCompanyName(name.toUpperCase()).get()
                 .stream()
                 .forEach(insuranceCompany -> {
                     InsuranceCompanyHolder internalHolder = new InsuranceCompanyHolder();
@@ -62,7 +62,7 @@ public class FindInsuranceCompaniesUseCase {
                     internalHolder.setVisibility(InsuranceCompanyVisibility.Internal);
                     insuranceCompanyHolder.add(internalHolder);
                 });
-        insuranceCompanyExternalRepository.findByInsuranceCompanyName(name).get().stream()
+        insuranceCompanyExternalRepository.findByInsuranceCompanyName(name.toUpperCase()).get().stream()
                 .forEach(insuranceCompanyExternal -> {
                     InsuranceCompanyHolder internalHolder = new InsuranceCompanyHolder();
                     internalHolder.setId(insuranceCompanyExternal.getId());
