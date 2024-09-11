@@ -19,7 +19,7 @@ public class FindPatientByNamUseCase {
 
     public List<ClientSearchResult> find(String name) {
         List<ClientSearchResult> results = new ArrayList<>();
-        patientRepository.findByName(name).stream()
+        patientRepository.findByName(name.trim().toLowerCase()).stream()
                 .forEach(entity -> {
                     ClientSearchResult searchResult = new ClientSearchResult();
                     searchResult.setClientId(entity.getId());

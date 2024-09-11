@@ -15,7 +15,7 @@ import java.util.List;
 public interface PatientRepository extends PagingAndSortingRepository<PatientEntity, Long> {
 
     @Query("SELECT pe FROM PatientEntity pe where " +
-            "pe.firstName LIKE CONCAT('%',:name,'%') OR pe.middleName LIKE CONCAT('%',:name,'%')  OR pe.lastName LIKE CONCAT('%',:name,'%')")
+            "LOWER(pe.firstName) LIKE CONCAT('%',:name,'%') OR LOWER(pe.middleName) LIKE CONCAT('%',:name,'%')  OR LOWER(pe.lastName) LIKE CONCAT('%',:name,'%')")
     List<PatientEntity> findByName(@Param("name") String name);
 
     PatientEntity findByFirstNameAndLastName(String firstName, String lastName);
