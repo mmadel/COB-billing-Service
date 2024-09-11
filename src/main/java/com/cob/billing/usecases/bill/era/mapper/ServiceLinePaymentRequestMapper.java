@@ -25,7 +25,7 @@ public class ServiceLinePaymentRequestMapper {
 
     public ServiceLinePaymentRequest map(ERADataTransferModel era, List<ERALineHistory> historyLines) {
         ServiceLinePaymentRequest serviceLinePaymentRequest = new ServiceLinePaymentRequest();
-        serviceLinePaymentRequest.setServiceLinePaymentType(ServiceLinePaymentType.Client);
+        serviceLinePaymentRequest.setServiceLinePaymentType(ServiceLinePaymentType.InsuranceCompany);
         serviceLinePaymentRequest.setTotalAmount(Double.valueOf(era.getPaidAmount()).longValue());
         serviceLinePaymentRequest.setPaymentMethod(era.getCheckType());
         serviceLinePaymentRequest.setReceivedDate(new Date().getTime());
