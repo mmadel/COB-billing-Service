@@ -2,6 +2,7 @@ package com.cob.billing.usecases.bill.invoice;
 
 import com.cob.billing.entity.bill.modifier.rule.ModifierRuleEntity;
 import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
+import com.cob.billing.model.bill.modifier.rule.Rule;
 import com.cob.billing.model.clinical.patient.CPTCode;
 import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.repositories.bill.ModifierRuleRepository;
@@ -28,76 +29,81 @@ public class CheckModifierRuleUseCase {
 
     @Transactional
     public List<ServiceLine> checkDefault(List<ServiceLine> models) {
-        Optional<ModifierRuleEntity> rule = modifierRuleRepository.findDefault();
-        if (rule.isPresent())
-            modifierRule = rule.get();
-        List<CPTCode> cptCodes = models.stream()
-                .map(ServiceLine::getCptCode).collect(Collectors.toList());
-        change(cptCodes);
+        Optional<ModifierRuleEntity> dd = modifierRuleRepository.findByInsuranceCompanyId("2");
+        Optional<ModifierRuleEntity> defaultRule = modifierRuleRepository.findDefault();
+        if (defaultRule.isPresent()) {
+            models.stream().forEach(serviceLine -> {
+                CPTCode cptCode = serviceLine.getCptCode();
+                Rule rule = getRuleByCPT(cptCode.getServiceCode(), defaultRule.get().getRules());
+                applyRule(rule, cptCode);
+            });
+        }
         updatePatientSessionServiceLineUseCase.update(models);
         return models;
     }
 
     public void check(InvoiceRequest invoiceRequest) {
-        List<CPTCode> cptCodes = invoiceRequest.getSelectedSessionServiceLine().stream()
-                .map(serviceLine -> serviceLine.getServiceLine().getCptCode())
-                .collect(Collectors.toList());
-        Long insuranceId = invoiceRequest.getInvoiceInsuranceCompanyInformation().getId();
-        findModifierRule(insuranceId);
-        change(cptCodes);
-    }
-
-    private void findModifierRule(Long insuranceId) {
-//        Optional<ModifierRuleEntity> rule = modifierRuleRepository.findByInsuranceCompanyId(insuranceId);
-//        if (rule.isPresent())
-//            modifierRule = rule.get();
-//        else
-//            modifierRule = null;
-    }
-
-    private void change(List<CPTCode> cptCode) {
-        if (modifierRule != null) {
-//            cptCode.forEach(code -> {
-//                List<String> originalModifier = code.getModifier().length() != 0 ? new ArrayList<>(Arrays.asList(code.getModifier().split("\\."))) : null;
-//                List<String> modifiedModifier = new ArrayList<>(Arrays.asList(modifierRule.getModifier().split("\\.")));
-//                if (modifierRule.getCptCode() != null && !(modifierRule.getCptCode().isEmpty())) {
-//                    if (code.getServiceCode().equals(modifierRule.getCptCode())) {
-//                        execute(code, originalModifier, modifiedModifier);
-//                    }
-//                } else {
-//                    execute(code, originalModifier, modifiedModifier);
-//                }
-//
-//            });
+        Optional<ModifierRuleEntity> modifierRuleEntity = modifierRuleRepository.findByInsuranceCompanyId(invoiceRequest.getInvoiceInsuranceCompanyInformation().getId().toString());
+        if (modifierRuleEntity.isPresent()) {
+            invoiceRequest.getSelectedSessionServiceLine().stream()
+                    .forEach(serviceLine -> {
+                        CPTCode cptCode = serviceLine.getServiceLine().getCptCode();
+                        Rule rule = getRuleByCPT(cptCode.getServiceCode(), modifierRuleEntity.orElseThrow().getRules());
+                        applyRule(rule, cptCode);
+                    });
         }
     }
 
-    private void execute(CPTCode code, List<String> originalModifier, List<String> modifiedModifier) {
-//        switch (modifierRule.getAppender()) {
-//            case replace:
-//                replaceModifier(code, modifierRule.getModifier());
-//                break;
-//            case front:
-//                if (originalModifier == null)
-//                    replaceModifier(code, modifierRule.getModifier());
-//                else {
-//                    boolean frontContains = modifiedModifier.stream()
-//                            .anyMatch(originalModifier::contains);
-//                    if (!frontContains)
-//                        code.setModifier(shiftModifierLeft(originalModifier, modifiedModifier));
-//                }
-//                break;
-//            case end:
-//                if (originalModifier == null)
-//                    replaceModifier(code, modifierRule.getModifier());
-//                else {
-//                    boolean endContains = modifiedModifier.stream()
-//                            .anyMatch(originalModifier::contains);
-//                    if (!endContains)
-//                        code.setModifier(shiftModifierRight(originalModifier, modifiedModifier));
-//                }
-//                break;
-//        }
+    private Rule getRuleByCPT(String cpt, List<Rule> rules) {
+        //Check If CPT contains in Default List
+        Rule matchedRule = null;
+        for (Rule rule : rules) {
+            if (rule.getCptCode() != null && rule.getCptCode().equals(cpt)) {
+                matchedRule = rule;
+                break;
+            }
+        }
+        if (matchedRule != null)
+            return matchedRule;
+        else {
+            //Check All CPT
+            Rule allRule = null;
+            for (Rule rule : rules) {
+                if (rule.getCptCode() == null) {
+                    allRule = rule;
+                    break;
+                }
+            }
+            if (allRule != null)
+                return allRule;
+            else
+                return null;
+        }
+    }
+
+    private void getRuleByInsuranceCompany(String insuranceCompanyId) {
+        Optional<ModifierRuleEntity> modifierRuleEntity = modifierRuleRepository.findByInsuranceCompanyId(insuranceCompanyId);
+
+    }
+
+    private void applyRule(Rule rule, CPTCode cptCode) {
+        List<String> originalModifier;
+        List<String> modifiedModifier;
+        switch (rule.getAppender()) {
+            case replace:
+                replaceModifier(cptCode, rule.getModifier());
+                break;
+            case end:
+                originalModifier = cptCode.getModifier().length() != 0 ? new ArrayList<>(Arrays.asList(cptCode.getModifier().split("\\."))) : null;
+                modifiedModifier = new ArrayList<>(Arrays.asList(rule.getModifier().split("\\.")));
+                cptCode.setModifier(shiftModifierRight(originalModifier, modifiedModifier));
+                break;
+            case front:
+                originalModifier = cptCode.getModifier().length() != 0 ? new ArrayList<>(Arrays.asList(cptCode.getModifier().split("\\."))) : null;
+                modifiedModifier = new ArrayList<>(Arrays.asList(rule.getModifier().split("\\.")));
+                cptCode.setModifier(shiftModifierLeft(originalModifier, modifiedModifier));
+                break;
+        }
     }
 
     private void replaceModifier(CPTCode cptCode, String ruleModifier) {
