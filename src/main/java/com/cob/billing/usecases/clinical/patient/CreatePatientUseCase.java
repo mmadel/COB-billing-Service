@@ -24,6 +24,7 @@ public class CreatePatientUseCase {
     public Long create(Patient patient) {
 
         PatientEntity toBeCreated = mapper.map(patient, PatientEntity.class);
+        toBeCreated.setAuthorizationWatching(true);
         toBeCreated.setReferringProvider(null);
         PatientEntity created = repository.save(toBeCreated);
 

@@ -54,6 +54,8 @@ public class CreatePatientInsuranceCompanyUseCase {
                 InsuranceCompanyEntity insuranceCompany = createInsuranceCompany(patientInsurance.getInsuranceCompany(), patientInsurance.getInsuranceCompanyAddress());
                 result.setAssigner(getAssigner(insuranceCompany.getId()));
                 mapPatientInsuranceToInsuranceCompany(created, insuranceCompany);
+                String[] insuranceCompanyValue=new String[]{insuranceCompany.getName(),insuranceCompany.getId().toString()};
+                result.setInsuranceCompany(insuranceCompanyValue);
                 break;
             case External:
                 InsuranceCompanyExternalEntity insuranceCompanyExternal = createExternalInsuranceCompany(patientInsurance.getInsuranceCompany(), patientInsurance.getInsuranceCompanyAddress());
