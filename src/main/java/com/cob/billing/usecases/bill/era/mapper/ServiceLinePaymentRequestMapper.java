@@ -51,8 +51,9 @@ public class ServiceLinePaymentRequestMapper {
                 .collect(Collectors.toList()));
         for (int i = 0; i < historyLines.size(); i++) {
             ERALineHistory line = historyLines.get(i);
-            SessionServiceLinePayment payment = new SessionServiceLinePayment(line.getBilled(), line.getPaid()
-                    , line.getAdjust(), Long.parseLong(line.getServiceLineId()), new Date().getTime(), ServiceLinePaymentType.Client);
+            double balance = line.getBilled() - (line.getAdjust() + line.getPaid());
+            SessionServiceLinePayment payment = new SessionServiceLinePayment(balance, line.getPaid()
+                    , line.getAdjust(), Long.parseLong(line.getServiceLineId()), new Date().getTime(), ServiceLinePaymentType.InsuranceCompany);
             payment.setServiceLinePaymentAction(ServiceLinePaymentAction.valueOf(line.getAction()));
             payment.setServiceLineId(Long.parseLong(line.getServiceLineId()));
             payment.setSessionId(sessionToServiceLineMapper.get(Long.parseLong(line.getServiceLineId())));
