@@ -29,7 +29,6 @@ public class CheckModifierRuleUseCase {
 
     @Transactional
     public List<ServiceLine> checkDefault(List<ServiceLine> models) {
-        Optional<ModifierRuleEntity> dd = modifierRuleRepository.findByInsuranceCompanyId("2");
         Optional<ModifierRuleEntity> defaultRule = modifierRuleRepository.findDefault();
         if (defaultRule.isPresent()) {
             models.stream().forEach(serviceLine -> {
@@ -96,12 +95,18 @@ public class CheckModifierRuleUseCase {
             case end:
                 originalModifier = cptCode.getModifier().length() != 0 ? new ArrayList<>(Arrays.asList(cptCode.getModifier().split("\\."))) : null;
                 modifiedModifier = new ArrayList<>(Arrays.asList(rule.getModifier().split("\\.")));
-                cptCode.setModifier(shiftModifierRight(originalModifier, modifiedModifier));
+                if (originalModifier != null)
+                    cptCode.setModifier(shiftModifierRight(originalModifier, modifiedModifier));
+                else
+                    replaceModifier(cptCode, rule.getModifier());
                 break;
             case front:
                 originalModifier = cptCode.getModifier().length() != 0 ? new ArrayList<>(Arrays.asList(cptCode.getModifier().split("\\."))) : null;
                 modifiedModifier = new ArrayList<>(Arrays.asList(rule.getModifier().split("\\.")));
-                cptCode.setModifier(shiftModifierLeft(originalModifier, modifiedModifier));
+                if (originalModifier != null)
+                    cptCode.setModifier(shiftModifierLeft(originalModifier, modifiedModifier));
+                else
+                    replaceModifier(cptCode, rule.getModifier());
                 break;
         }
     }
