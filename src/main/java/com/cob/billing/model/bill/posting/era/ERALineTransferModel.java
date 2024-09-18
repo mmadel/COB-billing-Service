@@ -23,8 +23,11 @@ public class ERALineTransferModel {
     private Integer units;
     private String dos;
     private String claimId;
-    private Integer chargeLineId;
+    private Integer serviceLineID;
+    private String PatientName;
     private ServiceLinePaymentAction serviceLinePaymentAction;
+    private String action;
+    private Boolean selected;
 
 
 }

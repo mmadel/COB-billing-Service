@@ -1,6 +1,6 @@
 package com.cob.billing.entity.bill.era;
 
-import com.cob.billing.model.bill.posting.era.ERALineHistory;
+import com.cob.billing.model.bill.posting.era.ERADetailsLine;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
@@ -32,7 +32,7 @@ public class ERAHistoryEntity {
 
     @Column(name = "era_line", columnDefinition = "jsonb")
     @Type(type = "jsonb")
-    private List<ERALineHistory> historyLines;
+    private List<ERADetailsLine> historyLines;
 
     @Column(name = "is_archive")
     private boolean isArchive;

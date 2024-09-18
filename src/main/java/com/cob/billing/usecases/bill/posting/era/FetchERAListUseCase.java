@@ -3,6 +3,7 @@ package com.cob.billing.usecases.bill.posting.era;
 import com.cob.billing.entity.bill.era.ERAHistoryEntity;
 import com.cob.billing.model.bill.posting.era.ERADataDetailTransferModel;
 import com.cob.billing.model.bill.posting.era.ERADataTransferModel;
+import com.cob.billing.model.bill.posting.era.ERALineTransferModel;
 import com.cob.billing.model.integration.claimmd.era.respose.ERAListResponse;
 import com.cob.billing.model.response.ERAResponse;
 import com.cob.billing.repositories.bill.era.ERAHistoryRepository;
@@ -51,7 +52,9 @@ public class FetchERAListUseCase {
                 ERADataDetailTransferModel eraDataDetail = fetchERADetailsUseCase.fetch(eraDataTransferModel.getEraId());
                 Integer numberOfAppliedLines = getAppliedLines(eraHistoryEntityList, eraDataTransferModel.getEraId());
                 eraDataTransferModel.setLines(eraDataDetail.getLines().size());
-                filterERADetailsLines(eraDataDetail, eraHistoryEntityList, eraDataTransferModel.getEraId());
+               // filterERADetailsLines(eraDataDetail, eraHistoryEntityList, eraDataTransferModel.getEraId());
+                eraDataDetail.setPatientLines(eraDataDetail.getLines().stream()
+                        .collect(Collectors.groupingBy(ERALineTransferModel::getPatientName)));
                 eraDataTransferModel.setEraDetails(eraDataDetail);
                 eraDataTransferModel.setUnAppliedLines(numberOfAppliedLines);
                 eraDataTransferModel.setSeen(numberOfAppliedLines == 0 ? false : true);
@@ -84,19 +87,6 @@ public class FetchERAListUseCase {
             }
         }
         return numberOfAppliedLine;
-
-    }
-
-    private void filterERADetailsLines(ERADataDetailTransferModel eraDataDetail, List<ERAHistoryEntity> historyList, Integer eraId) {
-        List<Long> serviceLines = historyList.stream()
-                .filter(eraHistoryEntity -> eraHistoryEntity.getEraId().equals(eraId)).findFirst()
-                .map(eraHistoryEntity -> eraHistoryEntity.getHistoryLines().stream()
-                        .map(eraLineHistory -> Long.parseLong(eraLineHistory.getServiceLineId()))
-                        .collect(Collectors.toList())).orElse(null);
-        if (serviceLines != null)
-            eraDataDetail.setLines(eraDataDetail.getLines().stream()
-                    .filter(eraLineTransferModel -> serviceLines.contains(eraLineTransferModel))
-                    .collect(Collectors.toList()));
 
     }
 }

@@ -30,7 +30,10 @@ public class ERADetailsMapper {
                         lineTransferModel.setUnits(Integer.parseInt(charge.getUnits()));
                         lineTransferModel.setDos(charge.getFrom_dos());
                         lineTransferModel.setReasons(getReasons(charge.getAdjustment()).toArray(new String[charge.getAdjustment().size()]));
-                        lineTransferModel.setChargeLineId(Integer.parseInt(charge.getChgid()));
+                        lineTransferModel.setServiceLineID(Integer.parseInt(charge.getChgid()));
+                        lineTransferModel.setPatientName(claim.getPat_name_l()+","+claim.getPat_name_f());
+                        lineTransferModel.setAction("Close");
+                        lineTransferModel.setSelected(true);
                         lines.add(lineTransferModel);
                     }
 
