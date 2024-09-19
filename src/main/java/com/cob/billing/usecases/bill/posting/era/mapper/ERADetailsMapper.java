@@ -5,10 +5,10 @@ import com.cob.billing.model.bill.posting.era.ERALineTransferModel;
 import com.cob.billing.model.integration.claimmd.era.Adjustment;
 import com.cob.billing.model.integration.claimmd.era.Charge;
 import com.cob.billing.model.integration.claimmd.era.ERADetailsModel;
+import com.cob.billing.usecases.bill.era.FindClaimStatusCodeUseCase;
+import com.cob.billing.util.BeanFactory;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ERADetailsMapper {
@@ -33,6 +33,8 @@ public class ERADetailsMapper {
                         lineTransferModel.setServiceLineID(Integer.parseInt(charge.getChgid()));
                         lineTransferModel.setPatientName(claim.getPat_name_l()+","+claim.getPat_name_f());
                         lineTransferModel.setAction("Close");
+                        lineTransferModel.setClaimStatusCode(claim.getStatus_code());
+                        lineTransferModel.setClaimStatusDescription(getClaimDescription(claim.getStatus_code()));
                         lineTransferModel.setSelected(true);
                         lines.add(lineTransferModel);
                     }
@@ -82,5 +84,9 @@ public class ERADetailsMapper {
             reasons.add(reason);
         }
         return reasons;
+    }
+    private static String getClaimDescription(String statusCode){
+        FindClaimStatusCodeUseCase findClaimStatusCodeUseCase = BeanFactory.getBean(FindClaimStatusCodeUseCase.class);
+        return findClaimStatusCodeUseCase.find(statusCode);
     }
 }

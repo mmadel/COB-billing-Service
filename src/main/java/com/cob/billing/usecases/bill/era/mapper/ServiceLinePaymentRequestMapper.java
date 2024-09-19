@@ -5,6 +5,7 @@ import com.cob.billing.enums.ServiceLinePaymentAction;
 import com.cob.billing.enums.ServiceLinePaymentType;
 import com.cob.billing.model.bill.posting.era.ERADataTransferModel;
 import com.cob.billing.model.bill.posting.era.ERADetailsLine;
+import com.cob.billing.model.bill.posting.era.ERALineTransferModel;
 import com.cob.billing.model.bill.posting.paymnet.ServiceLinePaymentRequest;
 import com.cob.billing.model.bill.posting.paymnet.SessionServiceLinePayment;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
@@ -23,7 +24,7 @@ public class ServiceLinePaymentRequestMapper {
     @Autowired
     PatientSessionRepository patientSessionRepository;
 
-    public ServiceLinePaymentRequest map(ERADataTransferModel era, List<ERADetailsLine> historyLines) {
+    public ServiceLinePaymentRequest map(ERADataTransferModel era, List<ERALineTransferModel> historyLines) {
         ServiceLinePaymentRequest serviceLinePaymentRequest = new ServiceLinePaymentRequest();
         serviceLinePaymentRequest.setServiceLinePaymentType(ServiceLinePaymentType.InsuranceCompany);
         serviceLinePaymentRequest.setTotalAmount(Double.valueOf(era.getPaidAmount()).longValue());
@@ -45,18 +46,18 @@ public class ServiceLinePaymentRequestMapper {
                 .toEpochMilli();
     }
 
-    private void createPayments(ServiceLinePaymentRequest serviceLinePaymentRequest, List<ERADetailsLine> historyLines) {
+    private void createPayments(ServiceLinePaymentRequest serviceLinePaymentRequest, List<ERALineTransferModel> historyLines) {
         List<SessionServiceLinePayment> serviceLinePayments = new ArrayList<>();
-        getSessionMap(historyLines.stream().map(eraLineHistory -> Long.parseLong(eraLineHistory.getServiceLineID()))
+        getSessionMap(historyLines.stream().map(eraLineHistory -> new Long(eraLineHistory.getServiceLineID()))
                 .collect(Collectors.toList()));
         for (int i = 0; i < historyLines.size(); i++) {
-            ERADetailsLine line = historyLines.get(i);
+            ERALineTransferModel line = historyLines.get(i);
             double balance = line.getBillAmount() - (line.getAdjustAmount() + line.getPaidAmount());
             SessionServiceLinePayment payment = new SessionServiceLinePayment(balance, line.getPaidAmount()
-                    , line.getAdjustAmount(), Long.parseLong(line.getServiceLineID()), new Date().getTime(), ServiceLinePaymentType.InsuranceCompany);
+                    , line.getAdjustAmount(), new Long(line.getServiceLineID()), new Date().getTime(), ServiceLinePaymentType.InsuranceCompany);
             payment.setServiceLinePaymentAction(ServiceLinePaymentAction.valueOf(line.getAction()));
-            payment.setServiceLineId(Long.parseLong(line.getServiceLineID()));
-            payment.setSessionId(sessionToServiceLineMapper.get(Long.parseLong(line.getServiceLineID())));
+            payment.setServiceLineId(new Long(line.getServiceLineID()));
+            payment.setSessionId(sessionToServiceLineMapper.get(new Long(line.getServiceLineID())));
             serviceLinePayments.add(payment);
         }
         serviceLinePaymentRequest.setServiceLinePayments(serviceLinePayments);

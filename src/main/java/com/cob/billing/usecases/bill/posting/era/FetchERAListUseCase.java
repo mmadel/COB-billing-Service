@@ -52,7 +52,7 @@ public class FetchERAListUseCase {
                 ERADataDetailTransferModel eraDataDetail = fetchERADetailsUseCase.fetch(eraDataTransferModel.getEraId());
                 Integer numberOfAppliedLines = getAppliedLines(eraHistoryEntityList, eraDataTransferModel.getEraId());
                 eraDataTransferModel.setLines(eraDataDetail.getLines().size());
-               // filterERADetailsLines(eraDataDetail, eraHistoryEntityList, eraDataTransferModel.getEraId());
+                enrichERADetailsLines(eraDataDetail, eraHistoryEntityList, eraDataTransferModel.getEraId());
                 eraDataDetail.setPatientLines(eraDataDetail.getLines().stream()
                         .collect(Collectors.groupingBy(ERALineTransferModel::getPatientName)));
                 eraDataTransferModel.setEraDetails(eraDataDetail);
@@ -88,5 +88,31 @@ public class FetchERAListUseCase {
         }
         return numberOfAppliedLine;
 
+    }
+
+    private void enrichERADetailsLines(ERADataDetailTransferModel eraDataDetail, List<ERAHistoryEntity> historyList, Integer eraId) {
+        List<ERALineTransferModel> serviceLines = historyList.stream()
+                .filter(eraHistoryEntity -> eraHistoryEntity.getEraId().equals(eraId)).findFirst()
+                .map(eraHistoryEntity -> eraHistoryEntity.getHistoryLines().stream()
+                        .collect(Collectors.toList())).orElse(null);
+        if (serviceLines != null) {
+            for (ERALineTransferModel line : eraDataDetail.getLines()) {
+                ERALineTransferModel matchedLineHistory = getMatchedLineHistory(serviceLines, line.getServiceLineID());
+                if (matchedLineHistory != null) {
+                    line.setTouched(true);
+                    line.setEditPaidAmount(matchedLineHistory.getEditPaidAmount());
+                    line.setEditAdjustAmount(matchedLineHistory.getEditAdjustAmount());
+                    line.setAction(matchedLineHistory.getAction());
+                }
+            }
+        }
+    }
+
+    private ERALineTransferModel getMatchedLineHistory(List<ERALineTransferModel> historyLines, Integer serviceLine) {
+        for (ERALineTransferModel historyLine : historyLines) {
+            if (historyLine.getServiceLineID().equals(serviceLine))
+                return historyLine;
+        }
+        return null;
     }
 }
