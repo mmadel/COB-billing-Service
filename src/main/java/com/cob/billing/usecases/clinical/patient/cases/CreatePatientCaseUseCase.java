@@ -18,11 +18,11 @@ public class CreatePatientCaseUseCase {
     @Autowired
     PatientCaseRepository patientCaseRepository;
 
-    public boolean create(PatientCase model, Long patientId) {
+    public Long create(PatientCase model, Long patientId) {
         PatientEntity patient = repository.findById(patientId).orElseThrow(() -> new IllegalArgumentException());
         PatientCaseEntity toBeCreated = mapper.map(model, PatientCaseEntity.class);
         toBeCreated.setPatient(patient);
-        patientCaseRepository.save(toBeCreated);
-        return true;
+        return patientCaseRepository.save(toBeCreated).getId();
+
     }
 }

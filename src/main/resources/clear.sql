@@ -33,3 +33,6 @@ delete from patient_balance_settings;
 delete from payer;
 delete from provider;
 delete from user_role_scope;
+
+delete from claim_adjustment_reason_codes;
+delete from claim_status_lookup;
