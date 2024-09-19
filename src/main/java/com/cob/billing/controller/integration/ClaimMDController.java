@@ -1,6 +1,7 @@
 package com.cob.billing.controller.integration;
 
 import com.cob.billing.response.handler.ResponseHandler;
+import com.cob.billing.usecases.bill.era.FindClaimAdjustmentReasonUseCase;
 import com.cob.billing.usecases.bill.invoice.UpdateSubmittedClaimStatus;
 import com.cob.billing.usecases.bill.posting.era.FetchERADetailsUseCase;
 import com.cob.billing.usecases.bill.posting.era.FetchERAListUseCase;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/ch")
@@ -27,6 +30,8 @@ public class ClaimMDController {
     FetchERAListUseCase fetchERAListUseCase;
     @Autowired
     FetchERADetailsUseCase fetchERADetailsUseCase;
+    @Autowired
+    FindClaimAdjustmentReasonUseCase findClaimAdjustmentReasonUseCase;
 
     @GetMapping("/get/responseId/{responseId}")
     public ResponseEntity get(@PathVariable Long responseId) {
@@ -69,5 +74,15 @@ public class ClaimMDController {
     @GetMapping("era/detials/{eraid}")
     public ResponseEntity get(@PathVariable Integer eraid) {
         return new ResponseEntity(fetchERADetailsUseCase.fetch(eraid), HttpStatus.OK);
+    }
+
+    @GetMapping("/claim/code/{code}")
+    public ResponseEntity getByCode(@PathVariable String code){
+        return new ResponseEntity(findClaimAdjustmentReasonUseCase.find(code), HttpStatus.OK);
+    }
+
+    @GetMapping("/claim/codes/{codes}")
+    public ResponseEntity getByCodes(@PathVariable List<String> codes){
+        return new ResponseEntity(findClaimAdjustmentReasonUseCase.findByCodes(codes), HttpStatus.OK);
     }
 }
