@@ -4,7 +4,9 @@ import com.cob.billing.model.bill.posting.era.ERADataDetailTransferModel;
 import com.cob.billing.model.bill.posting.era.ERALineTransferModel;
 import com.cob.billing.model.integration.claimmd.era.Adjustment;
 import com.cob.billing.model.integration.claimmd.era.Charge;
+import com.cob.billing.model.integration.claimmd.era.ClaimAdjustmentReasonCode;
 import com.cob.billing.model.integration.claimmd.era.ERADetailsModel;
+import com.cob.billing.usecases.bill.era.FindClaimAdjustmentReasonUseCase;
 import com.cob.billing.usecases.bill.era.FindClaimStatusCodeUseCase;
 import com.cob.billing.util.BeanFactory;
 
@@ -12,7 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ERADetailsMapper {
+    static List<String> linesReasonCodes = new ArrayList<>();
+
     public static ERADataDetailTransferModel map(ERADetailsModel eraDetailsModel) {
+
         List<ERALineTransferModel> lines = new ArrayList<>();
         eraDetailsModel.getClaim()
                 .stream().forEach(claim -> {
@@ -31,7 +36,7 @@ public class ERADetailsMapper {
                         lineTransferModel.setDos(charge.getFrom_dos());
                         lineTransferModel.setReasons(getReasons(charge.getAdjustment()).toArray(new String[charge.getAdjustment().size()]));
                         lineTransferModel.setServiceLineID(Integer.parseInt(charge.getChgid()));
-                        lineTransferModel.setPatientName(claim.getPat_name_l()+","+claim.getPat_name_f());
+                        lineTransferModel.setPatientName(claim.getPat_name_l() + "," + claim.getPat_name_f());
                         lineTransferModel.setAction("Close");
                         lineTransferModel.setClaimStatusCode(claim.getStatus_code());
                         lineTransferModel.setClaimStatusDescription(getClaimDescription(claim.getStatus_code()));
@@ -40,11 +45,14 @@ public class ERADetailsMapper {
                     }
 
                 });
-        return ERADataDetailTransferModel.builder()
+        ERADataDetailTransferModel eraDataDetailTransferModel = ERADataDetailTransferModel.builder()
                 .paymentMethod(eraDetailsModel.getPayment_method())
                 .totalPaidAmount(Double.parseDouble(eraDetailsModel.getPaid_amount()))
                 .lines(lines)
+                .claimAdjustmentReasonCodes(getReasonCodes())
                 .build();
+        linesReasonCodes.clear();
+        return eraDataDetailTransferModel;
     }
 
     private static double[] getAmounts(List<Adjustment> adjustments, double charge, double paid) {
@@ -80,13 +88,20 @@ public class ERADetailsMapper {
     private static List<String> getReasons(List<Adjustment> adjustments) {
         List<String> reasons = new ArrayList<>();
         for (Adjustment adjustment : adjustments) {
-            String reason = adjustment.getGroup() + ":" + adjustment.getCode();
+            String reason = adjustment.getCode();
             reasons.add(reason);
         }
+        linesReasonCodes.addAll(reasons);
         return reasons;
     }
-    private static String getClaimDescription(String statusCode){
+
+    private static String getClaimDescription(String statusCode) {
         FindClaimStatusCodeUseCase findClaimStatusCodeUseCase = BeanFactory.getBean(FindClaimStatusCodeUseCase.class);
         return findClaimStatusCodeUseCase.find(statusCode);
+    }
+
+    private static List<ClaimAdjustmentReasonCode> getReasonCodes() {
+        FindClaimAdjustmentReasonUseCase findClaimAdjustmentReasonUseCase = BeanFactory.getBean(FindClaimAdjustmentReasonUseCase.class);
+        return findClaimAdjustmentReasonUseCase.findByCodes(linesReasonCodes);
     }
 }

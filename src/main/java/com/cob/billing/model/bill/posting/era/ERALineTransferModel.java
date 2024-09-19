@@ -2,10 +2,12 @@ package com.cob.billing.model.bill.posting.era;
 
 import com.cob.billing.enums.ServiceLinePaymentAction;
 import com.cob.billing.enums.ServiceLinePaymentType;
+import com.cob.billing.model.integration.claimmd.era.ClaimAdjustmentReasonCode;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 @Setter
