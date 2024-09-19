@@ -11,7 +11,9 @@ import com.cob.billing.usecases.clinical.patient.auth.watching.validator.tmp.Out
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 @Component
 public class LazySessionAuthorizationExecutor extends SessionAuthorizationExecutor {
@@ -43,11 +45,14 @@ public class LazySessionAuthorizationExecutor extends SessionAuthorizationExecut
                     && submissionSession.getInsuranceCompanyId().equals(authorization.getInsuranceCompanyId()))
                 patientAuthorization.add(authorization);
         }
+        Date date = new Date(submissionSession.getDateOfService());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        String dosStr = dateFormat.format(date);
         if (patientAuthorization.isEmpty())
-            throw new AuthorizationException(HttpStatus.CONFLICT, AuthorizationException.SESSION_NO_MATCHED_AUTH, new Object[]{submissionSession.getDateOfService().toString()});
+            throw new AuthorizationException(HttpStatus.CONFLICT, AuthorizationException.SESSION_NO_MATCHED_AUTH, new Object[]{dosStr});
 
         if (patientAuthorization.size() > 1)
-            throw new AuthorizationException(HttpStatus.CONFLICT, AuthorizationException.SESSION_AUTH_OVERLAP, new Object[]{submissionSession.getDateOfService().toString()});
+            throw new AuthorizationException(HttpStatus.CONFLICT, AuthorizationException.SESSION_AUTH_OVERLAP, new Object[]{dosStr});
 
         submissionSession.setAuthorizationSession(patientAuthorization.stream().findFirst().get());
 
