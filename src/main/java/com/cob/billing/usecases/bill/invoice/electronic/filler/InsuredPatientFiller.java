@@ -19,7 +19,7 @@ public class InsuredPatientFiller {
         claim.setIns_name_f(invoicePatientInsuredInformation.getFirstName());
         claim.setIns_name_m(invoicePatientInsuredInformation.getMiddleName());
         claim.setIns_name_l(invoicePatientInsuredInformation.getLastName());
-        claim.setIns_number(invoicePatientInsuredInformation.getPhone());
+        claim.setIns_number(invoicePatientInsuredInformation.getPrimaryId());
         claim.setIns_sex(invoicePatientInsuredInformation.getGender().getValue());
         claim.setPat_rel(getPatientRelation(invoicePatientInsuredInformation.getRelationToInsured()));
     }

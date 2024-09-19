@@ -35,7 +35,6 @@ public class PayerFiller {
             claim.setPayer_state(invoiceInsuranceCompanyInformation.getAddress().getState());
             claim.setPayer_zip(invoiceInsuranceCompanyInformation.getAddress().getZipCode());
         }
-        fillInsuranceType(invoiceInsuranceCompanyInformation, claim);
         fillOtherInsurance(invoiceInsuranceCompanyInformation ,claim);
         fillInsuredData(invoiceInsuranceCompanyInformation ,claim);
     }
@@ -95,6 +94,7 @@ public class PayerFiller {
             claim.setOther_ins_number(otherPatientInsuranceValues.getPolicyGroup());
             claim.setOther_payer_name(otherPatientInsuranceValues.getAssigner()[1]);
             claim.setOther_payerid(otherPatientInsuranceValues.getAssigner()[0]);
+            fillInsuranceType(invoiceInsuranceCompanyInformation, claim);
         }
     }
     private void fillInsuredData(InvoiceInsuranceCompanyInformation invoiceInsuranceCompanyInformation , Claim claim){
