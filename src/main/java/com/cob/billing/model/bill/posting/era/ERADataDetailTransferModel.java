@@ -16,8 +16,8 @@ public class ERADataDetailTransferModel {
     private double totalPaidAmount;
     private String check_number;
     private String paymentMethod;
-    List<ERALineTransferModel> lines;
-    List<ClaimAdjustmentReasonCode> claimAdjustmentReasonCodes;
+    private Integer totalLines;
     Map<String,List<ERALineTransferModel>> patientLines;
+    Map<String, List<ClaimAdjustmentReasonCode>> patientReasonCodes;
 
 }

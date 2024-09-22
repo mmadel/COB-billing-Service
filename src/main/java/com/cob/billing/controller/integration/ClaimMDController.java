@@ -71,11 +71,6 @@ public class ClaimMDController {
                         fetchERAListUseCase.fetch(paging));
     }
 
-    @GetMapping("era/detials/{eraid}")
-    public ResponseEntity get(@PathVariable Integer eraid) {
-        return new ResponseEntity(fetchERADetailsUseCase.fetch(eraid), HttpStatus.OK);
-    }
-
     @GetMapping("/claim/code/{code}")
     public ResponseEntity getByCode(@PathVariable String code){
         return new ResponseEntity(findClaimAdjustmentReasonUseCase.find(code), HttpStatus.OK);

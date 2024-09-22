@@ -4,9 +4,12 @@ import com.cob.billing.entity.bill.era.ERAHistoryEntity;
 import com.cob.billing.model.bill.posting.era.ERADataDetailTransferModel;
 import com.cob.billing.model.bill.posting.era.ERADataTransferModel;
 import com.cob.billing.model.bill.posting.era.ERALineTransferModel;
+import com.cob.billing.model.integration.claimmd.era.ClaimAdjustmentReasonCode;
+import com.cob.billing.model.integration.claimmd.era.ERAModel;
 import com.cob.billing.model.integration.claimmd.era.respose.ERAListResponse;
 import com.cob.billing.model.response.ERAResponse;
 import com.cob.billing.repositories.bill.era.ERAHistoryRepository;
+import com.cob.billing.usecases.bill.era.FindClaimAdjustmentReasonUseCase;
 import com.cob.billing.usecases.integration.claim.md.CacheClaimMDResponseDataUseCase;
 import com.cob.billing.usecases.integration.claim.md.RetrieveERAListUseCase;
 import com.cob.billing.util.ERAListSorterByDate;
@@ -15,8 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class FetchERAListUseCase {
@@ -28,10 +34,12 @@ public class FetchERAListUseCase {
     ERAHistoryRepository eraHistoryRepository;
     @Autowired
     CacheClaimMDResponseDataUseCase cacheClaimMDResponseDataUseCase;
+    @Autowired
+    FindClaimAdjustmentReasonUseCase findClaimAdjustmentReasonUseCase;
 
     public ERAResponse fetch(Pageable paging) {
-        List<ERAHistoryEntity> eraHistoryEntityList = getERAHistory();
         ERAListResponse eraListResponse = retrieveERAListUseCase.getList(0L);
+        List<ERAHistoryEntity> eraHistoryEntityList = getERAHistory(eraListResponse.getEra());
         if (eraListResponse.getEra() != null) {
             List<ERADataTransferModel> eraDataTransferModels = eraListResponse.getEra()
                     .stream().map(eraModel -> ERADataTransferModel.builder()
@@ -49,12 +57,9 @@ public class FetchERAListUseCase {
 
             List<ERADataTransferModel> records = PaginationUtil.paginate(eraDataTransferModels, paging.getPageNumber() + 1, paging.getPageSize());
             records.stream().forEach(eraDataTransferModel -> {
-                ERADataDetailTransferModel eraDataDetail = fetchERADetailsUseCase.fetch(eraDataTransferModel.getEraId());
+                ERADataDetailTransferModel eraDataDetail = fetchERADetailsUseCase.fetch(eraDataTransferModel.getEraId(),eraHistoryEntityList);
                 Integer numberOfAppliedLines = getAppliedLines(eraHistoryEntityList, eraDataTransferModel.getEraId());
-                eraDataTransferModel.setLines(eraDataDetail.getLines().size());
-                enrichERADetailsLines(eraDataDetail, eraHistoryEntityList, eraDataTransferModel.getEraId());
-                eraDataDetail.setPatientLines(eraDataDetail.getLines().stream()
-                        .collect(Collectors.groupingBy(ERALineTransferModel::getPatientName)));
+                eraDataTransferModel.setLines(eraDataDetail.getTotalLines());
                 eraDataTransferModel.setEraDetails(eraDataDetail);
                 eraDataTransferModel.setUnAppliedLines(numberOfAppliedLines);
                 eraDataTransferModel.setSeen(numberOfAppliedLines == 0 ? false : true);
@@ -70,8 +75,8 @@ public class FetchERAListUseCase {
         }
     }
 
-    private List<ERAHistoryEntity> getERAHistory() {
-        List<Integer> eraIds = retrieveERAListUseCase.getList(0L).getEra()
+    private List<ERAHistoryEntity> getERAHistory(List<ERAModel> eras) {
+        List<Integer> eraIds = eras
                 .stream()
                 .map(eraModel -> eraModel.getEraid())
                 .collect(Collectors.toList());
@@ -90,29 +95,4 @@ public class FetchERAListUseCase {
 
     }
 
-    private void enrichERADetailsLines(ERADataDetailTransferModel eraDataDetail, List<ERAHistoryEntity> historyList, Integer eraId) {
-        List<ERALineTransferModel> serviceLines = historyList.stream()
-                .filter(eraHistoryEntity -> eraHistoryEntity.getEraId().equals(eraId)).findFirst()
-                .map(eraHistoryEntity -> eraHistoryEntity.getHistoryLines().stream()
-                        .collect(Collectors.toList())).orElse(null);
-        if (serviceLines != null) {
-            for (ERALineTransferModel line : eraDataDetail.getLines()) {
-                ERALineTransferModel matchedLineHistory = getMatchedLineHistory(serviceLines, line.getServiceLineID());
-                if (matchedLineHistory != null) {
-                    line.setTouched(true);
-                    line.setEditPaidAmount(matchedLineHistory.getEditPaidAmount());
-                    line.setEditAdjustAmount(matchedLineHistory.getEditAdjustAmount());
-                    line.setAction(matchedLineHistory.getAction());
-                }
-            }
-        }
-    }
-
-    private ERALineTransferModel getMatchedLineHistory(List<ERALineTransferModel> historyLines, Integer serviceLine) {
-        for (ERALineTransferModel historyLine : historyLines) {
-            if (historyLine.getServiceLineID().equals(serviceLine))
-                return historyLine;
-        }
-        return null;
-    }
 }

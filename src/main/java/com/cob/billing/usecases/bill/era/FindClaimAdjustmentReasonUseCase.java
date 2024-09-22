@@ -1,6 +1,5 @@
 package com.cob.billing.usecases.bill.era;
 
-import com.cob.billing.entity.bill.era.ClaimAdjustmentReasonCodeEntity;
 import com.cob.billing.model.integration.claimmd.era.ClaimAdjustmentReasonCode;
 import com.cob.billing.repositories.bill.era.ClaimAdjustmentReasonCodeRepository;
 import org.modelmapper.ModelMapper;

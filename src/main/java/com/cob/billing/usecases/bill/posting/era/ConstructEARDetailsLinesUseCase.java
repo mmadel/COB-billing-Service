@@ -1,25 +1,21 @@
-package com.cob.billing.usecases.bill.posting.era.mapper;
+package com.cob.billing.usecases.bill.posting.era;
 
-import com.cob.billing.model.bill.posting.era.ERADataDetailTransferModel;
 import com.cob.billing.model.bill.posting.era.ERALineTransferModel;
 import com.cob.billing.model.integration.claimmd.era.Adjustment;
 import com.cob.billing.model.integration.claimmd.era.Charge;
-import com.cob.billing.model.integration.claimmd.era.ClaimAdjustmentReasonCode;
-import com.cob.billing.model.integration.claimmd.era.ERADetailsModel;
-import com.cob.billing.usecases.bill.era.FindClaimAdjustmentReasonUseCase;
+import com.cob.billing.model.integration.claimmd.era.Claim;
 import com.cob.billing.usecases.bill.era.FindClaimStatusCodeUseCase;
 import com.cob.billing.util.BeanFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ERADetailsMapper {
-    static List<String> linesReasonCodes = new ArrayList<>();
-
-    public static ERADataDetailTransferModel map(ERADetailsModel eraDetailsModel) {
-
+@Component
+public class ConstructEARDetailsLinesUseCase {
+    public List<ERALineTransferModel> constructLines(List<Claim> claims) {
         List<ERALineTransferModel> lines = new ArrayList<>();
-        eraDetailsModel.getClaim()
+        claims
                 .stream().forEach(claim -> {
                     for (Charge charge : claim.getCharge()) {
                         ERALineTransferModel lineTransferModel = new ERALineTransferModel();
@@ -45,17 +41,10 @@ public class ERADetailsMapper {
                     }
 
                 });
-        ERADataDetailTransferModel eraDataDetailTransferModel = ERADataDetailTransferModel.builder()
-                .paymentMethod(eraDetailsModel.getPayment_method())
-                .totalPaidAmount(Double.parseDouble(eraDetailsModel.getPaid_amount()))
-                .lines(lines)
-                .claimAdjustmentReasonCodes(getReasonCodes())
-                .build();
-        linesReasonCodes.clear();
-        return eraDataDetailTransferModel;
+        return lines;
     }
 
-    private static double[] getAmounts(List<Adjustment> adjustments, double charge, double paid) {
+    private double[] getAmounts(List<Adjustment> adjustments, double charge, double paid) {
         double deduct = 0.0;
         double coInsurance = 0.0;
         double coPayment = 0.0;
@@ -85,23 +74,17 @@ public class ERADetailsMapper {
         return new double[]{deduct, coInsurance, coPayment, adjust};
     }
 
-    private static List<String> getReasons(List<Adjustment> adjustments) {
+    private String getClaimDescription(String statusCode) {
+        FindClaimStatusCodeUseCase findClaimStatusCodeUseCase = BeanFactory.getBean(FindClaimStatusCodeUseCase.class);
+        return findClaimStatusCodeUseCase.find(statusCode);
+    }
+
+    private List<String> getReasons(List<Adjustment> adjustments) {
         List<String> reasons = new ArrayList<>();
         for (Adjustment adjustment : adjustments) {
             String reason = adjustment.getCode();
             reasons.add(reason);
         }
-        linesReasonCodes.addAll(reasons);
         return reasons;
-    }
-
-    private static String getClaimDescription(String statusCode) {
-        FindClaimStatusCodeUseCase findClaimStatusCodeUseCase = BeanFactory.getBean(FindClaimStatusCodeUseCase.class);
-        return findClaimStatusCodeUseCase.find(statusCode);
-    }
-
-    private static List<ClaimAdjustmentReasonCode> getReasonCodes() {
-        FindClaimAdjustmentReasonUseCase findClaimAdjustmentReasonUseCase = BeanFactory.getBean(FindClaimAdjustmentReasonUseCase.class);
-        return findClaimAdjustmentReasonUseCase.findByCodes(linesReasonCodes);
     }
 }
