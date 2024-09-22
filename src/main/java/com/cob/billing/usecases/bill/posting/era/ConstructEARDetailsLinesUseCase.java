@@ -37,6 +37,8 @@ public class ConstructEARDetailsLinesUseCase {
                         lineTransferModel.setClaimStatusCode(claim.getStatus_code());
                         lineTransferModel.setClaimStatusDescription(getClaimDescription(claim.getStatus_code()));
                         lineTransferModel.setSelected(true);
+                        lineTransferModel.setEditAdjustAmount(lineTransferModel.getAdjustAmount());
+                        lineTransferModel.setEditPaidAmount(lineTransferModel.getPaidAmount());
                         lines.add(lineTransferModel);
                     }
 
