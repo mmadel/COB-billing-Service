@@ -29,11 +29,14 @@ public class UpdatePatientUseCase {
     CreatePatientSessionUseCase createPatientSessionUseCase;
     @Autowired
     UpdatePatientSessionUseCase updatePatientSessionUseCase;
+    @Autowired
+    CreatePatientUseCase createPatientUseCase;
 
     public void update(UpdateProfileDTO profile) {
-        updateInsurances(profile.getInsurances(), profile.getPatientId());
-        updateCases(profile.getCases(),profile.getPatientId());
-        updateSessions(profile.getSessions(), profile.getPatientId());
+        updateInsurances(profile.getInsurances(), profile.getPatient().getId());
+        updateCases(profile.getCases(),profile.getPatient().getId());
+        updateSessions(profile.getSessions(), profile.getPatient().getId());
+        createPatientUseCase.create(profile.getPatient());
     }
 
     private void updateInsurances(List<PatientInsuranceDTO> insurances, Long patientId) {

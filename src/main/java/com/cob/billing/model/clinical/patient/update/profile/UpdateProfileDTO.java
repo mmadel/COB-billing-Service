@@ -1,5 +1,6 @@
 package com.cob.billing.model.clinical.patient.update.profile;
 
+import com.cob.billing.model.clinical.patient.Patient;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,5 +12,5 @@ public class UpdateProfileDTO {
     private List<PatientInsuranceDTO> insurances;
     private List<PatientCaseDTO> cases;
     private List<PatientSessionDTO> sessions;
-    private Long patientId;
+    private Patient patient;
 }
