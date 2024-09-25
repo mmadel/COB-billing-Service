@@ -1,8 +1,7 @@
 package com.cob.billing.controller.clinical;
 
-import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibility;
 import com.cob.billing.model.clinical.patient.Patient;
-import com.cob.billing.model.clinical.patient.insurance.PatientInsurance;
+import com.cob.billing.model.clinical.patient.update.profile.UpdateProfileDTO;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.clinical.patient.*;
 import com.cob.billing.usecases.clinical.patient.insurance.company.DeletePatientInsuranceCompanyUseCase;
@@ -32,6 +31,8 @@ public class PatientController {
     FlagPatientAuthorizationUseCase flagPatientAuthorizationUseCase;
     @Autowired
     FindPatientInsuranceCompanyUseCase findPatientInsuranceCompanyUseCase;
+    @Autowired
+    UpdatePatientUseCase updatePatientUseCase;
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody Patient model) {
@@ -39,6 +40,12 @@ public class PatientController {
                 .generateResponse("Successfully added Patient",
                         HttpStatus.OK,
                         createPatientUseCase.create(model));
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity update(@RequestBody UpdateProfileDTO profile) {
+        updatePatientUseCase.update(profile);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/find")
@@ -77,9 +84,10 @@ public class PatientController {
         flagPatientAuthorizationUseCase.turnOn(patientId);
         return new ResponseEntity(HttpStatus.OK);
     }
+
     @GetMapping("/insurance-company/patientId/{patientId}")
-    public ResponseEntity findPatientInsuranceCompany(@PathVariable Long patientId){
-        return new ResponseEntity(findPatientInsuranceCompanyUseCase.find(patientId),HttpStatus.OK);
+    public ResponseEntity findPatientInsuranceCompany(@PathVariable Long patientId) {
+        return new ResponseEntity(findPatientInsuranceCompanyUseCase.find(patientId), HttpStatus.OK);
     }
 
 }

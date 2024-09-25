@@ -93,7 +93,7 @@ public class CreatePatientInsuranceCompanyUseCase {
     }
 
     private InsuranceCompanyExternalEntity createExternalInsuranceCompany(String[] insuranceCompany, BasicAddress insuranceCompanyNameAddress) {
-        Optional<InsuranceCompanyExternalEntity> optionalInsuranceCompanyExternal = insuranceCompanyExternalRepository.findByInsuranceCompanyName(insuranceCompany[0]).get().stream().findFirst();
+        Optional<InsuranceCompanyExternalEntity> optionalInsuranceCompanyExternal = insuranceCompanyExternalRepository.findByInsuranceCompanyName(insuranceCompany[0].toUpperCase()).get().stream().findFirst();
         if (optionalInsuranceCompanyExternal.isPresent()) {
             return optionalInsuranceCompanyExternal.get();
         } else {
