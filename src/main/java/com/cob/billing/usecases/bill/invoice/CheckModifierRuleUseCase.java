@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class CheckModifierRuleUseCase {
@@ -91,7 +92,9 @@ public class CheckModifierRuleUseCase {
                     originalModifier = cptCode.getModifier().length() != 0 ? ModifierConverterArray.convertModifierToArray(cptCode.getModifier()) : null;
                     modifiedModifier = rule.getModifier().split("\\.");
                     if (originalModifier != null)
-                        cptCode.setModifier(StringUtil.join(ModifierMerger.end(originalModifier, modifiedModifier), "."));
+                        cptCode.setModifier(StringUtil.join(ModifierMerger.end(originalModifier, modifiedModifier)
+                                .stream()
+                                .filter(item -> item != null).collect(Collectors.toList()), "."));
                     else
                         replaceModifier(cptCode, rule.getModifier());
                     break;
@@ -99,7 +102,8 @@ public class CheckModifierRuleUseCase {
                     originalModifier = cptCode.getModifier().length() != 0 ? ModifierConverterArray.convertModifierToArray(cptCode.getModifier()) : null;
                     modifiedModifier = rule.getModifier().split("\\.");
                     if (originalModifier != null)
-                        cptCode.setModifier(StringUtil.join(ModifierMerger.front(originalModifier, modifiedModifier), "."));
+                        cptCode.setModifier(StringUtil.join(ModifierMerger.front(originalModifier, modifiedModifier).stream()
+                                .filter(item -> item != null).collect(Collectors.toList()), "."));
                     else
                         replaceModifier(cptCode, rule.getModifier());
                     break;

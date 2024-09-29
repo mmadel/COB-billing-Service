@@ -100,7 +100,7 @@ public class CreatePatientInsuranceCompanyUseCase {
             InsuranceCompanyExternalEntity toBeCreated = new InsuranceCompanyExternalEntity();
             toBeCreated.setName(insuranceCompany[0]);
             toBeCreated.setDisplayName(insuranceCompany[0]);
-            toBeCreated.setPayerId(Long.parseLong(insuranceCompany[1]));
+            toBeCreated.setPayerId(insuranceCompany[1]);
             toBeCreated.setAddress(insuranceCompanyNameAddress);
             InsuranceCompanyExternalEntity created = insuranceCompanyExternalRepository.save(toBeCreated);
             createInsuranceCompanyConfiguration(created);
