@@ -7,6 +7,9 @@ import java.util.stream.IntStream;
 
 public class ListShiftUtil {
     public static List<String> leftShift(List<String> firstList, List<String> secondList) {
+        firstList.removeIf(secondList::contains);
+        if(firstList.size() == 0)
+            return secondList;
         List<String> result = new ArrayList<>(4);
         result.addAll(secondList);
         int remainingSize = 4 - secondList.size();
@@ -18,6 +21,9 @@ public class ListShiftUtil {
     }
 
     public static List<String> rightShift(List<String> firstList, List<String> secondList) {
+        firstList.removeIf(secondList::contains);
+        if(firstList.size() == 0)
+            return secondList;
         List<String> result = new ArrayList<>(4);
         int remainingSize = 4 - secondList.size();
         result.addAll(firstList.subList(Math.max(0, firstList.size() - remainingSize), firstList.size()));
