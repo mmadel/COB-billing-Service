@@ -28,10 +28,11 @@ public interface PatientRepository extends PagingAndSortingRepository<PatientEnt
     void turnOnAuthorization(@Param("patientId") Long patientId);
 
 
-    @Query("SELECT p FROM PatientEntity p WHERE " +
+    @Query("SELECT p FROM PatientEntity p LEFT JOIN PatientInsuranceEntity pin ON pin.patient = p   WHERE " +
             "((:name is null or upper(p.lastName) LIKE CONCAT('%',:name,'%')) OR  (:name is null or upper(p.firstName) LIKE CONCAT('%',:name,'%')) ) " +
             "AND (:phone is null or p.phone LIKE CONCAT('%',:phone,'%'))" +
-            "AND (:email is null or p.email LIKE CONCAT('%',:email,'%'))")
-    Page<PatientEntity> findFilter( Pageable pageable,@Param("name") String name,@Param("phone") String phone,@Param("email") String email);
+            "AND (:email is null or p.email LIKE CONCAT('%',:email,'%'))" +
+            "AND (:insuranceCompany is null or upper(pin.patientInsuranceExternalCompany.insuranceCompany.name) LIKE CONCAT('%',:insuranceCompany,'%'))")
+    Page<PatientEntity> findFilter( Pageable pageable,@Param("name") String name,@Param("phone") String phone,@Param("email") String email,@Param("insuranceCompany") String insuranceCompany);
 
 }
