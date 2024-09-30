@@ -29,7 +29,8 @@ public interface PatientRepository extends PagingAndSortingRepository<PatientEnt
 
 
     @Query("SELECT p FROM PatientEntity p WHERE " +
-            "((:name is null or upper(p.lastName) LIKE CONCAT('%',:name,'%')) OR  (:name is null or upper(p.firstName) LIKE CONCAT('%',:name,'%')) )")
-    Page<PatientEntity> findFilter( Pageable pageable,@Param("name") String name);
+            "((:name is null or upper(p.lastName) LIKE CONCAT('%',:name,'%')) OR  (:name is null or upper(p.firstName) LIKE CONCAT('%',:name,'%')) ) " +
+            "AND :phone is null or p.phone LIKE CONCAT('%',:phone,'%')")
+    Page<PatientEntity> findFilter( Pageable pageable,@Param("name") String name,@Param("phone") String phone);
 
 }

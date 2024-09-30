@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 public class PatientSearchCriteria {
     private String name;
+    private String phone;
     private String email;
     private String insuranceCompany;
     private String provider;
