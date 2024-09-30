@@ -26,4 +26,10 @@ public interface PatientRepository extends PagingAndSortingRepository<PatientEnt
     @Modifying
     @Query("update PatientEntity p set  p.authorizationWatching = true where p.id = :patientId")
     void turnOnAuthorization(@Param("patientId") Long patientId);
+
+
+    @Query("SELECT p FROM PatientEntity p WHERE " +
+            "((:name is null or upper(p.lastName) LIKE CONCAT('%',:name,'%')) OR  (:name is null or upper(p.firstName) LIKE CONCAT('%',:name,'%')) )")
+    Page<PatientEntity> findFilter( Pageable pageable,@Param("name") String name);
+
 }

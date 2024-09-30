@@ -1,6 +1,8 @@
 package com.cob.billing.controller.clinical;
 
 import com.cob.billing.model.clinical.patient.Patient;
+import com.cob.billing.model.clinical.patient.PatientSearchCriteria;
+import com.cob.billing.model.clinical.patient.session.filter.PatientSessionSearchCriteria;
 import com.cob.billing.model.clinical.patient.update.profile.UpdateProfileDTO;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.clinical.patient.*;
@@ -33,6 +35,8 @@ public class PatientController {
     FindPatientInsuranceCompanyUseCase findPatientInsuranceCompanyUseCase;
     @Autowired
     UpdatePatientUseCase updatePatientUseCase;
+    @Autowired
+    FindFilteredPatientUseCase findFilteredPatientUseCase;
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody Patient model) {
@@ -56,6 +60,17 @@ public class PatientController {
                 .generateResponse("Successfully find all patients",
                         HttpStatus.OK, null,
                         findPatientUseCase.findAll(paging));
+    }
+
+    @PostMapping("/find/filter")
+    public ResponseEntity<Object> find(@RequestParam(name = "offset") String offset,
+                                       @RequestParam(name = "limit") String limit
+            , @RequestBody PatientSearchCriteria searchCriteria) {
+        Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
+        return ResponseHandler
+                .generateResponse("Successfully find filtered patients",
+                        HttpStatus.OK, null, findFilteredPatientUseCase.find(paging, searchCriteria)
+                );
     }
 
     @GetMapping("find/patientId/{patientId}")
