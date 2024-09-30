@@ -20,7 +20,8 @@ public class FindFilteredPatientUseCase {
 
     public MinimalPatientResponse find(Pageable paging, PatientSearchCriteria searchCriteria) {
         Page<PatientEntity> pages = patientRepository.findFilter(paging, searchCriteria.getName() != null ? searchCriteria.getName().toUpperCase().trim() : null,
-                searchCriteria.getPhone() != null ? searchCriteria.getPhone().trim() : null);
+                searchCriteria.getPhone() != null ? searchCriteria.getPhone().trim() : null,
+                searchCriteria.getEmail() != null ? searchCriteria.getEmail().trim() : null);
         long total = (pages).getTotalElements();
         List<MinimalPatient> records = pages.stream().map(patient -> {
                     MinimalPatient minimalPatient = new MinimalPatient();
