@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,9 +39,9 @@ public class FetchERAListUseCase {
     FindClaimAdjustmentReasonUseCase findClaimAdjustmentReasonUseCase;
 
     public ERAResponse fetch(Pageable paging) {
-        ERAListResponse eraListResponse = retrieveERAListUseCase.getList(0L);
-        List<ERAHistoryEntity> eraHistoryEntityList = getERAHistory(eraListResponse.getEra());
+        ERAListResponse eraListResponse = retrieveERAListUseCase.getList(0L, "1");
         if (eraListResponse.getEra() != null) {
+            List<ERAHistoryEntity> eraHistoryEntityList = getERAHistory(eraListResponse.getEra());
             List<ERADataTransferModel> eraDataTransferModels = eraListResponse.getEra()
                     .stream().map(eraModel -> ERADataTransferModel.builder()
                             .eraId(eraModel.getEraid())
@@ -57,7 +58,7 @@ public class FetchERAListUseCase {
 
             List<ERADataTransferModel> records = PaginationUtil.paginate(eraDataTransferModels, paging.getPageNumber() + 1, paging.getPageSize());
             records.stream().forEach(eraDataTransferModel -> {
-                ERADataDetailTransferModel eraDataDetail = fetchERADetailsUseCase.fetch(eraDataTransferModel.getEraId(),eraHistoryEntityList);
+                ERADataDetailTransferModel eraDataDetail = fetchERADetailsUseCase.fetch(eraDataTransferModel.getEraId(), eraHistoryEntityList);
                 Integer numberOfAppliedLines = getAppliedLines(eraHistoryEntityList, eraDataTransferModel.getEraId());
                 eraDataTransferModel.setLines(eraDataDetail.getTotalLines());
                 eraDataTransferModel.setEraDetails(eraDataDetail);
@@ -71,7 +72,11 @@ public class FetchERAListUseCase {
                     .records(records)
                     .build();
         } else {
-            return null;
+            return ERAResponse.builder()
+                    .number_of_records(0)
+                    .number_of_matching_records((int) 0)
+                    .records(null)
+                    .build();
         }
     }
 

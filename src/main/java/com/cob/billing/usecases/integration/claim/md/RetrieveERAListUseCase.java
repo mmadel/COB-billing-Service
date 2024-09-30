@@ -25,11 +25,12 @@ public class RetrieveERAListUseCase {
     @Autowired
     private RestTemplate restTemplate;
 
-    public ERAListResponse getList(Long last_response) {
+    public ERAListResponse getList(Long last_response , String page ) {
         String url = this.claimMDcBaseURL + this.claimMDERAList;
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("AccountKey", apiKey);
         builder.part("ERAID", last_response);
+        builder.part("Page", page);
         MultiValueMap<String, HttpEntity<?>> multipartRequest = builder.build();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
