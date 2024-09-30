@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,7 +37,7 @@ public class CheckModifierRuleUseCase {
                 applyRule(rules, cptCode);
             });
         }
-        updatePatientSessionServiceLineUseCase.update(models);
+        //updatePatientSessionServiceLineUseCase.update(models);
         return models;
     }
 
@@ -54,6 +55,17 @@ public class CheckModifierRuleUseCase {
 
     private List<Rule> getMatchedRules(String cpt, List<Rule> rules) {
         List<Rule> matchedRules = new ArrayList<>();
+        //Check All CPT
+        Rule allRule = null;
+        for (Rule rule : rules) {
+            if (rule.getCptCode() == null) {
+                allRule = rule;
+                break;
+            }
+        }
+        if (allRule != null)
+            matchedRules.add(allRule);
+
         //Check If CPT contains in Default List
         Rule matchedRule = null;
         for (Rule rule : rules) {
@@ -64,19 +76,6 @@ public class CheckModifierRuleUseCase {
         }
         if (matchedRule != null)
             matchedRules.add(matchedRule);
-        else {
-            //Check All CPT
-            Rule allRule = null;
-            for (Rule rule : rules) {
-                if (rule.getCptCode() == null) {
-                    allRule = rule;
-                    break;
-                }
-            }
-            if (allRule != null)
-                matchedRules.add(allRule);
-
-        }
         return matchedRules;
     }
 
@@ -92,9 +91,9 @@ public class CheckModifierRuleUseCase {
                     originalModifier = cptCode.getModifier().length() != 0 ? ModifierConverterArray.convertModifierToArray(cptCode.getModifier()) : null;
                     modifiedModifier = rule.getModifier().split("\\.");
                     if (originalModifier != null)
-                        cptCode.setModifier(StringUtil.join(ModifierMerger.end(originalModifier, modifiedModifier)
-                                .stream()
-                                .filter(item -> item != null).collect(Collectors.toList()), "."));
+                        cptCode.setModifier(String.join(".", Arrays.stream(ModifierMerger.end(originalModifier, modifiedModifier))
+                                .filter(element -> element !=null) // Filters out "null" strings
+                                .toArray(String[]::new)));
                     else
                         replaceModifier(cptCode, rule.getModifier());
                     break;
@@ -102,8 +101,9 @@ public class CheckModifierRuleUseCase {
                     originalModifier = cptCode.getModifier().length() != 0 ? ModifierConverterArray.convertModifierToArray(cptCode.getModifier()) : null;
                     modifiedModifier = rule.getModifier().split("\\.");
                     if (originalModifier != null)
-                        cptCode.setModifier(StringUtil.join(ModifierMerger.front(originalModifier, modifiedModifier).stream()
-                                .filter(item -> item != null).collect(Collectors.toList()), "."));
+                        cptCode.setModifier(String.join(".", (Arrays.stream(ModifierMerger.front(originalModifier, modifiedModifier))
+                                .filter(element -> element != null) // Filters out "null" strings
+                                .toArray(String[]::new))));
                     else
                         replaceModifier(cptCode, rule.getModifier());
                     break;
