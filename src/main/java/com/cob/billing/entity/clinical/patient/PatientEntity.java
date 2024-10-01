@@ -4,6 +4,7 @@ import com.cob.billing.entity.clinical.patient.insurance.PatientInsuranceEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.referring.provider.ReferringProviderEntity;
 import com.cob.billing.enums.Gender;
+import com.cob.billing.enums.GenderIdentity;
 import com.cob.billing.enums.MaritalStatus;
 import com.cob.billing.model.clinical.patient.advanced.PatientAdvancedInformation;
 import com.cob.billing.model.common.Address;
@@ -45,6 +46,8 @@ public class PatientEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
+    @Column(name = "gender_identity")
+    private GenderIdentity genderIdentity;
     @Column(name = "phone_type")
     private String phoneType;
     @Column(name = "phone")

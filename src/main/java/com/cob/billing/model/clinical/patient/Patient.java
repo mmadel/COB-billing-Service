@@ -1,6 +1,7 @@
 package com.cob.billing.model.clinical.patient;
 
 import com.cob.billing.enums.Gender;
+import com.cob.billing.enums.GenderIdentity;
 import com.cob.billing.enums.MaritalStatus;
 import com.cob.billing.model.clinical.patient.advanced.PatientAdvancedInformation;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsurance;
@@ -29,7 +30,7 @@ public class Patient {
     private MaritalStatus maritalStatus;
 
     private Gender gender;
-
+    private GenderIdentity genderIdentity;
     private Address address;
 
     private List<PatientCase> cases;
