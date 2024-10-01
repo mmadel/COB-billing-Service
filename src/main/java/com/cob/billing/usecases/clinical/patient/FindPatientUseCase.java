@@ -23,17 +23,18 @@ public class FindPatientUseCase {
     @Autowired
     AssignPatientAuthorizationUseCase assignPatientAuthorizationUseCase;
 
-    public MinimalPatientResponse findAll(Pageable paging) {
+    public MinimalPatientResponse findAll(Pageable paging , boolean status) {
         Page<PatientEntity> pages = patientRepository.findAll(paging);
         long total = (pages).getTotalElements();
         List<MinimalPatient> records = pages.stream()
-                .filter(patient -> patient.isStatus())
+                .filter(patient -> patient.isStatus() ==status)
                 .map(patient -> {
                     MinimalPatient minimalPatient = new MinimalPatient();
                     minimalPatient.setId(patient.getId());
                     minimalPatient.setName(patient.getLastName() + ',' + patient.getFirstName());
                     minimalPatient.setDateOfBirth(patient.getBirthDate());
                     minimalPatient.setEmail(patient.getEmail());
+                    minimalPatient.setStatus(patient.isStatus());
                     return minimalPatient;
                 })
                 .collect(Collectors.toList());

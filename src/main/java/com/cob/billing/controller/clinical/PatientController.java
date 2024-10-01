@@ -55,14 +55,15 @@ public class PatientController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/find")
+    @GetMapping("/find/status/{status}")
     public ResponseEntity<Object> findAll(@RequestParam(name = "offset") String offset,
-                                          @RequestParam(name = "limit") String limit) {
+                                          @RequestParam(name = "limit") String limit,
+                                          @PathVariable(name = "status") boolean status) {
         Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
         return ResponseHandler
                 .generateResponse("Successfully find all patients",
                         HttpStatus.OK, null,
-                        findPatientUseCase.findAll(paging));
+                        findPatientUseCase.findAll(paging, status));
     }
 
     @PostMapping("/find/filter")

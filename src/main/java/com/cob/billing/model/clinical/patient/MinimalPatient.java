@@ -10,4 +10,5 @@ public class MinimalPatient {
     private String name;
     private Long dateOfBirth;
     private String email;
+    private boolean status;
 }
