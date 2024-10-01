@@ -37,7 +37,7 @@ public class CheckModifierRuleUseCase {
                 applyRule(rules, cptCode);
             });
         }
-        //updatePatientSessionServiceLineUseCase.update(models);
+        updatePatientSessionServiceLineUseCase.update(models);
         return models;
     }
 

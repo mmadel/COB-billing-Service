@@ -44,4 +44,5 @@ public class Patient {
     private String externalId;
     private PatientAdvancedInformation patientAdvancedInformation;
     private Boolean authorizationWatching;
+    boolean status;
 }
