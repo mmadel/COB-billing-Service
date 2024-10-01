@@ -75,5 +75,8 @@ public class PatientEntity {
     @Column(name = "authorization_watching")
     private Boolean authorizationWatching;
 
+    @Column(name = "status")
+    private boolean status;
+
 
 }

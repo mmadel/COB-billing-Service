@@ -38,6 +38,9 @@ public class PatientController {
     @Autowired
     FindFilteredPatientUseCase findFilteredPatientUseCase;
 
+    @Autowired
+    ChangePatientStatusUseCase changePatientStatusUseCase;
+
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody Patient model) {
         return ResponseHandler
@@ -103,6 +106,12 @@ public class PatientController {
     @GetMapping("/insurance-company/patientId/{patientId}")
     public ResponseEntity findPatientInsuranceCompany(@PathVariable Long patientId) {
         return new ResponseEntity(findPatientInsuranceCompanyUseCase.find(patientId), HttpStatus.OK);
+    }
+
+    @PutMapping("/change-status/patientId/{patientId}/{status}")
+    public ResponseEntity changePatientStatus(@PathVariable Long patientId, @PathVariable Boolean status) {
+        changePatientStatusUseCase.changeStatus(patientId, status);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }

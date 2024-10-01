@@ -11,8 +11,10 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PatientRepository extends PagingAndSortingRepository<PatientEntity, Long> {
+
 
     @Query("SELECT pe FROM PatientEntity pe where " +
             "LOWER(pe.firstName) LIKE CONCAT('%',:name,'%') OR LOWER(pe.middleName) LIKE CONCAT('%',:name,'%')  OR LOWER(pe.lastName) LIKE CONCAT('%',:name,'%')")
@@ -22,7 +24,8 @@ public interface PatientRepository extends PagingAndSortingRepository<PatientEnt
 
     @Modifying
     @Query("update PatientEntity p set  p.authorizationWatching = false where p.id = :patientId")
-    void turnOffAuthorization(@Param("patientId") Long patientId );
+    void turnOffAuthorization(@Param("patientId") Long patientId);
+
     @Modifying
     @Query("update PatientEntity p set  p.authorizationWatching = true where p.id = :patientId")
     void turnOnAuthorization(@Param("patientId") Long patientId);
@@ -32,7 +35,11 @@ public interface PatientRepository extends PagingAndSortingRepository<PatientEnt
             "((:name is null or upper(p.lastName) LIKE CONCAT('%',:name,'%')) OR  (:name is null or upper(p.firstName) LIKE CONCAT('%',:name,'%')) ) " +
             "AND (:phone is null or p.phone LIKE CONCAT('%',:phone,'%'))" +
             "AND (:email is null or p.email LIKE CONCAT('%',:email,'%'))" +
-            "AND (:insuranceCompany is null or upper(pin.patientInsuranceExternalCompany.insuranceCompany.name) LIKE CONCAT('%',:insuranceCompany,'%'))")
-    Page<PatientEntity> findFilter( Pageable pageable,@Param("name") String name,@Param("phone") String phone,@Param("email") String email,@Param("insuranceCompany") String insuranceCompany);
+            "AND (:insuranceCompany is null or upper(pin.patientInsuranceExternalCompany.insuranceCompany.name) LIKE CONCAT('%',:insuranceCompany,'%'))" +
+            "AND p.status=true")
+    Page<PatientEntity> findFilter(Pageable pageable, @Param("name") String name, @Param("phone") String phone, @Param("email") String email, @Param("insuranceCompany") String insuranceCompany);
 
+    @Modifying
+    @Query("update PatientEntity p set  p.status = :status where p.id = :patientId")
+    void changePatientStatus(@Param("status") boolean status, @Param("patientId") Long patientId);
 }

@@ -26,7 +26,9 @@ public class FindPatientUseCase {
     public MinimalPatientResponse findAll(Pageable paging) {
         Page<PatientEntity> pages = patientRepository.findAll(paging);
         long total = (pages).getTotalElements();
-        List<MinimalPatient> records = pages.stream().map(patient -> {
+        List<MinimalPatient> records = pages.stream()
+                .filter(patient -> patient.isStatus())
+                .map(patient -> {
                     MinimalPatient minimalPatient = new MinimalPatient();
                     minimalPatient.setId(patient.getId());
                     minimalPatient.setName(patient.getLastName() + ',' + patient.getFirstName());
