@@ -1,9 +1,8 @@
 package com.cob.billing.usecases.clinical.patient;
 
-import com.cob.billing.model.clinical.patient.update.profile.PatientCaseDTO;
-import com.cob.billing.model.clinical.patient.update.profile.PatientInsuranceDTO;
-import com.cob.billing.model.clinical.patient.update.profile.PatientSessionDTO;
-import com.cob.billing.model.clinical.patient.update.profile.UpdateProfileDTO;
+import com.cob.billing.model.clinical.patient.update.profile.*;
+import com.cob.billing.usecases.clinical.patient.auth.CreatePatientAuthorizationUseCase;
+import com.cob.billing.usecases.clinical.patient.auth.DeletePatientAuthorizationUseCase;
 import com.cob.billing.usecases.clinical.patient.cases.CreatePatientCaseUseCase;
 import com.cob.billing.usecases.clinical.patient.cases.DeletePatientCaseUseCase;
 import com.cob.billing.usecases.clinical.patient.insurance.company.CreatePatientInsuranceCompanyUseCase;
@@ -31,11 +30,16 @@ public class UpdatePatientUseCase {
     UpdatePatientSessionUseCase updatePatientSessionUseCase;
     @Autowired
     CreatePatientUseCase createPatientUseCase;
+    @Autowired
+    CreatePatientAuthorizationUseCase createPatientAuthorizationUseCase;
+    @Autowired
+    DeletePatientAuthorizationUseCase deletePatientAuthorizationUseCase;
 
     public void update(UpdateProfileDTO profile) {
         updateInsurances(profile.getInsurances(), profile.getPatient().getId());
-        updateCases(profile.getCases(),profile.getPatient().getId());
-        updateSessions(profile.getSessions(), profile.getPatient().getId());
+        updateCases(profile.getCases(), profile.getPatient().getId());
+        updateSessions(profile.getSessions());
+        updateAuthorizations(profile.getAuthorizations(), profile.getPatient().getId());
         createPatientUseCase.create(profile.getPatient());
     }
 
@@ -50,24 +54,34 @@ public class UpdatePatientUseCase {
         });
     }
 
-    private void updateCases(List<PatientCaseDTO> cases,Long patientId) {
-        cases.forEach(patientCaseDTO->{
+    private void updateCases(List<PatientCaseDTO> cases, Long patientId) {
+        cases.forEach(patientCaseDTO -> {
             if (patientCaseDTO.getOperation() == 0 || patientCaseDTO.getOperation() == 1)
-                createPatientCaseUseCase.create(patientCaseDTO.getPatientCase(),patientId);
+                createPatientCaseUseCase.create(patientCaseDTO.getPatientCase(), patientId);
             if (patientCaseDTO.getOperation() == 2)
                 deletePatientCaseUseCase.delete(patientCaseDTO.getPatientCase().getId());
         });
 
     }
 
-    private void updateSessions(List<PatientSessionDTO> sessions,Long patientId) {
+    private void updateSessions(List<PatientSessionDTO> sessions) {
         sessions.forEach(patientSessionDTO -> {
             if (patientSessionDTO.getOperation() == 0)
                 createPatientSessionUseCase.create(patientSessionDTO.getPatientSession());
-            if(patientSessionDTO.getOperation() == 1)
+            if (patientSessionDTO.getOperation() == 1)
                 updatePatientSessionUseCase.update(patientSessionDTO.getPatientSession());
-//            if (patientSessionDTO.getOperation() == 2)
-//                System.out.println();
+        });
+    }
+
+    private void updateAuthorizations(List<PatientAuthorizationDTO> authorizations, Long patientId) {
+        authorizations.forEach(patientAuthorizationDTO -> {
+            if (patientAuthorizationDTO.getOperation() == 0 || patientAuthorizationDTO.getOperation() == 1) {
+                patientAuthorizationDTO.getPatientAuthorization().setPatientId(patientId);
+                createPatientAuthorizationUseCase.createOrUpdate(patientAuthorizationDTO.getPatientAuthorization());
+            }
+            if (patientAuthorizationDTO.getOperation() == 2) {
+                deletePatientAuthorizationUseCase.delete(patientAuthorizationDTO.getPatientAuthorization().getId());
+            }
         });
     }
 }

@@ -27,7 +27,7 @@ public class FetchPatientAuthorizationUseCase {
         List<PatientAuthorization> patientAuthorizations = patientAuthorizationRepository.findByPatient_Id(patientId).get().stream()
                 .map(patientAuthorizationEntity -> {
                     PatientAuthorization patientAuthorization = mapper.map(patientAuthorizationEntity, PatientAuthorization.class);
-                    String[] insCompany = {patientAuthorizationEntity.getPatientInsuranceCompany().toString(), patientAuthorizationEntity.getPatientInsuranceCompanyName()};
+                    String[] insCompany = {patientAuthorizationEntity.getPatientInsuranceCompanyName(),patientAuthorizationEntity.getPatientInsuranceCompany().toString()};
                     patientAuthorization.setInsCompany(insCompany);
                     patientAuthorization.setIsExpired(checkExpiration(patientAuthorizationEntity.getExpireDateNumber()));
                     if (sessionId != null && patientAuthorizationEntity.getSession()!= null){

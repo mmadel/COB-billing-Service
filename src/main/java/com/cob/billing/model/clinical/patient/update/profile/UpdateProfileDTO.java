@@ -12,5 +12,6 @@ public class UpdateProfileDTO {
     private List<PatientInsuranceDTO> insurances;
     private List<PatientCaseDTO> cases;
     private List<PatientSessionDTO> sessions;
+    private List<PatientAuthorizationDTO> authorizations;
     private Patient patient;
 }
