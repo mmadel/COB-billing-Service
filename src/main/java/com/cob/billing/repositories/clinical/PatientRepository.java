@@ -20,7 +20,10 @@ public interface PatientRepository extends PagingAndSortingRepository<PatientEnt
             "LOWER(pe.firstName) LIKE CONCAT('%',:name,'%') OR LOWER(pe.middleName) LIKE CONCAT('%',:name,'%')  OR LOWER(pe.lastName) LIKE CONCAT('%',:name,'%')")
     List<PatientEntity> findByName(@Param("name") String name);
 
-    PatientEntity findByFirstNameAndLastName(String firstName, String lastName);
+    @Query("SELECT pe FROM PatientEntity pe where " +
+            "LOWER(pe.firstName) LIKE CONCAT('%',:firstName,'%')  " +
+            " OR LOWER(pe.lastName) LIKE CONCAT('%',:lastName,'%')")
+    PatientEntity findByFullName(@Param("firstName") String firstName, @Param("lastName") String lastName);
 
     @Modifying
     @Query("update PatientEntity p set  p.authorizationWatching = false where p.id = :patientId")

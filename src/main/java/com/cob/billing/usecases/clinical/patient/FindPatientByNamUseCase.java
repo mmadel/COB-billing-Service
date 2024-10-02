@@ -1,5 +1,6 @@
 package com.cob.billing.usecases.clinical.patient;
 
+import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.model.bill.posting.ClientSearchResult;
 import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.repositories.clinical.PatientRepository;
@@ -16,6 +17,8 @@ public class FindPatientByNamUseCase {
     PatientRepository patientRepository;
     @Autowired
     ModelMapper mapper;
+    @Autowired
+    MapPatientUseCase mapPatientUseCase;
 
     public List<ClientSearchResult> find(String name) {
         List<ClientSearchResult> results = new ArrayList<>();
@@ -28,7 +31,9 @@ public class FindPatientByNamUseCase {
                 });
         return results;
     }
-    public Patient findByFirstAndLastName(String firstName , String lastName){
-        return mapper.map(patientRepository.findByFirstNameAndLastName(firstName, lastName) , Patient.class);
+
+    public Patient findByFirstAndLastName(String firstName, String lastName) {
+        PatientEntity patientEntity = patientRepository.findByFullName(firstName.toLowerCase(), lastName.toLowerCase());
+        return mapPatientUseCase.map(patientEntity);
     }
 }
