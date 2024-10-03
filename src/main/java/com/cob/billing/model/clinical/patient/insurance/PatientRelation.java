@@ -12,6 +12,7 @@ public class PatientRelation {
     private String r_lastName;
     private long r_birthDate;
     private String r_gender;
+    private String r_genderIdentity;
     private Address r_address;
     private String r_phone;
 }
