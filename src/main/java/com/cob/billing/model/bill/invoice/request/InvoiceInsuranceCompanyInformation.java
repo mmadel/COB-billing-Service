@@ -13,6 +13,7 @@ import java.util.List;
 public class InvoiceInsuranceCompanyInformation {
     private String name;
     private Long id;
+    private String payerId;
     private BasicAddress address;
     private InsuranceCompanyVisibility visibility;
     private String[] assigner; /* payerId , payerName , payerAddress*/

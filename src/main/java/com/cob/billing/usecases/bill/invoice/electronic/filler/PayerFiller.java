@@ -30,6 +30,7 @@ public class PayerFiller {
             }
         }else {
             claim.setPayer_name(invoiceInsuranceCompanyInformation.getName());
+            claim.setPayerid("AMM03");
             claim.setPayer_addr_1(invoiceInsuranceCompanyInformation.getAddress().getAddress() == null ? "" : invoiceInsuranceCompanyInformation.getAddress().getAddress());
             claim.setPayer_city(invoiceInsuranceCompanyInformation.getAddress().getCity());
             claim.setPayer_state(invoiceInsuranceCompanyInformation.getAddress().getState());
