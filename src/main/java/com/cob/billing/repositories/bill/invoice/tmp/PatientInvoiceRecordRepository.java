@@ -21,7 +21,8 @@ public interface PatientInvoiceRecordRepository extends JpaRepository<PatientInv
             "AND (:submitStart is null or pi.createdAt >= :submitStart) " +
             "AND (:submitEnd is null or pi.createdAt <= :submitEnd)  " +
             "AND (:insuranceCompany is null or upper(pi.insuranceCompanyName) LIKE CONCAT('%',:insuranceCompany,'%')) " +
-            "AND (coalesce(:status)  is null or pc.submissionStatus IN (:status))")
+            "AND (coalesce(:status)  is null or pc.submissionStatus IN (:status))" +
+            "ORDER BY pi.createdAt DESC ")
     List<PatientInvoiceRecord> search(@Param("insuranceCompany") String insuranceCompany
             , @Param("client") String client
             , @Param("provider") String provider
