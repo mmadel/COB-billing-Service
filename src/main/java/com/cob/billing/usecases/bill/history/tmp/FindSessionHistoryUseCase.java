@@ -19,7 +19,7 @@ public class FindSessionHistoryUseCase {
     MapSessionHistoryUseCase mapSessionHistoryUseCase;
 
     public SessionHistoryResponse find(Pageable paging) {
-        List<PatientInvoiceRecord> patientInvoiceRecords = patientInvoiceRecordRepository.findAll();
+        List<PatientInvoiceRecord> patientInvoiceRecords = patientInvoiceRecordRepository.findAllByOrderByCreatedAtDesc();
         List<SessionHistory> sessionHistories = mapSessionHistoryUseCase.map(patientInvoiceRecords);
         List<SessionHistory> paginate = PaginationUtil.paginate(sessionHistories, paging.getPageNumber() + 1, paging.getPageSize());
         return SessionHistoryResponse.builder()
