@@ -6,6 +6,7 @@ import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.history.SearchSessionHistoryUseCase;
 import com.cob.billing.usecases.bill.history.tmp.FindSessionHistoryUseCase;
 import com.cob.billing.usecases.bill.invoice.FindSubmissionClaimsMessagesUseCase;
+import com.cob.billing.usecases.bill.invoice.PrepareClaimResendUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,8 @@ public class SessionHistoryController {
     FindSessionHistoryUseCase findSessionHistoryUseCase;
     @Autowired
     FindSubmissionClaimsMessagesUseCase findSubmissionClaimsMessagesUseCase;
+    @Autowired
+    PrepareClaimResendUseCase prepareClaimResendUseCase;
 
     @GetMapping("/find")
     public ResponseEntity<Object> find(@RequestParam(name = "offset") int offset,
@@ -47,5 +50,10 @@ public class SessionHistoryController {
     @GetMapping("/find/messages/submissionId/{submissionId}")
     public ResponseEntity<Object> findMessages(@PathVariable Long submissionId) {
         return new ResponseEntity<>(findSubmissionClaimsMessagesUseCase.find(submissionId), HttpStatus.OK);
+    }
+
+    @GetMapping("/prepare/claim/patient/{patientId}/submissionId/{submissionId}")
+    public ResponseEntity prepareClaimResend(@PathVariable Long patientId, @PathVariable Long submissionId) {
+        return new ResponseEntity<>(prepareClaimResendUseCase.prepare(patientId, submissionId), HttpStatus.OK);
     }
 }
