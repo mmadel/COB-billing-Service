@@ -24,4 +24,7 @@ public interface PatientSubmittedClaimRepository extends CrudRepository<PatientS
             "WHERE  pir.insuranceCompanyId = :insuranceCompany")
     List<PatientSubmittedClaim> findBySessionSubmittedByInsuranceCompany(@Param("insuranceCompany") Long insuranceCompany);
 
+    @Query("SELECT psc from PatientSubmittedClaim psc WHERE psc.patientInvoiceRecord.submissionId =:submissionId")
+    List<PatientSubmittedClaim> findBySubmissionId(@Param("submissionId") Long submissionId);
+
 }

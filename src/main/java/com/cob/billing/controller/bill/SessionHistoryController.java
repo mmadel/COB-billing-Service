@@ -5,6 +5,7 @@ import com.cob.billing.model.clinical.patient.session.filter.PatientSessionSearc
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.history.SearchSessionHistoryUseCase;
 import com.cob.billing.usecases.bill.history.tmp.FindSessionHistoryUseCase;
+import com.cob.billing.usecases.bill.invoice.FindSubmissionClaimsMessagesUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,12 +24,14 @@ public class SessionHistoryController {
     SearchSessionHistoryUseCase searchSessionHistoryUseCase;
     @Autowired
     FindSessionHistoryUseCase findSessionHistoryUseCase;
+    @Autowired
+    FindSubmissionClaimsMessagesUseCase findSubmissionClaimsMessagesUseCase;
 
     @GetMapping("/find")
     public ResponseEntity<Object> find(@RequestParam(name = "offset") int offset,
                                        @RequestParam(name = "limit") int limit) {
         Pageable paging = PageRequest.of(offset, limit, Sort.by("createdAt").descending());
-        return new ResponseEntity<>(findSessionHistoryUseCase.find(paging),HttpStatus.OK);
+        return new ResponseEntity<>(findSessionHistoryUseCase.find(paging), HttpStatus.OK);
     }
 
     @PostMapping("/search")
@@ -39,5 +42,10 @@ public class SessionHistoryController {
                 .generateResponse("Successfully find sessions history",
                         HttpStatus.OK,
                         searchSessionHistoryUseCase.search(offset + 1, limit, sessionHistoryCriteria));
+    }
+
+    @GetMapping("/find/messages/submissionId/{submissionId}")
+    public ResponseEntity<Object> findMessages(@PathVariable Long submissionId) {
+        return new ResponseEntity<>(findSubmissionClaimsMessagesUseCase.find(submissionId), HttpStatus.OK);
     }
 }
