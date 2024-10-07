@@ -1,4 +1,4 @@
-package com.cob.billing.entity.bill.invoice.tmp;
+package com.cob.billing.entity.bill.invoice.submitted;
 
 import com.cob.billing.enums.SubmissionType;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;

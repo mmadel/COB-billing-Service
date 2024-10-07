@@ -17,4 +17,5 @@ public class ServiceLine {
     private Boolean isCorrect;
     private String lineNote;
     private double payments;
+    private Boolean isChanged;
 }

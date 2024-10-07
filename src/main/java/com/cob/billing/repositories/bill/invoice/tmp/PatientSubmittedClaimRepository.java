@@ -1,6 +1,6 @@
 package com.cob.billing.repositories.bill.invoice.tmp;
 
-import com.cob.billing.entity.bill.invoice.tmp.PatientSubmittedClaim;
+import com.cob.billing.entity.bill.invoice.submitted.PatientSubmittedClaim;
 import com.cob.billing.enums.SubmissionStatus;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,4 +27,7 @@ public interface PatientSubmittedClaimRepository extends CrudRepository<PatientS
     @Query("SELECT psc from PatientSubmittedClaim psc WHERE psc.patientInvoiceRecord.submissionId =:submissionId")
     List<PatientSubmittedClaim> findBySubmissionId(@Param("submissionId") Long submissionId);
 
+    @Query(value = "SELECT pcm FROM PatientSubmittedClaim pcm INNER JOIN FETCH  pcm.serviceLine ssl  WHERE " +
+            " ssl.serviceLineId IN :serviceLineIds")
+    List<PatientSubmittedClaim> findByServiceLines(@Param("serviceLineIds") List<Long> serviceLineIds);
 }

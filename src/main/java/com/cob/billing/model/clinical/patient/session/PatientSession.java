@@ -1,5 +1,6 @@
 package com.cob.billing.model.clinical.patient.session;
 
+import com.cob.billing.enums.PatientSessionStatus;
 import com.cob.billing.model.admin.clinic.Clinic;
 import com.cob.billing.model.clinical.patient.CaseDiagnosis;
 import lombok.Getter;
@@ -14,6 +15,7 @@ public class PatientSession {
     private Long id;
     private Long patientId;
     private String patientName;
+    private PatientSessionStatus status;
     private DoctorInfo doctorInfo;
     private ClinicInfo clinicInfo;
     private Clinic clinic;

@@ -1,6 +1,6 @@
 package com.cob.billing.repositories.bill.invoice.tmp;
 
-import com.cob.billing.entity.bill.invoice.tmp.PatientInvoiceRecord;
+import com.cob.billing.entity.bill.invoice.submitted.PatientInvoiceRecord;
 import com.cob.billing.enums.SubmissionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

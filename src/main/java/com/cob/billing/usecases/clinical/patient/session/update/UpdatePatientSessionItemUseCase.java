@@ -1,4 +1,4 @@
-package com.cob.billing.usecases.clinical.patient.session;
+package com.cob.billing.usecases.clinical.patient.session.update;
 
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.model.clinical.patient.CPTCode;

@@ -1,6 +1,6 @@
 package com.cob.billing.usecases.bill.invoice;
 
-import com.cob.billing.entity.bill.invoice.tmp.PatientSubmittedClaim;
+import com.cob.billing.entity.bill.invoice.submitted.PatientSubmittedClaim;
 import com.cob.billing.enums.SubmissionStatus;
 import com.cob.billing.model.integration.claimmd.ClaimResponse;
 import com.cob.billing.model.integration.claimmd.status.updates.StatusUpdateResponse;

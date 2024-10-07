@@ -1,11 +1,15 @@
 package com.cob.billing.usecases.bill.history.tmp;
 
-import com.cob.billing.entity.bill.invoice.tmp.PatientInvoiceRecord;
-import com.cob.billing.entity.bill.invoice.tmp.PatientSubmittedClaim;
+import com.cob.billing.entity.bill.invoice.submitted.PatientInvoiceRecord;
+import com.cob.billing.entity.bill.invoice.submitted.PatientSubmittedClaim;
+import com.cob.billing.entity.bill.invoice.submitted.PatientSubmittedClaimServiceLine;
 import com.cob.billing.enums.SubmissionStatus;
 import com.cob.billing.model.clinical.patient.Patient;
+import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.model.history.SessionHistory;
 import com.cob.billing.model.history.SessionHistoryCount;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -13,6 +17,9 @@ import java.util.stream.Collectors;
 
 @Component
 public class MapSessionHistoryUseCase {
+    @Autowired
+    ModelMapper mapper;
+
     public List<SessionHistory> map(List<PatientInvoiceRecord> patientInvoiceRecords) {
         List<SessionHistory> sessionHistories = new ArrayList<>();
         for (PatientInvoiceRecord record : patientInvoiceRecords) {
@@ -56,7 +63,7 @@ public class MapSessionHistoryUseCase {
             SessionHistoryCount count = new SessionHistoryCount();
             count.setSessionId(claim.getLocalClaimId());
             count.setServiceLines(claim.getServiceLine().stream().count());
-            count.setServiceLine(claim.getServiceLine());
+            count.setServiceLine(getServiceLines(claim.getServiceLine()));
             count.setDateOfService(claim.getDateOfService());
             counts.add(count);
         }
@@ -112,5 +119,14 @@ public class MapSessionHistoryUseCase {
                     + ","
                     + differentProviderNpiList.stream().findFirst().get().getProviderFirstName()));
         return sessionHistories;
+    }
+
+    private List<ServiceLine> getServiceLines(List<PatientSubmittedClaimServiceLine> submittedClaimServiceLines) {
+        return submittedClaimServiceLines.stream()
+                .map(patientSubmittedClaimServiceLine -> {
+                    ServiceLine serviceLine = mapper.map(patientSubmittedClaimServiceLine, ServiceLine.class);
+                    serviceLine.setId(patientSubmittedClaimServiceLine.getServiceLineId());
+                    return serviceLine;
+                }).collect(Collectors.toList());
     }
 }

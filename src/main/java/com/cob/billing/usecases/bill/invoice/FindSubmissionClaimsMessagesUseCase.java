@@ -1,6 +1,6 @@
 package com.cob.billing.usecases.bill.invoice;
 
-import com.cob.billing.entity.bill.invoice.tmp.PatientSubmittedClaim;
+import com.cob.billing.entity.bill.invoice.submitted.PatientSubmittedClaim;
 import com.cob.billing.model.bill.invoice.SubmissionClaimMessages;
 import com.cob.billing.repositories.bill.invoice.tmp.PatientSubmittedClaimRepository;
 import org.springframework.beans.factory.annotation.Autowired;

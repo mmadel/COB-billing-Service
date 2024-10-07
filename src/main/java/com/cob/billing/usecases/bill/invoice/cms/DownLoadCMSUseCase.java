@@ -1,6 +1,6 @@
 package com.cob.billing.usecases.bill.invoice.cms;
 
-import com.cob.billing.entity.bill.invoice.tmp.PatientInvoiceRecord;
+import com.cob.billing.entity.bill.invoice.submitted.PatientInvoiceRecord;
 import com.cob.billing.repositories.bill.invoice.tmp.PatientInvoiceRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;

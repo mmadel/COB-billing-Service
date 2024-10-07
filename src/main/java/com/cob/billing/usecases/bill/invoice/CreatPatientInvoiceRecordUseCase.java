@@ -1,7 +1,8 @@
 package com.cob.billing.usecases.bill.invoice;
 
-import com.cob.billing.entity.bill.invoice.tmp.PatientInvoiceRecord;
-import com.cob.billing.entity.bill.invoice.tmp.PatientSubmittedClaim;
+import com.cob.billing.entity.bill.invoice.submitted.PatientInvoiceRecord;
+import com.cob.billing.entity.bill.invoice.submitted.PatientSubmittedClaim;
+import com.cob.billing.entity.bill.invoice.submitted.PatientSubmittedClaimServiceLine;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.enums.SubmissionStatus;
 import com.cob.billing.enums.SubmissionType;
@@ -9,11 +10,13 @@ import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
 import com.cob.billing.model.bill.invoice.response.tmp.InvoiceResponse;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
+import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.model.integration.claimmd.ClaimResponse;
 import com.cob.billing.repositories.bill.invoice.tmp.PatientInvoiceRecordRepository;
 import com.cob.billing.repositories.bill.invoice.tmp.PatientSubmittedClaimRepository;
-import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -67,9 +70,14 @@ public class CreatPatientInvoiceRecordUseCase {
             claim.setProviderLastName(session.getDoctorInfo().getDoctorLastName());
             claim.setProviderFirstName(session.getDoctorInfo().getDoctorFirstName());
             claim.setProvider_npi(session.getDoctorInfo().getDoctorNPI());
-            claim.setServiceLine(serviceLines.stream()
-                    .map(SelectedSessionServiceLine::getServiceLine)
-                    .collect(Collectors.toList()));
+            claim.setServiceLine(mapPatientSubmittedClaimServiceLine(serviceLines));
+            ModelMapper mapper = new ModelMapper();
+            mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+            mapper.addMappings(new PropertyMap<PatientSessionEntity, PatientSession>() {
+                @Override
+                protected void configure() {
+                    skip(destination.getStatus());}
+            });
             claim.setPatientSession(mapper.map(session, PatientSessionEntity.class));
             claim.setPatientInvoiceRecord(patientInvoiceRecord);
             claim.setLocalClaimId(session.getId());
@@ -117,5 +125,13 @@ public class CreatPatientInvoiceRecordUseCase {
                 .map(messageResponse -> messageResponse.getMessage())
                 .collect(Collectors.toList());
     }
-
+    private List<PatientSubmittedClaimServiceLine>  mapPatientSubmittedClaimServiceLine(List<SelectedSessionServiceLine> selectedServiceLines) {
+        return selectedServiceLines.stream()
+                .map(serviceLine -> {
+                    PatientSubmittedClaimServiceLine patientSubmittedClaimServiceLine = mapper.map(serviceLine.getServiceLine(),PatientSubmittedClaimServiceLine.class);
+                    patientSubmittedClaimServiceLine.setServiceLineId(serviceLine.getServiceLine().getId());
+                    patientSubmittedClaimServiceLine.setId(null);
+                    return patientSubmittedClaimServiceLine;
+                }).collect(Collectors.toList());
+    }
 }

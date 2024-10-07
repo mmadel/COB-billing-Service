@@ -1,17 +1,22 @@
-package com.cob.billing.usecases.clinical.patient.session;
+package com.cob.billing.usecases.clinical.patient.session.update;
 
+import com.cob.billing.entity.bill.invoice.submitted.PatientSubmittedClaim;
 import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
 import com.cob.billing.enums.PatientSessionStatus;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.model.clinical.patient.session.ServiceLine;
+import com.cob.billing.repositories.bill.invoice.tmp.PatientSubmittedClaimRepository;
 import com.cob.billing.repositories.clinical.PatientRepository;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import com.cob.billing.repositories.clinical.session.ServiceLineRepository;
 import com.cob.billing.util.ListUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,18 +27,28 @@ import java.util.stream.Collectors;
 @Component
 public class UpdatePatientSessionUseCase {
     @Autowired
-    ModelMapper mapper;
-    @Autowired
     PatientSessionRepository patientSessionRepository;
     @Autowired
     ServiceLineRepository serviceLineRepository;
     @Autowired
     PatientRepository patientRepository;
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+    @Autowired
+    PatientSubmittedClaimRepository patientSubmittedClaimRepository;
 
     @Transactional
-    public Long update(PatientSession model) {
+        public Long update(PatientSession model) {
         PatientEntity patient = patientRepository.findById(model.getPatientId()).get();
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        mapper.addMappings(new PropertyMap<PatientSessionEntity, PatientSession>() {
+            @Override
+            protected void configure() {
+                skip(destination.getStatus());}
+        });
         PatientSessionEntity toBeUpdated = mapper.map(model, PatientSessionEntity.class);
+        toBeUpdated.setStatus(model.getStatus());
         toBeUpdated.setPatient(patient);
         boolean allInvoice = model.getServiceCodes().stream()
                 .allMatch(obj -> "Invoice".equals(obj.getType()));
@@ -45,18 +60,10 @@ public class UpdatePatientSessionUseCase {
                 .anyMatch(obj -> obj.getIsCorrect());
         if (correctSession)
             markNewServiceLineAsCorrect(toBeUpdated);
+        List<PatientSubmittedClaim> submittedSessions = getUpdatedServiceLinesSubmitted(model);
+        if (submittedSessions.size() != 0)
+            eventPublisher.publishEvent(new SessionEvent(this, model, submittedSessions));
         return patientSessionRepository.save(toBeUpdated).getId();
-    }
-
-
-    private void addServiceCodes(PatientSessionEntity entity, List<ServiceLine> serviceCodes) {
-        List<PatientSessionServiceLineEntity> newServiceLines = serviceCodes.stream()
-                .filter(serviceLine -> serviceLine.getId() == null)
-                .map(serviceLine -> mapper.map(serviceLine, PatientSessionServiceLineEntity.class))
-                .collect(Collectors.toList());
-        newServiceLines.forEach(serviceLineEntity -> {
-            entity.addServiceCode(serviceLineEntity);
-        });
     }
 
     private void removeServiceCodes(Long entityId, List<ServiceLine> serviceLines) {
@@ -114,5 +121,12 @@ public class UpdatePatientSessionUseCase {
                 .forEach(patientSessionServiceLineEntity -> {
                     patientSessionServiceLineEntity.setIsCorrect(true);
                 });
+    }
+
+    private List<PatientSubmittedClaim> getUpdatedServiceLinesSubmitted(PatientSession patientSession) {
+        List<Long> serviceLinesIds = patientSession.getServiceCodes().stream()
+                .filter(serviceLine -> serviceLine.getIsChanged() != null && serviceLine.getIsChanged())
+                .map(serviceLine -> serviceLine.getId()).collect(Collectors.toList());
+        return patientSubmittedClaimRepository.findByServiceLines(serviceLinesIds);
     }
 }

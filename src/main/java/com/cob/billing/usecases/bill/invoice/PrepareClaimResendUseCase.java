@@ -1,6 +1,7 @@
 package com.cob.billing.usecases.bill.invoice;
 
-import com.cob.billing.entity.bill.invoice.tmp.PatientSubmittedClaim;
+import com.cob.billing.entity.bill.invoice.submitted.PatientSubmittedClaim;
+import com.cob.billing.entity.bill.invoice.submitted.PatientSubmittedClaimServiceLine;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.model.bill.invoice.ResendClaim;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
@@ -40,9 +41,11 @@ public class PrepareClaimResendUseCase {
         List<PatientSubmittedClaim> claims = patientSubmittedClaimRepository.findBySubmissionId(submissionId);
         claims.forEach(patientSubmittedClaim -> {
             PatientSession patientSession = mapper.map(patientSubmittedClaim.getPatientSession(), PatientSession.class);
-            for (ServiceLine serviceLine : patientSubmittedClaim.getServiceLine()) {
+            for (PatientSubmittedClaimServiceLine patientSubmittedClaimServiceLine : patientSubmittedClaim.getServiceLine()) {
                 SelectedSessionServiceLine sessionServiceLine = new SelectedSessionServiceLine();
                 sessionServiceLine.setSessionId(patientSession);
+                ServiceLine serviceLine = mapper.map(patientSubmittedClaimServiceLine, ServiceLine.class);
+                serviceLine.setId(patientSubmittedClaimServiceLine.getServiceLineId());
                 sessionServiceLine.setServiceLine(serviceLine);
                 serviceLines.add(sessionServiceLine);
             }

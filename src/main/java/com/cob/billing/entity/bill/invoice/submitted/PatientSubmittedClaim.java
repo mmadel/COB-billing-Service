@@ -1,13 +1,13 @@
-package com.cob.billing.entity.bill.invoice.tmp;
+package com.cob.billing.entity.bill.invoice.submitted;
 
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
-import com.cob.billing.enums.ClaimResponseStatus;
 import com.cob.billing.enums.SubmissionStatus;
 import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -39,9 +39,9 @@ public class PatientSubmittedClaim {
     @Column(name = "provider_npi")
     private String provider_npi;
 
-    @Column(name = "service_lines", columnDefinition = "jsonb")
-    @Type(type = "jsonb")
-    private List<ServiceLine> serviceLine;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "submitted_claim")
+    private List<PatientSubmittedClaimServiceLine> serviceLine;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "submission_status")

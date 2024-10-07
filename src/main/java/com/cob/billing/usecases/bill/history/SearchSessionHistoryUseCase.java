@@ -1,6 +1,6 @@
 package com.cob.billing.usecases.bill.history;
 
-import com.cob.billing.entity.bill.invoice.tmp.PatientInvoiceRecord;
+import com.cob.billing.entity.bill.invoice.submitted.PatientInvoiceRecord;
 import com.cob.billing.model.bill.invoice.search.SessionHistoryCriteria;
 import com.cob.billing.model.history.SessionHistory;
 import com.cob.billing.model.response.SessionHistoryResponse;

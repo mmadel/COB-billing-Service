@@ -1,9 +1,7 @@
 package com.cob.billing.usecases.bill.invoice;
 
-import com.cob.billing.entity.bill.invoice.tmp.PatientSubmittedClaim;
+import com.cob.billing.entity.bill.invoice.submitted.PatientSubmittedClaim;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
-import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
-import com.cob.billing.model.bill.posting.BatchServiceLinePayment;
 import com.cob.billing.model.bill.posting.filter.PostingSearchCriteria;
 import com.cob.billing.model.bill.posting.paymnet.BatchSessionServiceLinePayment;
 import com.cob.billing.model.response.SessionServiceLinePaymentResponse;

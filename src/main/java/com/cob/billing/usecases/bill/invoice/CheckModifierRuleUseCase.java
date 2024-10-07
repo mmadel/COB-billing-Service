@@ -8,8 +8,7 @@ import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.repositories.bill.ModifierRuleRepository;
 import com.cob.billing.usecases.bill.tools.modifier.rule.merger.ModifierConverterArray;
 import com.cob.billing.usecases.bill.tools.modifier.rule.merger.ModifierMerger;
-import com.cob.billing.usecases.clinical.patient.session.UpdatePatientSessionServiceLineUseCase;
-import com.itextpdf.styledxmlparser.jsoup.internal.StringUtil;
+import com.cob.billing.usecases.clinical.patient.session.update.UpdatePatientSessionServiceLineUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class CheckModifierRuleUseCase {

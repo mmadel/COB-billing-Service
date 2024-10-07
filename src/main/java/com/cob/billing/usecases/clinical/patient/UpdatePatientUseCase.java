@@ -8,7 +8,7 @@ import com.cob.billing.usecases.clinical.patient.cases.DeletePatientCaseUseCase;
 import com.cob.billing.usecases.clinical.patient.insurance.company.CreatePatientInsuranceCompanyUseCase;
 import com.cob.billing.usecases.clinical.patient.insurance.company.DeletePatientInsuranceCompanyUseCase;
 import com.cob.billing.usecases.clinical.patient.session.CreatePatientSessionUseCase;
-import com.cob.billing.usecases.clinical.patient.session.UpdatePatientSessionUseCase;
+import com.cob.billing.usecases.clinical.patient.session.update.UpdatePatientSessionUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
