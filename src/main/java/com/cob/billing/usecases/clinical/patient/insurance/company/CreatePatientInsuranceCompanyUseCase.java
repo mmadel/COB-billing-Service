@@ -49,6 +49,7 @@ public class CreatePatientInsuranceCompanyUseCase {
         PatientInsuranceEntity created = patientInsuranceRepository.save(toBeCreated);
         PatientInsurance result = new PatientInsurance();
         result.setId(created.getId());
+        result.setCreatedAt(created.getCreatedAt());
         String[] insuranceCompanyValue;
         switch (patientInsurance.getVisibility()) {
             case Internal:
