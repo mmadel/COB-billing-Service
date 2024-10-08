@@ -1,8 +1,9 @@
 package com.cob.billing.controller.clinical;
 
-import com.cob.billing.model.clinical.insurance.company.InsuranceCompanyVisibility;
 import com.cob.billing.model.clinical.patient.Patient;
-import com.cob.billing.model.clinical.patient.insurance.PatientInsurance;
+import com.cob.billing.model.clinical.patient.PatientSearchCriteria;
+import com.cob.billing.model.clinical.patient.session.filter.PatientSessionSearchCriteria;
+import com.cob.billing.model.clinical.patient.update.profile.UpdateProfileDTO;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.clinical.patient.*;
 import com.cob.billing.usecases.clinical.patient.insurance.company.DeletePatientInsuranceCompanyUseCase;
@@ -32,6 +33,13 @@ public class PatientController {
     FlagPatientAuthorizationUseCase flagPatientAuthorizationUseCase;
     @Autowired
     FindPatientInsuranceCompanyUseCase findPatientInsuranceCompanyUseCase;
+    @Autowired
+    UpdatePatientUseCase updatePatientUseCase;
+    @Autowired
+    FindFilteredPatientUseCase findFilteredPatientUseCase;
+
+    @Autowired
+    ChangePatientStatusUseCase changePatientStatusUseCase;
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody Patient model) {
@@ -41,14 +49,32 @@ public class PatientController {
                         createPatientUseCase.create(model));
     }
 
-    @GetMapping("/find")
+    @PutMapping("/update")
+    public ResponseEntity update(@RequestBody UpdateProfileDTO profile) {
+        updatePatientUseCase.update(profile);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/find/status/{status}")
     public ResponseEntity<Object> findAll(@RequestParam(name = "offset") String offset,
-                                          @RequestParam(name = "limit") String limit) {
+                                          @RequestParam(name = "limit") String limit,
+                                          @PathVariable(name = "status") boolean status) {
         Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
         return ResponseHandler
                 .generateResponse("Successfully find all patients",
                         HttpStatus.OK, null,
-                        findPatientUseCase.findAll(paging));
+                        findPatientUseCase.findAll(paging, status));
+    }
+
+    @PostMapping("/find/filter")
+    public ResponseEntity<Object> find(@RequestParam(name = "offset") String offset,
+                                       @RequestParam(name = "limit") String limit
+            , @RequestBody PatientSearchCriteria searchCriteria) {
+        Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
+        return ResponseHandler
+                .generateResponse("Successfully find filtered patients",
+                        HttpStatus.OK, null, findFilteredPatientUseCase.find(paging, searchCriteria)
+                );
     }
 
     @GetMapping("find/patientId/{patientId}")
@@ -77,9 +103,16 @@ public class PatientController {
         flagPatientAuthorizationUseCase.turnOn(patientId);
         return new ResponseEntity(HttpStatus.OK);
     }
+
     @GetMapping("/insurance-company/patientId/{patientId}")
-    public ResponseEntity findPatientInsuranceCompany(@PathVariable Long patientId){
-        return new ResponseEntity(findPatientInsuranceCompanyUseCase.find(patientId),HttpStatus.OK);
+    public ResponseEntity findPatientInsuranceCompany(@PathVariable Long patientId) {
+        return new ResponseEntity(findPatientInsuranceCompanyUseCase.find(patientId), HttpStatus.OK);
+    }
+
+    @PutMapping("/change-status/patientId/{patientId}/{status}")
+    public ResponseEntity changePatientStatus(@PathVariable Long patientId, @PathVariable Boolean status) {
+        changePatientStatusUseCase.changeStatus(patientId, status);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }

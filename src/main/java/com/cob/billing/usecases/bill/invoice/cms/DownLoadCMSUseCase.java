@@ -1,7 +1,7 @@
 package com.cob.billing.usecases.bill.invoice.cms;
 
-import com.cob.billing.entity.bill.invoice.PatientInvoiceEntity;
-import com.cob.billing.repositories.bill.invoice.PatientInvoiceRepository;
+import com.cob.billing.entity.bill.invoice.submitted.PatientInvoiceRecord;
+import com.cob.billing.repositories.bill.invoice.tmp.PatientInvoiceRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
@@ -14,10 +14,10 @@ import java.util.zip.Inflater;
 @Component
 public class DownLoadCMSUseCase {
     @Autowired
-    PatientInvoiceRepository patientInvoiceRepository;
+    PatientInvoiceRecordRepository patientInvoiceRecordRepository;
 
     public ByteArrayResource download(Long invoiceId) throws IOException, DataFormatException {
-        PatientInvoiceEntity patientInvoice = patientInvoiceRepository.findBySubmissionId(invoiceId).get();
+        PatientInvoiceRecord patientInvoice = patientInvoiceRecordRepository.findBySubmissionId(invoiceId).get();
         ByteArrayResource resource = new ByteArrayResource(decompress(patientInvoice.getCmsDocument(),false));
         return resource;
     }

@@ -10,5 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PatientInsuranceRepository extends JpaRepository<PatientInsuranceEntity, Long> {
-      List<PatientInsuranceEntity> findByPatient_Id(Long patientId);
+      @Query(value = "SELECT pi FROM PatientInsuranceEntity pi where pi.patient.id =:patientId order by pi.createdAt desc")
+      List<PatientInsuranceEntity> find(@Param("patientId") Long patientId);
 }

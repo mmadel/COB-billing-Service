@@ -1,6 +1,6 @@
 package com.cob.billing.usecases.bill.invoice.electronic.filler;
 
-import com.cob.billing.model.bill.invoice.tmp.InvoiceBillingProviderInformation;
+import com.cob.billing.model.bill.invoice.request.InvoiceBillingProviderInformation;
 import com.cob.billing.model.integration.claimmd.Claim;
 import com.cob.billing.usecases.bill.invoice.electronic.enums.BillingProviderTaxIDType;
 import org.springframework.stereotype.Component;

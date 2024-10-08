@@ -1,6 +1,5 @@
 package com.cob.billing.model.response;
 
-import com.cob.billing.model.bill.invoice.tmp.InvoiceResponse;
 import com.cob.billing.model.history.SessionHistory;
 import lombok.Builder;
 import lombok.Getter;

@@ -22,7 +22,8 @@ public class PayerController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity create(@RequestBody Payer model) {
-        return new ResponseEntity(addPayerUseCase.add(model), HttpStatus.OK);
+    public ResponseEntity create() {
+        addPayerUseCase.add();
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

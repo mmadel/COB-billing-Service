@@ -12,7 +12,7 @@ import java.util.Objects;
 @Getter
 public class SessionHistoryCount {
     private Long sessionId;
-    private Integer serviceLines;
+    private Long serviceLines;
     private List<ServiceLine> serviceLine;
     private Long dateOfService;
 

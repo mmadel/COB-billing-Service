@@ -1,8 +1,9 @@
 package com.cob.billing.controller.bill;
 
-import com.cob.billing.model.bill.modifier.rule.ModifierRuleModel;
+import com.cob.billing.model.bill.modifier.rule.ModifierRule;
+import com.cob.billing.model.bill.modifier.rule.Rule;
 import com.cob.billing.model.clinical.patient.session.ServiceLine;
-import com.cob.billing.usecases.bill.invoice.InvoiceModifierRuleUseCase;
+import com.cob.billing.usecases.bill.invoice.CheckModifierRuleUseCase;
 import com.cob.billing.usecases.bill.tools.modifier.rule.CreateModifierRuleUseCase;
 import com.cob.billing.usecases.bill.tools.modifier.rule.FindModifierRuleMetaDataUseCase;
 import com.cob.billing.usecases.bill.tools.modifier.rule.ModifierRuleFinderUseCase;
@@ -28,10 +29,10 @@ public class ModifierRuleController {
     @Autowired
     FindModifierRuleMetaDataUseCase findModifierRuleMetaDataUseCase;
     @Autowired
-    InvoiceModifierRuleUseCase invoiceModifierRuleUseCase;
+    CheckModifierRuleUseCase checkModifierRuleUseCase;
 
     @PostMapping("/create")
-    public ResponseEntity create(@RequestBody ModifierRuleModel model) {
+    public ResponseEntity create(@RequestBody ModifierRule model) {
         return new ResponseEntity(createModifierRuleUseCase.create(model), HttpStatus.OK);
     }
 
@@ -58,6 +59,6 @@ public class ModifierRuleController {
 
     @PostMapping("/fire-default")
     public ResponseEntity fireDefaultModifierRule(@RequestBody List<ServiceLine> models) {;
-        return new ResponseEntity(invoiceModifierRuleUseCase.checkDefault(models), HttpStatus.OK);
+        return new ResponseEntity(checkModifierRuleUseCase.checkDefault(models), HttpStatus.OK);
     }
 }

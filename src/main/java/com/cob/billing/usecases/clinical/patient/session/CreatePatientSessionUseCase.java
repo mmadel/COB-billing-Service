@@ -39,7 +39,7 @@ public class CreatePatientSessionUseCase {
             createPatientCase(patient, toBeCreated);
         ProviderEntity providerEntity = providerRepository.findById(model.getDoctorInfo().getDoctorId()).get();
         toBeCreated.getDoctorInfo().setLegacyID(providerEntity.getLegacyID());
-
+        toBeCreated.getDoctorInfo().setTaxonomy(providerEntity.getProviderInfo().getTaxonomyCode());
         toBeCreated.getServiceCodes().forEach(patientSessionServiceLineEntity -> {
             if (patientSessionServiceLineEntity.getIsCorrect() == null)
                 patientSessionServiceLineEntity.setIsCorrect(false);

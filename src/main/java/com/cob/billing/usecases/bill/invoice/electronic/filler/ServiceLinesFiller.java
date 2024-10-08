@@ -4,6 +4,7 @@ import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.model.integration.claimmd.Charge;
 import com.cob.billing.model.integration.claimmd.Claim;
+import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
@@ -11,6 +12,8 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class ServiceLinesFiller {
     public void fill(List<SelectedSessionServiceLine> patientInvoiceRecords, Claim claim) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
@@ -25,9 +28,20 @@ public class ServiceLinesFiller {
             charge.setThru_date(serviceDateFormat.format(sessionServiceLine.getSessionId().getServiceDate()));
             charge.setPlace_of_service(sessionServiceLine.getSessionId().getPlaceOfCode().split("_")[1]);
             charge.setProc_code(sessionServiceLine.getServiceLine().getCptCode().getServiceCode());
-             /*TODO
-                generate id with max 40 length
-             */
+            charge.setRemote_chgid(Long.toString(sessionServiceLine.getServiceLine().getId()));
+            if (sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID() != null) {
+                if (sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderIdQualifier() != null) {
+                    if (sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderIdQualifier().equals("ZZ"))
+                        charge.setChg_prov_taxonomy(sessionServiceLine.getSessionId().getDoctorInfo().getTaxonomy());
+                    else {
+                        if (sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderId() != null)
+                            charge.setChg_prov_id(sessionServiceLine.getSessionId().getDoctorInfo().getLegacyID().getProviderId());
+                    }
+
+                }
+            }
+
+            charge.setChg_prov_npi(sessionServiceLine.getSessionId().getDoctorInfo().getDoctorNPI());
             //charge.setRemote_chgid();
             if (sessionServiceLine.getServiceLine().getCptCode().getModifier().length() > 0) {
                 String[] modList = sessionServiceLine.getServiceLine().getCptCode().getModifier().split("\\.");
@@ -58,11 +72,14 @@ public class ServiceLinesFiller {
             charge.setUnits(sessionServiceLine.getServiceLine().getCptCode().getUnit().toString());
             charges.add(charge);
             totalCharge = totalCharge + sessionServiceLine.getServiceLine().getCptCode().getCharge();
+
         }
+        claim.setPrior_auth(patientInvoiceRecords.stream().findFirst().get().getSessionId().getAuthorizationNumber());
         getSessionDiagnosis(patientInvoiceRecords, claim);
         claim.setCharge(charges);
         claim.setTotal_charge(totalCharge.toString());
     }
+
     private void getSessionDiagnosis(List<SelectedSessionServiceLine> selectedSessionServiceLines, Claim claim) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         List<PatientSession> sessions = new ArrayList<>();
         for (SelectedSessionServiceLine sessionServiceLine : selectedSessionServiceLines) {
@@ -76,6 +93,7 @@ public class ServiceLinesFiller {
         }
         fillDiagnosis(sessionDiagnosis, claim);
     }
+
     private void fillDiagnosis(List<String> sessionDiagnosis, Claim claim) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         int counter = 1;
         for (String diago : sessionDiagnosis) {
@@ -84,6 +102,7 @@ public class ServiceLinesFiller {
             counter++;
         }
     }
+
     private boolean containsSession(List<PatientSession> list, Long id) {
         return list.stream().anyMatch(p -> p.getId().equals(id));
     }

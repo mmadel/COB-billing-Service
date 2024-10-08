@@ -37,6 +37,6 @@ public class InsuranceCompanyExternalEntity {
     private BasicAddress address;
 
     @Column(name = "payer_id")
-    private Long payerId;
+    private String payerId;
 
 }

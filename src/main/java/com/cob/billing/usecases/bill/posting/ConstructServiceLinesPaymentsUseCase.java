@@ -1,16 +1,12 @@
 package com.cob.billing.usecases.bill.posting;
 
-import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
-import com.cob.billing.model.bill.posting.paymnet.BatchServiceLineData;
 import com.cob.billing.model.bill.posting.paymnet.SessionServiceLinePayment;
 import com.cob.billing.repositories.clinical.session.PatientSessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -42,7 +38,7 @@ public class ConstructServiceLinesPaymentsUseCase {
             , List<SessionServiceLinePayment> sessionServiceLinePayments) {
         sessionServiceLines.forEach(patientSessionServiceLineEntity -> {
             SessionServiceLinePayment sessionServiceLinePayment = new SessionServiceLinePayment(patientSessionServiceLineEntity.getCptCode().getCharge()
-                    , 0.0, 0.0, patientSessionServiceLineEntity.getId(), null,null);
+                    , 0.0, 0.0, patientSessionServiceLineEntity.getId(), null, null);
             sessionServiceLinePayments.add(sessionServiceLinePayment);
 
         });

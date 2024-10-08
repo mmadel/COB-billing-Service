@@ -42,7 +42,7 @@ public class MapPatientUseCase {
         });
         Patient patient = mapper.map(entity, Patient.class);
 
-        List<PatientInsuranceEntity> patientInsuranceEntities = patientInsuranceRepository.findByPatient_Id(entity.getId());
+        List<PatientInsuranceEntity> patientInsuranceEntities = patientInsuranceRepository.find(entity.getId());
         List<PatientInsurance> patientInsurances = mapPatientInsurancesUseCase.map(patientInsuranceEntities);
         patient.setPatientInsurances(patientInsurances);
         patient.setSessions(findPatientSession(entity.getId()));

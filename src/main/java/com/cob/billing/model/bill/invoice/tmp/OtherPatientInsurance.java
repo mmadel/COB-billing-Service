@@ -10,5 +10,6 @@ public class OtherPatientInsurance {
     private String policyGroup;
     private String planName;
     private String responsibility;
+    private String[] assigner;
     private Long createdAt;
 }

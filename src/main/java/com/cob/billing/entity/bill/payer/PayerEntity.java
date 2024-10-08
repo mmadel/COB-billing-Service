@@ -31,7 +31,7 @@ public class PayerEntity {
     @Column(name = "display_name")
     private String displayName;
     @Column(name = "payer_id")
-    private Long payerId;
+    private String payerId;
     @Column(name = "address", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private BasicAddress address;

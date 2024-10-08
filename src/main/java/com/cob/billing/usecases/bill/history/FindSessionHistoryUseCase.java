@@ -22,12 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
+//@Component
 public class FindSessionHistoryUseCase {
-    @Autowired
+    //@Autowired
     PatientInvoiceRepository patientInvoiceRepository;
-    @Autowired
-    MapSessionHistoryUseCase mapSessionHistoryUseCase;
 
     public SessionHistoryResponse find(Pageable paging) {
         List<SessionHistory> result;
@@ -38,33 +36,12 @@ public class FindSessionHistoryUseCase {
                 .filter(patientInvoice -> patientInvoice.getSubmissionId() != null)
                 .collect(Collectors.toList());
         // Submissions
-        result = mapSessionHistoryUseCase.map(invoiceEntities);
-        return SessionHistoryResponse.builder()
-                .number_of_records((int) total)
-                .number_of_matching_records((int) invoiceEntities.size())
-                .records(result)
-                .build();
-    }
-
-    private List<ServiceLine> mapPatientSessionServiceLine(List<PatientInvoiceDetailsEntity> detailsEntities) {
-        List<ServiceLine> serviceLines = new ArrayList<>();
-        detailsEntities.forEach(patientInvoiceDetails -> {
-            PatientSessionServiceLineEntity serviceLine = patientInvoiceDetails.getServiceLine();
-            ServiceLine line = new ServiceLine();
-            line.setType(serviceLine.getType());
-            line.setCptCode(serviceLine.getCptCode());
-            line.setDiagnoses(serviceLine.getDiagnoses());
-            serviceLines.add(line);
-        });
-        return serviceLines;
-    }
-
-    private Patient mapPatient(PatientEntity entity) {
-        Patient patient = new Patient();
-        patient.setId(entity.getId());
-        patient.setBirthDate(entity.getBirthDate());
-        patient.setFirstName(entity.getFirstName());
-        patient.setLastName(entity.getLastName());
-        return patient;
+//        result = mapSessionHistoryUseCase.map(invoiceEntities);
+//        return SessionHistoryResponse.builder()
+//                .number_of_records((int) total)
+//                .number_of_matching_records((int) invoiceEntities.size())
+//                .records(result)
+//                .build();
+        return null;
     }
 }

@@ -4,4 +4,5 @@ import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLine
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface ServiceLineRepository extends PagingAndSortingRepository<PatientSessionServiceLineEntity, Long> {
+
 }

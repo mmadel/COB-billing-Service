@@ -1,9 +1,8 @@
 package com.cob.billing.model.clinical.patient;
 
-import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.enums.Gender;
+import com.cob.billing.enums.GenderIdentity;
 import com.cob.billing.enums.MaritalStatus;
-import com.cob.billing.model.bill.invoice.tmp.auth.AuthorizationInformation;
 import com.cob.billing.model.clinical.patient.advanced.PatientAdvancedInformation;
 import com.cob.billing.model.clinical.patient.insurance.PatientInsurance;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
@@ -31,7 +30,7 @@ public class Patient {
     private MaritalStatus maritalStatus;
 
     private Gender gender;
-
+    private GenderIdentity genderIdentity;
     private Address address;
 
     private List<PatientCase> cases;
@@ -46,4 +45,5 @@ public class Patient {
     private String externalId;
     private PatientAdvancedInformation patientAdvancedInformation;
     private Boolean authorizationWatching;
+    boolean status;
 }

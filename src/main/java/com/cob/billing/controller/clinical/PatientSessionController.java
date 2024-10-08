@@ -5,6 +5,8 @@ import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.bill.invoice.ChangeSessionStatusUseCase;
 import com.cob.billing.usecases.clinical.patient.session.*;
+import com.cob.billing.usecases.clinical.patient.session.update.UpdatePatientSessionItemUseCase;
+import com.cob.billing.usecases.clinical.patient.session.update.UpdatePatientSessionUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

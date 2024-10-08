@@ -30,7 +30,7 @@ public class InsuranceCompanyPayerEntity {
     InsuranceCompanyEntity internalInsuranceCompany;
 
     @Column(name = "payer_id")
-    private Long payerId;
+    private String payerId;
     @Column(name = "payer_data", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private Payer payer;

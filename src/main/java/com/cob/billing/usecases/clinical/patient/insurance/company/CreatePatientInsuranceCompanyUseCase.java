@@ -49,15 +49,21 @@ public class CreatePatientInsuranceCompanyUseCase {
         PatientInsuranceEntity created = patientInsuranceRepository.save(toBeCreated);
         PatientInsurance result = new PatientInsurance();
         result.setId(created.getId());
+        result.setCreatedAt(created.getCreatedAt());
+        String[] insuranceCompanyValue;
         switch (patientInsurance.getVisibility()) {
             case Internal:
                 InsuranceCompanyEntity insuranceCompany = createInsuranceCompany(patientInsurance.getInsuranceCompany(), patientInsurance.getInsuranceCompanyAddress());
                 result.setAssigner(getAssigner(insuranceCompany.getId()));
                 mapPatientInsuranceToInsuranceCompany(created, insuranceCompany);
+                insuranceCompanyValue=new String[]{insuranceCompany.getName(),insuranceCompany.getId().toString()};
+                result.setInsuranceCompany(insuranceCompanyValue);
                 break;
             case External:
                 InsuranceCompanyExternalEntity insuranceCompanyExternal = createExternalInsuranceCompany(patientInsurance.getInsuranceCompany(), patientInsurance.getInsuranceCompanyAddress());
                 mapPatientInsuranceToExternalInsuranceCompany(created, insuranceCompanyExternal);
+                insuranceCompanyValue=new String[]{insuranceCompanyExternal.getName(),insuranceCompanyExternal.getId().toString(),insuranceCompanyExternal.getPayerId().toString()};
+                result.setInsuranceCompany(insuranceCompanyValue);
                 break;
         }
         return result;
@@ -88,14 +94,14 @@ public class CreatePatientInsuranceCompanyUseCase {
     }
 
     private InsuranceCompanyExternalEntity createExternalInsuranceCompany(String[] insuranceCompany, BasicAddress insuranceCompanyNameAddress) {
-        Optional<InsuranceCompanyExternalEntity> optionalInsuranceCompanyExternal = insuranceCompanyExternalRepository.findByInsuranceCompanyName(insuranceCompany[0]).get().stream().findFirst();
+        Optional<InsuranceCompanyExternalEntity> optionalInsuranceCompanyExternal = insuranceCompanyExternalRepository.findByInsuranceCompanyName(insuranceCompany[0].toUpperCase()).get().stream().findFirst();
         if (optionalInsuranceCompanyExternal.isPresent()) {
             return optionalInsuranceCompanyExternal.get();
         } else {
             InsuranceCompanyExternalEntity toBeCreated = new InsuranceCompanyExternalEntity();
             toBeCreated.setName(insuranceCompany[0]);
             toBeCreated.setDisplayName(insuranceCompany[0]);
-            toBeCreated.setPayerId(Long.parseLong(insuranceCompany[1]));
+            toBeCreated.setPayerId(insuranceCompany[1]);
             toBeCreated.setAddress(insuranceCompanyNameAddress);
             InsuranceCompanyExternalEntity created = insuranceCompanyExternalRepository.save(toBeCreated);
             createInsuranceCompanyConfiguration(created);

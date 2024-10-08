@@ -1,12 +1,10 @@
 package com.cob.billing.entity.bill.invoice;
 
 import com.cob.billing.entity.clinical.patient.PatientEntity;
-import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
-import com.cob.billing.entity.clinical.patient.session.PatientSessionServiceLineEntity;
-import com.cob.billing.enums.SessionAction;
+import com.cob.billing.entity.clinical.patient.claim.PatientClaimEntity;
 import com.cob.billing.enums.SubmissionStatus;
-import com.cob.billing.model.bill.invoice.tmp.InvoiceInsuranceCompanyInformation;
-import com.cob.billing.model.clinical.patient.CaseDiagnosis;
+import com.cob.billing.enums.SubmissionType;
+import com.cob.billing.model.bill.invoice.request.InvoiceInsuranceCompanyInformation;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
@@ -18,6 +16,7 @@ import org.hibernate.annotations.TypeDefs;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "patient_invoice")
@@ -36,8 +35,12 @@ public class PatientInvoiceEntity {
     @OneToOne
     @JoinColumn(name = "patient_id", referencedColumnName = "id")
     private PatientEntity patient;
+
     @OneToMany(mappedBy = "patientInvoice")
-    List<PatientInvoiceDetailsEntity> invoiceDetails;
+    Set<PatientInvoiceDetailsEntity> invoiceDetails;
+
+    @OneToMany(mappedBy = "patientInvoice")
+    Set<PatientClaimEntity> patientClaims;
 
     @Column(name = "is_one_date_service_per_claim")
     private Boolean isOneDateServicePerClaim;
@@ -57,9 +60,9 @@ public class PatientInvoiceEntity {
     private Long submissionId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "submission_status")
-    private SubmissionStatus submissionStatus;
-
+    @Column(name = "submission_type")
+    private SubmissionType submissionType;
+    
     @Column(name = "document", length = 100000)
     private byte[] cmsDocument;
 

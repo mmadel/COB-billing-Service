@@ -20,7 +20,7 @@ public class FindPatientInsuranceCompanyUseCase {
     MapPatientInsurancesUseCase mapPatientInsurancesUseCase;
 
     public List<PatientInsurance> find(Long patientId) {
-        List<PatientInsuranceEntity> patientInsuranceEntities = patientInsuranceRepository.findByPatient_Id(patientId);
+        List<PatientInsuranceEntity> patientInsuranceEntities = patientInsuranceRepository.find(patientId);
         return mapPatientInsurancesUseCase.map(patientInsuranceEntities);
     }
 }
