@@ -12,6 +12,6 @@ public class UpdateSubmittedClaimsStatusJob {
 
     @Scheduled(cron = "${update_claim_cron_job}")
     public void callUpdateSubmittedStatus() {
-        //updateSubmittedClaimStatus.update();
+//        updateSubmittedClaimStatus.update();
     }
 }

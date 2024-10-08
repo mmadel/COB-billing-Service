@@ -1,4 +1,5 @@
 delete from patient_invoice_details;
+delete from patient_submitted_claim_service_line;
 delete from patient_claim;
 delete from patient_submitted_claim;
 delete from patient_invoice_record;
