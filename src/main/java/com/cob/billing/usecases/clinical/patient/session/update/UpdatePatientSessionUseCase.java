@@ -60,9 +60,9 @@ public class UpdatePatientSessionUseCase {
                 .anyMatch(obj -> obj.getIsCorrect());
         if (correctSession)
             markNewServiceLineAsCorrect(toBeUpdated);
-        List<PatientSubmittedClaim> submittedSessions = getUpdatedServiceLinesSubmitted(model);
-        if (submittedSessions.size() != 0)
-            eventPublisher.publishEvent(new SessionEvent(this, model, submittedSessions));
+//        List<PatientSubmittedClaim> submittedSessions = getUpdatedServiceLinesSubmitted(model);
+//        if (submittedSessions.size() != 0)
+//            eventPublisher.publishEvent(new SessionEvent(this, model, submittedSessions));
         return patientSessionRepository.save(toBeUpdated).getId();
     }
 
