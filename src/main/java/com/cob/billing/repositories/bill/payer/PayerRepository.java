@@ -22,4 +22,6 @@ public interface PayerRepository extends JpaRepository<PayerEntity, Long> {
     List<PayerEntity> findByListNotAssignedPayers(@Param("payerIds") List<Long> payerIds);
 
     Optional<PayerEntity> findByPayerId(Long payerId);
+
+    boolean existsBy();
 }
