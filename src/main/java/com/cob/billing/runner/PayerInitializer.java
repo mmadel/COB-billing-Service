@@ -16,7 +16,9 @@ public class PayerInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         boolean hasPayers = payerRepository.existsBy();
-        if(!hasPayers)
+        if(!hasPayers){
+            System.out.println("Add Payers...");
             addPayerUseCase.add();
+        }
     }
 }
