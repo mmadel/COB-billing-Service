@@ -72,6 +72,7 @@ public class ConstructBatchServiceLinesPaymentsUseCase {
                                                                    PatientSessionServiceLineEntity serviceLine) {
         BatchSessionServiceLinePayment sessionServiceLinePayment = new BatchSessionServiceLinePayment();
         sessionServiceLinePayment.setDos(patientSession.getServiceDate());
+        sessionServiceLinePayment.setCharge(serviceLine.getCptCode().getCharge());
         sessionServiceLinePayment.setProvider(patientSession.getDoctorInfo().getDoctorLastName() + ',' + patientSession.getDoctorInfo().getDoctorFirstName());
         sessionServiceLinePayment.setCpt(serviceLine.getCptCode().getServiceCode() + '.' + serviceLine.getCptCode().getModifier());
         sessionServiceLinePayment.setPreviousPayment(0.0);
