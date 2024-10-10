@@ -14,4 +14,15 @@ public class UpdateProfileDTO {
     private List<PatientSessionDTO> sessions;
     private List<PatientAuthorizationDTO> authorizations;
     private Patient patient;
+
+    @Override
+    public String toString() {
+        return "UpdateProfileDTO{" +
+                "insurances=" + insurances +
+                ", cases=" + cases +
+                ", sessions=" + sessions +
+                ", authorizations=" + authorizations +
+                ", patient=" + patient +
+                '}';
+    }
 }

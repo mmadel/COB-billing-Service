@@ -12,4 +12,16 @@ public class PatientSearchCriteria {
     private String insuranceCompany;
     private String provider;
     private String clinic;
+
+    @Override
+    public String toString() {
+        return "PatientSearchCriteria{" +
+                "name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", insuranceCompany='" + insuranceCompany + '\'' +
+                ", provider='" + provider + '\'' +
+                ", clinic='" + clinic + '\'' +
+                '}';
+    }
 }

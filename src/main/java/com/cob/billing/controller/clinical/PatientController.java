@@ -7,6 +7,7 @@ import com.cob.billing.model.clinical.patient.update.profile.UpdateProfileDTO;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.clinical.patient.*;
 import com.cob.billing.usecases.clinical.patient.insurance.company.DeletePatientInsuranceCompanyUseCase;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "/patient")
 @PreAuthorize("hasAnyRole('patient-role')")
+@Slf4j
 public class PatientController {
     @Autowired
     CreatePatientUseCase createPatientUseCase;
@@ -43,6 +45,7 @@ public class PatientController {
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody Patient model) {
+        log.info("Create patient {}", model);
         return ResponseHandler
                 .generateResponse("Successfully added Patient",
                         HttpStatus.OK,
@@ -51,6 +54,7 @@ public class PatientController {
 
     @PutMapping("/update")
     public ResponseEntity update(@RequestBody UpdateProfileDTO profile) {
+        log.info("update patient {}", profile);
         updatePatientUseCase.update(profile);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -59,6 +63,7 @@ public class PatientController {
     public ResponseEntity<Object> findAll(@RequestParam(name = "offset") String offset,
                                           @RequestParam(name = "limit") String limit,
                                           @PathVariable(name = "status") boolean status) {
+        log.info("list patients offset {} ,limit {} , status {} ", offset, limit, status);
         Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
         return ResponseHandler
                 .generateResponse("Successfully find all patients",
@@ -71,6 +76,7 @@ public class PatientController {
                                        @RequestParam(name = "limit") String limit
             , @RequestBody PatientSearchCriteria searchCriteria) {
         Pageable paging = PageRequest.of(Integer.parseInt(offset), Integer.parseInt(limit));
+        log.info("list filter patients offset {} ,limit {} , PatientSearchCriteria {} ", offset, limit, searchCriteria);
         return ResponseHandler
                 .generateResponse("Successfully find filtered patients",
                         HttpStatus.OK, null, findFilteredPatientUseCase.find(paging, searchCriteria)
@@ -79,16 +85,19 @@ public class PatientController {
 
     @GetMapping("find/patientId/{patientId}")
     public ResponseEntity findById(@PathVariable Long patientId) {
+        log.info("Find patient by id {}", patientId);
         return new ResponseEntity(findPatientUseCase.findById(patientId), HttpStatus.OK);
     }
 
     @GetMapping("find/name/{name}")
     public ResponseEntity findByName(@PathVariable String name) {
+        log.info("Find patient by name {}", name);
         return new ResponseEntity(findPatientByNamUseCase.find(name), HttpStatus.OK);
     }
 
     @GetMapping("find/first/{first}/last/{last}")
     public ResponseEntity findByFirstNameAndLastName(@PathVariable String first, @PathVariable String last) {
+        log.info("Find patient by FirstName {} and LastName", first, last);
         return new ResponseEntity(findPatientByNamUseCase.findByFirstAndLastName(first, last), HttpStatus.OK);
     }
 

@@ -46,4 +46,32 @@ public class Patient {
     private PatientAdvancedInformation patientAdvancedInformation;
     private Boolean authorizationWatching;
     boolean status;
+
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", birthDate=" + birthDate +
+                ", maritalStatus=" + maritalStatus +
+                ", gender=" + gender +
+                ", genderIdentity=" + genderIdentity +
+                ", address=" + address +
+                ", cases=" + cases +
+                ", referringProvider=" + referringProvider +
+                ", patientInsurances=" + patientInsurances +
+                ", sessions=" + sessions +
+                ", phoneType='" + phoneType + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", copay='" + copay + '\'' +
+                ", ssn='" + ssn + '\'' +
+                ", externalId='" + externalId + '\'' +
+                ", patientAdvancedInformation=" + patientAdvancedInformation +
+                ", authorizationWatching=" + authorizationWatching +
+                ", status=" + status +
+                '}';
+    }
 }
