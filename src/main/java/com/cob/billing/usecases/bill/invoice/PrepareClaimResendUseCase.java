@@ -41,6 +41,7 @@ public class PrepareClaimResendUseCase {
         List<PatientSubmittedClaim> claims = patientSubmittedClaimRepository.findBySubmissionId(submissionId);
         claims.forEach(patientSubmittedClaim -> {
             PatientSession patientSession = mapper.map(patientSubmittedClaim.getPatientSession(), PatientSession.class);
+            populateSubmittedPatientSession(patientSession, patientSubmittedClaim);
             for (PatientSubmittedClaimServiceLine patientSubmittedClaimServiceLine : patientSubmittedClaim.getServiceLine()) {
                 SelectedSessionServiceLine sessionServiceLine = new SelectedSessionServiceLine();
                 sessionServiceLine.setSessionId(patientSession);
@@ -54,5 +55,26 @@ public class PrepareClaimResendUseCase {
                 .serviceLines(serviceLines)
                 .patient(patient)
                 .build();
+    }
+
+    private void populateSubmittedPatientSession(PatientSession patientSession, PatientSubmittedClaim patientSubmittedClaim) {
+        if (patientSubmittedClaim.getDateOfService() != null)
+            patientSession.setServiceDate(patientSubmittedClaim.getDateOfService());
+        if (patientSubmittedClaim.getServiceStartTime() != null)
+            patientSession.setServiceStartTime(patientSubmittedClaim.getServiceStartTime());
+        if (patientSubmittedClaim.getServiceEndTime() != null)
+            patientSession.setServiceEndTime(patientSubmittedClaim.getServiceEndTime());
+        if (patientSubmittedClaim.getPlaceOfCode() != null)
+            patientSession.setPlaceOfCode(patientSubmittedClaim.getPlaceOfCode());
+        if (patientSubmittedClaim.getProviderFirstName() != null)
+            patientSession.getDoctorInfo().setDoctorFirstName(patientSubmittedClaim.getProviderFirstName());
+        if (patientSubmittedClaim.getProviderLastName() != null)
+            patientSession.getDoctorInfo().setDoctorLastName(patientSubmittedClaim.getProviderLastName());
+        if (patientSubmittedClaim.getProvider_npi() != null)
+            patientSession.getDoctorInfo().setDoctorNPI(patientSubmittedClaim.getProvider_npi());
+        if (patientSubmittedClaim.getClinic() != null)
+            patientSession.setClinic(patientSubmittedClaim.getClinic());
+        if (patientSubmittedClaim.getCaseDiagnosis() != null)
+            patientSession.setCaseDiagnosis(patientSubmittedClaim.getCaseDiagnosis());
     }
 }

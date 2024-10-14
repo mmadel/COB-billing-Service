@@ -2,6 +2,8 @@ package com.cob.billing.entity.bill.invoice.submitted;
 
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.enums.SubmissionStatus;
+import com.cob.billing.model.admin.clinic.Clinic;
+import com.cob.billing.model.clinical.patient.CaseDiagnosis;
 import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
@@ -56,10 +58,20 @@ public class PatientSubmittedClaim {
     @Column(name = "submitted_claim_message", columnDefinition = "jsonb")
     @Type(type = "jsonb")
     private List<String> messages;
-
     @Column(name = "dos")
     private Long dateOfService;
-
+    @Column(name = "service_start_time")
+    private Long serviceStartTime;
+    @Column(name = "service_end_time")
+    private Long serviceEndTime;
+    @Column(name = "clinic", columnDefinition = "jsonb")
+    @Type(type = "jsonb")
+    private Clinic clinic;
+    @Column(name = "case_diagnosis", columnDefinition = "jsonb")
+    @Type(type = "jsonb")
+    private List<CaseDiagnosis> caseDiagnosis;
+    @Column(name = "place_of_code")
+    private String placeOfCode;
     @ManyToOne
     @JoinColumn(name = "patient_invoice_record_id")
     private PatientInvoiceRecord patientInvoiceRecord;

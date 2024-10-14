@@ -71,6 +71,13 @@ public class CreatPatientInvoiceRecordUseCase {
             claim.setProviderFirstName(session.getDoctorInfo().getDoctorFirstName());
             claim.setProvider_npi(session.getDoctorInfo().getDoctorNPI());
             claim.setServiceLine(mapPatientSubmittedClaimServiceLine(serviceLines));
+            claim.setDateOfService(session.getServiceDate());
+            claim.setServiceStartTime(session.getServiceStartTime());
+            claim.setServiceEndTime(session.getServiceEndTime());
+            claim.setClinic(session.getClinic());
+            claim.setCaseDiagnosis(session.getCaseDiagnosis());
+            claim.setPlaceOfCode(session.getPlaceOfCode());
+
             ModelMapper mapper = new ModelMapper();
             mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
             mapper.addMappings(new PropertyMap<PatientSessionEntity, PatientSession>() {
