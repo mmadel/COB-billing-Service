@@ -19,6 +19,7 @@ import javax.crypto.NoSuchPaddingException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 
 @RestController
 @RequestMapping(value = "/organization")
@@ -34,7 +35,7 @@ public class OrganizationController {
     DisableUserUseCase disableUserUseCase;
 
     @PostMapping("/create")
-    public ResponseEntity<Object> create(@RequestBody Organization model) throws NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, UserException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public ResponseEntity<Object> create(@RequestBody Organization model) throws NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, UserException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, SQLException {
         return ResponseHandler
                 .generateResponse("Successfully added Organization",
                         HttpStatus.OK,

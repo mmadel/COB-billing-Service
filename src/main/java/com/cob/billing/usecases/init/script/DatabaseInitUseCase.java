@@ -19,9 +19,9 @@ public class DatabaseInitUseCase {
             ScriptUtils.executeSqlScript(connection, new ClassPathResource("init.sql"));
         }
     }
-    public void runInitClaimAdjustmentReasonCodeScript() throws SQLException {
-        try (Connection connection = dataSource.getConnection()) {
-            ScriptUtils.executeSqlScript(connection, new ClassPathResource("claim_adjustment_reason_codes.sql"));
-        }
-    }
+   public void executeInsertLookupScript() throws SQLException {
+       try (Connection connection = dataSource.getConnection()) {
+           ScriptUtils.executeSqlScript(connection, new ClassPathResource("lookups.sql"));
+       }
+   }
 }
