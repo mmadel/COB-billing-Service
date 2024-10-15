@@ -6,6 +6,7 @@ import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.admin.organization.CreateOrganizationUseCase;
 import com.cob.billing.usecases.admin.organization.RetrievingOrganizationUseCase;
 import com.cob.billing.usecases.admin.organization.UpdateOrganizationUseCase;
+import com.cob.billing.usecases.security.DisableUserUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping(value = "/organization")
-@PreAuthorize("hasAnyRole('admin-tool-role','group-info-admin-tool-role')")
+
 public class OrganizationController {
     @Autowired
     CreateOrganizationUseCase createOrganizationUseCase;
@@ -29,6 +30,8 @@ public class OrganizationController {
     UpdateOrganizationUseCase updateOrganizationUseCase;
     @Autowired
     RetrievingOrganizationUseCase retrievingOrganizationUseCase;
+    @Autowired
+    DisableUserUseCase disableUserUseCase;
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody Organization model) throws NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, UserException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
@@ -50,5 +53,11 @@ public class OrganizationController {
     @PreAuthorize("hasAnyRole('billing-role','group-info-admin-tool-role')")
     public ResponseEntity findAll() {
         return new ResponseEntity(retrievingOrganizationUseCase.findDefault(), HttpStatus.OK);
+    }
+
+    @PutMapping("/disable/uuid/{uuid}")
+    public ResponseEntity disable(@PathVariable("uuid") String uuid){
+        disableUserUseCase.disable(uuid);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

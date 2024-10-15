@@ -7,8 +7,10 @@ import com.cob.billing.model.admin.Organization;
 import com.cob.billing.repositories.admin.OrganizationRepository;
 import com.cob.billing.usecases.admin.clinic.CreateClinicUseCase;
 import com.cob.billing.usecases.security.CreateUserUseCase;
+import com.cob.billing.usecases.security.DisableUserUseCase;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +32,10 @@ public class CreateOrganizationUseCase {
     CreateUserUseCase createUserUseCase;
     @Autowired
     CreateClinicUseCase createClinicUseCase;
-
+    @Autowired
+    DisableUserUseCase disableUserUseCase;
+    @Value("${administrator.uuid}")
+    private String administratorUUID;
     @Transactional
     public Long create(Organization organization) throws NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, UserException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         Optional<OrganizationEntity> defaultOrganization = organizationRepository.findByType(OrganizationType.Default);
@@ -41,6 +46,8 @@ public class CreateOrganizationUseCase {
         OrganizationEntity toBeCreated = mapper.map(organization, OrganizationEntity.class);
         createUserUseCase.create(organization.getUser());
         createClinicUseCase.create(organization.getClinics());
-        return organizationRepository.save(toBeCreated).getId();
+        disableUserUseCase.disable(administratorUUID);
+        Long organizationId = organizationRepository.save(toBeCreated).getId();
+        return organizationId;
     }
 }
