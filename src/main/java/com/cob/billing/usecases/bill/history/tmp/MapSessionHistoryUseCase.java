@@ -39,9 +39,9 @@ public class MapSessionHistoryUseCase {
         sessionHistory.setInsuranceCompany(patientInvoiceRecord.getInsuranceCompanyName());
         sessionHistory.setSubmitDate(patientInvoiceRecord.getCreatedAt());
         Patient patient = new Patient();
-        patient.setId(patientInvoiceRecord.getPatientId());
-        patient.setFirstName(patientInvoiceRecord.getPatientFirstName());
-        patient.setLastName(patientInvoiceRecord.getPatientLastName());
+        patient.setId(patientInvoiceRecord.getPatient().getId());
+        patient.setFirstName(patientInvoiceRecord.getPatient().getFirstName());
+        patient.setLastName(patientInvoiceRecord.getPatient().getLastName());
         sessionHistory.setClient(patient);
         String provider = providerName != null ? providerName
                 : patientInvoiceRecord.getClaims().stream().findFirst().get().getProviderFirstName() + "," + patientInvoiceRecord.getClaims().stream().findFirst().get().getProviderLastName();

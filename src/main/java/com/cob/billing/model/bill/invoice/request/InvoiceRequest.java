@@ -23,5 +23,7 @@ public class InvoiceRequest {
     private HttpServletResponse response;
     private List<Long> records;
     private Map<String, List<SelectedSessionServiceLine>> fileNamesServiceLinesMapper;
+    private Boolean resend;
+    private Long submissionId;
 
 }

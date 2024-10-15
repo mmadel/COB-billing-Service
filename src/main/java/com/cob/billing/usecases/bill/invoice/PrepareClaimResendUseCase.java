@@ -37,8 +37,8 @@ public class PrepareClaimResendUseCase {
             }
         });
         List<SelectedSessionServiceLine> serviceLines = new ArrayList<>();
-        Patient patient = findPatientUseCase.findById(patientId);
         List<PatientSubmittedClaim> claims = patientSubmittedClaimRepository.findBySubmissionId(submissionId);
+        Patient patient = claims.stream().findFirst().get().getPatientInvoiceRecord().getPatient();
         claims.forEach(patientSubmittedClaim -> {
             PatientSession patientSession = mapper.map(patientSubmittedClaim.getPatientSession(), PatientSession.class);
             populateSubmittedPatientSession(patientSession, patientSubmittedClaim);

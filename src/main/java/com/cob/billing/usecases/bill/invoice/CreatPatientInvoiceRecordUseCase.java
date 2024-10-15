@@ -3,17 +3,21 @@ package com.cob.billing.usecases.bill.invoice;
 import com.cob.billing.entity.bill.invoice.submitted.PatientInvoiceRecord;
 import com.cob.billing.entity.bill.invoice.submitted.PatientSubmittedClaim;
 import com.cob.billing.entity.bill.invoice.submitted.PatientSubmittedClaimServiceLine;
+import com.cob.billing.entity.clinical.patient.PatientEntity;
 import com.cob.billing.entity.clinical.patient.session.PatientSessionEntity;
 import com.cob.billing.enums.SubmissionStatus;
 import com.cob.billing.enums.SubmissionType;
 import com.cob.billing.model.bill.invoice.SelectedSessionServiceLine;
 import com.cob.billing.model.bill.invoice.request.InvoiceRequest;
 import com.cob.billing.model.bill.invoice.response.tmp.InvoiceResponse;
+import com.cob.billing.model.clinical.patient.Patient;
 import com.cob.billing.model.clinical.patient.session.PatientSession;
 import com.cob.billing.model.clinical.patient.session.ServiceLine;
 import com.cob.billing.model.integration.claimmd.ClaimResponse;
 import com.cob.billing.repositories.bill.invoice.tmp.PatientInvoiceRecordRepository;
 import com.cob.billing.repositories.bill.invoice.tmp.PatientSubmittedClaimRepository;
+import com.cob.billing.repositories.clinical.PatientRepository;
+import com.cob.billing.usecases.clinical.patient.MapPatientUseCase;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.convention.MatchingStrategies;
@@ -35,6 +39,10 @@ public class CreatPatientInvoiceRecordUseCase {
     @Autowired
     private PatientSubmittedClaimRepository patientSubmittedClaimRepository;
     @Autowired
+    private PatientRepository patientRepository;
+    @Autowired
+    private MapPatientUseCase mapPatientUseCase;
+    @Autowired
     CreateCMSFileUseCase createCMSFileUseCase;
     @Autowired
     ModelMapper mapper;
@@ -47,10 +55,7 @@ public class CreatPatientInvoiceRecordUseCase {
     private PatientInvoiceRecord createPatientInvoiceRecord(InvoiceRequest invoiceRequest, List<String> claimsFileNames) throws IOException {
 
         PatientInvoiceRecord patientInvoiceRecord = new PatientInvoiceRecord();
-        String patientName = invoiceRequest.getPatientInformation().getLastName() + "," + invoiceRequest.getPatientInformation().getFirstName();
-        patientInvoiceRecord.setPatientFirstName(invoiceRequest.getPatientInformation().getFirstName());
-        patientInvoiceRecord.setPatientLastName(invoiceRequest.getPatientInformation().getLastName());
-        patientInvoiceRecord.setPatientId(invoiceRequest.getPatientInformation().getId());
+        patientInvoiceRecord.setPatient(getPatient(invoiceRequest.getResend(),invoiceRequest.getPatientInformation().getId(),invoiceRequest.getSubmissionId()));
         patientInvoiceRecord.setInsuranceCompanyName(invoiceRequest.getInvoiceInsuranceCompanyInformation().getName());
         patientInvoiceRecord.setInsuranceCompanyId(invoiceRequest.getInvoiceInsuranceCompanyInformation().getId());
         patientInvoiceRecord.setSubmissionType(invoiceRequest.getSubmissionType());
@@ -140,5 +145,13 @@ public class CreatPatientInvoiceRecordUseCase {
                     patientSubmittedClaimServiceLine.setId(null);
                     return patientSubmittedClaimServiceLine;
                 }).collect(Collectors.toList());
+    }
+    private Patient getPatient(Boolean isResend , Long patientId , Long submissionId){
+        Patient patient;
+        if(isResend)
+            patient = patientInvoiceRecordRepository.findBySubmissionId(submissionId).get().getPatient();
+        else
+            patient =mapPatientUseCase.map(patientRepository.findById(patientId).get());
+        return patient;
     }
 }

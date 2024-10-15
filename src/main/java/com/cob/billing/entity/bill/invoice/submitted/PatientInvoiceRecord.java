@@ -1,10 +1,13 @@
 package com.cob.billing.entity.bill.invoice.submitted;
 
 import com.cob.billing.enums.SubmissionType;
+import com.cob.billing.model.admin.clinic.Clinic;
+import com.cob.billing.model.clinical.patient.Patient;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
@@ -26,15 +29,6 @@ public class PatientInvoiceRecord {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "patient_first_name")
-    private String patientFirstName;
-
-    @Column(name = "patient_last_name")
-    private String patientLastName;
-
-    @Column(name = "patient_id")
-    private Long patientId;
-
     @Column(name = "insurance_company_name")
     private String insuranceCompanyName;
 
@@ -53,6 +47,10 @@ public class PatientInvoiceRecord {
 
     @OneToMany(mappedBy = "patientInvoiceRecord")
     Set<PatientSubmittedClaim> claims;
+
+    @Column(name = "patient", columnDefinition = "jsonb")
+    @Type(type = "jsonb")
+        private Patient patient;
     @Column(name = "created_at")
     private Long createdAt;
 

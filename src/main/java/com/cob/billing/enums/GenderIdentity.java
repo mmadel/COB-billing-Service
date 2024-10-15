@@ -1,9 +1,10 @@
 package com.cob.billing.enums;
 
 public enum GenderIdentity {
-    NonBinary("U"),
-    SelfDescribe("U"),
-    NotPrefer("U");
+    NonBinary("NonBinary"),
+    SelfDescribe("SelfDescribe"),
+    NotPrefer("NotPrefer"),
+    Other("Other");
     private String value;
 
     private GenderIdentity(String value) {

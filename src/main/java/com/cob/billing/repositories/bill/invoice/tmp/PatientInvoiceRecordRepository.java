@@ -15,7 +15,7 @@ public interface PatientInvoiceRecordRepository extends JpaRepository<PatientInv
     @Query("SELECT DISTINCT pi FROM PatientInvoiceRecord pi INNER JOIN FETCH  pi.claims pc " +
             "WHERE (:dosStart is null or pc.dateOfService >= :dosStart) " +
             "AND (:dosEnd is null or pc.dateOfService <= :dosEnd) " +
-            "AND ((:client is null or upper(pi.patientFirstName) LIKE CONCAT('%',:client,'%')) OR (:client is null or upper(pi.patientLastName) LIKE CONCAT('%',:client,'%'))) " +
+            "AND ((:client is null or upper(FUNCTION('jsonb_extract_path_text',pi.patient, '$.firstName')) LIKE CONCAT('%',:client,'%')) OR (:client is null or upper(FUNCTION('jsonb_extract_path_text',pi.patient, '$.lastName')) LIKE CONCAT('%',:client,'%'))) " +
             "AND ((:provider is null or upper(pc.providerFirstName) LIKE CONCAT('%',:provider,'%') " +
             "OR (:provider is null or upper(pc.providerLastName) LIKE CONCAT('%',:provider,'%'))))" +
             "AND (:submitStart is null or pi.createdAt >= :submitStart) " +
