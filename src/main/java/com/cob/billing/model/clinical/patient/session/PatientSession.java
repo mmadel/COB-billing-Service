@@ -36,7 +36,7 @@ public class PatientSession {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PatientSession that = (PatientSession) o;
-        return id.equals(that.id) && doctorInfo.equals(that.doctorInfo) && serviceDate.equals(that.serviceDate) && caseTitle.equals(that.caseTitle);
+        return id.equals(that.id) && doctorInfo.equals(that.doctorInfo) && serviceDate.equals(that.serviceDate);
     }
 
     @Override
