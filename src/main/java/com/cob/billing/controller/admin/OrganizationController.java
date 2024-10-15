@@ -1,5 +1,6 @@
 package com.cob.billing.controller.admin;
 
+import com.cob.billing.exception.business.UserException;
 import com.cob.billing.model.admin.Organization;
 import com.cob.billing.response.handler.ResponseHandler;
 import com.cob.billing.usecases.admin.organization.CreateOrganizationUseCase;
@@ -10,6 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping(value = "/organization")
@@ -23,7 +31,7 @@ public class OrganizationController {
     RetrievingOrganizationUseCase retrievingOrganizationUseCase;
 
     @PostMapping("/create")
-    public ResponseEntity<Object> create(@RequestBody Organization model) {
+    public ResponseEntity<Object> create(@RequestBody Organization model) throws NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, UserException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         return ResponseHandler
                 .generateResponse("Successfully added Organization",
                         HttpStatus.OK,

@@ -14,5 +14,7 @@ public class UserAccount {
     private String email;
     private String userAccount;
     private String password;
+    private String firstName;
+    private String lastName;
     private List<RoleScope> roleScope;
 }

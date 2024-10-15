@@ -65,8 +65,8 @@ public class CreateKeycloakUserUseCase {
 
     private KeyCloakUser convertToKeycloakUser(UserAccount userAccount, RealmResource realmResource) {
         return KeyCloakUser.builder()
-                .firstName(userAccount.getName().split(",")[0])
-                .firstName(userAccount.getName().split(",")[1])
+                .firstName(userAccount.getFirstName()==null?userAccount.getName().split(",")[0]:userAccount.getFirstName())
+                .lastName(userAccount.getLastName() == null?userAccount.getName().split(",")[1]:userAccount.getLastName())
                 .email(userAccount.getEmail())
                 .userName(userAccount.getUserAccount())
                 .password(userAccount.getPassword())
