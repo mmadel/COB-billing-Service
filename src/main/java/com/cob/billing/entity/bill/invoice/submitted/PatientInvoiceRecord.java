@@ -50,7 +50,7 @@ public class PatientInvoiceRecord {
 
     @Column(name = "patient", columnDefinition = "jsonb")
     @Type(type = "jsonb")
-        private Patient patient;
+    private Patient patient;
     @Column(name = "created_at")
     private Long createdAt;
 
