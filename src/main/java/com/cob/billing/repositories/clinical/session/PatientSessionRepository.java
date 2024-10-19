@@ -83,7 +83,7 @@ public interface PatientSessionRepository extends PagingAndSortingRepository<Pat
             , @Param("dateTo") Long dateTo);
 
     @Query("SELECT  DISTINCT s FROM PatientSessionEntity s INNER JOIN FETCH  s.serviceCodes sc " +
-            "WHERE s.patient.id= :patientId " +
+            "WHERE s.patient.id= :patientId AND (s.status = 'Submit' OR s.status = 'Partial') AND sc.type  IN ('Invoice') " +
             "AND (:dateFrom is null or s.serviceDate >= :dateFrom) " +
             "AND (:dateTo is null or s.serviceDate <= :dateTo)")
     List<PatientSessionEntity> findServiceLines(@Param("patientId") Long patientId, @Param("dateFrom") Long dateFrom
