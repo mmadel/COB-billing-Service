@@ -1,5 +1,6 @@
 package com.cob.billing.usecases.security.kc;
 
+import com.cob.billing.configuration.onboarding.SchemaTenantContext;
 import com.cob.billing.exception.business.UserException;
 import com.cob.billing.model.security.kc.KeyCloakUser;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,10 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @Slf4j

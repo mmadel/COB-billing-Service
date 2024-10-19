@@ -21,9 +21,4 @@ public class CreateClinicUseCase {
         ClinicEntity toBeCreated = mapper.map(model, ClinicEntity.class);
         return clinicRepository.save(toBeCreated).getId();
     }
-
-    public void create(List<Clinic> clinics){
-        List<ClinicEntity> entities = clinics.stream().map(clinic -> mapper.map(clinic, ClinicEntity.class)).collect(Collectors.toList());
-        clinicRepository.saveAll(entities);
-    }
 }
