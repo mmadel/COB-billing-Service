@@ -38,7 +38,7 @@ public class PatientEntity {
     private String middleName;
     @Column(name = "last_name")
     private String lastName;
-    @Column
+    @Column(name="birth_date")
     private Long birthDate;
     @Enumerated(EnumType.STRING)
     @Column(name = "marital_status")

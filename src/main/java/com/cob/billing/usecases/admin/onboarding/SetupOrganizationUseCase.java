@@ -16,10 +16,13 @@ public class SetupOrganizationUseCase {
     CreateClinicsUseCase createClinicsUseCase;
     @Autowired
     CreateAdministratorUserUseCase createAdministratorUserUseCase;
+    @Autowired
+    CreatePayerUseCase createPayerUseCase;
 
     @Transactional
     public void setup(Organization organization) throws OrganizationException {
         createOrganizationDatabaseUseCase.create();
+        createPayerUseCase.create();
         createOrganizationEntityUseCase.create(organization);
         createClinicsUseCase.create(organization.getClinics());
         createAdministratorUserUseCase.create(organization.getUser());

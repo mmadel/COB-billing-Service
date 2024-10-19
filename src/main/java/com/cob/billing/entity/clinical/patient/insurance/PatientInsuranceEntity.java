@@ -62,6 +62,6 @@ public class PatientInsuranceEntity {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "externalPatientInsurance")
     private PatientInsuranceExternalCompanyEntity patientInsuranceExternalCompany;
 
-    @Column(name = "createdAt")
+    @Column(name = "created_at")
     private Long createdAt;
 }
